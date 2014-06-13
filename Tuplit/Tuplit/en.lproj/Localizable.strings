@@ -1,0 +1,104 @@
+/* 
+  Localizable.strings
+  Tuplit
+
+  Created by ev_mac6 on 20/05/14.
+  Copyright (c) 2014 alttab. All rights reserved.
+*/
+
+/*
+ Localizable.strings
+ Tuplit
+ 
+ Created by ev_mac6 on 09/05/14.
+ Copyright (c) 2014 alttab. All rights reserved.
+ */
+
+
+
+/* General Strings */
+"TUPLIT"                        = "Tuplit";
+"PREVIOUS"                      = "Previous";
+"NEXT"                          = "Next";
+"DISMISS"                       = "Dismiss";
+"OK"                            = "OK";
+"CANCEL"                        = "Cancel";
+"YES"                           = "Yes";
+"NO"                            = "No";
+"NO_CONNECTIVITY"               = "Internet is not reachable. Please check your network connection.";
+"SERVER_CONNECTION_ERROR"       = "Unable to connect to Tuplit server. Please check your internet connection.";
+"NO_FB_ACCOUNT"                 = "Please setup your Facebook account in the iOS settings app.";
+"ACCESS_DENIED"                 = "Account access denied.";
+"UNABLE_CONNECT"                = "Unable to connect.";
+"IOS"                           = "ios";
+"SEARCH"                        = "Search";
+
+
+
+/* Welcome Screen */
+"WELCOME_TEXT"                  = "Tuplit Merchants have the best deals for you.\nGet them before they expire!";
+"GOOGLE_ERROR"                  = "Unable to connect with Google+";
+
+
+/* Login Screen */
+"LOGIN"                         = "Log in";
+"INVALID_EMAIL"                 = "Invalid email or password";
+"SIGNING_IN"                    = "Signing in";
+"ENTER_EMAIL"                   = "Please enter email address";
+"ENTER_PASSWORD"                = "Please enter a password";
+
+
+/* Forgot Password Screen */
+"FORGOT_PASSWORD"               = "Forgot Password";
+
+
+/* Sign Up Screen       And     Sign Up Social Screen */
+"SIGNUP"                        = "Sign up";
+"TAKE_PHOTO"                    = "Take Photo";
+"EXISTING_PHOTO"                = "Existing Photo";
+"ENTER_VALID_EMAIL"              = "Please enter a valid email address";
+"ENTER_PASSWORD"                = "Please enter a password";
+"ENTER_ATLEAST_PASSWORD"        = "Password must be atleast 6 characters";
+"ENTER_FITST_NAME"              = "Please enter your first name";
+"ENTER_LAST_NAME"               = "Please enter your last name";
+"ENTER_CELL_NUMBER"             = "Please enter your cell number";
+"ENTER_PIN"                     = "Please enter a PIN code";
+"REGISTERING"                   = "Registering";
+"SAVE_YOUR_TIME_WITH_PIN"       = "Save your time with PIN";
+"PIN_ALLOWS"                    = "PIN code allows you to check out with no need to enter your password.";
+"OK_GOT_IT"                     = "OK, got it!";
+"TERMS_OF_SERVICE"              = "Terms of Service";
+
+"PRIVACY_POLICY"                = "Privacy Policy";
+"NO_VALID_CAMERA"               = "No valid camera source available.";
+"YOUR_DETAILS"                  = "Your Details";
+
+
+/* Merchants Screen */
+"MERCHANTS"                     = "Merchants";
+
+
+/* Left Menu Screen */
+"HOME"                          = "Home";
+"CART"                          = "Cart";
+"FRIENDS"                       = "Friends";
+"SETTINGS"                      = "Settings";
+
+/*Add Credit Card*/
+"ADD_CREDIT_CARD"                   = "Add Credit Card";
+"SKIP"                          = "Skip";
+"SCANNING_TEXT"                 = "Just one last thing... Add your credit card,\nadd funds and check out smoothly in the future.";
+"SCAN_IO"                       = "Scan using Scan.io";
+"MANUALLY"                      = "Or add manually";
+"CARD_NUMBER"                   = "Card Number";
+"EXPIRATION"                    = "Expiration";
+"CCV"                           = "CCV";
+"TOP_UP_ACCOUNT"                = "Do you want to top up\nyour Tuplit account?";
+"SAVE"                          = "Save";
+"TOP_UPACCOUNT"                 = "Do you want to top up your Tuplit account now?";
+"SAVE_TOP_UP"                   = "Save & Top Up";
+
+/*Custom Switch*/
+
+"YES"                           = "Yes";
+"NO"                            = "No";

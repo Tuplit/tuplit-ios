@@ -1,0 +1,52 @@
+//
+//  Prefix header
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
+#endif
+
+#define AMSlideMenuWithoutStoryboards
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+    #import <SystemConfiguration/SystemConfiguration.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
+    #import <objc/runtime.h>
+#endif
+
+#import "UI.h"
+#import "UIView+Layout.h"
+#import "ProgressHud.h"
+#import "NSString+Extras.h"
+#import "NSString+URLEncoding.h"
+#import "EGOImageView.h"
+#import "UIImage+Color.h"
+#import "ProgressHud.h"
+#import "UITextField+Tuplit.h"
+#import "TLAppDelegate.h"
+#import "UIBarButtonItem+Tuplit.h"
+#import "UINavigationItem+TitleView.h"
+#import "UIAlertView+BlockAlert.h"
+#import "Global.h"
+#import "TLUserDefaults.h"
+#import "UILabel+Tuplit.h"
+
+#import "NSString+Extras.h"
+#import "UIView+Alignment.h"
+#import "UIImage+Extras.h"
+#import "UILabel+Resizing.h"
+#import "UIView+Layout.h"
+#import "TuplitConstants.h"
+#import "UINavigationItem+TitleView.h"
+#import "EGOImageView.h"
+#import "EGOCache.h"
+#import "UIButton+Tuplit.h"
+#import "CurrentLocation.h"
+#import <RestKit/RestKit.h>
+#import "NSString+StringFunctions.h"

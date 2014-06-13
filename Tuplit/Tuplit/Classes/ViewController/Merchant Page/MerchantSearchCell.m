@@ -1,0 +1,154 @@
+//
+//  SearchTableCell.m
+//  Tuplit
+//
+//  Created by ev_mac1 on 17/05/14.
+//  Copyright (c) 2014 alttab. All rights reserved.
+//
+
+#import "MerchantSearchCell.h"
+
+
+@implementation MerchantSearchCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if(self)
+    {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width,SEARCH_CELL_HEIGHT)];
+        [containerView setBackgroundColor:[UIColor clearColor]];
+        [self.contentView addSubview:containerView];
+        
+        merchantImgView=[[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(10,(SEARCH_CELL_HEIGHT - 40)/2,40,40)];
+        merchantImgView.backgroundColor = [UIColor brownColor];
+        merchantImgView.layer.cornerRadius = 20;
+        merchantImgView.clipsToBounds = YES;
+        [containerView addSubview:merchantImgView];
+        
+        merchantNameLbl = [[UILabel alloc ] initWithFrame:CGRectMake(10 + 40 + 10, 3,200,25)];
+        merchantNameLbl.backgroundColor = [UIColor clearColor];
+        merchantNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:20.0];
+        merchantNameLbl.userInteractionEnabled = YES;
+        merchantNameLbl.textAlignment = NSTextAlignmentLeft;
+        merchantNameLbl.textColor = UIColorFromRGB(0x000000);
+        [containerView addSubview:merchantNameLbl];
+        
+        descriptionLbl = [[UILabel alloc ] initWithFrame:CGRectMake(8 + 40 + 10, CGRectGetMaxY(merchantNameLbl.frame) - 3,200,20)];
+        descriptionLbl.backgroundColor = [UIColor clearColor];
+        descriptionLbl.textAlignment = NSTextAlignmentLeft;
+        descriptionLbl.textColor = [UIColor lightGrayColor]; //UIColorFromRGB(0Xffffff);
+        descriptionLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
+        [containerView addSubview:descriptionLbl];
+        
+        distanceLbl  = [[UILabel alloc ] initWithFrame:CGRectMake(containerView.frame.size.width - 30 - 5,containerView.frame.size.height - 20 - 5,30,20)];
+        distanceLbl.textColor = [UIColor lightGrayColor]; //UIColorFromRGB(0x000000);
+        distanceLbl.backgroundColor = [UIColor clearColor];
+        distanceLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
+        distanceLbl.userInteractionEnabled = YES;
+        distanceLbl.lineBreakMode = NSLineBreakByTruncatingTail;
+        distanceLbl.textAlignment = NSTextAlignmentRight;
+        [containerView addSubview : distanceLbl];
+        
+        UIImage *distanceImage = [UIImage imageNamed:@"MapDistance"];
+        distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake((containerView.frame.size.width - distanceLbl.frame.size.width - distanceLbl.size.width), containerView.frame.size.height - 22, distanceImage.size.width, distanceImage.size.height)];
+        distanceImageView.backgroundColor = [UIColor clearColor];
+        distanceImageView.image = distanceImage;
+        [containerView addSubview:distanceImageView];
+        
+        UIImage *discountImage = [UIImage imageNamed:@"specialIcon"];
+        discountImageView = [[UIImageView alloc] initWithFrame:CGRectMake((containerView.frame.size.width - discountImage.size.width - 10),8,discountImage.size.width, discountImage.size.height)];
+        discountImageView.backgroundColor = [UIColor clearColor];
+        discountImageView.image = discountImage;
+        [containerView addSubview:discountImageView];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(61,self.size.height+6.30,320-60,0.5)];
+        lineView.backgroundColor = [UIColor lightGrayColor];
+        [self addSubview:lineView];
+    }
+    return self;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+}
+
+- (void) setMerchant:(MerchantModel *) merchant
+{
+    [merchantImgView setImageURL:[NSURL URLWithString:merchant.Icon]];
+    [merchantNameLbl setText:merchant.CompanyName];
+    [descriptionLbl setText:merchant.ShortDescription];
+    [distanceLbl setText:[TuplitConstants getDistance:[merchant.distance doubleValue]]];
+    
+    if (distanceLbl.text.length > 0) {
+        
+        CGRect distanceFrame = distanceLbl.frame;
+        distanceFrame.size.width = [distanceLbl.text widthWithFont:distanceLbl.font];
+        distanceFrame.origin.x = self.contentView.frame.size.width - distanceFrame.size.width - 10;
+        [distanceLbl setFrame:distanceFrame];
+        
+        CGRect distanceImageViewFrame = distanceImageView.frame;
+        distanceImageViewFrame.origin.x = CGRectGetMinX(distanceLbl.frame) - distanceImageView.frame.size.width - 2;
+        [distanceImageView setFrame:distanceImageViewFrame];
+        
+        if(distanceImageView.frame.origin.x > 150) {
+            CGRect descriptionFrame = descriptionLbl.frame;
+            descriptionFrame.size.width = 170;
+            descriptionLbl.frame = descriptionFrame;
+        }
+        else
+        {
+            CGRect descriptionFrame = descriptionLbl.frame;
+            descriptionFrame.size.width = 200;
+            descriptionLbl.frame = descriptionFrame;
+        }
+        
+        distanceLbl.hidden = NO;
+        distanceImageView.hidden = NO;
+    }
+    else
+    {
+        
+        CGRect descriptionFrame = descriptionLbl.frame;
+        descriptionFrame.size.width = 200;
+        descriptionLbl.frame = descriptionFrame;
+        
+        distanceLbl.hidden = YES;
+        distanceImageView.hidden = YES;
+    }
+    
+    if ([merchant.IsSpecial intValue] == 0) {
+        discountImageView.hidden = YES;
+    }
+    else
+    {
+        discountImageView.hidden = NO;
+    }
+}
+
+- (void) setCategory:(CategoryModel *) categoryModel
+{
+    [merchantImgView setImageURL:[NSURL URLWithString:categoryModel.CategoryIcon]];
+    [merchantNameLbl setText:categoryModel.CategoryName];
+    
+    NSString *merchantCount;
+    if ([categoryModel.MerchantCount intValue] == 1) {
+        merchantCount = [NSString stringWithFormat:@"%@ Merchant",categoryModel.MerchantCount];
+    }
+    else
+    {
+        merchantCount = [NSString stringWithFormat:@"%@ Merchants",categoryModel.MerchantCount];
+    }
+    
+    [descriptionLbl setText:merchantCount];
+    
+    distanceLbl.hidden = YES;
+    distanceImageView.hidden = YES;
+    discountImageView.hidden = YES;
+}
+
+
+@end
