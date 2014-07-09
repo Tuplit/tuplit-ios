@@ -336,7 +336,7 @@
         }
         
         signUpManager.user = self.user;
-        [signUpManager registerUser];
+        [signUpManager registerUser:@"POST"];
         [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
     }
 }
@@ -482,7 +482,7 @@
 }
 
 
-# pragma UIImagePickerViewController Delegate
+#pragma mark - UIImagePickerViewController Delegate
 
 - (void)imagePickerController:(UIImagePickerController *) Picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
@@ -550,15 +550,15 @@
                 @try {
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
                     urlString = [urlString stringByAppendingString:@"120"];
-                    self.user.userImageUrl = urlString;
+                    self.user.Photo = urlString;
                 }
                 @catch (NSException *exception) {
-                    self.user.userImageUrl = person.image.url;
+                    self.user.Photo = person.image.url;
                 }
                 
                 if(person.image.url){
                     
-                    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.user.userImageUrl]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.user.Photo]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                         self.user.userImage = [UIImage imageWithData:data];
                         [self callLoginWebService];
                     }];
@@ -735,7 +735,8 @@
 - (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
     [Global instance].user = user;
-    [userDetailsManager getUserDetails];
+    [TLUserDefaults setAccessToken:user.AccessToken];
+    [userDetailsManager getUserDetailsWithUserID:user.UserId];
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -757,7 +758,7 @@
 
 #pragma mark - TLUserDetailsManagerDelegate methods
 
-- (void)userDetailsManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel *)user_ {
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
     
     [TLUserDefaults setCurrentUser:user_];
     [TLUserDefaults setIsTutorialSkipped:isSocialButtonPressed];

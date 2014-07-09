@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "TLUserProfileViewController.h"
 @interface TLLeftMenuViewController : UITableViewController<UIScrollViewDelegate> {
     
     UILabel *userNameLbl, *creditBalanceLbl;

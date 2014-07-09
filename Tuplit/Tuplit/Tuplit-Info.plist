@@ -26,15 +26,25 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.alttab.Tuplit</string>
+			<string>com.tuplit.ios</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.alttab.Tuplit</string>
+				<string>com.tuplit.ios</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1443093035941769</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.3</string>
+	<string>1.5</string>
+	<key>FacebookAppID</key>
+	<string>1443093035941769</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>

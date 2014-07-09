@@ -1,0 +1,439 @@
+{
+    "meta": {
+        "code": 201,
+        "dataPropertyName": "merchant",
+        "AllowCart": 0,
+        "CurrentTime": "2014-06-10 06:22:03"
+    },
+    "merchant": {
+        "id": "1",
+        "MerchantId": "1",
+        "FirstName": "Burger",
+        "LastName": "King",
+        "Email": "burger@gmail.com",
+        "CompanyName": "Burger King",
+        "Address": "Anthony Benoit, 490 E, Main StreetNorwich CT 06360",
+        "Location": "Miami",
+        "Latitude": "58.3345346",
+        "Longitude": "23.9944889",
+        "PhoneNumber": "111111111111111",
+        "WebsiteUrl": "http://172.21.4.104/tuplit/merchant/Myaccount",
+        "Icon": "http://172.21.4.104/tuplit/merchant/webresources/uploads/merchants/icons/1_1401528903.png",
+        "Image": "http://172.21.4.104/tuplit/merchant/webresources/uploads/merchants/1_1401511430.png",
+        "Description": "I found that manipulating the \"bounds\" property can result in some unexpected behavior when you have a floating table inside another view. ",
+        "ShortDescription": "efdsgfads",
+        "distance": "2323.860406011509",
+        "DiscountTier": "30%",
+        "DiscountType": "1",
+        "DiscountProductId": "101,100,56,40",
+        "SpecialIcon": "0",
+        "ItemsSold": "0",
+        "OpeningHours": {
+            "Open": [
+                     "Monday : 12:20 AM to 05:20 PM"
+                     ],
+            "Closed": "Closed Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday"
+        },
+        "PriceRange": "12,34",
+        "SpecialsSold": "10",
+        "AlreadyFavourited": "0",
+        "Category": "4,2",
+        "CategoryList": [
+                         {
+                         "CategoryId": "9",
+                         "CategoryName": "Trending1",
+                         "CategoryIcon": "http://172.21.4.104/tuplit/admin/webresources/uploads/category/9_1400042564.png"
+                         }
+                         ],
+        "OrderCount": 8,
+        "OrderedFriendsCount": 4,
+        "OrderedFriendsList": [
+                               {
+                               "id": "1",
+                               "FirstName": "tuplit",
+                               "LastName": "tuplit",
+                               "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/1_1400562332.png"
+                               },
+                               {
+                               "id": "2",
+                               "FirstName": "t",
+                               "LastName": "t",
+                               "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/2_1398081971.png"
+                               },
+                               {
+                               "id": "3",
+                               "FirstName": "kalai",
+                               "LastName": "selvi",
+                               "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/3_1401541351.png"
+                               },
+                               {
+                               "id": "10",
+                               "FirstName": "praseetha",
+                               "LastName": "V",
+                               "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/10_1400562237.png"
+                               }
+                               ],
+        "Comments": [
+                     {
+                     "UserId": "10",
+                     "FirstName": "praseetha",
+                     "LastName": "V",
+                     "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/10_1400562237.png",
+                     "CommentsText": "I think I had tried this. Turns out I did it wrong / incompletely. Seems to work flawlessly with your code :-)",
+                     "CommentDate": "2014-05-23 09:01:59"
+                     },
+                     {
+                     "UserId": "10",
+                     "FirstName": "praseetha",
+                     "LastName": "V",
+                     "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/10_1400562237.png",
+                     "CommentsText": "hat code is working well at all! It resize everything! But, my TextView always gets a height of 30px! Are there settings I am not allowed to set, or is there something I am not allowed in UITextView?",
+                     "CommentDate": "2014-05-23 08:51:59"
+                     },
+                     {
+                     "UserId": "10",
+                     "FirstName": "praseetha",
+                     "LastName": "V",
+                     "Photo": "http://172.21.4.104/tuplit/admin/webresources/uploads/users/10_1400562237.png",
+                     "CommentsText": "This is one of my all time favorite Stack Overflow answers - thanks!",
+                     "CommentDate": "2014-05-23 08:44:36"
+                     }
+                     ],
+        "ProductList": {
+            "SpecialProducts": [
+                                {
+                                "ProductId": "1",
+                                "ItemName": "WHOPPER@ Sandwich Meal",
+                                "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/100_1401800065.png",
+                                "Price": "4",
+                                "DiscountPrice": "2",
+                                "DiscountTier": "50"
+                                },
+                                {
+                                "ProductId": "1",
+                                "ItemName": "Chicken Strips (8 pcs)",
+                                "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/100_1401800065.png",
+                                "Price": "5",
+                                "DiscountPrice": "3",
+                                "DiscountTier": "50"
+                                }
+                                ],
+            "DiscountProducts": [
+                                 {
+                                 "ProductId": "101",
+                                 "ItemName": "Man with burger",
+                                 "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/101_1401800106.png",
+                                 "DiscountApplied": "1",
+                                 "Price": 34,
+                                 "Status": "1",
+                                 "DiscountPrice": 23.8
+                                 },
+                                 {
+                                 "ProductId": "100",
+                                 "ItemName": "burger my special",
+                                 "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/100_1401800065.png",
+                                 "DiscountApplied": "1",
+                                 "Price": 100,
+                                 "Status": "1",
+                                 "DiscountPrice": 70
+                                 },
+                                 {
+                                 "ProductId": "40",
+                                 "ItemName": "testinger",
+                                 "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/40_1401354005.png",
+                                 "DiscountApplied": "1",
+                                 "Price": 120,
+                                 "Status": "1",
+                                 "DiscountPrice": 84
+                                 }
+                                 ],
+            "MenuProducts": [
+                             {
+                             "CategoryId": "1",
+                             "CategoryName": "Deals",
+                             "Items": [
+                                       {
+                                       "ProductId": "59",
+                                       "ItemName": "Soupy treat",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/59_1401425477.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 30,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "2",
+                             "CategoryName": "Starterss",
+                             "Items": [
+                                       {
+                                       "ProductId": "56",
+                                       "ItemName": "soup12345",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/56_1401423857.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 123,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "19",
+                                       "ItemName": "heavenly made",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/19_1401267582.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 12,
+                                       "Status": "2",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "3",
+                             "CategoryName": "Burger1234",
+                             "Items": [
+                                       {
+                                       "ProductId": "99",
+                                       "ItemName": "Red Burger",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/99_1401795181.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 999999.99,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "78",
+                                       "ItemName": "testing12",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/78_1401786108.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 56,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "38",
+                                       "ItemName": "testing_K",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/38_1401353982.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 100,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "20",
+                             "CategoryName": "new1343",
+                             "Items": [
+                                       {
+                                       "ProductId": "98",
+                                       "ItemName": "burger1478",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/98_1401794835.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 20,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "97",
+                                       "ItemName": "tetsing12345567",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/97_1401795583.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 20,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "86",
+                                       "ItemName": "test newewe",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/86_1401795646.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 56,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "26",
+                                       "ItemName": "test123",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/26_1401345177.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 11,
+                                       "Status": "2",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "21",
+                             "CategoryName": "new14",
+                             "Items": [
+                                       {
+                                       "ProductId": "76",
+                                       "ItemName": "next items",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/76_1401691487.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 45,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "75",
+                                       "ItemName": "simple start",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/75_1401691243.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 45,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "66",
+                                       "ItemName": "soup123",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/66_1401443323.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 34,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "65",
+                                       "ItemName": "gburger",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/65_1401441032.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 123,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "1",
+                                       "ItemName": "Buger1",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/1_1401196408.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 100,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "22",
+                             "CategoryName": "Soup",
+                             "Items": [
+                                       {
+                                       "ProductId": "102",
+                                       "ItemName": "re",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/102_1401806551.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 12,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "21",
+                                       "ItemName": "soup111",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/21_1401440949.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 123,
+                                       "Status": "2",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "14",
+                                       "ItemName": "soup",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/14_1401276753.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 123,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "25",
+                             "CategoryName": "Deal1",
+                             "Items": [
+                                       {
+                                       "ProductId": "51",
+                                       "ItemName": "new burger",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/51_1401358680.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 20,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "36",
+                             "CategoryName": "Starters5",
+                             "Items": [
+                                       {
+                                       "ProductId": "61",
+                                       "ItemName": "souptest",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/61_1401443176.png",
+                                       "DiscountApplied": "0",
+                                       "Price": 13,
+                                       "Status": "2",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "39",
+                             "CategoryName": "Deal",
+                             "Items": [
+                                       {
+                                       "ProductId": "67",
+                                       "ItemName": "er12",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/67_1401444981.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 123,
+                                       "Status": "2",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "70",
+                             "CategoryName": "snacks",
+                             "Items": [
+                                       {
+                                       "ProductId": "64",
+                                       "ItemName": "souper",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/64_1401440000.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 12,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             },
+                             {
+                             "CategoryId": "79",
+                             "CategoryName": "new test category123",
+                             "Items": [
+                                       {
+                                       "ProductId": "96",
+                                       "ItemName": "2332323",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/96_1401795570.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 56,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       },
+                                       {
+                                       "ProductId": "95",
+                                       "ItemName": "1213234",
+                                       "Photo": "http://172.21.4.104/tuplit/merchant/webresources/uploads/products/95_1401795565.png",
+                                       "DiscountApplied": "1",
+                                       "Price": 56,
+                                       "Status": "1",
+                                       "DiscountPrice": 0
+                                       }
+                                       ]
+                             }
+                             ]
+        }
+    },
+    "notifications": [
+                      "Merchant details has been retrieved successfully"
+                      ]
+}

@@ -49,7 +49,7 @@ AFHTTPRequestOperation *operation;
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", responseJSON);
+        NSLog(@"Response: %@", operation.responseString);
         
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         

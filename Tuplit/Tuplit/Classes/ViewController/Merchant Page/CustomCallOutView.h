@@ -9,9 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "MerchantModel.h"
 #import "TLMerchantsDetailViewController.h"
+#import "CalloutAnnotation.h"
 // #import "UILabel+Tuplit.h"
 
-@interface CustomCallOutView : UIImageView
+@protocol CustomCallOutViewDelegate
+@required
+- (void)calloutButtonClicked:(NSString *)title;
+@end
+@protocol CustomCallOutViewDelegate;
+@interface CustomCallOutView : MKAnnotationView
 {
     EGOImageView *annLogoImgView;
     UIImageView *customCalloutView;
@@ -26,8 +32,12 @@
     UILabel * annDiscountLbl;
     
     NSString * logoImageUrl;
+    
+    MerchantModel *merModel;
 }
 
 @property (nonatomic, retain)MerchantModel *merchant;
+@property (nonatomic, assign) id<CustomCallOutViewDelegate> delegate;
+-(void)loadView;
 
 @end

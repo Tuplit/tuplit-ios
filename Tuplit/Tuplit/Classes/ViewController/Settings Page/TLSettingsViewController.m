@@ -61,9 +61,7 @@
 
 - (IBAction)logOutAction {
     
-    [TLUserDefaults setCurrentUser:nil];
-    [TLUserDefaults setIsGuestUser:NO];
-    [APP_DELEGATE.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [TuplitConstants userLogout];
 }
 
 - (IBAction)presentTutorial {

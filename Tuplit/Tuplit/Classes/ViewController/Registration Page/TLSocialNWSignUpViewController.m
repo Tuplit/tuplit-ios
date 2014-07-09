@@ -237,7 +237,8 @@
         self.user.LastName  = textLastName.text;
         self.user.UserName  = @"";
         self.user.PinCode   = textPinCode.text;
-        if(isPictureUpdated) self.user.userImage = userImageView.image;
+        if(isPictureUpdated)
+            self.user.userImage = userImageView.image;
         self.user.ZipCode   = @"";
         self.user.Country = @"";
         // self.user.CellNumber = NSNonNilString(textCellNumber.text);
@@ -248,7 +249,7 @@
         }
         
         signUpManager.user = self.user;
-        [signUpManager registerUser];
+        [signUpManager registerUser:@"POST"];
         [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
     }
 }
@@ -401,10 +402,11 @@
 
 - (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
-    [[ProgressHud shared] hide];
     [TLUserDefaults setIsTutorialSkipped:NO];
     [Global instance].user = user;
-    [userDetailsManager getUserDetails];
+    [TLUserDefaults setAccessToken:user.AccessToken];
+    [userDetailsManager getUserDetailsWithUserID:user.UserId];
+    [[ProgressHud shared] hide];
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -419,8 +421,8 @@
 
 #pragma mark - TLUserDetailsManagerDelegate methods
 
-- (void)userDetailsManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel *)user_ {
-    
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
+        
     [TLUserDefaults setCurrentUser:user_];
     [[ProgressHud shared] hide];
     [self presentAMSlider];

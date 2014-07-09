@@ -84,4 +84,25 @@ NSString *NSNonNilString(NSString *str) {
     return str;
 }
 
+- (NSString *)stringWithTitleCase {
+    
+    NSMutableString *convertedStr = [NSMutableString stringWithString:[self capitalizedString]];
+    
+    NSRange range = NSMakeRange(0, convertedStr.length);
+    
+    // a list of words to always make lowercase could be placed here
+    [convertedStr replaceOccurrencesOfString:@" De "
+                                  withString:@" de "
+                                     options:NSLiteralSearch
+                                       range:range];
+    
+    // a list of words to always make uppercase could be placed here
+    [convertedStr replaceOccurrencesOfString:@" Tv "
+                                  withString:@" TV "
+                                     options:NSLiteralSearch
+                                       range:range];
+    
+    return convertedStr;
+}
+
 @end

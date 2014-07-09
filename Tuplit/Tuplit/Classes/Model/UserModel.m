@@ -17,7 +17,7 @@
     [encoder encodeObject:self.FirstName forKey:@"FirstName"];
     [encoder encodeObject:self.LastName forKey:@"LastName"];
 	[encoder encodeObject:self.Email forKey:@"Email"];
-	[encoder encodeObject:self.userImageUrl forKey:@"userImageUrl"];
+	[encoder encodeObject:self.Photo forKey:@"userImageUrl"];
     [encoder encodeObject:self.FBId forKey:@"FBId"];
     [encoder encodeObject:self.userImage forKey:@"userImage"];
     [encoder encodeObject:self.userImageData forKey:@"userImageData"];
@@ -34,6 +34,7 @@
     [encoder encodeObject:self.PinCode forKey:@"CellNumber"];
     [encoder encodeObject:self.Location forKey:@"Location"];
     [encoder encodeObject:self.AvailableBalance forKey:@"AvailableBalance"];
+    
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -44,7 +45,7 @@
         self.FirstName = [decoder decodeObjectForKey:@"FirstName"];
         self.LastName = [decoder decodeObjectForKey:@"LastName"];
 		self.Email = [decoder decodeObjectForKey:@"Email"];
-        self.userImageUrl = [decoder decodeObjectForKey:@"userImageUrl"];
+        self.Photo = [decoder decodeObjectForKey:@"userImageUrl"];
 		self.FBId = [decoder decodeObjectForKey:@"FBId"];
         self.userImage = [decoder decodeObjectForKey:@"userImage"];
         self.userImageData = [decoder decodeObjectForKey:@"userImageData"];
@@ -61,6 +62,7 @@
         self.CellNumber = [decoder decodeObjectForKey:@"CellNumber"];
         self.Location = [decoder decodeObjectForKey:@"Location"];
         self.AvailableBalance = [decoder decodeObjectForKey:@"AvailableBalance"];
+        
     }
     return self;
 }

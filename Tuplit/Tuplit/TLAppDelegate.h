@@ -13,7 +13,7 @@
 #import "TLFriendsViewController.h"
 #import "TLSettingsViewController.h"
 #import "RESideMenu.h"
-
+#import "CartModel.h"
 
 @interface TLAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -25,6 +25,9 @@
 @property (strong, nonatomic) NSString *location;
 @property (strong, nonatomic) NSString *postalCode;
 @property (strong, nonatomic) RESideMenu *slideMenuController;
+@property (strong, nonatomic) CartModel *cartModel;
+@property (strong, nonatomic) NSString *merchantID;
+@property (assign, nonatomic) BOOL isUserProfileEdited;
 
 - (void)showNoConnectivityAlertAndQuit:(BOOL)shouldQuit;
 @end

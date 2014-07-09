@@ -178,7 +178,8 @@
 - (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
     [Global instance].user = user;
-    [userDetailsManager getUserDetails];
+    [TLUserDefaults setAccessToken:user.AccessToken];
+    [userDetailsManager getUserDetailsWithUserID:user.UserId];
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
@@ -195,7 +196,7 @@
 
 #pragma mark - TLUserDetailsManagerDelegate methods
 
-- (void)userDetailsManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel *)user_ {
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
     
     [TLUserDefaults setCurrentUser:user_];
     [self presentAMSlider];

@@ -17,7 +17,6 @@
 @property (nonatomic, strong) UIColor *offColor;
 @property (nonatomic, strong) UIColor *borderColor;
 @property (nonatomic, strong) UIColor *knobColor;
-@property (nonatomic, strong) UIColor *shadowColor;
 
 @property (nonatomic, assign) BOOL isRounded;
 

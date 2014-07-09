@@ -9,6 +9,7 @@
 #import "TLMerchantsViewController.h"
 #import "TLWelcomeViewController.h"
 #import "TLTutorialViewController.h"
+#import "PinAnnotation.h"
 
 @implementation TLMerchantsViewController
 
@@ -20,7 +21,8 @@
     
     [self.navigationItem setTitle:LString(@"MERCHANTS")];
     
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithImage:getImage(@"List", NO) style:UIBarButtonItemStylePlain target:self action:@selector(presentLeftMenuViewController:)];
+    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+    [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
     [self.navigationItem setLeftBarButtonItem:navleftButton];
     
     rightExpandButton = [[UIBarButtonItem alloc] init];
@@ -64,7 +66,11 @@
     searchTxt.backgroundColor = [UIColor clearColor];
     searchTxt.placeholder = @"Search";
     searchTxt.textAlignment = NSTextAlignmentLeft;
-    searchTxt.tintColor = UIColorFromRGB(0x01b3a5);
+    
+    if ([searchTxt respondsToSelector:@selector(tintColor)]) // Check for property before calling because calling it crashes the app on iOS6
+    {
+       searchTxt.tintColor = UIColorFromRGB(0x01b3a5);
+    }
     searchTxt.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     searchTxt.clearButtonMode = UITextFieldViewModeWhileEditing;
     searchTxt.userInteractionEnabled = YES;
@@ -165,6 +171,50 @@
     [searchErrorLabel setHidden:YES];
     [contentView addSubview:searchErrorLabel];
     
+    cmtPromptView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(merchantTable.frame)-105, baseViewWidth, 105)];
+    cmtPromptView.backgroundColor = UIColorFromRGB(0x00b3a4);
+    cmtPromptView.userInteractionEnabled = YES;
+    cmtPromptView.hidden = NO;
+    //[baseView addSubview:cmtPromptView];
+    
+    merchantNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 15, baseViewWidth-20, 20)];
+    merchantNameLabel.backgroundColor = [UIColor clearColor];
+    merchantNameLabel.text = @"How Was Burger King?";
+    merchantNameLabel.textColor = UIColorFromRGB(0xffffff);
+    merchantNameLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16];
+    [cmtPromptView addSubview:merchantNameLabel];
+    
+    UILabel *defaultTxt = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(merchantNameLabel.frame), baseViewWidth-20, 20)];
+    defaultTxt.backgroundColor = [UIColor clearColor];
+    defaultTxt.text = @"Let your friends know about your experience.";
+    defaultTxt.textColor = UIColorFromRGB(0xffffff);
+    defaultTxt.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+    [cmtPromptView addSubview:defaultTxt];
+    
+    UIView *btnsView = [[ UIView alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(defaultTxt.frame)+15, baseViewWidth-20, 25)];
+    btnsView.backgroundColor = [UIColor clearColor];
+    [cmtPromptView addSubview:btnsView];
+    
+    UIButton *nothankBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    nothankBtn.frame = CGRectMake(0, 0, 90, 25);
+    [nothankBtn setBackgroundColor:[UIColor clearColor]];
+    [nothankBtn addTarget:self action:@selector(nothankBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    [nothankBtn setTitle:@"No, thanks" forState:UIControlStateNormal];
+    nothankBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16];
+    [nothankBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+    nothankBtn.layer.borderColor = [UIColorFromRGB(0xffffff) CGColor];
+    nothankBtn.layer.borderWidth = 1.0;
+    [btnsView addSubview:nothankBtn];
+    
+    UIButton *cmtBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    cmtBtn.frame = CGRectMake(CGRectGetMaxX(nothankBtn.frame)+12, 0, 150, 25);
+    [cmtBtn setBackgroundColor:UIColorFromRGB(0xC2FEF9)];
+    [cmtBtn addTarget:self action:@selector(leaveCommentBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    [cmtBtn setTitle:@"Leave a comment" forState:UIControlStateNormal];
+    cmtBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+    [cmtBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+    [btnsView addSubview:cmtBtn];
+    
     merchantsArray = [[NSMutableArray alloc] init];
     searchArray = [[NSMutableArray alloc] init];
     categoryArray = [[NSMutableArray alloc] init];
@@ -224,6 +274,7 @@
 -(void) callCategoryWebservice {
     
     NETWORK_TEST_PROCEDURE
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     
     TLCategoryListingManager *categoryListingManager = [[TLCategoryListingManager alloc] init];
     categoryListingManager.delegate = self;
@@ -378,21 +429,20 @@
 }
 
 -(void) addMapAnnotations {
-    
+    PinAnnotation *pinAnnotation;
     for(MerchantModel *merchantModel in merchantsArray)
     {
         if (merchantModel.Latitude.doubleValue == 0.0 || merchantModel.Longitude.doubleValue == 0.0) {
             continue;
         }
-        
-        MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
         CLLocationCoordinate2D location;
         location.latitude = merchantModel.Latitude.doubleValue;
         location.longitude = merchantModel.Longitude.doubleValue;
-        [point setCoordinate:location];
-        [point setTitle:merchantModel.MerchantID];
-        [point setSubtitle:merchantModel.IsSpecial];
-        [mapView addAnnotation:point];
+        pinAnnotation = [[PinAnnotation alloc] init];
+        pinAnnotation.coordinate = location;
+        pinAnnotation.titlestr = merchantModel.MerchantID;
+        pinAnnotation.subtitle = merchantModel.IsSpecial;
+        [mapView addAnnotation:pinAnnotation];
     }
 }
 
@@ -414,8 +464,8 @@
         menuSelected = 1;
         [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
         
-        [buttonnearby setUserInteractionEnabled:NO];
-        [buttonPopular setUserInteractionEnabled:YES];
+        //[buttonnearby setUserInteractionEnabled:NO];
+        //[buttonPopular setUserInteractionEnabled:YES];
     }
     else
     {
@@ -430,8 +480,8 @@
         menuSelected = 2;
         [self callMerchantWebserviceWithActionType:MCPopular startCount:0 showProgressIndicator:YES];
         
-        [buttonnearby setUserInteractionEnabled:YES];
-        [buttonPopular setUserInteractionEnabled:NO];
+        //[buttonnearby setUserInteractionEnabled:YES];
+        //[buttonPopular setUserInteractionEnabled:NO];
     }
 }
 
@@ -455,6 +505,17 @@
     }
 }
 
+-(void)nothankBtnAction
+{
+    cmtPromptView.hidden = YES;
+}
+
+-(void)leaveCommentBtnAction
+{
+    TLAddCommentViewController *addcommentVC = [[TLAddCommentViewController alloc]init];
+    [self.navigationController pushViewController:addcommentVC animated:YES];
+}
+
 # pragma mark - MKMapView Delegate Methods
 
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id <MKAnnotation>)annotation
@@ -462,43 +523,85 @@
     if([annotation isKindOfClass:[MKUserLocation class]])
         return nil;
     
-    static NSString  *identifier = @"myAnnotation";
-    
-    MKAnnotationView * annotationView = (MKAnnotationView *)[map dequeueReusableAnnotationViewWithIdentifier:identifier];
-    if (annotationView == nil) {
-        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+    MKAnnotationView *annotationView;
+    NSString *identifier;
+//  Pin annotation.
+    if ([annotation isKindOfClass:[PinAnnotation class]]) {
+        
+        identifier = @"Pin";
+        annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        
+        if (annotationView == nil)
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+        
+        annotationView.canShowCallout = NO;
+        
+        if([annotation subtitle].intValue == 0)
+            annotationView.image = getImage(@"MapPinBlack", NO);
+        else
+            annotationView.image = getImage(@"MapPinBlackWithStar", NO);
+    }
+//   Callout annotation.    
+    else if ([annotation isKindOfClass:[CalloutAnnotation class]])
+    {
+        identifier = @"Callout";
+        annotationView = (CustomCallOutView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        
+        if (annotationView == nil) {
+            annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+            [((CustomCallOutView *)annotationView) loadView];
+            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0, 0.0,250,55);
+            annotationView.centerOffset      = CGPointMake(6,-58);
+            annotationView.canShowCallout    = NO;
+            ((CustomCallOutView *)annotationView).delegate = self;
+        }
+       
+        CalloutAnnotation *calloutAnnotation = (CalloutAnnotation *)annotation;
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",[calloutAnnotation titlestr]];
+        NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
+        if(result.count > 0){
+            MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
+            ((CustomCallOutView *)annotationView).merchant = merchant;
+        }
+        // Move the display position of MapView.
+        [UIView animateWithDuration:0.5f
+                         animations:^(void) {
+                             mapView.centerCoordinate = calloutAnnotation.coordinate;
+                         }];
     }
     
-    annotationView.canShowCallout = NO;
-    
-    if([annotation subtitle].intValue == 0)
-        annotationView.image = getImage(@"MapPinBlack", NO);
-    else
-        annotationView.image = getImage(@"MapPinBlackWithStar", NO);
-    
-    
+    annotationView.annotation = annotation;
     return annotationView;
 }
 
-- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+- (void)mapView:(MKMapView *)_mapView didSelectAnnotationView:(MKAnnotationView *)view {
     
     if([view.annotation isKindOfClass:[MKUserLocation class]])
         return;
+    
+    if ([view.annotation isKindOfClass:[PinAnnotation class]]) {
+//       Selected the pin annotation.
+        CalloutAnnotation *calloutAnnotation = [[CalloutAnnotation alloc] init];
         
-    CustomCallOutView *calloutView = [[CustomCallOutView alloc] initWithFrame:CGRectMake(-115, -53, 250, 55)];
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",[view.annotation title]];
-    NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
-    if(result.count > 0){
-        MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
-        calloutView.merchant = merchant;
-        NSLog(@"[annotation title] : %@ - %@",[view.annotation title],merchant.MerchantID);
+        PinAnnotation *pinAnnotation = ((PinAnnotation *)view.annotation);
+        calloutAnnotation.titlestr      = pinAnnotation.titlestr;
+        calloutAnnotation.coordinate    = pinAnnotation.coordinate;
+        pinAnnotation.calloutAnnotation = calloutAnnotation;
+        [_mapView addAnnotation:calloutAnnotation];
     }
-    [view addSubview:calloutView];
 }
 
--(void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+-(void)mapView:(MKMapView *)_mapView didDeselectAnnotationView:(MKAnnotationView *)view {
     for (UIView *subview in view.subviews ){
         [subview removeFromSuperview];
+    }
+    if ([view.annotation isKindOfClass:[PinAnnotation class]]) {
+//         Deselected the pin annotation.
+        PinAnnotation *pinAnnotation = ((PinAnnotation *)view.annotation);
+        
+        [_mapView removeAnnotation:pinAnnotation.calloutAnnotation];
+        
+        pinAnnotation.calloutAnnotation = nil;
     }
 }
 
@@ -614,8 +717,11 @@
         
         if (searchArray.count > 0) {
             
-            //TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] initWithNibName:@"TLMerchantsDetailViewController" bundle:nil];
-            //[self.navigationController pushViewController:detailsVC animated:YES];
+            MerchantModel *merchantModel = [searchArray objectAtIndex:indexPath.row];
+            
+            TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+            detailsVC.merchantModel = merchantModel;
+            [self.navigationController pushViewController:detailsVC animated:YES];
         }
         else
         {
@@ -627,11 +733,13 @@
     }
     else if (tableView.tag == 1004) {
         
-        //TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] initWithNibName:@"TLMerchantsDetailViewController" bundle:nil];
-        //[self.navigationController pushViewController:detailsVC animated:YES];
+        MerchantModel *merchantModel = [merchantsArray objectAtIndex:indexPath.row];
+        
+        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+        detailsVC.merchantModel = merchantModel;
+        [self.navigationController pushViewController:detailsVC animated:YES];
+        
     }
-    
-    
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -646,7 +754,7 @@
     }
 }
 
-#pragma mark - ChoiceButtonDelegate
+#pragma mark - TextFieldButtonDelegate
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     
@@ -664,11 +772,11 @@
     
     CGRect searchTableFrame = searchTable.frame;
     if(isDiscountShown) {
-      searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - choiceButton.frame.size.height - 64 - 216;
+        searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - choiceButton.frame.size.height - 64 - 216;
     }
     else
     {
-      searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - 64 - 216;
+        searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - 64 - 216;
     }
     [searchTable setFrame:searchTableFrame];
     
@@ -796,7 +904,6 @@
             
             [self addMapAnnotations];
             
-            
             if ([_merchantListingManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
                 [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
             }
@@ -882,8 +989,7 @@
     
     categoryArray = [NSMutableArray arrayWithArray:_categoryArray];
     [searchTable reloadData];
-    
-    [[ProgressHud shared] hide];
+    [self buttonNearbyPopularAction:buttonNearby];
 }
 
 - (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -894,6 +1000,24 @@
 - (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager {
     
     [[ProgressHud shared] hide];
+}
+
+#pragma mark - CalloutAnnotationViewDelegate
+
+- (void)calloutButtonClicked:(NSString *)title
+{
+    NSLog(@"%@", title);
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",title];
+    NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
+    if(result.count > 0){
+        MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
+        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+        detailsVC.merchantModel = merchant;
+        [self.navigationController pushViewController:detailsVC animated:YES];
+        
+    }
+    
+    
 }
 
 @end

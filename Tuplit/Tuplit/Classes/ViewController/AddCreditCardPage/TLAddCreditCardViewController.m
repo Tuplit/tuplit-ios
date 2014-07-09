@@ -10,7 +10,7 @@
 
 #define ACCEPTABLE_CHARECTERS @"0123456789"
 
-@interface TLAddCreditCardViewController ()<UITextFieldDelegate>
+@interface TLAddCreditCardViewController ()<UITextFieldDelegate,CardIOPaymentViewControllerDelegate>
 {
     UIScrollView *scrollView;
     CGFloat baseViewWidth;
@@ -51,15 +51,15 @@
 -(void)loadView
 {
     [super loadView];
-   [self.navigationItem setTitle:LString(@"ADD_CREDIT_CARD")];
+    [self.navigationItem setTitle:LString(@"ADD_CREDIT_CARD")];
     self.view.backgroundColor = [UIColor whiteColor];
-   
+    
     if([self.viewController isKindOfClass:[TLSettingsViewController class]])
     {
         UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
         [back backButtonWithTarget:self action:@selector(backButtonAction)];
         [self.navigationItem setLeftBarButtonItem:back];
-
+        
     }
     else
     {
@@ -129,7 +129,7 @@
     cardNumberTextField.tag=1000;
     [cardNumberTextField setupForTuplitStyle];
     [scrollView addSubview:cardNumberTextField];
-
+    
     
     dateTextField=[[UITextField alloc]initWithFrame:CGRectMake(cardNumberTextField.frame.origin.x, CGRectGetMaxY(cardNumberTextField.frame)+5, 143, 45)];
     dateTextField.placeholder=LString(@"EXPIRATION");
@@ -187,7 +187,7 @@
     [saveBtn setUpButtonForTuplit];
     [scrollView addSubview:saveBtn];
     
-   
+    
     if([self.viewController isKindOfClass:[TLSettingsViewController class]])
     {
         accountTopUpLbl.frame=CGRectMake(dateTextField.origin.x, CGRectGetMaxY(dateTextField.frame)+10, 350, 35);
@@ -208,7 +208,7 @@
     }
     
     scrollView.contentSize=CGSizeMake(baseView.frame.size.width,CGRectGetMaxY(baseView.frame)+47);
-
+    
 }
 
 #pragma mark - User Defined Methods
@@ -221,6 +221,11 @@
 -(void)scanButtonClicked
 {
     NSLog(@"Scan Button Clicked");
+    CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
+    scanViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+    scanViewController.appToken = CardIOAppToken; // see Constants.h
+//    [self presentViewController:scanViewController animated:YES completion:nil];
+    [self.navigationController presentViewController:scanViewController animated:YES completion:nil];
 }
 
 -(void)saveButtonClicked
@@ -242,7 +247,6 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    
     //Acceptable Characters-Numbers
     if (textField.tag==1000 || textField.tag==1001 || textField.tag==1002)
     {
@@ -254,7 +258,7 @@
     
     //Dollar Amount Conversion
     if (textField.tag==1003) {
-       
+        
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
         NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
@@ -362,7 +366,7 @@
 -(void)dismissButtonClicked:(id)sender
 {
     DISMISS_KEYBOARD;
-   [scrollView setContentSize:CGSizeMake(320, scrollContentHeight)];
+    [scrollView setContentSize:CGSizeMake(320, scrollContentHeight)];
     [scrollView setContentOffset:CGPointZero animated:YES];
 }
 
@@ -370,6 +374,22 @@
 {
     [self nextButtonClicked:nil];
     return YES;
+}
+
+#pragma mark - CardIOPaymentViewControllerDelegate
+
+- (void)userDidProvideCreditCardInfo:(CardIOCreditCardInfo *)info inPaymentViewController :(CardIOPaymentViewController *)paymentViewController {
+    NSLog(@"Scan succeeded with info: %@", info);
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    cardNumberTextField.text=[NSString stringWithFormat:@"%@",info.redactedCardNumber];
+    cvvTextField.text=[NSString stringWithFormat:@"%@",info.cvv];
+    dateTextField.text=[NSString stringWithFormat:@"%02lu/%lu",(unsigned long)info.expiryMonth,(unsigned long)info.expiryYear];
+}
+
+- (void)userDidCancelPaymentViewController:(CardIOPaymentViewController *)paymentViewController {
+    NSLog(@"User cancelled scan");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

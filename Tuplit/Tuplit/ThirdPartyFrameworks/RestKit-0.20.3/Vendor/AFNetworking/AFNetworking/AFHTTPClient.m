@@ -462,7 +462,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [request setHTTPMethod:method];
     [request setAllHTTPHeaderFields:self.defaultHeaders];
     
-    NSLog(@"Request URL : %@",[url absoluteString]);
+    NSLog(@"Request URL : %@",[request.URL absoluteString]);
     NSLog(@"Request Method : %@",[request HTTPMethod]);
     NSLog(@"Parameters : %@",parameters);
 
@@ -511,6 +511,10 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
 
+    NSLog(@"Request URL : %@",[request.URL absoluteString]);
+    NSLog(@"Request Method : %@",[request HTTPMethod]);
+    NSLog(@"Parameters : %@",parameters);
+    
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:request stringEncoding:self.stringEncoding];
 
     if (parameters) {

@@ -15,27 +15,10 @@
 	_delegate = nil;
 }
 
-- (void)registerUser {
+- (void)registerUser:(NSString*)methodType {
 	
-    NSString *strServerURL = REGISTER_URL;
-    strServerURL = [strServerURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-	NSURL *URL = [NSURL URLWithString:strServerURL];
-	AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
-    
-    
-    NSData *profilePicture;
-    
-//    if(self.user.userImageData != NULL)
-//        profilePicture = self.user.userImageData;
-//    else
-    
-    if (self.user.userImage != nil) {
-        
-        self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(120, 120)];
-        profilePicture=UIImageJPEGRepresentation(self.user.userImage, 0.65);
-    }
-    
+	AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:REGISTER_URL]];
+
     NSDictionary *queryParams = @{
                                   @"UserName"       : NSNonNilString(self.user.UserName),
                                   @"FirstName"      : NSNonNilString(self.user.FirstName),
@@ -48,28 +31,29 @@
                                   @"FBId"           : NSNonNilString(self.user.FBId),
                                   @"GooglePlusId"   : NSNonNilString(self.user.GooglePlusId),
                                   @"Platform"       : @"ios",
-//                                  @"CellNumber"     : NSNonNilString(self.user.CellNumber),
                                   @"Location"       : NSNonNilString(self.user.Location)
                                   };
     
-    NSLog(@"Input = %@", queryParams);
     NSMutableURLRequest *request;
     
-    if(profilePicture.length > 0) {
+    if(self.user.userImage != nil) {
         
-        request = [client multipartFormRequestWithMethod:@"POST" path:@"" parameters:queryParams constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(120, 120)];
+        NSData *profilePicture = UIImageJPEGRepresentation(self.user.userImage, 0.80);
+        
+        request = [client multipartFormRequestWithMethod:methodType path:@"" parameters:queryParams constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
             
             [formData appendPartWithFileData:profilePicture name:@"Photo" fileName:@"image.jpg" mimeType:@"image/jpeg"];
         }];
         
     } else {
         
-        request = [client requestWithMethod:@"POST" path:@"" parameters:queryParams];
+        request = [client requestWithMethod:methodType path:@"" parameters:queryParams];
     }
     
-	[request setURL:URL];
-	[request setTimeoutInterval:60.0];
-	[request setHTTPMethod:@"POST"];
+    if([methodType isEqualToString:@"PUT"])
+        [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
+    
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
@@ -106,7 +90,7 @@
                                                                   @"SendCredit":@"SendCredit",
                                                                   @"RecieveCredit":@"RecieveCredit",
                                                                   @"BuySomething":@"BuySomething",
-                                                                  @"Photo":@"userImageUrl",
+                                                                  @"Photo":@"Photo",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };
@@ -115,9 +99,7 @@
             BOOL isMapped = [mapper execute:&mappingError];
             if (isMapped && !mappingError) {
                 self.user = mapper.mappingResult.firstObject;
-                [Global instance].user = self.user;
-                
-                NSLog(@"Register Success: %@", self.user);
+        
                 if([_delegate respondsToSelector:@selector(signUpManager:registerSuccessfullWithUser:isAlreadyRegistered:)])
                     [_delegate signUpManager:self registerSuccessfullWithUser:self.user isAlreadyRegistered:NO];
             }

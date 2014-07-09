@@ -7,17 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UserModel.h"
+#import "UserDetailModel.h"
 
 @class TLUserDetailsManager;
 @protocol TLUserDetailsManagerDelegate <NSObject>
-@optional
-- (void)userDetailsManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_;
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_;
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg;
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager;
 @end
 
 
-@interface TLUserDetailsManager : NSObject
-- (void)getUserDetails;
+@interface TLUserDetailsManager : NSObject {
+    
+    UserModel *userModel;
+    UserDetailModel *userdetailModel;
+}
+
 @property(nonatomic, unsafe_unretained) id <TLUserDetailsManagerDelegate> delegate;
+
+- (void)getUserDetailsWithUserID:(NSString*) userID;
+
 @end

@@ -12,13 +12,14 @@
 #define kGuestUser @"GuestUser"
 #define kIsSkipped @"IsSkipped"
 #define kIsTutoriakSkipped @"IsTutoriakSkipped"
+#define kCart @"kCart"
+#define kAccessToken @"kAccessToken"
+#define kDeviceToken @"kDeviceToken"
 
 @implementation TLUserDefaults
 
 + (void)setCurrentUser:(UserModel*)user_ {
-    
-    [TLUserDefaults setIsGuestUser:NO];
-    
+
     NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:user_];
     [UserDefaults setObject:encodedObject forKey:kUser];
     [UserDefaults synchronize];
@@ -26,18 +27,6 @@
 
 + (UserModel*)getCurrentUser {
     NSData *objectToDecode = [UserDefaults valueForKey:kUser];
-    UserModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
-    return decodedObject;
-}
-
-+ (void)setGuestUser:(UserModel*)user_ {
-    NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:user_];
-    [UserDefaults setObject:encodedObject forKey:kGuestUser];
-    [UserDefaults synchronize];
-}
-
-+ (UserModel*)getGuestUser {
-    NSData *objectToDecode = [UserDefaults valueForKey:kGuestUser];
     UserModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
     return decodedObject;
 }
@@ -63,6 +52,42 @@
     
     return [UserDefaults boolForKey:kIsTutoriakSkipped];
 }
+
++ (void)setCart:(CartModel*) cartModel {
+    
+    NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:cartModel];
+    [UserDefaults setObject:encodedObject forKey:kCart];
+    [UserDefaults synchronize];
+}
+
++ (CartModel*) getCart {
+    
+    NSData *objectToDecode = [UserDefaults valueForKey:kCart];
+    CartModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
+    return decodedObject;
+}
+
++ (void)setAccessToken:(NSString*) accessToken {
+    
+    [UserDefaults setObject:accessToken forKey:kAccessToken];
+    [UserDefaults synchronize];
+}
+
++ (NSString*)getAccessToken {
+    
+    return [UserDefaults objectForKey:kAccessToken];
+}
++ (void)setDeviceToken:(NSString *)deviceToken {
+	
+    [UserDefaults setValue:deviceToken forKey:kDeviceToken];
+    [UserDefaults synchronize];
+}
+
++ (NSString *)getDeviceToken {
+	
+	return [UserDefaults valueForKey:kDeviceToken];
+}
+
 
 @end
 

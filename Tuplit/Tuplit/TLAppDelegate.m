@@ -8,13 +8,16 @@
 
 #import "TLAppDelegate.h"
 #import "TLWelcomeViewController.h"
+#import "TLOrderDetailViewController.h"
+
 #import <GooglePlus/GooglePlus.h>
 
 #define kAlertQuit      100
 #define kAlertDontQuit  101
 
 @implementation TLAppDelegate
-@synthesize slideMenuController;
+
+@synthesize slideMenuController,cartModel,isUserProfileEdited;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -34,7 +37,16 @@
     [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
+    self.cartModel = [[CartModel alloc] init];
+    
     [self.window makeKeyAndVisible];
+    
+    //Register Push Notification
+     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
+    if(launchOptions!=nil){
+        NSLog(@"Push notification on Launch : %@",[NSString stringWithFormat:@"%@", launchOptions]);
+    }
     return YES;
 }
 
@@ -50,6 +62,37 @@
     return [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
+//pusnotification handle
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
+    
+	NSLog(@"deviceToken: %@", deviceToken);
+    [TLUserDefaults setDeviceToken:[NSString stringWithFormat:@"%@",deviceToken]];
+    
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    NSLog(@"push notificatio  = %@",userInfo);
+    NSDictionary *dict = [userInfo objectForKey:@"aps"];
+    
+    if ([[dict objectForKey:@"type"] intValue] == 2) {
+        
+        NSString *processId = [dict objectForKey:@"processId"];
+        
+        TLOrderDetailViewController *orderDetailVC = [[TLOrderDetailViewController alloc] init];
+        orderDetailVC.orderID = processId;
+        
+        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:orderDetailVC];
+        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        
+    }
+}
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -70,6 +113,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

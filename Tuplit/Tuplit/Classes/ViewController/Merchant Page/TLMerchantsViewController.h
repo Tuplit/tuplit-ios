@@ -15,7 +15,7 @@
 #import "TLMerchantListingManager.h"
 #import "TLCategoryListingManager.h"
 #import "ChoiceButton.h"
-
+#import "TLAddCommentViewController.h"
 #define MERCHANT_CELL_HEIGHT 130
 #define SEARCH_CELL_HEIGHT    50
 
@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     MCPopular = 3,
 };
 
-@interface TLMerchantsViewController : UIViewController <UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,TLMerchantListingManagerDelegate,ChoiceButtonDelegate,TLCategoryListingManagerDelegate>
+@interface TLMerchantsViewController : UIViewController <UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,TLMerchantListingManagerDelegate,ChoiceButtonDelegate,TLCategoryListingManagerDelegate,CustomCallOutViewDelegate>
 {
     UIBarButtonItem *rightExpandButton;
     UIView *contentView,*menuView,*searchbarView;
@@ -40,6 +40,8 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     UIRefreshControl *refreshControl;
     UIButton *buttonNearby;
     UIView *cellContainer;
+    UIView *cmtPromptView;
+    UILabel *merchantNameLabel;
     ChoiceButton *choiceButton;
     UILabel *merchantErrorLabel,*searchErrorLabel;
     NSMutableArray *merchantsArray,*searchArray,*categoryArray;
@@ -57,6 +59,8 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     int adjustViewForIOS7;
     NSString *categoryId;
     
+    MerchantModel *callOutmerchant;
 }
+
 
 @end

@@ -196,6 +196,20 @@ double mylat,myLon;
       return @"";
 }
 
++ (BOOL) isLocationTooFarForLatitude:(double) latitude longitude:(double) longitude {
+    
+    CLLocation *locationFrom = [[CLLocation alloc] initWithLatitude:[self latitude] longitude:[self longitude]];
+    CLLocation *locationTo = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+    CLLocationDistance locationDistance = [locationFrom distanceFromLocation:locationTo];
+    if (locationDistance > 5000) {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
+}
+
 + (BOOL) isGPSEnabled
 {
     if (! ([CLLocationManager locationServicesEnabled]) || ( [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied))

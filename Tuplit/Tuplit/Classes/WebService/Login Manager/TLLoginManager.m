@@ -7,6 +7,9 @@
 //
 
 #import "TLLoginManager.h"
+#define PARAM_DEVICE_TOKEN                      @"DeviceToken"
+#define PARAM_DTOKEN                            @"Token"
+#define PARAM_PLATFORM                          @"Platform"
 
 @implementation TLLoginManager
 
@@ -36,12 +39,16 @@
     }
     
     NSDictionary *queryParams = @{
-                                  @"Email"         : NSNonNilString(self.user.Email),
-                                  @"Password"      : NSNonNilString(self.user.Password),
-                                  @"ClientId"      : CLIENTID,
-                                  @"ClientSecret"  : CLIENT_SECRET_ID,
-                                  @"GooglePlusId"  : NSNonNilString(self.user.GooglePlusId),
-                                  @"FBId"          : NSNonNilString(self.user.FBId)
+                                  @"Email"            : NSNonNilString(self.user.Email),
+                                  @"Password"         : NSNonNilString(self.user.Password),
+                                  @"ClientId"         : CLIENTID,
+                                  @"ClientSecret"     : CLIENT_SECRET_ID,
+                                  @"GooglePlusId"     : NSNonNilString(self.user.GooglePlusId),
+                                  @"FBId"             : NSNonNilString(self.user.FBId),
+                                  @"DeviceToken"      : NSNonNilString([TLUserDefaults getDeviceToken]),
+                                  @"Token"            : NSNonNilString([TLUserDefaults getDeviceToken]),
+                                  @"UserData"         : [UIDevice currentDevice].systemVersion,
+                                  @"Platform"         : @"ios",
                                   };
     NSLog(@"Input ----> %@", queryParams);
     NSMutableURLRequest *request;
@@ -67,6 +74,8 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
+        NSLog(@"Success: %@", operation.responseString);
+        
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
@@ -74,20 +83,10 @@
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
             NSDictionary *responseDictionarytoMap=[responseJSON objectForKey:strPropertyName];
             
-            NSLog(@"Success: %@", responseJSON);
-            
             RKObjectMapping *responseMapping = [RKObjectMapping mappingForClass:[UserModel class]];
             [responseMapping addAttributeMappingsFromDictionary:@{
                                                                   @"UserId"     : @"UserId",
-                                                                  @"AccessToken": @"AccessToken",
-                                                                  
-                                                                  /*
-                                                                  @"TokenType"  : @"bearer",
-                                                                  @"Expires"    : @"Expires",
-                                                                  @"ExpiresIn"  : @"ExpiresIn" 
-                                                                  */
-                                                                  
-                                                                  }];
+                                                                  @"AccessToken": @"AccessToken",                                                                  }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };
             RKMapperOperation *mapper = [[RKMapperOperation alloc] initWithRepresentation:responseDictionarytoMap mappingsDictionary:mappingsDictionary];
@@ -95,11 +94,7 @@
             BOOL isMapped = [mapper execute:&mappingError];
             if (isMapped && !mappingError) {
                 self.user = mapper.mappingResult.firstObject;
-                [Global instance].user = self.user;
-                [TLUserDefaults setCurrentUser:self.user];
                 
-                NSLog(@"%@", [Global instance].user.AccessToken);
-                NSLog(@"Login Success: %@", self.user);
                 if([_delegate respondsToSelector:@selector(loginManager:loginSuccessfullWithUser:)])
                     [_delegate loginManager:self loginSuccessfullWithUser:self.user];
             }
@@ -107,7 +102,6 @@
         else if(code)
         {
             NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-            NSLog(@"error id %@" ,responseJSON);
             
             if([_delegate respondsToSelector:@selector(loginManager:returnedWithErrorCode:errorMsg:)])
                 [_delegate loginManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];

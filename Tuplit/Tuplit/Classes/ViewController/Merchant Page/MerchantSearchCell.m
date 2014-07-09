@@ -79,7 +79,7 @@
 - (void) setMerchant:(MerchantModel *) merchant
 {
     [merchantImgView setImageURL:[NSURL URLWithString:merchant.Icon]];
-    [merchantNameLbl setText:merchant.CompanyName];
+    [merchantNameLbl setText:[merchant.CompanyName stringWithTitleCase]];
     [descriptionLbl setText:merchant.ShortDescription];
     [distanceLbl setText:[TuplitConstants getDistance:[merchant.distance doubleValue]]];
     
@@ -132,7 +132,7 @@
 - (void) setCategory:(CategoryModel *) categoryModel
 {
     [merchantImgView setImageURL:[NSURL URLWithString:categoryModel.CategoryIcon]];
-    [merchantNameLbl setText:categoryModel.CategoryName];
+    [merchantNameLbl setText:[categoryModel.CategoryName stringWithTitleCase]];
     
     NSString *merchantCount;
     if ([categoryModel.MerchantCount intValue] == 1) {

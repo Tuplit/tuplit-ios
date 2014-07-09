@@ -19,4 +19,7 @@
 @property (nonatomic, copy) NSString *DiscountTier;
 @property (nonatomic, copy) NSString *Category;
 
+@property (nonatomic, copy) NSString *MerchantID;
+@property (nonatomic, copy) NSString *UserID;
+
 @end

@@ -12,6 +12,7 @@
 #import "UserModel.h"
 #import "MenuModel.h"
 #import "FriendsModel.h"
+#import "TLOrderDetailViewController.h"
 
 #define FRIENDS_CELL_HEIGHT 38
 #define MENU_CELL_HEIGHT 55
@@ -81,7 +82,9 @@
     profileImageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake((tableHeaderWidth - 65)/2, 50, 60, 60)];
     profileImageView.backgroundColor = [UIColor whiteColor];
     profileImageView.layer.cornerRadius = 60/2;
-    
+    profileImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *profileGesture =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openMyProfileVc:)];
+    [profileImageView addGestureRecognizer:profileGesture];
     profileImageView.clipsToBounds = YES;
     [tableHeader addSubview:profileImageView];
     
@@ -91,6 +94,9 @@
     userNameLbl.textColor = [UIColor whiteColor];
     userNameLbl.backgroundColor = [UIColor clearColor];
     userNameLbl.adjustsFontSizeToFitWidth = YES;
+    userNameLbl.userInteractionEnabled = YES;
+    UITapGestureRecognizer *profileGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openMyProfileVc:)];
+    [userNameLbl addGestureRecognizer:profileGesture1];
     
     [tableHeader addSubview:userNameLbl];
     
@@ -110,6 +116,9 @@
     [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     
     [self.view setBackgroundColor:[UIColor clearColor]];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserData) name:kUpdateUserData object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -121,18 +130,7 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
     
-    if ([TLUserDefaults isGuestUser]) {
-        
-        profileImageView.imageURL = [NSURL URLWithString:@""];
-        userNameLbl.text = @"Guest user";
-        creditBalanceLbl.text = @"$0.00";
-    }
-    else
-    {
-        profileImageView.imageURL = [NSURL URLWithString:[TLUserDefaults getCurrentUser].userImageUrl];
-        userNameLbl.text = [NSString stringWithFormat:@"%@ %@",[TLUserDefaults getCurrentUser].FirstName,[TLUserDefaults getCurrentUser].LastName];
-        creditBalanceLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:[[TLUserDefaults getCurrentUser].AvailableBalance doubleValue]]];
-    }
+    [self updateUserData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -150,6 +148,41 @@
 - (void)dealloc
 {
     
+}
+#pragma mark - UserDefined methods
+-(void) updateUserData {
+    
+    if ([TLUserDefaults isGuestUser]) {
+        
+        profileImageView.imageURL = [NSURL URLWithString:@""];
+        profileImageView.userInteractionEnabled = NO;
+        
+        userNameLbl.text = @"Guest User";
+        userNameLbl.userInteractionEnabled = NO;
+        
+        creditBalanceLbl.text = @"$0.00";
+    }
+    else
+    {
+        profileImageView.imageURL = [NSURL URLWithString:[TLUserDefaults getCurrentUser].Photo];
+        profileImageView.userInteractionEnabled = YES;
+        
+        userNameLbl.text = [NSString stringWithFormat:@"%@ %@",[[TLUserDefaults getCurrentUser].FirstName stringWithTitleCase],[[TLUserDefaults getCurrentUser].LastName stringWithTitleCase]];
+        userNameLbl.userInteractionEnabled = YES;
+        
+        creditBalanceLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:[[TLUserDefaults getCurrentUser].AvailableBalance doubleValue]]];
+    }
+}
+
+-(void)openMyProfileVc:(id)sender
+{
+    TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
+    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
+    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+    
+    [APP_DELEGATE.slideMenuController hideMenuViewController];
 }
 
 #pragma mark - Table view data source methods
@@ -297,24 +330,47 @@
         [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        
     }
     else if(indexPath.row == 1) {
         
-        TLCartViewController *cartVC = [[TLCartViewController alloc] initWithNibName:@"TLCartViewController" bundle:nil];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
-        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        
+        if ([TLUserDefaults getCurrentUser] == nil) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to do the purchase. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+            alertView.tag = 9000;
+            [alertView show];
+        }
+        else
+        {
+            TLCartViewController *cartVC = [[TLCartViewController alloc] init];
+            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
+            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+            [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+            
+            [APP_DELEGATE.slideMenuController hideMenuViewController];
+        }
     }
     else if(indexPath.row == 2) {
         
-        TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] initWithNibName:@"TLFriendsViewController" bundle:nil];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
-        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        
+        if ([TLUserDefaults getCurrentUser] == nil) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+            alertView.tag = 9000;
+            [alertView show];
+        }
+        else
+        {
+            TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] initWithNibName:@"TLFriendsViewController" bundle:nil];
+            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
+            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+            [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+            
+            [APP_DELEGATE.slideMenuController hideMenuViewController];
+
+        }
     }
     else if(indexPath.row == menuArray.count - 1) {
         
@@ -323,10 +379,24 @@
         [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
         [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
     }
-    
-    [APP_DELEGATE.slideMenuController hideMenuViewController];
 }
+
+#pragma mark - UIAlertViewDelegate Source Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag == 9000) {
+        
+        if (buttonIndex == 1) {
+            
+            [TuplitConstants userLogout];
+        }
+    }
+}
+
 
 @end
 

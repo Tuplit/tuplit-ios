@@ -7,37 +7,478 @@
 //
 
 #import "TLCartViewController.h"
+#import "JSON.h"
 
 @interface TLCartViewController ()
 
 @end
 
+static const int animationFramesPerSec = 8;
+
 @implementation TLCartViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+#pragma mark - View life cycle methods.
 
-- (void)viewDidLoad
+-(void) loadView
 {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    [super loadView];
     
     [self.navigationItem setTitle:LString(@"CART")];
     
     UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithImage:getImage(@"List", NO) style:UIBarButtonItemStylePlain target:self action:@selector(presentLeftMenuViewController:)];
     [self.navigationItem setLeftBarButtonItem:navleftButton];
-}
+    self.view.backgroundColor=[UIColor whiteColor];
+    
+    baseViewWidth=self.view.frame.size.width;
+    baseViewHeight=self.view.frame.size.height;
+    
+    numberOfCell=APP_DELEGATE.cartModel.products.count;
+    tableHeight=numberOfCell * CART_CELL_HEIGHT;
+    
+    UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    baseView.backgroundColor=[UIColor clearColor];
+    [self.view addSubview:baseView];
+    
+    scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    scrollView.bounces=YES;
+    scrollView.userInteractionEnabled=YES;
+    scrollView.backgroundColor=[UIColor clearColor];
+    [baseView addSubview:scrollView];
+    
+    UILabel *itemsTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth-240, 40)];
+    itemsTitleLbl.text=@"Items";
+    itemsTitleLbl.textColor=UIColorFromRGB(0x00b3a4);
+    itemsTitleLbl.textAlignment=NSTextAlignmentCenter;
+    itemsTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:20.0];
+    itemsTitleLbl.backgroundColor=[UIColor clearColor];
+    [scrollView addSubview:itemsTitleLbl];
+    
+    UILabel *swipeToEditLbl=[[UILabel alloc] initWithFrame:CGRectMake(220, 0, baseViewWidth-220, 40)];
+    swipeToEditLbl.text=@"Swipe to edit";
+    swipeToEditLbl.tag=1001;
+    swipeToEditLbl.textColor=UIColorFromRGB(0x999999);
+    swipeToEditLbl.textAlignment=NSTextAlignmentCenter;
+    swipeToEditLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    swipeToEditLbl.backgroundColor=[UIColor clearColor];
+    [swipeToEditLbl setUserInteractionEnabled:YES];
+    [scrollView addSubview:swipeToEditLbl];
+    
+    contentView=[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(itemsTitleLbl.frame), baseViewWidth,baseViewHeight + tableHeight)];
+    contentView.backgroundColor=[UIColor clearColor];
+    [scrollView addSubview:contentView];
+    
+    itemsListTable=[[UITableView alloc] initWithFrame:CGRectMake(0,0, contentView.frame.size.width, tableHeight)];
+    itemsListTable.delegate=self;
+    itemsListTable.dataSource=self;
+    itemsListTable.scrollEnabled=NO;
+    itemsListTable.separatorColor=[UIColor whiteColor];
+    itemsListTable.separatorStyle=UITableViewCellSeparatorStyleNone;
+    itemsListTable.backgroundColor=[UIColor clearColor];
+    [contentView addSubview:itemsListTable];
+    
+    debitCreditView=[[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,100)];
+    debitCreditView.backgroundColor=[UIColor clearColor];
+    debitCreditView.clipsToBounds = YES;
+    [contentView addSubview:debitCreditView];
+    
+    UILabel *totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,5, 108, 28)];
+    totalTitleLbl.text=@"Total";
+    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    totalTitleLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:totalTitleLbl];
+    
+    fixedAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(totalTitleLbl.frame) + 85,5, 25, 28)];
+    fixedAmtTotalLbl.text=@"$13";
+    fixedAmtTotalLbl.textColor=[UIColor grayColor];
+    fixedAmtTotalLbl.textAlignment=NSTextAlignmentCenter;
+    fixedAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:10.0];
+    fixedAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:fixedAmtTotalLbl];
+    
+    discountAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(fixedAmtTotalLbl.frame),5, 30, 28)];
+    discountAmtTotalLbl.text=@"$10";
+    discountAmtTotalLbl.textColor=UIColorFromRGB(0x00b3a4);
+    discountAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    discountAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    discountAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:discountAmtTotalLbl];
+    
+    UILabel *creditTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57, CGRectGetMaxY(totalTitleLbl.frame) + 2, 110, 28)];
+    creditTitleLbl.text=@"Available credit";
+    creditTitleLbl.textColor=UIColorFromRGB(0x999999);
+    creditTitleLbl.textAlignment=NSTextAlignmentLeft;
+    creditTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    creditTitleLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:creditTitleLbl];
+    
+    creditBalanceLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(creditTitleLbl.frame),CGRectGetMaxY(totalTitleLbl.frame), creditTitleLbl.frame.size.width +28 , 28)];
+    creditBalanceLbl.textColor=UIColorFromRGB(0x999999);
+    creditBalanceLbl.textAlignment=NSTextAlignmentRight;
+    creditBalanceLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    creditBalanceLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:creditBalanceLbl];
+    
+    checkoutView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(debitCreditView.frame), contentView.frame.size.width, 70)];
+    checkoutView.backgroundColor= UIColorFromRGB(0xF5F5F5);
+    [contentView addSubview:checkoutView];
+    
+    checksOutSubView = [[UIView alloc] initWithFrame:CGRectMake(50, 15, 221, 40)];
+    checksOutSubView.backgroundColor=UIColorFromRGB(0xDbDbDb);
+    [checkoutView addSubview:checksOutSubView];
+	
+    swipeSlider = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, 221, 40)];
+	CGRect sliderFrame = swipeSlider.frame;
+	swipeSlider.frame = sliderFrame;
+	swipeSlider.backgroundColor = [UIColor clearColor];
+	[swipeSlider setMinimumTrackImage:[UIImage imageNamed:@"Nothing.png"] forState:UIControlStateNormal];
+	[swipeSlider setMaximumTrackImage:[UIImage imageNamed:@"Nothing.png"] forState:UIControlStateNormal];
+    swipeSlider.minimumValue = 0.0;
+	swipeSlider.maximumValue = 1.0;
+	swipeSlider.continuous = YES;
+	swipeSlider.value = 0.0;
+	[swipeSlider addTarget:self action:@selector(sliderUp:) forControlEvents:UIControlEventTouchUpInside];
+	[swipeSlider addTarget:self action:@selector(sliderDown:) forControlEvents:UIControlEventTouchDown];
+	[swipeSlider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
+    NSString *labelText = @"     Swipe to checkout";
+    swipeLbl = [[UILabel alloc] initWithFrame:CGRectMake(0,0,200,40)];
+	swipeLbl.center = CGPointMake(110,20);
+	swipeLbl.textColor =UIColorFromRGB(0x333333);
+	swipeLbl.textAlignment = NSTextAlignmentCenter;
+	swipeLbl.backgroundColor =UIColorFromRGB(0xDbDbDb);
+	swipeLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];;
+	swipeLbl.text = labelText;
+	[checksOutSubView addSubview:swipeLbl];
+	[checksOutSubView addSubview:swipeSlider];
+    [checkoutView addSubview:checksOutSubView];
+    
+    touchIsDown=NO;
+    
+    alertView=[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(checkoutView.frame), contentView.frame.size.width, 132)];
+    alertView.backgroundColor=[UIColor clearColor];
+    [contentView addSubview:alertView];
+    
+    alertLbl=[[UILabel alloc] initWithFrame:CGRectMake(0, 0,alertView.frame.size.width,37)];
+    alertLbl.text=@"It seems like you are not in the store or you are too far.";
+    alertLbl.textColor=UIColorFromRGB(0x999999);
+    alertLbl.textAlignment=NSTextAlignmentCenter;
+    alertLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    alertLbl.backgroundColor=[UIColor clearColor];
 
+    scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(alertView.frame));
+    
+    errorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    [errorView setBackgroundColor:[UIColor whiteColor]];
+    [baseView addSubview:errorView];
+    
+    UILabel *errorLbl = [[UILabel alloc] initWithFrame:CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100)];
+    [errorLbl setTextAlignment:NSTextAlignmentCenter];
+    [errorLbl setTextColor:[UIColor lightGrayColor]];
+    [errorLbl setText:@"No items in cart."];
+    [errorView addSubview:errorLbl];
+    
+    numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    
+}
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self updateCart];
+    
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - UserDefined methods
+
+- (void) callWebserviceForCurrentBalance {
+    
+    [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
+    
+    TLCheckBalanceManager *checkBalanceManager = [[TLCheckBalanceManager alloc] init];
+    checkBalanceManager.delegate = self;
+    [checkBalanceManager getCurrentBalanceWithPaymentAmount:[NSString stringWithFormat:@"%lf",APP_DELEGATE.cartModel.discountedTotal]];
+}
+
+- (void) callWebserviceForOrderItems {
+    
+    [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
+    
+    NSMutableArray *cartArray = [[NSMutableArray alloc]init];
+    
+    for(SpecialProductsModel *specModel in APP_DELEGATE.cartModel.products)
+    {
+        NSMutableDictionary *cartDict = [[NSMutableDictionary alloc]init];
+        [cartDict setValue:specModel.ProductId forKey:@"ProductId"];
+        [cartDict setValue:specModel.quantity forKey:@"ProductsQuantity"];
+        [cartDict setValue:specModel.Price forKey:@"ProductsCost"];
+        if (specModel.DiscountPrice.doubleValue == 0.0) {
+            [cartDict setValue:specModel.Price forKey:@"DiscountPrice"];
+        }
+        else
+        {
+          [cartDict setValue:specModel.DiscountPrice forKey:@"DiscountPrice"];
+        }
+        [cartDict setValue:specModel.ItemName forKey:@"ItemName"];
+        
+        
+        [cartArray addObject:cartDict];
+    }
+
+    NSDictionary *queryParams=[NSDictionary dictionaryWithObjectsAndKeys:[TLUserDefaults getCurrentUser].UserId,@"UserId",@"1",@"OrderDoneBy",[NSNumber numberWithInteger:APP_DELEGATE.cartModel.products.count],@"TotalItems",[NSNumber numberWithDouble:APP_DELEGATE.cartModel.discountedTotal],@"TotalPrice",@"",@"TransactionId",APP_DELEGATE.cartModel.merchantID,@"MerchantId",[cartArray JSONRepresentation],@"CartDetails",nil];
+    
+    TLCreateOrdersManager *createOrdersManager = [[TLCreateOrdersManager alloc] init];
+    createOrdersManager.delegate = self;
+    [createOrdersManager addOrders:queryParams];
+}
+
+-(void) updateCart {
+    
+    if (APP_DELEGATE.cartModel.products.count == 0) {
+        errorView.hidden = NO;
+        APP_DELEGATE.cartModel = [[CartModel alloc] init];
+    }
+    else
+    {
+        errorView.hidden = YES;
+    }
+    
+    numberOfCell=APP_DELEGATE.cartModel.products.count;
+    tableHeight=numberOfCell * CART_CELL_HEIGHT;
+    
+    itemArray = APP_DELEGATE.cartModel.products;
+    
+    [itemsListTable reloadData];
+
+    [APP_DELEGATE.cartModel calculateTotalPrice];
+
+    itemsListTable.frame = CGRectMake(0,0, contentView.frame.size.width, tableHeight);
+    debitCreditView.frame = CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,100);
+    checkoutView.frame = CGRectMake(0, CGRectGetMaxY(debitCreditView.frame), contentView.frame.size.width, 70);
+    alertView.frame = CGRectMake(0, CGRectGetMaxY(checkoutView.frame), contentView.frame.size.width, 132);
+    
+    discountAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.discountedTotal]];
+    float discountWidth = [discountAmtTotalLbl.text widthWithFont:discountAmtTotalLbl.font];
+    discountAmtTotalLbl.frame = CGRectMake((baseViewWidth - discountWidth) - 5, 5, discountWidth, 28);
+    
+    fixedAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.total]];
+    float fixedAmttotalWidth = [fixedAmtTotalLbl.text widthWithFont:fixedAmtTotalLbl.font];
+    fixedAmtTotalLbl.frame = CGRectMake((discountAmtTotalLbl.frame.origin.x - fixedAmttotalWidth) - 5, 5, fixedAmttotalWidth, 28);
+    
+    creditBalanceLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:[[TLUserDefaults getCurrentUser].AvailableBalance doubleValue]]];
+    float creditBalanceWidth = [creditBalanceLbl.text widthWithFont:creditBalanceLbl.font];
+    creditBalanceLbl.frame = CGRectMake((baseViewWidth - creditBalanceWidth) - 5, CGRectGetMaxY(discountAmtTotalLbl.frame) + 2, creditBalanceWidth, 28);
+    
+    [self checkingItemAvailable];
+    
+    scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(alertView.frame));
+}
+
+-(void) checkingItemAvailable
+{
+    
+    if (itemArray.count > 0)
+    {
+        UIImage *thumbImage = [UIImage imageNamed:@"green_cart.png"];
+        [swipeSlider setThumbImage:thumbImage forState:UIControlStateNormal];
+        
+    }
+    else
+    {
+        UIImage *thumbImage = [UIImage imageNamed:@"grey_cart.png"];
+        [swipeSlider setThumbImage:thumbImage forState:UIControlStateNormal];
+        swipeSlider.userInteractionEnabled=NO;
+        [alertView addSubview:alertLbl];
+    }
+    
+}
+- (void) sliderUp: (UISlider *) sender
+{
+	if (touchIsDown)
+    {
+		touchIsDown = NO;
+		if (swipeSlider.value != 1.0)
+		{
+			[swipeSlider setValue:0 animated: YES];
+			swipeLbl.alpha = 0.80;
+			[self startTimer];
+		}
+        else if(swipeSlider.value > 0.60)
+        {
+            [swipeSlider setValue:0 animated: YES];
+			swipeLbl.alpha = 1.0;
+            
+            if ([CurrentLocation isLocationTooFarForLatitude:APP_DELEGATE.cartModel.latitude longitude:APP_DELEGATE.cartModel.longitude]) {
+                
+                [UIAlertView alertViewWithMessage:@"Your location is too far to order these items."];
+                
+                return;
+            }
+            else
+            {
+                [self callWebserviceForCurrentBalance];
+            }
+        }
+    }
+}
+- (void) sliderDown: (UISlider *) sender
+{
+	touchIsDown = YES;
+}
+
+- (void) sliderChanged: (UISlider *) sender
+{
+    swipeLbl.alpha = MAX(0.0, 1.0 - (swipeSlider.value * 3.5));
+    checksOutSubView.backgroundColor=UIColorFromRGB(0xDbDbDb);
+    if (swipeSlider.value != 0)
+    {
+		[self stopTimer];
+        //		[swipeLbl.layer setNeedsDisplay];
+	}
+    
+}
+- (void) startTimer
+{
+	if (!animationTimer)
+    {
+		animationTimerCount = 0;
+		animationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/animationFramesPerSec target:self selector:@selector(animationTimerFired:) userInfo:nil repeats:YES];
+	}
+}
+- (void)animationTimerFired:(NSTimer*)theTimer
+{
+	if (++animationTimerCount == (2 * animationFramesPerSec))
+    {
+		animationTimerCount = 0;
+	}
+}
+- (void) stopTimer
+{
+	if (animationTimer)
+    {
+		[animationTimer invalidate];
+        animationTimer = nil;
+	}
+}
+
+#pragma mark - CartSwipeCellDelegates
+
+-(void)didSwipeRightInCellWithIndexPath:(NSIndexPath *)indexPath
+{
+    if ([swipeIndexPath compare:indexPath] != NSOrderedSame)
+    {
+        CartSwipeCell *currentSwipeCell = (CartSwipeCell *)[itemsListTable cellForRowAtIndexPath:swipeIndexPath];
+        [currentSwipeCell didSwipeLeftInCell:self];
+    }
+    swipeIndexPath = indexPath;
+}
+
+- (void) didPlusOrMinusPressed {
+    
+    [self updateCart];
+}
+
+#pragma mark - TableView Delegates
+
+-(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+-(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [itemArray count];
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CART_CELL_HEIGHT;
+}
+
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *cellIdentifier = @"CellID";
+    
+    CartSwipeCell *cell = (CartSwipeCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if (cell == nil)
+    {
+        cell = [[CartSwipeCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    
+    cell.indexPath = indexPath;
+    cell.delegate = self;
+    
+    SpecialProductsModel *specialProductModel = [itemArray objectAtIndex:indexPath.row];
+    [cell updateRow:specialProductModel];
+    
+    return cell;
+}
+
+#pragma mark - TLCheckBalanceManager Delegates
+
+- (void)checkBalanceManagerSuccessfull:(TLCheckBalanceManager *)checkBalanceManager paymentModel:(PaymentModel *)paymentModel {
+    
+    if ([paymentModel.AllowPayment intValue] == 0) {
+        
+        [UIAlertView alertViewWithMessage:@"You have insufficient balance to order these items. Please recharge your account."];
+    }
+    else
+    {
+        [self callWebserviceForOrderItems];
+    }
+
+    [[ProgressHud shared] hide];
+}
+
+- (void)checkBalanceManager:(TLCheckBalanceManager *)checkBalanceManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+}
+
+- (void)checkBalanceManagerFailed:(TLCheckBalanceManager *)checkBalanceManager {
+    
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [[ProgressHud shared] hide];
+}
+
+#pragma mark - TLCreateOrdersManager Delegates
+
+- (void)createOrdersManagerSuccessfull:(TLCreateOrdersManager *)createOrdersManager orderId:(NSString*)orderID transactionID:(NSString*) transID {
+    
+    UserModel *userModel = [TLUserDefaults getCurrentUser];
+    double balance = userModel.AvailableBalance.doubleValue;
+    userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance - APP_DELEGATE.cartModel.discountedTotal)];
+    [TLUserDefaults setCurrentUser:userModel];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
+    
+    CartDetailViewController *cartDetail=[[CartDetailViewController alloc]init];
+    cartDetail.TransactionId = transID;
+    [self.navigationController pushViewController:cartDetail animated:YES];
+    
+    [[ProgressHud shared] hide];
+}
+
+- (void)createOrdersManager:(TLCreateOrdersManager *)createOrdersManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+}
+
+- (void)createOrdersManagerFailed:(TLCreateOrdersManager *)createOrdersManager {
+    
+    
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [[ProgressHud shared] hide];
 }
 
 @end
+

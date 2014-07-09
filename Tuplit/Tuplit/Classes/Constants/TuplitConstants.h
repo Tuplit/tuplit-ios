@@ -34,10 +34,15 @@
 
 /******** APP Id's ********/
 static NSString * const kClientId = @"120599738577-saq9v1g8an1n67sjc534cabeeape34h1.apps.googleusercontent.com";
-#define FacebookAppID            @"282768281883911"
-#define FacebookAppSecret     @"f73a242668b00c8492b4cab52fc744f9"
+
+#define FacebookAppID            @"1443093035941769"
+
 #define CLIENTID              @"8acc207693494259fd435dd54915fe9b6465d3a7"
 #define CLIENT_SECRET_ID      @"b915d9fed580e700b8831be8c8ecd0cb205fce57"
+
+/***** CREDIT CARD NUMBER USING SCAN.IO *****/
+
+#define CardIOAppToken      @"f689bfbe34ce4f938c7a3dfbdb8b0dd0"
 
 /******** NETWORK TEST PROCEDURE ********/
 #define NETWORK_TEST_PROCEDURE          if (![NetworkConnectivity hasConnectivity]) { [APP_DELEGATE showNoConnectivityAlertAndQuit:NO]; return; }
@@ -60,15 +65,36 @@ static NSString * const kClientId = @"120599738577-saq9v1g8an1n67sjc534cabeeape3
 #define LOGIN_URL                   RESOURCE_URL @"/oauth2/password/token"
 #define FORGOT_PW_URL               RESOURCE_URL @"/v1/users/forgetPassword"
 #define STATIC_CONTENT_URL          RESOURCE_URL @"/v1/contents/"
-#define USER_DETAILS_URL            RESOURCE_URL @"/v1/users/"
+#define USER_DETAILS_URL            RESOURCE_URL @"/v1/users/%@"
 #define MERCHANT_LISTING_URL        RESOURCE_URL @"/v1/merchants/"
 #define CATEGORY_LISTING_URL        RESOURCE_URL @"/v1/categories/"
+#define MERCHANT_DETAILS_URL        RESOURCE_URL @"/v1/merchants/%@"
+#define CHECK_LOCATION_URL          RESOURCE_URL @"/v1/users/checklocation"
+#define CHECK_BALANCE_URL           RESOURCE_URL @"/v1/users/checkbalance"
+#define ORDERS_URL                  RESOURCE_URL @"/v1/orders/"
+#define TRANSACTION_LISTING_URL     RESOURCE_URL @"/v1/users/transactions"
+#define TRANSACTION_DETAIL_URL      RESOURCE_URL @"/v1/orders/%@"
+#define COMMENT_DELETE_URL          RESOURCE_URL @"/v1/comments/%@"
+#define COMMENT_LISTING_URL         RESOURCE_URL @"/v1/comments/"
+#define SET_PIN_URL                 RESOURCE_URL @"/v1/users/setPIN"
 
-/*_________________________________________________________________________________________________________________*/
+/****** Notifications **************/
 
+#define kUpdateUserData         @"kUpdateUserData"
+#define kReloadUserProfile      @"kReloadUserProfile"    
 
 @interface TuplitConstants : NSObject
 NSString *LString(NSString* key);
-+(void)loadSliderHomePageWithAnimation:(BOOL)animated;
-+(NSString*) getDistance:(double) locationDistance;
++ (void)loadSliderHomePageWithAnimation:(BOOL)animated;
++ (NSString*) getDistance:(double) locationDistance;
++ (NSString*)calculateTimeDifference:(NSString *)timeStamp;
++ (NSMutableAttributedString*)getOpeningHrs:(NSString*)datestring isTimeFormat:(BOOL)isTime;
++ (NSMutableAttributedString*)getPriceRange:(NSString *)_priceString;
++ (NSString*)formatPhoneNumber:(NSString*)mobileNumber;
++ (NSNumberFormatter*) getCurrencyFormat;
++ (NSString*)getOrderDate:(NSString*)date;
++ (NSString*)getOrderDateTime:(NSString*)date;
+
++ (void) userLogout;
+
 @end

@@ -18,7 +18,7 @@
 @end
 
 @interface TLSignUpManager : NSObject
-- (void)registerUser;
+- (void)registerUser:(NSString*)methodType;
 @property(nonatomic, unsafe_unretained) id <TLSignUpManagerDelegate> delegate;
 @property(nonatomic, unsafe_unretained) UserModel *user;
 @end

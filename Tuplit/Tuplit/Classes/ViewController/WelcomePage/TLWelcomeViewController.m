@@ -148,7 +148,7 @@
     userDetailsManager.delegate = self;
     
     if ([TLUserDefaults getCurrentUser]) {
-        [self presentAMSlider];
+        [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
     }
 }
 
@@ -326,16 +326,16 @@
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
                     urlString = [urlString stringByAppendingString:@"120"];
                     
-                    user.userImageUrl = urlString;
+                    user.Photo = urlString;
                     
                 }
                 @catch (NSException *exception) {
-                    user.userImageUrl = person.image.url;
+                    user.Photo = person.image.url;
                 }
                 
                 if(person.image.url){
                     
-                    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:user.userImageUrl]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:user.Photo]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                         user.userImage = [UIImage imageWithData:data];
                         [self callLoginWebService];
                     }];
@@ -476,10 +476,11 @@
 
 #pragma mark - TLLoginManager delegate method
 
-- (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user_ {
+- (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)userModel {
     
-    [Global instance].user = user_;
-    [userDetailsManager getUserDetails];
+    [Global instance].user = userModel;
+    [TLUserDefaults setAccessToken:userModel.AccessToken];
+    [userDetailsManager getUserDetailsWithUserID:userModel.UserId];
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -493,6 +494,24 @@
     [[ProgressHud shared] hide];
 }
 
+#pragma mark - TLUserDetailsManagerDelegate methods
+
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
+    
+    [TLUserDefaults setCurrentUser:user_];
+    [[ProgressHud shared] hide];
+    [self presentAMSlider];
+}
+
+- (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+    [[ProgressHud shared] hide];
+}
+
+- (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {
+    
+    [[ProgressHud shared] hide];
+}
 
 #pragma mark - TLStaticContentManager delegate methods
 
@@ -536,26 +555,6 @@
 - (void)staticContentManagerFailed:(TLStaticContentManager *)staticContentManager {
     
     [spinner stopAnimating];
-}
-
-
-#pragma mark - TLUserDetailsManagerDelegate methods
-
-- (void)userDetailsManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel *)user_ {
-    
-    [TLUserDefaults setCurrentUser:user_];
-    [[ProgressHud shared] hide];
-    [self presentAMSlider];
-}
-
-- (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
-    
-    [[ProgressHud shared] hide];
-}
-
-- (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {
-    
-    [[ProgressHud shared] hide];
 }
 
 @end

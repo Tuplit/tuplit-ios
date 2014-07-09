@@ -12,6 +12,8 @@
 - (NSString *)stringByRemovingExtraSpaces;
 - (NSString*)stringByTrimmingLeadingWhitespace;
 - (NSString*)capitaliseFirstLetter;
+- (NSString *)stringWithTitleCase;
+
 NSString *NSNonNilString(NSString *str);
 
 NS_INLINE BOOL BoolFromString(NSString *str) {
@@ -25,5 +27,6 @@ NS_INLINE NSString* StringFromBool(BOOL value) {
 NS_INLINE NSString* StringFromInt(int value) {
 	return [NSString stringWithFormat:@"%d", value];
 }
+
 
 @end

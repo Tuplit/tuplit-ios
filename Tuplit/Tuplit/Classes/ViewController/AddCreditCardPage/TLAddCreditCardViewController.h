@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "TLSettingsViewController.h"
 #import "CustomSwitch.h"
+#import "CardIOPaymentViewControllerDelegate.h"
+#import "CardIO.h"
+#import "TuplitConstants.h"
 
 @interface TLAddCreditCardViewController : UIViewController
 
