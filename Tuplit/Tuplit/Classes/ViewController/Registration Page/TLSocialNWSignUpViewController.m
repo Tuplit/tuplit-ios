@@ -128,6 +128,9 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = YES;
     }
+    
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(signUpsuccessAction) name:kCreditCardAdded object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -178,6 +181,17 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    //    Allow only 4 char for PIN code
+    if(textField==textPinCode)
+    {
+        NSString* searchString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        if(searchString.length<5)
+            return YES;
+        else
+            return NO;
+    }
+
     NSUInteger newLength = [textField.text length] + [string length] - range.length;
     return (newLength > 40) ? NO : YES;
 }
@@ -349,6 +363,12 @@
    [TuplitConstants loadSliderHomePageWithAnimation:YES];
 }
 
+-(void)signUpsuccessAction
+{
+    [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
+    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+    
+}
 
 # pragma mark - UIImagePickerViewController Delegate
 
@@ -384,7 +404,9 @@
 
 - (void)signUpManager:(TLSignUpManager *)signUpManager registerSuccessfullWithUser:(UserModel *)user isAlreadyRegistered:(BOOL)isAlreadyRegistered {
     
+    [[ProgressHud shared] hide];
     [self callLoginWebService];
+    
 }
 
 - (void)signUpManager:(TLSignUpManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg {
@@ -405,8 +427,13 @@
     [TLUserDefaults setIsTutorialSkipped:NO];
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
-    [userDetailsManager getUserDetailsWithUserID:user.UserId];
     [[ProgressHud shared] hide];
+    
+    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+    addCrCardViewController.viewController = self;
+    addCrCardViewController.isSignUp = YES;
+    [self.navigationController pushViewController:addCrCardViewController animated:YES];
+   
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -425,6 +452,7 @@
         
     [TLUserDefaults setCurrentUser:user_];
     [[ProgressHud shared] hide];
+    
     [self presentAMSlider];
 }
 

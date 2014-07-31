@@ -105,51 +105,102 @@
             [menuView addSubview:transferButton];
             
         }
-        else if ([reuseIdentifier isEqualToString:@"CreditCards"])
+        else if ([reuseIdentifier isEqualToString:@"OtherUserDetails"])
         {
-            self.backgroundColor = [UIColor clearColor];
+            self.backgroundColor=[UIColor clearColor];
             
-            swipeView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,self.contentView.frame.size.width,PROFILE_CELL_HEIGHT)];
-            swipeView.backgroundColor=UIColorFromRGB(0xF5F5F5);
+            UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0,0, self.frame.size.width,173)];
+            baseView.backgroundColor=UIColorFromRGB(0xEBEBEB);
+            [self.contentView addSubview:baseView];
             
-            UIImage *cardImage = getImage(@"visa", NO);
-            EGOImageView *cardImgView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(10, (swipeView.frame.size.height-cardImage.size.height)/2, cardImage.size.width, cardImage.size.height)];
+            CGFloat baseViewWidth = 320;
+            //  Content part
+            UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0,0,baseViewWidth,173)];
+            topView.backgroundColor = [UIColor whiteColor];
+            [baseView addSubview:topView];
+            
+            UIView *topColoredView = [[UIView alloc] initWithFrame:CGRectMake(0,0,baseViewWidth,50)];
+            topColoredView.backgroundColor = UIColorFromRGB(0xebebeb);
+            [topView addSubview:topColoredView];
+            
+            EGOImageView * profileImageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake((baseViewWidth-100)/2, CGRectGetMinY(topColoredView.frame)+10, 100, 100)];
+            profileImageView.tag = 5000;
+            profileImageView.backgroundColor = [UIColor whiteColor];
+            profileImageView.layer.cornerRadius = 100/2;
+            profileImageView.userInteractionEnabled = YES;
+            profileImageView.clipsToBounds = YES;
+            [topView addSubview:profileImageView];
+            
+            UILabel * userIdLabel  = [[UILabel alloc ]initWithFrame:CGRectMake(baseViewWidth-63,CGRectGetMaxY(topColoredView.frame)+25,50,15)];
+            userIdLabel.text = LString(@"USER_ID");
+            userIdLabel.textColor = UIColorFromRGB(0X808080);
+            userIdLabel.backgroundColor = [UIColor clearColor];
+            userIdLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10.0];
+            userIdLabel.userInteractionEnabled = YES;
+            userIdLabel.textAlignment = NSTextAlignmentRight;
+            [topView addSubview:userIdLabel];
+            
+            UILabel * userIdNumberLabel = [[UILabel alloc ]initWithFrame:CGRectMake(baseViewWidth-113,CGRectGetMaxY(userIdLabel.frame)+7,100,16)];
+            userIdNumberLabel.tag = 5001;
+            userIdNumberLabel.textColor = UIColorFromRGB(0x00b3a4);
+            userIdNumberLabel.backgroundColor = [UIColor clearColor];
+            userIdNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+            userIdNumberLabel.userInteractionEnabled = YES;
+            userIdNumberLabel.textAlignment = NSTextAlignmentRight;
+            [topView addSubview:userIdNumberLabel];
+            
+            UIButton *sendCreditBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+            [sendCreditBtn setFrame:CGRectMake(15, CGRectGetMaxY(userIdNumberLabel.frame)+ 15, baseView.frame.size.width-30,35)];
+            sendCreditBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+            sendCreditBtn.tag=5002;
+            [sendCreditBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+            sendCreditBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+            [sendCreditBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+            [topView addSubview:sendCreditBtn];
+        }
+        else if ([reuseIdentifier isEqualToString:@"Credit Cards"])
+        {
+            self.contentView.backgroundColor=UIColorFromRGB(0xF5F5F5);
+            
+            UIView *cellBaseview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)];
+            cellBaseview.backgroundColor =  UIColorFromRGB(0xF5F5F5);
+            [self.contentView addSubview:cellBaseview];
+            
+            EGOImageView *cardImgView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(10, 0, PROFILE_CELL_HEIGHT, PROFILE_CELL_HEIGHT)];
             cardImgView.backgroundColor = [UIColor clearColor];
-//              cardImgView.image = cardImage;
+            [cardImgView setContentMode:UIViewContentModeScaleAspectFit];
             cardImgView.tag=1000;
-            [swipeView addSubview:cardImgView];
+            [cellBaseview addSubview:cardImgView];
             
-            UILabel *cardNumberLbl=[[UILabel alloc]initWithFrame:CGRectMake(50 +10 ,0, 175,   PROFILE_CELL_HEIGHT-2)];
+            UILabel *cardNumberLbl=[[UILabel alloc]initWithFrame:CGRectMake(PROFILE_CELL_HEIGHT + 10 + 5 ,0, 175,   PROFILE_CELL_HEIGHT)];
             cardNumberLbl.textColor=UIColorFromRGB(0x333333);
             cardNumberLbl.numberOfLines=0;
             cardNumberLbl.tag=1001;
             cardNumberLbl.textAlignment=NSTextAlignmentLeft;
             cardNumberLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
             cardNumberLbl.backgroundColor=[UIColor clearColor];
-            [swipeView addSubview:cardNumberLbl];
+            [cellBaseview addSubview:cardNumberLbl];
             
-            UILabel *expiryDateLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(cardNumberLbl.frame), 0, 70, PROFILE_CELL_HEIGHT-2)];
+            UILabel *expiryDateLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(cardNumberLbl.frame), 0, 70, PROFILE_CELL_HEIGHT)];
             expiryDateLbl.textColor=UIColorFromRGB(0x333333);
             expiryDateLbl.tag=1002;
             expiryDateLbl.textAlignment=NSTextAlignmentRight;
             expiryDateLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0]; 
             expiryDateLbl.backgroundColor=[UIColor clearColor];
-            [swipeView addSubview:expiryDateLbl];
+            [cellBaseview addSubview:expiryDateLbl];
             
-            UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, PROFILE_CELL_HEIGHT-2,swipeView.frame.size.width,2)];
+            UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, PROFILE_CELL_HEIGHT-2,cellBaseview.frame.size.width,2)];
             lineView.backgroundColor = [UIColor whiteColor];
-            [swipeView addSubview:lineView];
+            [cellBaseview addSubview:lineView];
             
-            UILabel *noCardLbl=[[UILabel alloc]initWithFrame:swipeView.bounds];
+            UILabel *noCardLbl=[[UILabel alloc]initWithFrame:cellBaseview.bounds];
             noCardLbl.textColor=UIColorFromRGB(0x333333);
             noCardLbl.numberOfLines=0;
             noCardLbl.tag=1003;
             noCardLbl.textAlignment=NSTextAlignmentCenter;
             noCardLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
             noCardLbl.backgroundColor=[UIColor clearColor];
-            [swipeView addSubview:noCardLbl];
-            
-            [self swipeEditViewAction];
+            [cellBaseview addSubview:noCardLbl];
         }
         else if ([reuseIdentifier isEqualToString:@"RecentActivity"])
         {               
@@ -196,6 +247,35 @@
             lineView.backgroundColor = [UIColor whiteColor];
             [self.contentView addSubview:lineView];
         }
+        else if ([reuseIdentifier isEqualToString:@"RecentShopped"])
+        {
+            self.contentView.backgroundColor=UIColorFromRGB(0xF5F5F5);
+            
+            EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
+            merchantIconImgView.tag=2000;
+            merchantIconImgView.backgroundColor = [UIColor whiteColor];
+            [self.contentView addSubview:merchantIconImgView];
+            
+            UILabel *merchantNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(50 + 10,0, 186, PROFILE_CELL_HEIGHT-2)];
+            merchantNameLbl.textColor=UIColorFromRGB(0x333333);
+            merchantNameLbl.tag=2001;
+            merchantNameLbl.textAlignment=NSTextAlignmentLeft;
+            merchantNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+            merchantNameLbl.backgroundColor=[UIColor clearColor];
+            [self.contentView addSubview:merchantNameLbl];
+            
+            UILabel *transactionDateLbl=[[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width-46, 0, 59,PROFILE_CELL_HEIGHT-2)];
+            transactionDateLbl.textColor=UIColorFromRGB(0x808080);
+            transactionDateLbl.tag=2003;
+            transactionDateLbl.textAlignment=NSTextAlignmentRight;
+            transactionDateLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:10.0];
+            transactionDateLbl.backgroundColor=[UIColor clearColor];
+            [self.contentView addSubview:transactionDateLbl];
+
+            UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, PROFILE_CELL_HEIGHT-2,self.frame.size.width,2)];
+            lineView.backgroundColor = [UIColor whiteColor];
+            [self.contentView addSubview:lineView];
+        }
         else if ([reuseIdentifier isEqualToString:@"MyComments"])
         {
             self.backgroundColor=[UIColor whiteColor];
@@ -207,6 +287,8 @@
             EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(15, 10,30,30)];
             merchantIconImgView.tag=3000;
             merchantIconImgView.layer.cornerRadius =15;
+            merchantIconImgView.userInteractionEnabled = YES;
+            merchantIconImgView.clipsToBounds = YES;
             [cellBaseview addSubview:merchantIconImgView];
             
             UILabel *merchantNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(55,4,cellBaseview.frame.size.width-120, 20)];

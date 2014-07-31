@@ -10,7 +10,7 @@
 
 @interface CommentsModel : NSObject
 
-@property (nonatomic, copy) NSString * UserId;
+@property (nonatomic, copy) NSString * UsersId;
 @property (nonatomic, copy) NSString * FirstName;
 @property (nonatomic, copy) NSString * LastName;
 @property (nonatomic, copy) NSString * Photo;

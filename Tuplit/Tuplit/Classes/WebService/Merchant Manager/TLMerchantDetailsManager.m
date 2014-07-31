@@ -46,7 +46,7 @@ AFHTTPRequestOperation *operation;
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@", responseJSON);
         
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
@@ -64,9 +64,9 @@ AFHTTPRequestOperation *operation;
                 
             }];
             
-            RKObjectMapping* orderedFriendsMapping = [RKObjectMapping mappingForClass:[OrderedFriendsListModel class]];
+            RKObjectMapping* orderedFriendsMapping = [RKObjectMapping mappingForClass:[FriendsListModel class]];
             [orderedFriendsMapping addAttributeMappingsFromDictionary:@ {
-                @"Id"               : @"id",
+                @"id"               : @"Id",
                 @"FirstName"        : @"FirstName",
                 @"LastName"         : @"LastName",
                 @"Photo"            : @"Photo",
@@ -74,7 +74,7 @@ AFHTTPRequestOperation *operation;
             
             RKObjectMapping* commentsMapping = [RKObjectMapping mappingForClass:[CommentsModel class]];
             [commentsMapping addAttributeMappingsFromDictionary:@ {
-                @"UserId"           : @"UserId",
+                @"UsersId"           : @"UsersId",
                 @"FirstName"        : @"FirstName",
                 @"LastName"         : @"LastName",
                 @"Photo"            : @"Photo",
@@ -92,6 +92,9 @@ AFHTTPRequestOperation *operation;
                 @"Price"             : @"Price",
                 @"DiscountPrice"     : @"DiscountPrice",
                 @"DiscountTier"      : @"DiscountTier",
+                @"DiscountApplied"   : @"DiscountApplied",
+                @"Ordering"          : @"Ordering",
+                @"Status"            : @"Status",
                 
             }];
             
@@ -155,6 +158,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"OrderCount" : @"OrderCount",
                                                                   @"OrderedFriendsCount" : @"OrderedFriendsCount",
                                                                   @"CustomersCount" : @"CustomersCount",
+                                                                  @"IsGoldenTag"  : @"IsGoldenTag",
                                                                   
                                                                   }];
             
@@ -166,14 +170,14 @@ AFHTTPRequestOperation *operation;
                 
                 self.merchantDetailsModel = mapper.mappingResult.firstObject;
                 
-                if(delegate)
+                if([delegate respondsToSelector:@selector(merchantDetailsManagerSuccessful:withMerchantDetails:)])
                     [delegate merchantDetailsManagerSuccessful:self withMerchantDetails:self.merchantDetailsModel];
             }
         }
         else
         {
             NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-            if(delegate)
+            if([delegate respondsToSelector:@selector(merchantDetailsManager:returnedWithErrorCode:errorMsg:)])
             {
                 [delegate merchantDetailsManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
             }
@@ -181,7 +185,7 @@ AFHTTPRequestOperation *operation;
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if(delegate)
+        if([delegate respondsToSelector:@selector(merchantDetailsManagerFailed:)])
             [delegate merchantDetailsManagerFailed:self];
         
 	}];

@@ -37,17 +37,20 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@", responseJSON);
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         if(code==200 || code==201)
         {
+            if([_delegate respondsToSelector:@selector(commentDeleteManagerSuccess:)])
             [_delegate commentDeleteManagerSuccess:self];
         }
         else
         {
+            if([_delegate respondsToSelector:@selector(commentDeleteManager:returnedWithErrorCode:errorMsg:)])
             [_delegate commentDeleteManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
     }failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if([_delegate respondsToSelector:@selector(commentDeleteManagerFailed:)])
         [_delegate commentDeleteManagerFailed:self];
         
 	}];

@@ -51,18 +51,18 @@
     
   	[operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        NSLog(@"Response : %@",operation.responseString);
-        
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        
+         NSLog(@"Response : %@",responseJSON);
 		
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
         {
-            if([_delegate respondsToSelector:@selector(editUpManager:updateSuccessfullWithUser:isAlreadyRegistered:)])
-                [_delegate editUpManager:self updateSuccessfullWithUser:self.user isAlreadyRegistered:NO];
+            if([_delegate respondsToSelector:@selector(editUpManager:updateSuccessfullWithUser:)])
+                [_delegate editUpManager:self updateSuccessfullWithUser:self.user];
         }
         else
         {

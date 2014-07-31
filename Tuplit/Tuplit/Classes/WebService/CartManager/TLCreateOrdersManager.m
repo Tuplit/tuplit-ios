@@ -42,16 +42,18 @@
         
         if(code==200 || code==201)
         {
-            [_delegate createOrdersManagerSuccessfull:self orderId:orderID transactionID:transID];
+            if([_delegate respondsToSelector:@selector(createOrdersManagerSuccessfull:orderId:transactionID:)])
+                [_delegate createOrdersManagerSuccessfull:self orderId:orderID transactionID:transID];
         }
         else
         {
-            [_delegate createOrdersManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
+            if([_delegate respondsToSelector:@selector(createOrdersManager:returnedWithErrorCode:errorMsg:)])
+                [_delegate createOrdersManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		
-		[_delegate createOrdersManagerFailed:self];
+		if([_delegate respondsToSelector:@selector(createOrdersManagerFailed:)])
+            [_delegate createOrdersManagerFailed:self];
         
 	}];
     

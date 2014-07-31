@@ -427,7 +427,7 @@
     assertThat(newObject.boolString, is(equalTo(@"11-27-1982")));
 }
 
-- (void)testShouldLogADebugMessageIfTheRelationshipMappingTargetsAnArrayOfArrays
+- (void)testShoulNSLogADebugMessageIfTheRelationshipMappingTargetsAnArrayOfArrays
 {
     // Create a dictionary with a dictionary containing an array
     // Use keyPath to traverse to the collection and target a hasMany

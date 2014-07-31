@@ -32,6 +32,8 @@
 "UNABLE_CONNECT"                = "Unable to connect.";
 "IOS"                           = "ios";
 "SEARCH"                        = "Search";
+"NO_ITEM_FOUND"                 = "No item found";
+"SEND"                          = "Send";
 
 
 
@@ -56,13 +58,14 @@
 "SIGNUP"                        = "Sign up";
 "TAKE_PHOTO"                    = "Take Photo";
 "EXISTING_PHOTO"                = "Existing Photo";
-"ENTER_VALID_EMAIL"              = "Please enter a valid email address";
+"ENTER_VALID_EMAIL"             = "Please enter a valid email address";
 "ENTER_PASSWORD"                = "Please enter a password";
 "ENTER_ATLEAST_PASSWORD"        = "Password must be atleast 6 characters";
 "ENTER_FITST_NAME"              = "Please enter your first name";
 "ENTER_LAST_NAME"               = "Please enter your last name";
 "ENTER_CELL_NUMBER"             = "Please enter your cell number";
 "ENTER_PIN"                     = "Please enter a PIN code";
+"PIN_ALERT"                     = "PIN code must be in 4 digits";
 "REGISTERING"                   = "Registering";
 "SAVE_YOUR_TIME_WITH_PIN"       = "Save your time with PIN";
 "PIN_ALLOWS"                    = "PIN code allows you to check out with no need to enter your password.";
@@ -77,11 +80,19 @@
 /* Merchants Screen */
 "MERCHANTS"                     = "Merchants";
 
+/* Favourite Screen */
+"NO_FAVORITES_FOUND"            = "No Favorites found";
+
+/* Merchant Detail Screen */
+"ADD_TO_FAVOURITE"              = "Add to Favorites";
+"REMOVE_FROM_FAVOURITE"         = "Remove from Favorites";
+"SETUP_EMAIL"                   = "Please setup an email account on this device to continue.";
 
 /* Left Menu Screen */
 "HOME"                          = "Home";
 "CART"                          = "Cart";
 "FRIENDS"                       = "Friends";
+"FAVORITES"                     = "Favorites";
 "SETTINGS"                      = "Settings";
 
 /* User Profile  */
@@ -95,6 +106,7 @@
 "MY_COMMENTS"                   = "My Comments";
 "TOP_UP"                        = "Top Up";
 "TRANSFER"                      = "Transfer";
+"PROFILE_UPDATED"               = "Profile has been updated";
 
 /* Edit User Profile */
 
@@ -103,6 +115,7 @@
 "PIN_CODE"                      = "Set New PIN Code";
 "SWIPE_TO_EDIT"                 = "Swipe To Edit";
 "CHECK_OUT_INFO"                = "Your face should be clearly visible in the photo so the staff can identify you easily";
+"PINCODE_UPDATED"               = "Your new PIN code updated successfully";
 
 /* Top Up */
 
@@ -114,6 +127,13 @@
 "VISA_TOP_UP"                   = "Top up using Visa xxxx 1234";
 "MASTER_CARD_TOP_UP"            = "Top up using MasterCard xxxx 5678";
 
+/* Transfer View */
+
+"NEVER_DEDUCT"                  = "Tuplit never deduct any kind of fee from your account nor the receiver's account.";
+"MESSAGE_PLACE_TEXT"            = "Message (optional)";
+"SELECT_USER"                   = "Select user to Transfer amount";
+"ENTER_AMOUNT"                  = "Enter Transfer amount";
+
 /* Order Detail View */
 
 "ACCEPT_ORDER"                  = "Accept Order";
@@ -124,6 +144,7 @@
 "SHOW_RECEIPT"                  = "Show the Receipt";
 "BACK_TO_MERCHANT"              = "Back to Merchant Screen";
 "ORDER_REJECTED_INFO"           = "You rejected the order. Now you can go back to Merchant or Home Screen";
+"ORDER_INFO_TXT"                = "Please accept or reject your order initiated by the merchant";
 
 /* All Transaction */
 
@@ -138,11 +159,20 @@
 /* Add Comments */
 
 "ADD_COMMENT"                   = "Add Comment";
+"PROMPT_INFO_TXT"               = "Let your friends know about your experience.";
+"MESSAGE_OPTIONAL"              = "Share your message";
+"COMMENT_ALERT_MESSAGE"         = "Please enter the comment to post";
+"COMMENT_PLACEHOLDER"           = "Enter your comment";
 /* Pin View */
 
 "ENTER_PIN_CODE"               = "Enter PIN Code";
+"SET_NEW_PIN_CODE"             = "Set New PIN Code";
 "CONFORM_PIN_CODE"             = "Confirm PIN Code";
-"PIN_CODE_MISMATCH"            = "Pin Code does not match the Confirm Pin Code";
+"PIN_CODE_MISMATCH"            = "PIN code does not match with the Confirm PIN code";
+
+/*Cart View Controller */
+
+"SWIPE_TO_CHECKOUT"            = "   Swipe to checkout";
 
 /*Add Credit Card*/
 "ADD_CREDIT_CARD"               = "Add Credit Card";
@@ -157,6 +187,8 @@
 "SAVE"                          = "Save";
 "TOP_UPACCOUNT"                 = "Do you want to top up your Tuplit account now?";
 "SAVE_TOP_UP"                   = "Save & Top Up";
+"CARD_NO_IS_NOT_VALID"          = "The Credit Card number you entered isn't valid";
+"CREDITED_CARD_ADDED"           = "Credit Card added successfully";
 
 /*Add Credit Card*/
 "ADD_CREDIT_CARD"                   = "Add Credit Card";
@@ -172,7 +204,43 @@
 "TOP_UPACCOUNT"                 = "Do you want to top up your Tuplit account now?";
 "SAVE_TOP_UP"                   = "Save & Top Up";
 
+/* Friends Screen */
+"INVITE_FRIENDS"                = "Invite Friends";
+"NO_CONTACT_FOUND"              = "No Contacts Found";
+"NO_FB_FRIEND_FOUND"            = "No Facebook Friends Found";
+"NO_FRIEND_FOUND"               = "No friends found";
+"ACCESS_DENIED"                 = "Access is Denied";
+
+//Facebook
+"PUBLISH_STREAM"                = "publish_stream";
+"FRIEND_PERMISSION"             = "user_friends";
+"CANNOT_CONNECT"                = "Can't connect to facebook.";
 /*Custom Switch*/
 
 "YES"                           = "Yes";
 "NO"                            = "No";
+
+/* Settings */
+
+"SOUND"                         = "Sounds";
+"NOTIFICATION"                  = "Notifications";
+"ALL_NOTIFICATION"              = "All Notifications";
+"BUY_SOMETHING"                 = "I buy something";
+"RECEIVE_MONEY"                 = "I Receive money";
+"SEND_MONEY"                    = "I send money";
+"DEAL_OFFERS"                   = "Deals and Offers";
+"SECURITY"                      = "Security";
+"PASSCODE"                      = "Passcode";
+"PAYMENT_PREFER"                = "Payment PReferences";
+"REMEMBER_ME"                   = "Remember Me";
+"CHANGE_PIN_CODE"               = "Change PIN Code";
+"ADD_NUMBER"                    = "Add a Number";
+"OFF"                           = "Off";
+"ON"                            = "On";
+"EMAIL"                         = "Email:";
+"PHONE"                         = "Phone:";
+"FAQ"                           = "FAQ";
+"TUTORIALS"                     = "Tutorials";
+"TERMS_LEGAL_INFO"              = "Terms Of Use & More Legal Info";
+"CUSTOMER_SUPPORT"              = "Customer Support";
+"LOG_OUT"                       = "Log Out";

@@ -10,6 +10,28 @@
 
 @implementation FriendsModel
 
-@synthesize image,firstName,lastName,merchantName;
+@synthesize Photo,FriendName,lastName,MerchantName,FriendId;
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:self.Photo forKey:@"Photo"];
+    [encoder encodeObject:self.FriendName forKey:@"FriendName"];
+    [encoder encodeObject:self.MerchantName forKey:@"MerchantName"];
+    [encoder encodeObject:self.FriendId forKey:@"FriendId"];
+    
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if ((self = [super init]))
+    {
+        self.Photo = [decoder decodeObjectForKey:@"Photo"];
+        self.FriendName = [decoder decodeObjectForKey:@"FriendName"];
+        self.MerchantName = [decoder decodeObjectForKey:@"MerchantName"];
+        self.FriendId = [decoder decodeObjectForKey:@"FriendId"];
+    }
+    return self;
+}
+
 
 @end

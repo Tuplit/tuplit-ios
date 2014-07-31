@@ -39,7 +39,7 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@", responseJSON);
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
@@ -70,26 +70,27 @@
                 
                 self.commentslist = mapper.mappingResult.array.copy;
                 
-                if(delegate)
+                if([delegate respondsToSelector:@selector(commentsListingManagerSuccess:withcommentsList:)])
                     [delegate commentsListingManagerSuccess:self withcommentsList:self.commentslist];
             }
-            else
-            {
-                NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-                if(delegate)
-                {
-                    [delegate commentsListingManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
-                }
-            }
-            
-            
         }
+        
+        else
+        {
+            NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
+            if([delegate respondsToSelector:@selector(commentsListingManager:returnedWithErrorCode:errorMsg:)])
+            {
+                [delegate commentsListingManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
+            }
+        }
+        
     }failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if(delegate)
+        if([delegate respondsToSelector:@selector(commentsListingManagerFailed:)])
             [delegate commentsListingManagerFailed:self];
         
 	}];
+    
     [operation start];
 }
 

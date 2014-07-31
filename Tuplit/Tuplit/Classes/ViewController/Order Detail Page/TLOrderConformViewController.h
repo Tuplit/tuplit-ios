@@ -23,4 +23,6 @@
 @property(nonatomic,strong)NSString *lblTitle;
 @property(nonatomic,strong)NSString *orderID;
 @property(nonatomic,strong)NSString *orderStatus;
+@property(nonatomic,strong)NSString *merchatID;
+@property(nonatomic,strong)NSString *merchatName;
 @end

@@ -13,19 +13,22 @@
 #import "TLMerchantDetailsManager.h"
 #import "MerchantsDetailsModel.h"
 #import "MerchantModel.h"
-#import "OrderedFriendsListModel.h"
+#import "FriendsListModel.h"
 #import "OpeningHoursModel.h"
 #import "CommentsModel.h"
 #import "ProductListModel.h"
 #import "SpecialProductsModel.h"
 #import "MenuProductsModel.h"
+#import "TLAddFavouriteManager.h"
+#import "TLOtherUserProfileViewController.h"
+#import <MessageUI/MessageUI.h>
+#import "TLFavouriteListViewController.h"
 
 
-
-@interface TLMerchantsDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,TLMerchantDetailsManagerDelegate, MKMapViewDelegate,UIAlertViewDelegate>
+@interface TLMerchantsDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate, MKMapViewDelegate,UIAlertViewDelegate,MFMailComposeViewControllerDelegate,TLMerchantDetailsManagerDelegate,TLAddFavouriteManagerDelegate>
 {
     EGOImageView * merchantImageView;
-    UILabel * customerLabel;
+    UILabel * customerLabel,*specialSoldLabel;
     UILabel* labelDiscount;
     EGOImageView *merchantLogoView;
     UILabel * friendsLabel;
@@ -43,6 +46,7 @@
     
     UIImage *mapIconImg;
     UIImageView *mapIconImgView;
+    UIImageView * discountImageView;
     
     NSMutableArray *merchantsArray;
     CGFloat baseViewWidth, baseViewHeight;

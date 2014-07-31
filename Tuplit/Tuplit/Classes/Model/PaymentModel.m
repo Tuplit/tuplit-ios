@@ -16,6 +16,7 @@
     [encoder encodeObject:self.PaymentAmount forKey:@"PaymentAmount"];
     [encoder encodeObject:self.CurrentBalance forKey:@"CurrentBalance"];
     [encoder encodeObject:self.AllowPayment forKey:@"AllowPayment"];
+    [encoder encodeObject:self.Message forKey:@"Message"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -26,6 +27,7 @@
         self.PaymentAmount = [decoder decodeObjectForKey:@"PaymentAmount"];
         self.CurrentBalance = [decoder decodeObjectForKey:@"CurrentBalance"];
         self.AllowPayment = [decoder decodeObjectForKey:@"AllowPayment"];
+        self.Message = [decoder decodeObjectForKey:@"Message"];
     }
     return self;
 }

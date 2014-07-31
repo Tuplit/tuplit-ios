@@ -25,8 +25,10 @@ static const int animationFramesPerSec = 8;
     
     [self.navigationItem setTitle:LString(@"CART")];
     
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithImage:getImage(@"List", NO) style:UIBarButtonItemStylePlain target:self action:@selector(presentLeftMenuViewController:)];
+    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+    [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
     [self.navigationItem setLeftBarButtonItem:navleftButton];
+    
     self.view.backgroundColor=[UIColor whiteColor];
     
     baseViewWidth=self.view.frame.size.width;
@@ -127,33 +129,6 @@ static const int animationFramesPerSec = 8;
     checksOutSubView = [[UIView alloc] initWithFrame:CGRectMake(50, 15, 221, 40)];
     checksOutSubView.backgroundColor=UIColorFromRGB(0xDbDbDb);
     [checkoutView addSubview:checksOutSubView];
-	
-    swipeSlider = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, 221, 40)];
-	CGRect sliderFrame = swipeSlider.frame;
-	swipeSlider.frame = sliderFrame;
-	swipeSlider.backgroundColor = [UIColor clearColor];
-	[swipeSlider setMinimumTrackImage:[UIImage imageNamed:@"Nothing.png"] forState:UIControlStateNormal];
-	[swipeSlider setMaximumTrackImage:[UIImage imageNamed:@"Nothing.png"] forState:UIControlStateNormal];
-    swipeSlider.minimumValue = 0.0;
-	swipeSlider.maximumValue = 1.0;
-	swipeSlider.continuous = YES;
-	swipeSlider.value = 0.0;
-	[swipeSlider addTarget:self action:@selector(sliderUp:) forControlEvents:UIControlEventTouchUpInside];
-	[swipeSlider addTarget:self action:@selector(sliderDown:) forControlEvents:UIControlEventTouchDown];
-	[swipeSlider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
-    NSString *labelText = @"     Swipe to checkout";
-    swipeLbl = [[UILabel alloc] initWithFrame:CGRectMake(0,0,200,40)];
-	swipeLbl.center = CGPointMake(110,20);
-	swipeLbl.textColor =UIColorFromRGB(0x333333);
-	swipeLbl.textAlignment = NSTextAlignmentCenter;
-	swipeLbl.backgroundColor =UIColorFromRGB(0xDbDbDb);
-	swipeLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];;
-	swipeLbl.text = labelText;
-	[checksOutSubView addSubview:swipeLbl];
-	[checksOutSubView addSubview:swipeSlider];
-    [checkoutView addSubview:checksOutSubView];
-    
-    touchIsDown=NO;
     
     alertView=[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(checkoutView.frame), contentView.frame.size.width, 132)];
     alertView.backgroundColor=[UIColor clearColor];
@@ -165,7 +140,7 @@ static const int animationFramesPerSec = 8;
     alertLbl.textAlignment=NSTextAlignmentCenter;
     alertLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     alertLbl.backgroundColor=[UIColor clearColor];
-
+    
     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(alertView.frame));
     
     errorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
@@ -182,7 +157,34 @@ static const int animationFramesPerSec = 8;
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     
+    if (numberOfCell != 0 )
+    {
+        cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"green_cart.png"]];
+    }
+    else
+    {
+        cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"grey_cart.png"]];
+        cartSwipe.swipeSlider.userInteractionEnabled=NO;
+        [alertView addSubview:alertLbl];
+    }
+    
+    cartSwipe.backgroundColor=[UIColor clearColor];
+    [cartSwipe setDelegate:self];
+    [checksOutSubView addSubview:cartSwipe];
+    
+    
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -197,7 +199,23 @@ static const int animationFramesPerSec = 8;
 
 #pragma mark - UserDefined methods
 
+- (void) callWebserviceForLocationMatch {
+    
+    NETWORK_TEST_PROCEDURE
+    
+    [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
+    
+    NSString *lat = [NSString stringWithFormat:@"%lf",[CurrentLocation latitude]];
+    NSString *lon = [NSString stringWithFormat:@"%lf",[CurrentLocation longitude]];
+    
+    TLCheckLocationManager *checkLocationManager = [[TLCheckLocationManager alloc] init];
+    checkLocationManager.delegate = self;
+    [checkLocationManager callCheckLocationWithMerchantId:APP_DELEGATE.cartModel.merchantID latitude:lat longitude:lon];
+}
+
+
 - (void) callWebserviceForCurrentBalance {
+    NETWORK_TEST_PROCEDURE
     
     [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
     
@@ -223,14 +241,13 @@ static const int animationFramesPerSec = 8;
         }
         else
         {
-          [cartDict setValue:specModel.DiscountPrice forKey:@"DiscountPrice"];
+            [cartDict setValue:specModel.DiscountPrice forKey:@"DiscountPrice"];
         }
         [cartDict setValue:specModel.ItemName forKey:@"ItemName"];
         
-        
         [cartArray addObject:cartDict];
     }
-
+    
     NSDictionary *queryParams=[NSDictionary dictionaryWithObjectsAndKeys:[TLUserDefaults getCurrentUser].UserId,@"UserId",@"1",@"OrderDoneBy",[NSNumber numberWithInteger:APP_DELEGATE.cartModel.products.count],@"TotalItems",[NSNumber numberWithDouble:APP_DELEGATE.cartModel.discountedTotal],@"TotalPrice",@"",@"TransactionId",APP_DELEGATE.cartModel.merchantID,@"MerchantId",[cartArray JSONRepresentation],@"CartDetails",nil];
     
     TLCreateOrdersManager *createOrdersManager = [[TLCreateOrdersManager alloc] init];
@@ -255,9 +272,9 @@ static const int animationFramesPerSec = 8;
     itemArray = APP_DELEGATE.cartModel.products;
     
     [itemsListTable reloadData];
-
+    
     [APP_DELEGATE.cartModel calculateTotalPrice];
-
+    
     itemsListTable.frame = CGRectMake(0,0, contentView.frame.size.width, tableHeight);
     debitCreditView.frame = CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,100);
     checkoutView.frame = CGRectMake(0, CGRectGetMaxY(debitCreditView.frame), contentView.frame.size.width, 70);
@@ -298,75 +315,6 @@ static const int animationFramesPerSec = 8;
     }
     
 }
-- (void) sliderUp: (UISlider *) sender
-{
-	if (touchIsDown)
-    {
-		touchIsDown = NO;
-		if (swipeSlider.value != 1.0)
-		{
-			[swipeSlider setValue:0 animated: YES];
-			swipeLbl.alpha = 0.80;
-			[self startTimer];
-		}
-        else if(swipeSlider.value > 0.60)
-        {
-            [swipeSlider setValue:0 animated: YES];
-			swipeLbl.alpha = 1.0;
-            
-            if ([CurrentLocation isLocationTooFarForLatitude:APP_DELEGATE.cartModel.latitude longitude:APP_DELEGATE.cartModel.longitude]) {
-                
-                [UIAlertView alertViewWithMessage:@"Your location is too far to order these items."];
-                
-                return;
-            }
-            else
-            {
-                [self callWebserviceForCurrentBalance];
-            }
-        }
-    }
-}
-- (void) sliderDown: (UISlider *) sender
-{
-	touchIsDown = YES;
-}
-
-- (void) sliderChanged: (UISlider *) sender
-{
-    swipeLbl.alpha = MAX(0.0, 1.0 - (swipeSlider.value * 3.5));
-    checksOutSubView.backgroundColor=UIColorFromRGB(0xDbDbDb);
-    if (swipeSlider.value != 0)
-    {
-		[self stopTimer];
-        //		[swipeLbl.layer setNeedsDisplay];
-	}
-    
-}
-- (void) startTimer
-{
-	if (!animationTimer)
-    {
-		animationTimerCount = 0;
-		animationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/animationFramesPerSec target:self selector:@selector(animationTimerFired:) userInfo:nil repeats:YES];
-	}
-}
-- (void)animationTimerFired:(NSTimer*)theTimer
-{
-	if (++animationTimerCount == (2 * animationFramesPerSec))
-    {
-		animationTimerCount = 0;
-	}
-}
-- (void) stopTimer
-{
-	if (animationTimer)
-    {
-		[animationTimer invalidate];
-        animationTimer = nil;
-	}
-}
-
 #pragma mark - CartSwipeCellDelegates
 
 -(void)didSwipeRightInCellWithIndexPath:(NSIndexPath *)indexPath
@@ -421,20 +369,71 @@ static const int animationFramesPerSec = 8;
     return cell;
 }
 
+#pragma mark - CVSwipeProtocol Delegate 
+
+-(void) performAction
+{
+    TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+    verifyPINVC.isverifyPin = YES;
+    verifyPINVC.delegate = self;
+    verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+
+#pragma mark - TLPinCodeVerifiedDelegate
+
+-(void)pincodeVerified
+{
+    [self callWebserviceForLocationMatch];
+}
+
+#pragma mark - TLCheckLocationManager Delegates
+
+- (void)checkLocationManagerSuccessfull:(TLCheckLocationManager *)checkLocationManager allowCart:(int)allowCart withMessage:(NSString*) message {
+    
+    if (allowCart == 1) {
+        
+        [self callWebserviceForCurrentBalance];
+    }
+    else
+    {
+        [UIAlertView alertViewWithMessage:message];
+         [[ProgressHud shared] hide];
+    }
+    
+   
+}
+
+- (void)checkLocationManager:(TLCheckLocationManager *)checkLocationManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+}
+
+- (void)checkLocationManagerFailed:(TLCheckLocationManager *)checkLocationManager {
+    
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [[ProgressHud shared] hide];
+}
+
 #pragma mark - TLCheckBalanceManager Delegates
 
 - (void)checkBalanceManagerSuccessfull:(TLCheckBalanceManager *)checkBalanceManager paymentModel:(PaymentModel *)paymentModel {
     
     if ([paymentModel.AllowPayment intValue] == 0) {
         
-        [UIAlertView alertViewWithMessage:@"You have insufficient balance to order these items. Please recharge your account."];
+        [UIAlertView alertViewWithMessage:paymentModel.Message];
+         [[ProgressHud shared] hide];
     }
     else
     {
         [self callWebserviceForOrderItems];
+       
     }
-
-    [[ProgressHud shared] hide];
+    
 }
 
 - (void)checkBalanceManager:(TLCheckBalanceManager *)checkBalanceManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {

@@ -17,8 +17,8 @@
     NSString *_subTitle;
     CLLocationCoordinate2D _coordinate;
 }
-@property (nonatomic, retain)  NSString *subTitle;
-@property (nonatomic, retain) NSString *titlestr;
+@property (nonatomic, readwrite, copy)  NSString *subTitle;
+@property (nonatomic, readwrite, copy) NSString *title;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 
 @end

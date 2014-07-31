@@ -13,16 +13,15 @@
 
 @interface PinAnnotation : NSObject <MKAnnotation>
 {
+@private
+    NSString *_titlestr;
+    NSString *_subTitle;
     
- @private
-  NSString *_titlestr;
-  NSString *_subTitle;
-    
-  CLLocationCoordinate2D _coordinate;
-  CalloutAnnotation *_calloutAnnotation;
+    CLLocationCoordinate2D _coordinate;
+    CalloutAnnotation *_calloutAnnotation;
 }
-@property (nonatomic, strong)  NSString *subtitle;
-@property (nonatomic, strong) NSString *titlestr;
+@property (nonatomic, readwrite, copy)  NSString *subtitle;
+@property (nonatomic, readwrite, copy) NSString *title;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, strong) CalloutAnnotation *calloutAnnotation;
 

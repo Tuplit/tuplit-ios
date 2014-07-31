@@ -14,5 +14,7 @@
 @property (nonatomic, copy) UserModel *userModel;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSArray *Orders;
+@property (nonatomic,copy)NSArray *UserLinkedCards;
+@property (nonatomic,copy)NSArray *FriendsOrders;
 
 @end

@@ -12,7 +12,7 @@
 
 @protocol TLCheckLocationManagerDelegate <NSObject>
 @optional
-- (void)checkLocationManagerSuccessfull:(TLCheckLocationManager *)checkLocationManager allowCart:(int)allowCart;
+- (void)checkLocationManagerSuccessfull:(TLCheckLocationManager *)checkLocationManager allowCart:(int)allowCart withMessage:(NSString*) message;
 - (void)checkLocationManager:(TLCheckLocationManager *)checkLocationManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg;
 - (void)checkLocationManagerFailed:(TLCheckLocationManager *)checkLocationManager;
 @end

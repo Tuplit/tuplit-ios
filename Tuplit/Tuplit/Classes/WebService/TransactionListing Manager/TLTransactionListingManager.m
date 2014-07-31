@@ -21,9 +21,8 @@
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:TRANSACTION_LISTING_URL]];
     
     NSDictionary *queryParams = @{
-//                                  @"UserId": NSNonNilString(userId),
-//                                  @"Type": NSNonNilString(@"1"),
                                   @"Start":NSNonNilString([NSString stringWithFormat:@"%d",start]),
+                                  @"UserId":NSNonNilString(userId),
                                   };
     
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
@@ -41,7 +40,7 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@", responseJSON);
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
@@ -72,28 +71,26 @@
                 
                 self.trancactionlist = mapper.mappingResult.array.copy;
                 
-                if(delegate)
-                    [delegate transactionListingManagerSuccess:self withTrancactionListingManager:self.trancactionlist];
+                [delegate transactionListingManagerSuccess:self withTrancactionListingManager: mapper.mappingResult.array.copy];
             }
-            else
-            {
-                NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-                if(delegate)
-                {
-                    [delegate transactionListingManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
-                }
-            }
-
-
         }
+        else
+        {
+            NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
+            if([delegate respondsToSelector:@selector(transactionListingManager:returnedWithErrorCode:errorMsg:)])
+            {
+                [delegate transactionListingManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
+            }
+        }
+        
     }failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if(delegate)
+        if([delegate respondsToSelector:@selector(transactionListingManagerFailed:)])
             [delegate transactionListingManagerFailed:self];
         
 	}];
     [operation start];
-     
+    
 }
 
 @end

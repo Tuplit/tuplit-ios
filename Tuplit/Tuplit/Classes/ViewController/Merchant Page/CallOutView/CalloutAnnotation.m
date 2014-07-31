@@ -10,7 +10,7 @@
 
 
 @implementation CalloutAnnotation
-@synthesize titlestr=_title;
+@synthesize title=_title;
 @synthesize subTitle=_subTitle;
 @synthesize coordinate=_coordinate;
 

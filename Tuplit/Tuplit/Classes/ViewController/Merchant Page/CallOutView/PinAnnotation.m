@@ -10,7 +10,7 @@
 
 
 @implementation PinAnnotation
-@synthesize titlestr=_title;
+@synthesize title=_title;
 @synthesize subtitle=_subtitle;
 @synthesize coordinate=_coordinate;
 @synthesize calloutAnnotation=_calloutAnnotation;

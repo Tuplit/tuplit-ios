@@ -12,8 +12,11 @@
 #import "CardIOPaymentViewControllerDelegate.h"
 #import "CardIO.h"
 #import "TuplitConstants.h"
+#import "TLAddCreditCardManager.h"
 
-@interface TLAddCreditCardViewController : UIViewController
+@interface TLAddCreditCardViewController : UIViewController<TLAddCreditCardManagerDelegate>
 
 @property(nonatomic,retain)UIViewController*viewController;
+@property BOOL isSignUp;
+@property(nonatomic,strong) NSString *topupAmout;
 @end

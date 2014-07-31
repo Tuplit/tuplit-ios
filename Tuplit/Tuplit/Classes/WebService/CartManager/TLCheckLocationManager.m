@@ -25,9 +25,6 @@
     
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"" parameters:queryParams];
     
-    NSLog(@"Request URL : %@",[URL absoluteString]);
-    NSLog(@"queryParams : %@",queryParams);
-    
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
@@ -43,16 +40,24 @@
         
         if(code==200 || code==201)
         {
-            [_delegate checkLocationManagerSuccessfull:self allowCart:[[[[responseJSON objectForKey:@"AllowCart"] objectAtIndex:0]valueForKey:@"AllowCart"] integerValue]];
+            NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
+            NSDictionary *responseDictionarytoMap=[responseJSON objectForKey:strPropertyName];
+            
+            int allowCart = [[responseDictionarytoMap objectForKey:@"AllowCart"] intValue];
+            NSString *message = [responseDictionarytoMap objectForKey:@"Message"];
+            
+            if([_delegate respondsToSelector:@selector(checkLocationManagerSuccessfull:allowCart:withMessage:)])
+               [_delegate checkLocationManagerSuccessfull:self allowCart:allowCart withMessage:message];
         }
         else
         {
-            [_delegate checkLocationManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
+            if([_delegate respondsToSelector:@selector(checkLocationManager:returnedWithErrorCode:errorMsg:)])
+                [_delegate checkLocationManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		
-		[_delegate checkLocationManagerFailed:self];
+		if([_delegate respondsToSelector:@selector(checkLocationManagerFailed:)])
+            [_delegate checkLocationManagerFailed:self];
         
 	}];
     

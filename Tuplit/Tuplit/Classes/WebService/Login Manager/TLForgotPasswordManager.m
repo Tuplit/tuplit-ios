@@ -27,7 +27,6 @@
                                   @"Email" : NSNonNilString(email),
                                   };
     
-    NSLog(@"Input ----> %@", queryParams);
     NSMutableURLRequest *request;
     
     request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
@@ -36,8 +35,6 @@
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        NSLog(@"%@",operation.responseString);
         
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;

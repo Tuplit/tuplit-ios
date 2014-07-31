@@ -68,21 +68,21 @@ AFHTTPRequestOperation *operation;
                 
                 self.categoryArray = mapper.mappingResult.array.copy;
             
-                if(delegate)
+                if([delegate respondsToSelector:@selector(categoryListingManager:withCategoryList:)])
                     [delegate categoryListingManager:self withCategoryList:self.categoryArray];
             }
         }
         else
         {
             NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-            if(delegate) {
+            if([delegate respondsToSelector:@selector(categoryListingManager:returnedWithErrorCode:errorMsg:)]) {
                 [delegate categoryListingManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
             }
         }
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if(delegate)
+        if([delegate respondsToSelector:@selector(categoryListingManager:)])
             [delegate categoryListingManager:self];
         
 	}];

@@ -12,11 +12,12 @@
 #import "CalloutAnnotation.h"
 // #import "UILabel+Tuplit.h"
 
+@class CustomCallOutView;
 @protocol CustomCallOutViewDelegate
 @required
 - (void)calloutButtonClicked:(NSString *)title;
 @end
-@protocol CustomCallOutViewDelegate;
+
 @interface CustomCallOutView : MKAnnotationView
 {
     EGOImageView *annLogoImgView;
@@ -37,7 +38,7 @@
 }
 
 @property (nonatomic, retain)MerchantModel *merchant;
-@property (nonatomic, assign) id<CustomCallOutViewDelegate> delegate;
+@property(nonatomic, unsafe_unretained) id<CustomCallOutViewDelegate> delegate;
 -(void)loadView;
 
 @end

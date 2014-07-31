@@ -10,9 +10,10 @@
 #import "TLOrderListingManager.h"
 #import "OrderDetailModel.h"
 #import "OrderProductModel.h"
+#import "TLTransactionListingManager.h"
 #define CELL_HEIGHT 30
 
-@interface TLTransactionDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TLOrderListingManagerDelegate>
+@interface TLTransactionDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TLOrderListingManagerDelegate,TLTransactionListingManagerDelegate>
 {
     UITableView *itemsListTable;
     UIImageView *detailImgView;
@@ -24,7 +25,8 @@
     
 }
 @property(nonatomic,retain)NSString *orderID;
-@property(nonatomic)NSArray *transActionList;
+@property(nonatomic,strong)NSMutableArray *transActionList;
+@property (nonatomic,strong)NSString *userID;
 @property int index;
 
 @end

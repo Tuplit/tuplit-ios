@@ -56,7 +56,6 @@
             
             EGOImageView *profileImgView=[[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake(CGRectGetMinX(firstNameTxt.frame),CGRectGetMaxY(userNameView.frame) + 20, 60, 60)];
             profileImgView.tag = 3002;
-            profileImgView.userInteractionEnabled = YES;
             profileImgView.backgroundColor=[UIColor clearColor];
             profileImgView.layer.cornerRadius= profileImgView.frame.size.width/2;
             profileImgView.userInteractionEnabled=YES;
@@ -95,22 +94,27 @@
         }
         else if ([reuseIdentifier isEqualToString:@"Credit Cards"])
         {
-            swipeView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,self.contentView.frame.size.width,PROFILE_CELL_HEIGHT)];
-            swipeView.backgroundColor=UIColorFromRGB(0xF5F5F5);
+             self.contentView.backgroundColor=UIColorFromRGB(0xF5F5F5);
             
-            EGOImageView *cardImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
+            UIView *cellBaseview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)];
+            cellBaseview.backgroundColor = UIColorFromRGB(0xF5F5F5);
+            [self.contentView addSubview:cellBaseview];
+
+            
+            EGOImageView *cardImgView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(10,0, PROFILE_CELL_HEIGHT, PROFILE_CELL_HEIGHT)];
             cardImgView.backgroundColor = [UIColor clearColor];
+            [cardImgView setContentMode:UIViewContentModeScaleAspectFit];
             cardImgView.tag=1000;
-            [swipeView addSubview:cardImgView];
+            [cellBaseview addSubview:cardImgView];
             
-            UILabel *cardNumberLbl=[[UILabel alloc]initWithFrame:CGRectMake(50 +10 ,0, 175,   PROFILE_CELL_HEIGHT-2)];
+            UILabel *cardNumberLbl=[[UILabel alloc]initWithFrame:CGRectMake(PROFILE_CELL_HEIGHT +10 + 5,0, 175,   PROFILE_CELL_HEIGHT-2)];
             cardNumberLbl.textColor=UIColorFromRGB(0x333333);
             cardNumberLbl.numberOfLines=0;
             cardNumberLbl.tag=1001;
             cardNumberLbl.textAlignment=NSTextAlignmentLeft;
             cardNumberLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
             cardNumberLbl.backgroundColor=[UIColor clearColor];
-            [swipeView addSubview:cardNumberLbl];
+            [cellBaseview addSubview:cardNumberLbl];
             
             UILabel *expiryDateLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(cardNumberLbl.frame), 0, 70, PROFILE_CELL_HEIGHT-2)];
             expiryDateLbl.textColor=UIColorFromRGB(0x333333);
@@ -118,22 +122,21 @@
             expiryDateLbl.textAlignment=NSTextAlignmentRight;
             expiryDateLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
             expiryDateLbl.backgroundColor=[UIColor clearColor];
-            [swipeView addSubview:expiryDateLbl];
+            [cellBaseview addSubview:expiryDateLbl];
             
-            UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, PROFILE_CELL_HEIGHT-2,swipeView.frame.size.width,2)];
+            UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, PROFILE_CELL_HEIGHT-2,cellBaseview.frame.size.width,2)];
             lineView.backgroundColor = [UIColor whiteColor];
-            [swipeView addSubview:lineView];
+            [cellBaseview addSubview:lineView];
             
-            UILabel *noCardLbl=[[UILabel alloc]initWithFrame:swipeView.bounds];
+            UILabel *noCardLbl=[[UILabel alloc]initWithFrame:cellBaseview.bounds];
             noCardLbl.textColor=UIColorFromRGB(0x333333);
             noCardLbl.numberOfLines=0;
             noCardLbl.tag=1003;
             noCardLbl.textAlignment=NSTextAlignmentCenter;
             noCardLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
             noCardLbl.backgroundColor=[UIColor clearColor];
-            [swipeView addSubview:noCardLbl];
+            [cellBaseview addSubview:noCardLbl];
             
-            [self swipeEditViewAction];
         }
         else if ([reuseIdentifier isEqualToString:@"My Comments"])
         {
@@ -216,7 +219,6 @@
     [self addGestureRecognizer:swipeGestureLeft];
     
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    
 }
 
 -(void) removeItem : (id) sender

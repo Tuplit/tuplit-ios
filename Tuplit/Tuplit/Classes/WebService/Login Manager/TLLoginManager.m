@@ -50,7 +50,6 @@
                                   @"UserData"         : [UIDevice currentDevice].systemVersion,
                                   @"Platform"         : @"ios",
                                   };
-    NSLog(@"Input ----> %@", queryParams);
     NSMutableURLRequest *request;
     
     if(profilePicture.length > 0) {

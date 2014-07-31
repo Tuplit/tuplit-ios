@@ -11,12 +11,12 @@
 @interface TLAddCommentViewController ()
 {
     UITextView *messageTxtView;
+    UILabel *placeholderLbl;
 }
 
 @end
 
 @implementation TLAddCommentViewController
-@synthesize merchantID;
 
 #pragma mark - View Life Cycle Methods.
 
@@ -39,13 +39,21 @@
     [self.view addSubview:baseView]; 
     
     messageTxtView=[[UITextView alloc] initWithFrame:CGRectMake(15,20,290,140)];
-    messageTxtView.text=LString(@"MESSAGE_OPTIONAL");
+//    messageTxtView.text=LString(@"MESSAGE_OPTIONAL");
     messageTxtView.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
-    messageTxtView.textColor=UIColorFromRGB(0xc0c0c0);
+    messageTxtView.textColor=UIColorFromRGB(0x000000);
     messageTxtView.textAlignment=NSTextAlignmentLeft;
     messageTxtView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"commentsBg.png"]];
     messageTxtView.delegate=self;
     [baseView addSubview:messageTxtView];
+    
+    placeholderLbl=[[UILabel alloc] initWithFrame:CGRectMake(6,2, 200, 30)];
+    placeholderLbl.text=LString(@"COMMENT_PLACEHOLDER");
+    placeholderLbl.textAlignment=NSTextAlignmentLeft;
+    placeholderLbl.userInteractionEnabled=NO;
+    placeholderLbl.textColor=UIColorFromRGB(0xc0c0c0);
+    placeholderLbl.backgroundColor=[UIColor clearColor];
+    [messageTxtView addSubview:placeholderLbl];
     
     facebookSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(35,CGRectGetMaxY(messageTxtView.frame) + 20,102, 35)];
     [facebookSwitch addTarget:self action:@selector(switchToFacebook:) forControlEvents:UIControlEventValueChanged];
@@ -79,6 +87,16 @@
 
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -109,27 +127,51 @@
 {
     NSLog(@"message = %@",messageTxtView.text);
     
-    NSDictionary *queryParams = @{
-                                  @"MerchantId": NSNonNilString(merchantID),
-                                  @"CommentText": NSNonNilString(messageTxtView.text),
-                                  };
-    NETWORK_TEST_PROCEDURE
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-   
-    TLAddCommentManager *addCommentManager = [[TLAddCommentManager alloc]init];
-    addCommentManager.delegate = self;
-    [addCommentManager addComment:queryParams];
+    if(messageTxtView.text.length == 0)
+        [UIAlertView alertViewWithMessage:LString(@"COMMENT_ALERT_MESSAGE")];
+    else
+    {
+        NSDictionary *queryParams = @{
+                                      @"MerchantId": NSNonNilString([TLUserDefaults getCommentDetails].MerchantId),
+                                      @"CommentText": NSNonNilString(messageTxtView.text),
+                                      };
+        NETWORK_TEST_PROCEDURE
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+        TLAddCommentManager *addCommentManager = [[TLAddCommentManager alloc]init];
+        addCommentManager.delegate = self;
+        [addCommentManager addComment:queryParams];
+    }
+}
+
+- (void)postToFacebook:(id)sender {
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [fbSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+         fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+             [self backToUserProfile];
+         };
+        [self presentViewController:fbSheet animated:YES completion:nil];
+    }
+}
+
+- (void)postToTwitter:(id)sender {
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+        tweetSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+            [self backToUserProfile];
+        };
+        [self presentViewController:tweetSheet animated:YES completion:nil];
+    }
 }
 
 #pragma mark - Text View Delegates
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
-    if ([textView.text isEqualToString:LString(@"MESSAGE_OPTIONAL")])
-    {
-        textView.text = @"";
-        textView.textColor = UIColorFromRGB(0x000000);
-    }
+    placeholderLbl.hidden=YES;
     [textView becomeFirstResponder];
 }
 
@@ -137,27 +179,78 @@
 {
     if ([textView.text isEqualToString:@""])
     {
-        textView.text =LString(@"MESSAGE_OPTIONAL");
-        textView.textColor = UIColorFromRGB(0xc0c0c0);
+        placeholderLbl.hidden=NO;
     }
     [textView resignFirstResponder];
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text 
-{    
-    if([text isEqualToString:@"\n"])
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if ([textView.text isEqualToString:@""])
     {
-        [textView resignFirstResponder];
-        return NO;
-    }    
+        if([text isEqualToString:@"\n"])
+        {
+            [textView resignFirstResponder];
+            placeholderLbl.hidden=NO;
+            return NO;
+        }
+    }
+    else
+    {
+        if([text isEqualToString:@"\n"])
+        {
+            [textView resignFirstResponder];
+            placeholderLbl.hidden=YES;
+            return NO;
+        }
+    }
+    
     return YES;
 }
 
 #pragma mark - commentAddManager Delegates
 - (void)commentAddManagerSuccess:(TLAddCommentManager *)loginManager
 {
-     [self backToUserProfile];
-     [[ProgressHud shared] hide];
+    [TLUserDefaults setIsCommentPromptOpen:NO];
+    [[ProgressHud shared] hide];
+    
+    if (facebookSwitch.on && twitterSwitch.on)
+    {
+        
+        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+        {
+            SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+            [fbSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+            
+            fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+                
+                if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+                {
+                    SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+                    [tweetSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+                    tweetSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+                        [self backToUserProfile];
+                    };
+                    [self presentViewController:tweetSheet animated:YES completion:nil];
+                }
+            };
+            
+            [self presentViewController:fbSheet animated:YES completion:nil];
+        }
+    }
+    else if(facebookSwitch.on && !twitterSwitch.on) {
+        
+        [self postToFacebook:nil];
+    }
+    else if(!facebookSwitch.on && twitterSwitch.on) {
+        
+        [self postToTwitter:nil];
+    }
+    else
+    {
+        [self backToUserProfile];
+       
+    }
 }
 - (void)commentAddManager:(TLAddCommentManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {

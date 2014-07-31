@@ -13,6 +13,7 @@
 
 @interface TLSettingsViewController ()
 {
+    IBOutlet UIScrollView *scrollView;
     IBOutlet UIButton *buttonLogout, *buttonTutorial;
     TLTutorialViewController *tutorVC;
 }
@@ -48,6 +49,7 @@
     [buttonTutorial setUpButtonForTuplit];
     
     tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning

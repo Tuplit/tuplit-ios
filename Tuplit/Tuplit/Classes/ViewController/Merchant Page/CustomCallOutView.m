@@ -23,7 +23,7 @@
     
     self.backgroundColor = [UIColor clearColor];
     callOutImage = getImage(@"CallOut", NO);
-    stretchableBackButtonImage = [callOutImage stretchableImageWithLeftCapWidth:0 topCapHeight:10];
+      stretchableBackButtonImage = [callOutImage stretchableImageWithLeftCapWidth:0 topCapHeight:10];
     self.image = stretchableBackButtonImage;
     
     annLogoImgView = [[EGOImageView alloc]initWithPlaceholderImage:[UIImage imageNamed:@"DiscountMap.ong"] imageViewFrame:CGRectMake(5,(FRAME_HEIGHT-40-19)/2,40,40)];
@@ -36,7 +36,7 @@
     annMerchantNameLbl.textColor = UIColorFromRGB(0x000000);
     annMerchantNameLbl.backgroundColor = [UIColor clearColor];
     annMerchantNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-    annMerchantNameLbl.userInteractionEnabled = YES;
+//    annMerchantNameLbl.userInteractionEnabled = YES;
     annMerchantNameLbl.textAlignment = NSTextAlignmentLeft;
     [self addSubview:annMerchantNameLbl];
     
@@ -45,7 +45,7 @@
     annDiscountLbl.textColor = UIColorFromRGB(0x000000);
     annDiscountLbl.backgroundColor = [UIColor clearColor];
     annDiscountLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:20.0];
-    annDiscountLbl.userInteractionEnabled = YES;
+//    annDiscountLbl.userInteractionEnabled = YES;
     annDiscountLbl.textAlignment = NSTextAlignmentLeft;
     annDiscountLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     [self addSubview:annDiscountLbl];
@@ -60,7 +60,7 @@
     annDistanceLbl.textColor = UIColorFromRGB(0x000000);
     annDistanceLbl.backgroundColor = [UIColor clearColor];
     annDistanceLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:20.0];
-    annDistanceLbl.userInteractionEnabled = YES;
+//    annDistanceLbl.userInteractionEnabled = YES;
     annDistanceLbl.textAlignment = NSTextAlignmentLeft;
     annDistanceLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     annDistanceLbl.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -82,13 +82,12 @@
 }
 
 
-
 - (void)setMerchant:(MerchantModel *)merchant
 {
     merModel = merchant;
     
     annLogoImgView.imageURL = [NSURL URLWithString:merchant.Icon];
-    annMerchantNameLbl.text = merchant.CompanyName;
+    annMerchantNameLbl.text = [merchant.CompanyName stringWithTitleCase];
     annDiscountLbl.text = merchant.DiscountTier;
     annDistanceLbl.text = [TuplitConstants getDistance:[merchant.distance doubleValue]];
     
@@ -124,7 +123,7 @@
 - (void)calloutButtonClicked
 {
     CalloutAnnotation *annotation = self.annotation;
-    [_delegate calloutButtonClicked:(NSString *)annotation.titlestr];
+    [_delegate calloutButtonClicked:(NSString *)annotation.title];
 }
 
 @end

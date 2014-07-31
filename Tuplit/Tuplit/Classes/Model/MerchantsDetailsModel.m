@@ -41,6 +41,7 @@
     [encoder encodeObject:self.OpeningHours forKey:@"OpeningHours"];
     [encoder encodeObject:self.PriceRange forKey:@"PriceRange"];
     [encoder encodeObject:self.SpecialsSold forKey:@"SpecialsSold"];
+    [encoder encodeObject:self.IsGoldenTag forKey:@"IsGoldenTag"];
     
     [encoder encodeObject:self.AlreadyFavourited forKey:@"AlreadyFavourited"];
     [encoder encodeObject:self.Category forKey:@"Category"];
@@ -57,6 +58,7 @@
     [encoder encodeObject:self.DiscountProducts forKey:@"DiscountProducts"];
     [encoder encodeObject:self.MenuProducts forKey:@"MenuProducts"];
     [encoder encodeObject:self.CategoryList forKey:@"CategoryList"];
+    
 
 }
 
@@ -93,6 +95,7 @@
         self.OpeningHours = [decoder decodeObjectForKey:@"OpeningHours"];
         self.PriceRange = [decoder decodeObjectForKey:@"PriceRange"];
 		self.Description = [decoder decodeObjectForKey:@"Description"];
+        self.IsGoldenTag = [decoder decodeObjectForKey:@"IsGoldenTag"];
         
         self.AlreadyFavourited = [decoder decodeObjectForKey:@"AlreadyFavourited"];
         self.Category = [decoder decodeObjectForKey:@"Category"];

@@ -14,8 +14,13 @@
 - (void)setupForTuplitStyle {
     
     self.background = [UIImage imageNamed:@"textFieldBg"];
-    self.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, self.bounds.size.height)];
+    self.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, self.bounds.size.height)];
     self.leftViewMode = UITextFieldViewModeAlways;
+    self.rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, self.bounds.size.height)];
+    self.rightViewMode = UITextFieldViewModeAlways;
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"7.0"))
+        self.contentVerticalAlignment=0;
 }
 
 - (void)setRightViewIcon:(UIImage*)image target:(id)target action:(SEL)selector {

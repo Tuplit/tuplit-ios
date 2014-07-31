@@ -32,5 +32,14 @@
     [button setImage:image forState:UIControlStateNormal];
     self.customView = button;
 }
-
+- (void)buttonWithTitle:(NSString*) title withTarget:(id)target action:(SEL)selector
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:title forState:UIControlStateNormal];
+    button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
+    int width = [title widthWithFont:button.titleLabel.font];
+     button.frame = CGRectMake(0,0, width+1,30);
+    self.customView = button;
+}
 @end

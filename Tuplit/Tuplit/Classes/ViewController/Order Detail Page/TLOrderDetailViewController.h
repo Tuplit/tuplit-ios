@@ -10,11 +10,12 @@
 #import "TLOrderConformViewController.h"
 #import "TLOrderListingManager.h"
 #import "TLOrderManager.h"
+#import "TLPinCodeViewController.h"
 
 
 #define TRANS_CELL_HEIGHT 52
 
-@interface TLOrderDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TLOrderListingManagerDelegate,TLOrderManagerDelegate>
+@interface TLOrderDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TLOrderListingManagerDelegate,TLPinCodeVerifiedDelegate,TLOrderManagerDelegate>
 {
     UITableView *itemsListTable;
     UIImageView *detailImgView;

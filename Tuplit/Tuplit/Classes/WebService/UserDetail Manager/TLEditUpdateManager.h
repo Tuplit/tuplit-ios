@@ -12,7 +12,7 @@
 
 @protocol TLEditUpdateManagerDelegate <NSObject>
 @optional
-- (void)editUpManager:(TLEditUpdateManager *)editUpManager updateSuccessfullWithUser:(UserModel *)user isAlreadyRegistered:(BOOL)isAlreadyRegistered;
+- (void)editUpManager:(TLEditUpdateManager *)editUpManager updateSuccessfullWithUser:(UserModel *)user;
 - (void)editUpManager:(TLEditUpdateManager *)editUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg;
 - (void)editUpManagerFailed:(TLEditUpdateManager *)signUpManager;
 @end

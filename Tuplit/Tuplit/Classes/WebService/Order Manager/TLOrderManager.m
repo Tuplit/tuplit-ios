@@ -42,18 +42,18 @@
         
         if(code==200 || code==201)
         {
-            if (_delegate)
-               [_delegate processOrdersManagerSuccessfull:self withorderStatus:[queryParams objectForKey:@"OrderStatus"] orderId:[queryParams objectForKey:@"OrderId"] ];
+            if ([_delegate respondsToSelector:@selector(processOrdersManagerSuccessfull:withorderStatus:orderId:)])
+                [_delegate processOrdersManagerSuccessfull:self withorderStatus:[queryParams objectForKey:@"OrderStatus"] orderId:[queryParams objectForKey:@"OrderId"] ];
         }
         else
         {
-            if (_delegate)
-               [_delegate processOrdersManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
+            if ([_delegate respondsToSelector:@selector(processOrdersManager:returnedWithErrorCode:errorMsg:)])
+                [_delegate processOrdersManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		
-		[_delegate processOrdersManagerFailed:self];
+		if([_delegate respondsToSelector:@selector(processOrdersManagerFailed:)])
+            [_delegate processOrdersManagerFailed:self];
         
 	}];
     

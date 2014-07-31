@@ -12,6 +12,11 @@
 
 @implementation TuplitConstants
 
+NSNumberFormatter *numberFormatter;
+NSDateFormatter *dateformat;
+NSNumberFormatter *distanceformatter ;
+NSDateFormatter *cmtDateFormat;
+
 NSString *LString(NSString* key) {
     
     NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Localizable" ofType:@"strings" inDirectory:nil forLocalization:@"en"];
@@ -46,18 +51,19 @@ NSString *LString(NSString* key) {
 +(NSString*) getDistance:(double) locationDistance {
     
     NSString *distance = @"";
-
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.roundingIncrement = [NSNumber numberWithDouble:0.1];
-    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    if(!distanceformatter)
+        distanceformatter = [[NSNumberFormatter alloc] init];
+    distanceformatter.roundingIncrement = [NSNumber numberWithDouble:0.1];
+    distanceformatter.numberStyle = NSNumberFormatterDecimalStyle;
     
     if(locationDistance < 0.0)
     {
-        distance = [NSString stringWithFormat:@"%@ m",[formatter stringFromNumber:[NSNumber numberWithDouble:locationDistance]]];
+        distance = [NSString stringWithFormat:@"%@ m",[distanceformatter stringFromNumber:[NSNumber numberWithDouble:locationDistance]]];
     }
     else
     {
-        distance = [NSString stringWithFormat:@"%@ km",[formatter stringFromNumber:[NSNumber numberWithDouble:locationDistance]]];
+        distance = [NSString stringWithFormat:@"%@ km",[distanceformatter stringFromNumber:[NSNumber numberWithDouble:locationDistance]]];
     }
     
     return distance;
@@ -65,51 +71,65 @@ NSString *LString(NSString* key) {
 
 + (NSString*)calculateTimeDifference:(NSString *)timeStamp
 {
-    NSTimeZone* localTimeZone = [NSTimeZone localTimeZone];
-    NSString* localAbbreviation = [localTimeZone abbreviation];
-    NSTimeZone* timeZoneFromAbbreviation = [NSTimeZone timeZoneWithAbbreviation:localAbbreviation];
+    //dateFrom Webservice
+    NSTimeZone* timeZoneFromAbbreviation = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     NSString* timeZoneIdentifier = timeZoneFromAbbreviation.name;
+    
+    if(!cmtDateFormat)
+        cmtDateFormat = [[NSDateFormatter alloc] init];
+    [cmtDateFormat setTimeZone:[NSTimeZone timeZoneWithAbbreviation:timeZoneIdentifier]];
+    [cmtDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *dateFromWebServiceString = [cmtDateFormat dateFromString:timeStamp];
     
     // get the current date in LocalTimeZone
     NSDate *date = [NSDate date];
-
-    NSDateFormatter *dateFormat2 = [[NSDateFormatter alloc] init];
-    [dateFormat2 setTimeZone:[NSTimeZone timeZoneWithAbbreviation:timeZoneIdentifier]];
-    [dateFormat2 setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *dateFromWebServiceString = [[NSDate alloc] init];
-    dateFromWebServiceString = [dateFormat2 dateFromString:timeStamp];
     
-    //Calculate difference in WebService Time and System Time
-    NSTimeInterval timeDifference = [date timeIntervalSinceDate:dateFromWebServiceString];
+    // The time interval
+    NSTimeInterval theTimeInterval = [date timeIntervalSinceDate:dateFromWebServiceString];
     
-    if(timeDifference < 0)  // Server time is 2 minutes ahead of device time.   So as soon as post is done it gives -2 minutes ago instead of 0 minutes ago
+    // Get the system calendar
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    
+    // Create the NSDates
+    NSDate *date1 = [[NSDate alloc] init];
+    NSDate *date2 = [[NSDate alloc] initWithTimeInterval:theTimeInterval sinceDate:date1];
+    
+    // Get conversion to years, months, days, hours, minutes,seconds
+    unsigned int secFlags   = NSSecondCalendarUnit;
+    unsigned int minFlags   = NSMinuteCalendarUnit;
+    unsigned int hourFlags  = NSHourCalendarUnit;
+    unsigned int dayFlags   = NSDayCalendarUnit;
+    unsigned int monthFlags = NSMonthCalendarUnit;
+    unsigned int yearFlags  = NSYearCalendarUnit;
+   
+     NSDateComponents *secdownInfo = [sysCalendar components:secFlags fromDate:date1  toDate:date2  options:0];
+     NSDateComponents *mindownInfo = [sysCalendar components:minFlags fromDate:date1  toDate:date2  options:0];
+     NSDateComponents *hourdownInfo = [sysCalendar components:hourFlags fromDate:date1  toDate:date2  options:0];
+     NSDateComponents *daydownInfo = [sysCalendar components:dayFlags fromDate:date1  toDate:date2  options:0];
+     NSDateComponents *monthdownInfo = [sysCalendar components:monthFlags fromDate:date1  toDate:date2  options:0];
+     NSDateComponents *yeardownInfo = [sysCalendar components:yearFlags fromDate:date1  toDate:date2  options:0];
+    
+    NSString *dateStr;
+    // Calculating time to display
+    if([secdownInfo second]<60)
     {
-        timeDifference = 0;
+        if([secdownInfo second]>0)
+            dateStr = [NSString stringWithFormat:@"%ds",[secdownInfo second]];
+        else
+            dateStr = [NSString stringWithFormat:@"Just now"];
     }
+    else if([mindownInfo minute]<60)
+        dateStr = [NSString stringWithFormat:@"%dm",[mindownInfo minute]];
+    else if([hourdownInfo hour]<24)
+        dateStr = [NSString stringWithFormat:@"%dh",[hourdownInfo hour]];
+    else if([daydownInfo day]<30)
+        dateStr = [NSString stringWithFormat:@"%dd",[daydownInfo day]];
+    else if([monthdownInfo month]<12)
+        dateStr = [NSString stringWithFormat:@"%dm",[monthdownInfo month]];
+    else if([yeardownInfo year])
+        dateStr = [NSString stringWithFormat:@"%dy",[yeardownInfo year]];
     
-    int iminutes = timeDifference / 60;
-    if(iminutes<60)
-    {
-        return [NSString stringWithFormat:@"%dm",iminutes];
-    }
-    int ihours = iminutes / 60;
-    if(ihours<24)
-    {
-        return [NSString stringWithFormat:@"%dh",ihours];
-    }
-    int idays = iminutes / 1440;
-    
-    iminutes = iminutes - ihours * 60 ;
-    ihours = ihours - idays *24 ;// this ives correct no of days than the looping in while several times
-    return  [NSString stringWithFormat:@"%dd",idays];
-    
-//    int idays = components.day;
-//    if(idays<365)
-//    {
-//        return  [NSString stringWithFormat:@"%dm",idays];
-//    }
-//    int iyears = components.year;
-//    return [NSString stringWithFormat:@"%dy",iyears];
+    return dateStr;
 }
 
 +(NSMutableAttributedString*)getOpeningHrs:(NSString*)datestring isTimeFormat:(BOOL)isTime
@@ -128,6 +148,7 @@ NSString *LString(NSString* key) {
         } else {
             dayComponent = [days componentsSeparatedByString: @"to"];
         }
+        
         NSArray* timeComponent = [time componentsSeparatedByString: @"-"];
         
         int i=0;
@@ -227,12 +248,15 @@ NSString *LString(NSString* key) {
     
     [TLUserDefaults setCurrentUser:nil];
     [TLUserDefaults setIsGuestUser:NO];
+    [TLUserDefaults setIsCommentPromptOpen:NO];
+    [TLUserDefaults setCommentDetails:nil];
     [APP_DELEGATE.navigationController dismissViewControllerAnimated:YES completion:nil];
     APP_DELEGATE.cartModel = [[CartModel alloc] init];
 }
 +(NSNumberFormatter*) getCurrencyFormat
 {
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    if(!numberFormatter)
+        numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     return numberFormatter;
@@ -240,7 +264,8 @@ NSString *LString(NSString* key) {
 
 +(NSString*)getOrderDate:(NSString*)date
 {
-    NSDateFormatter *dateformat= [[NSDateFormatter alloc]init];
+    if(!dateformat)
+        dateformat= [[NSDateFormatter alloc]init];
     [dateformat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *transdate= [dateformat dateFromString:date];
     [dateformat setDateFormat:@"MM/dd/yyyy"];
@@ -248,12 +273,57 @@ NSString *LString(NSString* key) {
 }
 +(NSString*)getOrderDateTime:(NSString*)date
 {
-    NSDateFormatter *dateformat= [[NSDateFormatter alloc]init];
+    if(!dateformat)
+        dateformat= [[NSDateFormatter alloc]init];
     [dateformat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *transdate= [dateformat dateFromString:date];
     [dateformat setDateFormat:@"d/M/yyyy, h:mm a"];
     return [dateformat stringFromDate:transdate];
 }
 
++ (NSMutableString*)filteredPhoneStringFromString:(NSString*)string withFilter:(NSString*)filter
+{
+    NSUInteger onOriginal = 0, onFilter = 0, onOutput = 0;
+    char outputString[([filter length])];
+    BOOL done = NO;
+    
+    while(onFilter < [filter length] && !done)
+    {
+        char filterChar = [filter characterAtIndex:onFilter];
+        char originalChar = onOriginal >= string.length ? '\0' : [string characterAtIndex:onOriginal];
+        switch (filterChar) {
+            case '#':
+
+                if(originalChar=='\0')
+                {
+                    // We have no more input numbers for the filter.  We're done.
+                    done = YES;
+                    break;
+                }
+                if(isdigit(originalChar)||originalChar =='X')
+                {
+                    outputString[onOutput] = originalChar;
+                    onOriginal++;
+                    onFilter++;
+                    onOutput++;
+                }
+                else
+                {
+                    onOriginal++;
+                }
+                break;
+            default:
+                // Any other character will automatically be inserted for the user as they type (spaces, - etc..) or deleted as they delete if there are more numbers to come.
+                outputString[onOutput] = filterChar;
+                onOutput++;
+                onFilter++;
+                if(originalChar == filterChar)
+                    onOriginal++;
+                break;
+        }
+    }
+    outputString[onOutput] = '\0'; // Cap the output string
+    return [NSMutableString stringWithUTF8String:outputString];
+}
 
 @end

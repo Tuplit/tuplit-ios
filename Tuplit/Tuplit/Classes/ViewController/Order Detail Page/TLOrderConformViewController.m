@@ -13,7 +13,7 @@
 @end
 
 @implementation TLOrderConformViewController
-@synthesize informativeTxt,acceptOrRejectImg,btnTitle,lblTitle,orderID,orderStatus;
+@synthesize informativeTxt,acceptOrRejectImg,btnTitle,lblTitle,orderID,orderStatus,merchatID,merchatName;
 
 -(void) loadView
 {
@@ -25,31 +25,51 @@
     baseViewWidth= self.view.frame.size.width;
     baseViewHeight= self.view.frame.size.height;
     
-    UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
-    baseView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg.png"]];
+    int adjustHeight = 64;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        adjustHeight = 64;
+    }
+    else
+    {
+        adjustHeight = 44;
+    }
+
+    UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-64)];
+    baseView.backgroundColor=[UIColor colorWithPatternImage:getImage(@"bg", NO)];
     [self.view addSubview:baseView];
     
-    informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(32,0,255, 92)];
-    informativeLbl.textAlignment=NSTextAlignmentJustified;
+    UIScrollView *scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, baseView.width, baseView.height)];
+    scrollView.bounces=YES;
+    scrollView.userInteractionEnabled=YES;
+    scrollView.backgroundColor=[UIColor clearColor];
+    [baseView addSubview:scrollView];
+    
+    if(orderStatus.integerValue==1)
+        informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(55,0,210, 92)];
+    else
+        informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(35,0,250, 92)];
+    
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        informativeLbl.textAlignment=NSTextAlignmentCenter;
     informativeLbl.numberOfLines=0;
     informativeLbl.textColor=UIColorFromRGB(0X333333);
     informativeLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:14.0];
     informativeLbl.backgroundColor=[UIColor clearColor];
-    [baseView addSubview:informativeLbl];
+    [scrollView addSubview:informativeLbl];
     
-    UIImageView *detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseView.width-10, 304)];
-    detailImgView.image= [UIImage imageNamed:@"receipt.png"];
+    UIImageView *detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseView.width-10, 325)];
+    detailImgView.image= getImage(@"receipt", NO);
     detailImgView.backgroundColor=[UIColor clearColor];
     [detailImgView setUserInteractionEnabled:YES];
-    [baseView addSubview:detailImgView];
+    [scrollView addSubview:detailImgView];
     
-    statusImgView=[[UIImageView alloc] initWithFrame:CGRectMake(76,50 ,156, 156)];
+    statusImgView=[[UIImageView alloc] initWithFrame:CGRectMake(76,45 ,147, 130)];
     statusImgView.backgroundColor=[UIColor clearColor];
     [statusImgView setContentMode:UIViewContentModeScaleAspectFill];
     [detailImgView addSubview:statusImgView];
     
     backButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    [backButton setFrame:CGRectMake(30, CGRectGetMaxY(statusImgView.frame)+19, 250, 45)];
+    [backButton setFrame:CGRectMake(30, CGRectGetMaxY(statusImgView.frame)+40, 250, 45)];
     [backButton setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     backButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     backButton.titleLabel.textAlignment=NSTextAlignmentCenter;
@@ -64,11 +84,24 @@
     backLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
     backLbl.backgroundColor=[UIColor clearColor];
     backLbl.userInteractionEnabled = YES;
-    [baseView addSubview:backLbl];
+    [scrollView addSubview:backLbl];
     UITapGestureRecognizer *backTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(lblAction)];
     [backLbl addGestureRecognizer:backTap];
     
+    scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(backLbl.frame) + 40);
+    
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -101,6 +134,13 @@
     if(orderStatus.integerValue==1)
     {
         TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
+        [TLUserDefaults setIsCommentPromptOpen:YES];
+        
+        OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
+        cmtDetail.MerchantId = self.merchatID;
+        cmtDetail.CompanyName = self.merchatName;
+      
+        [TLUserDefaults setCommentDetails:cmtDetail];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
         [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
         [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
@@ -117,6 +157,10 @@
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         
         [APP_DELEGATE.slideMenuController hideMenuViewController];
+        
+//        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+//        detailsVC.detailsMerchantID = self.merchatID;
+//        [self.navigationController pushViewController:detailsVC animated:YES];
     }
     
 }

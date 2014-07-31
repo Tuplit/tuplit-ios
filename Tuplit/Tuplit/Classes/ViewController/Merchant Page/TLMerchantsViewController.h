@@ -52,6 +52,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     BOOL isDiscountShown, isMapShown;
     BOOL isSearchTableShown;
     CGFloat baseViewWidth, baseViewHeight;
+    int adjustHeight;
     int menuSelected,discountTierValue;
     int totalUserListCount,lastFetchCount;
     BOOL isLoadMorePressed,isPullRefreshPressed,isTextFieldClearPressed,isMerchantWebserviceRunning,isKeyBoardOpen;
@@ -61,6 +62,4 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     
     MerchantModel *callOutmerchant;
 }
-
-
 @end

@@ -177,6 +177,7 @@
 
 - (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
+  
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
     [userDetailsManager getUserDetailsWithUserID:user.UserId];

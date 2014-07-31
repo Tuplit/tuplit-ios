@@ -12,7 +12,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
-    [encoder encodeObject:self.UserId forKey:@"UserId"];
+    [encoder encodeObject:self.UsersId forKey:@"UsersId"];
     [encoder encodeObject:self.FirstName forKey:@"FirstName"];
     [encoder encodeObject:self.LastName forKey:@"LastName"];
     [encoder encodeObject:self.Photo forKey:@"Photo"];
@@ -25,7 +25,7 @@
 {
     if ((self = [super init]))
     {
-        self.UserId = [decoder decodeObjectForKey:@"UserId"];
+        self.UsersId = [decoder decodeObjectForKey:@"UsersId"];
         self.FirstName = [decoder decodeObjectForKey:@"FirstName"];
         self.LastName = [decoder decodeObjectForKey:@"LastName"];
         self.Photo = [decoder decodeObjectForKey:@"Photo"];

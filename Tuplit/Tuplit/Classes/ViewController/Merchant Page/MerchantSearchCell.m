@@ -36,7 +36,7 @@
         merchantNameLbl.textColor = UIColorFromRGB(0x000000);
         [containerView addSubview:merchantNameLbl];
         
-        descriptionLbl = [[UILabel alloc ] initWithFrame:CGRectMake(8 + 40 + 10, CGRectGetMaxY(merchantNameLbl.frame) - 3,200,20)];
+         descriptionLbl = [[UILabel alloc ] initWithFrame:CGRectMake(8 + 40 + 10, CGRectGetMaxY(merchantNameLbl.frame) - 3,200,20)];
         descriptionLbl.backgroundColor = [UIColor clearColor];
         descriptionLbl.textAlignment = NSTextAlignmentLeft;
         descriptionLbl.textColor = [UIColor lightGrayColor]; //UIColorFromRGB(0Xffffff);

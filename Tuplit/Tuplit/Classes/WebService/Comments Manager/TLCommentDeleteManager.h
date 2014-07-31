@@ -11,9 +11,9 @@
 @class TLCommentDeleteManager;
 @protocol TLCommentDeleteManagerDelegate <NSObject>
 @optional
-- (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager;
-- (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg;
-- (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)loginManager;
+- (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)commentDeleteManager;
+- (void)commentDeleteManager:(TLCommentDeleteManager *)commentDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg;
+- (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)commentDeleteManager;
 @end
 
 @interface TLCommentDeleteManager : NSObject

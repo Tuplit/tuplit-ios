@@ -12,7 +12,7 @@
 
 #define COMMENT_CELL_HEIGHT 50
 
-@interface TLAllCommentsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,TLCommentsListingManagerDelegate >
+@interface TLAllCommentsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,TLCommentsListingManagerDelegate,TLCommentDeleteManagerDelegate>
 {
     UITableView *allCommentsTable;
     UIView *baseView;
@@ -28,5 +28,6 @@
     BOOL isLoadMorePressed,isPullRefreshPressed,isMerchantWebserviceRunning;
 
 }
-
+@property (nonatomic,strong)NSString *userID;
+@property BOOL isOtherUser;
 @end

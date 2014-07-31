@@ -41,6 +41,7 @@
         if(code == 200 || code == 201)
         {
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
+            
             Global *obj = [Global instance];
             
             NSArray *array = [[responseJSON objectForKey:strPropertyName] valueForKey:@"cms"];

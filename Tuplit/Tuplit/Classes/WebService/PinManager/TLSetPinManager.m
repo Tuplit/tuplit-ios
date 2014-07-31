@@ -22,7 +22,7 @@
     NSDictionary *queryParams = @{
                                   @"PinCode"   : NSNonNilString(pincode),
                                   };
-
+    
     NSMutableURLRequest *request = [client requestWithMethod:@"PUT" path:@"" parameters:queryParams];
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     NSString * strValue = [queryParams JSONRepresentation];
@@ -43,21 +43,22 @@
         
         if(code==200 || code==201)
         {
-            [_delegate setPinManagerSuccess:self updateSuccessfullWithUser:nil];
+            if([_delegate respondsToSelector:@selector(setPinManagerSuccess:updateSuccessfullWithUser:)])
+                [_delegate setPinManagerSuccess:self updateSuccessfullWithUser:[[responseJSON objectForKey:@"notifications"]firstObject]];
         }
         else
         {
-            [_delegate setPinManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
+            if([_delegate respondsToSelector:@selector(setPinManager:returnedWithErrorCode:errorMsg:)])
+                [_delegate setPinManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         
-        [_delegate setPinManagerFailed:self];
+        if([_delegate respondsToSelector:@selector(setPinManagerFailed:)])
+            [_delegate setPinManagerFailed:self];
         
     }];
     [operation start];
 }
-
-
 
 @end

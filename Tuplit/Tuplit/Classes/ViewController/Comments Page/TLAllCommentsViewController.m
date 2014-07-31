@@ -11,6 +11,7 @@
 @interface TLAllCommentsViewController ()
 {
     TLCommentsListingManager *commentsManager;
+    int deletedCmtIndex;
 }
 
 @end
@@ -18,6 +19,12 @@
 @implementation TLAllCommentsViewController
 
 #pragma mark - View Life Cycle Methods.
+
+-(void)dealloc
+{
+    commentsManager.delegate = nil;
+    commentsManager = nil;
+}
 
 -(void) loadView
 {
@@ -31,20 +38,22 @@
     [self.navigationItem setLeftBarButtonItem:navleftButton];    
     
     baseViewWidth = self.view.frame.size.width;
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
-    {
-        baseViewHeight=self.view.frame.size.height-65;
+    baseViewHeight=self.view.frame.size.height;
+   
+    int adjustHeight = 64;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        adjustHeight = 64;
     }
     else
     {
-        baseViewHeight=self.view.frame.size.height-45;
+        adjustHeight = 44;
     }
     
-    baseView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    baseView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
     baseView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:baseView];
     
-    allCommentsTable=[[UITableView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    allCommentsTable=[[UITableView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
    
     allCommentsTable.delegate=self;
     allCommentsTable.dataSource=self;
@@ -69,6 +78,17 @@
     [self callCommentWebserviceWithstartCount:0 showProgress:YES];
     
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -110,7 +130,7 @@
     }
    
     commentsManager.delegate = self;
-    [commentsManager callService:[TLUserDefaults getCurrentUser].UserId withStartCount:start];
+    [commentsManager callService:self.userID withStartCount:start];
 }
 -(void)backToUserProfile
 {
@@ -123,7 +143,7 @@
     [self callCommentWebserviceWithstartCount:0 showProgress:NO];
 }
 
--(void) loadMoreUsers {
+-(void) loadMoreComments {
     
     if (lastFetchCount < totalUserListCount) {
         isLoadMorePressed = YES;
@@ -215,6 +235,31 @@
     
     return cell;
 }
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(!self.isOtherUser)
+        return YES;
+    else
+        return NO;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(!self.isOtherUser)
+    {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            
+            NETWORK_TEST_PROCEDURE
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            deletedCmtIndex =indexPath.row;
+            UserCommentsModel *comments = [commentsArray objectAtIndex:deletedCmtIndex];
+            TLCommentDeleteManager *commentManager = [[TLCommentDeleteManager alloc]init];
+            [commentManager setDelegate:self];
+            [commentManager deleteComment:comments.CommentId];
+            [self.view endEditing:YES];
+        }
+    }
+}
 
 #pragma mark - UIScrollViewDelegate
 
@@ -224,7 +269,7 @@
     
     if (offset >= 0.0 && offset <= 50.0) {
         
-        [self loadMoreUsers];
+        [self loadMoreComments];
     }
 }
 
@@ -270,6 +315,7 @@
     [commentsArray removeAllObjects];
     [allCommentsTable reloadData];
     isMerchantWebserviceRunning =NO;
+    
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
 }
@@ -280,5 +326,25 @@
     isMerchantWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+}
+
+#pragma  mark - TLCommentDeleteManager Delegate Methods
+
+- (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
+{
+    APP_DELEGATE.isUserProfileEdited = YES;
+    [commentsArray removeObjectAtIndex:deletedCmtIndex];
+    [allCommentsTable reloadData];
+     [[ProgressHud shared] hide];
+}
+- (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+{
+    [UIAlertView alertViewWithMessage:errorMsg];
+     [[ProgressHud shared] hide];
+}
+- (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)loginManager
+{
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+     [[ProgressHud shared] hide];
 }
 @end

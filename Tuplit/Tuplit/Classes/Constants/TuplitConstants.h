@@ -33,9 +33,8 @@
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
 /******** APP Id's ********/
-static NSString * const kClientId = @"120599738577-saq9v1g8an1n67sjc534cabeeape34h1.apps.googleusercontent.com";
-
-#define FacebookAppID            @"1443093035941769"
+#define GOOGLE_CLIENT_ID      @"67542159633-3t664mkheusv6r5fp4qjdq8n241v3rbf.apps.googleusercontent.com";
+#define FACEBOOK_APP_ID       @"1443093035941769" // 664739730282382
 
 #define CLIENTID              @"8acc207693494259fd435dd54915fe9b6465d3a7"
 #define CLIENT_SECRET_ID      @"b915d9fed580e700b8831be8c8ecd0cb205fce57"
@@ -48,6 +47,14 @@ static NSString * const kClientId = @"120599738577-saq9v1g8an1n67sjc534cabeeape3
 #define NETWORK_TEST_PROCEDURE          if (![NetworkConnectivity hasConnectivity]) { [APP_DELEGATE showNoConnectivityAlertAndQuit:NO]; return; }
 
 #define DISMISS_KEYBOARD [self.view endEditing:YES]
+
+///********* LOG HANDLING ***************/
+
+#ifdef DEBUG
+#   define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#   define NSLog(...)
+#endif
 
 /******** WEB SERVICE END-POINTS ********/
 
@@ -77,11 +84,39 @@ static NSString * const kClientId = @"120599738577-saq9v1g8an1n67sjc534cabeeape3
 #define COMMENT_DELETE_URL          RESOURCE_URL @"/v1/comments/%@"
 #define COMMENT_LISTING_URL         RESOURCE_URL @"/v1/comments/"
 #define SET_PIN_URL                 RESOURCE_URL @"/v1/users/setPIN"
+#define ADD_FAVOURITE_URL           RESOURCE_URL @"/v1/merchants/favorites"
+#define VERIFY_PIN_URL              RESOURCE_URL @"/v1/users/verifyPin"
+#define ADD_CREDITCARD_URL          RESOURCE_URL @"/v1/cards/"
+#define DELETE_CREDITCARD_URL       RESOURCE_URL @"/v1/cards/%@"
+#define ORDER_PAYMENT_URL           RESOURCE_URL @"/v1/orders/payment"
+#define TOPUP_URL                   RESOURCE_URL @"/v1/cards/topup"
+#define TRANSFER_URL                RESOURCE_URL @"/v1/users/transfer"
+#define FAVOURITE_LIST_URL          RESOURCE_URL @"/v1/users/favorites"
+#define FRIENDS_LIST_URL            RESOURCE_URL @"/v1/users/friends"
+#define CHECK_FRIENDS_URL           RESOURCE_URL @"/v1/users/checkfriends"
+#define INVITE_FRIENDS_URL          RESOURCE_URL @"/v1/invites/"
 
 /****** Notifications **************/
 
 #define kUpdateUserData         @"kUpdateUserData"
-#define kReloadUserProfile      @"kReloadUserProfile"    
+#define kReloadUserProfile      @"kReloadUserProfile"  
+#define kCreditCardAdded        @"kCreditCardAdded"
+#define kFBWelcomeScreen        @"kFBWelcomeScreen"
+#define kWelcomeScreenSlideShowStarter @"kWelcomeScreenSlideShowStarter"
+#define kFBSignupScreen         @"kFBSignupScreen"
+
+
+/****** Format Filters **************/
+#define CARDAMEX            @"#### ###### #####"
+#define CARDDEFAULT         @"#### #### #### ####"
+#define CARDNORMAL          @"################"
+#define DATEFORMAT          @"##/##"
+#define DATENORMAL          @"####"
+#define CVVFORMAT           @"###"
+#define PHONE_NUM_FORMAT    @"(###)###-####"
+
+#define CAEDAMEXEXP      @"^3[47][0-9]{5,}$"
+
 
 @interface TuplitConstants : NSObject
 NSString *LString(NSString* key);
@@ -94,7 +129,7 @@ NSString *LString(NSString* key);
 + (NSNumberFormatter*) getCurrencyFormat;
 + (NSString*)getOrderDate:(NSString*)date;
 + (NSString*)getOrderDateTime:(NSString*)date;
-
++ (NSMutableString*)filteredPhoneStringFromString:(NSString*)string withFilter:(NSString*)filter;
 + (void) userLogout;
 
 @end

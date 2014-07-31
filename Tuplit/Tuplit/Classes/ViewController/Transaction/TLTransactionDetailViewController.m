@@ -19,6 +19,10 @@
     UILabel *totalTitleLbl;
     UIImageView *lineImgView3;
     UILabel *transactionTitleLbl;
+    
+    TLTransactionListingManager *transactionManager;
+    int totalUserListCount,lastFetchCount;
+    BOOL isLoadMorePressed,isPullRefreshPressed,isMerchantWebserviceRunning;
 }
 
 @end
@@ -28,6 +32,11 @@
 
 #pragma mark - View Life Cycle Methods
 
+-(void)dealloc
+{
+    transactionManager.delegate = nil;
+    transactionManager = nil;
+}
 -(void) loadView
 {
     [super loadView];
@@ -37,9 +46,6 @@
     UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
     [back backButtonWithTarget:self action:@selector(backUserProfileAction)];
     [self.navigationItem setLeftBarButtonItem:back];
-    
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithTitle:LString(@"NEXT") style:UIBarButtonItemStylePlain target:self action:@selector(nextViewController:)];
-    [self.navigationItem setRightBarButtonItem:navleftButton];
     
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
@@ -139,10 +145,22 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self callServiceWithorderID:self.orderID];
+    lastFetchCount = 0;
+    [self performSelectorInBackground:@selector(transactionListingWebserviceWithstartCount) withObject:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -162,11 +180,28 @@
     [orderlistManger callService:_orderID];
 }
 
+-(void)transactionListingWebserviceWithstartCount
+{
+    NETWORK_TEST_PROCEDURE
+    
+    if (isMerchantWebserviceRunning) {
+        return;
+    }
+    
+    isMerchantWebserviceRunning = YES;
+    
+    if (transactionManager==nil) {
+        transactionManager = [[TLTransactionListingManager alloc]init];
+    }
+    transactionManager.delegate = self;
+    [transactionManager callService:self.userID withStartCount:lastFetchCount];
+}
+
 -(void)updateOrderDetails
 {
     tableHeight=orderdetail.Products.count * CELL_HEIGHT;
     detailImgView.frame = CGRectMake(5, 20,baseViewWidth-10, 254 + tableHeight);
-    merchantNameLbl.text = orderdetail.CompanyName;
+    merchantNameLbl.text = [orderdetail.CompanyName stringWithTitleCase];
     
     merchantAddressLbl.text = orderdetail.Address;
     float height = [merchantAddressLbl.text heigthWithWidth:merchantAddressLbl.frame.size.width andFont:merchantAddressLbl.font];
@@ -194,6 +229,7 @@
     [itemsListTable reloadData];
     
      scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(detailImgView.frame) + 50);
+    lastFetchCount = transActionList.count;
     
 }
 
@@ -214,6 +250,19 @@
     {
         RecentActivityModel* transaction = [transActionList objectAtIndex:index];
         [self callServiceWithorderID:transaction.OrderId];
+        
+        if([transActionList count]-1==index)
+        {
+            if (lastFetchCount<totalUserListCount) {
+                [self performSelectorInBackground:@selector(transactionListingWebserviceWithstartCount) withObject:nil];
+                isLoadMorePressed = YES;
+            }
+            else
+            {
+                self.navigationItem.rightBarButtonItem = nil;
+            }
+        }
+        
     }
 }
 
@@ -346,6 +395,47 @@
 - (void)orderDetailsManagerFailed:(TLOrderListingManager *)orderDetailsManager
 {
     [[ProgressHud shared] hide];
+}
+
+#pragma  mark - TLTransactionListingManager Delegate Methods
+- (void)transactionListingManagerSuccess:(TLTransactionListingManager *)trancactionListingManager withTrancactionListingManager:(NSArray*)_transactionList;
+{
+  
+    if (isLoadMorePressed) {
+        [transActionList addObjectsFromArray:_transactionList];
+    }
+    else
+    {
+        transActionList = [NSMutableArray arrayWithArray:_transactionList];
+        lastFetchCount = 0;
+        if(transActionList.count>1&&index!=transActionList.count-1)
+        {
+            UIBarButtonItem *backBtn = [[UIBarButtonItem alloc] init];
+            [backBtn buttonWithTitle:LString(@"NEXT") withTarget:self action:@selector(nextViewController:)];
+            [self.navigationItem setRightBarButtonItem:backBtn];
+        }
+    }
+    
+    totalUserListCount = trancactionListingManager.totalCount;
+    
+    lastFetchCount = lastFetchCount + trancactionListingManager.listedCount;
+    
+    
+    isPullRefreshPressed = NO;
+    isLoadMorePressed = NO;
+    isMerchantWebserviceRunning = NO;
+}
+- (void)transactionListingManager:(TLTransactionListingManager *)trancactionListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+{
+    [UIAlertView alertViewWithMessage:errorMsg];
+    isMerchantWebserviceRunning =NO;
+  
+}
+- (void)transactionListingManagerFailed:(TLTransactionListingManager *)trancactionListingManager
+{
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    isMerchantWebserviceRunning =NO;
+
 }
 
 @end

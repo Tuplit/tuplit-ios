@@ -13,6 +13,8 @@
 {
     UITableView *allTransactionTableView;
     TLTransactionListingManager *transactionManager;
+    UILabel *errorLbl;
+    UIView *errorView;
 }
 
 @end
@@ -21,6 +23,12 @@
 
 #pragma mark - View Life Cycle Methods.
 
+-(void)dealloc
+{
+    transactionManager.delegate = nil;
+    transactionManager = nil;
+}
+
 -(void) loadView
 {
     [super loadView];
@@ -28,17 +36,27 @@
     [self.navigationItem setTitle:LString(@"ALL_TRANSACTION")];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithImage:getImage(@"BackArrow", NO) style:UIBarButtonItemStylePlain target:self action:@selector(backToUserProfile)];
-    [self.navigationItem setLeftBarButtonItem:navleftButton];    
+    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+    [navleftButton buttonWithIcon:getImage(@"BackArrow", NO) target:self action:@selector(backToUserProfile) isLeft:NO];
+    [self.navigationItem setLeftBarButtonItem:navleftButton];
     
     baseViewWidth = self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
     
-    baseView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    int adjustHeight = 64;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        adjustHeight = 64;
+    }
+    else
+    {
+        adjustHeight = 44;
+    }
+    
+    baseView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
     baseView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:baseView];
     
-    allTransactionTableView=[[UITableView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-65)];
+    allTransactionTableView=[[UITableView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
     allTransactionTableView.delegate=self;
     allTransactionTableView.dataSource=self;
     allTransactionTableView.backgroundColor=[UIColor clearColor];
@@ -58,18 +76,27 @@
     [activity startAnimating];
     [cellContainer addSubview:activity];
     
-    merchantIconArray=[NSMutableArray arrayWithObjects:@"burgerking.png",@"McDonalds.png",@"burgerking.png",@"burgerking.png",@"McDonalds.png",@"burgerking.png",@"burgerking.png",@"McDonalds.png",@"McDonalds.png",@"burgerking.png",@"burgerking.png",@"McDonalds.png", nil];
+    errorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
+    [errorView setBackgroundColor:[UIColor whiteColor]];
+    [baseView addSubview:errorView];
     
-     merchantNameArray=[NSMutableArray arrayWithObjects:@"Burger King New York",@"McDonald's Barcelona",@"Burger King New York",@"Burger King New York",@"McDonald's Barcelona",@"Burger King New York",@"McDonald's Barcelona",@"Burger King New York",@"McDonald's Barcelona",@"Burger King New York",@"McDonald's Barcelona",@"Burger King New York", nil];
-    
-     transactionDateArray=[NSMutableArray arrayWithObjects:@"06/10/2014",@"05/10/2014",@"06/10/2014",@"06/10/2014",@"05/10/2014",@"06/10/2014",@"06/10/2014",@"05/10/2014",@"05/10/2014",@"06/10/2014",@"06/10/2014",@"05/10/2014", nil];
-    
-     numberOfItemArray=[NSMutableArray arrayWithObjects:@"3 items",@"Big Mac Menu",@"3 items",@"3 items",@"Big Mac Menu",@"3 items",@"Big Mac Menu",@"3 items",@"Big Mac Menu",@"3 items",@"Big Mac Menu",@"3 items", nil];
-    
-     totalAmountArray=[NSMutableArray arrayWithObjects:@"-$10.00",@"-$2.00",@"-$10.00",@"-$10.00",@"-$2.00",@"-$10.00",@"-$10.00",@"-$2.00",@"-$2.00",@"-$10.00",@"-$10.00",@"-$2.00", nil];
-    
-    
+    errorLbl = [[UILabel alloc] initWithFrame:CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100)];
+    [errorLbl setTextAlignment:NSTextAlignmentCenter];
+    [errorLbl setTextColor:[UIColor lightGrayColor]];
+    errorLbl.numberOfLines = 0;
+    [errorView addSubview:errorLbl];
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -104,7 +131,7 @@
         transactionManager = [[TLTransactionListingManager alloc]init];
     }
     transactionManager.delegate = self;
-    [transactionManager callService:@"" withStartCount:start];
+    [transactionManager callService:self.userID withStartCount:start];
 }
 
 -(void) refreshTableView:(id) sender {
@@ -113,7 +140,7 @@
     [self transactionListingWebserviceWithstartCount:0 showProgress:NO];
 }
 
--(void) loadMoreUsers {
+-(void) loadMoreTransAction {
     
     if (lastFetchCount < totalUserListCount) {
         isLoadMorePressed = YES;
@@ -196,7 +223,7 @@
     merchantIconImgView.imageURL = [NSURL URLWithString:transaction.MerchantIcon];
     
     UILabel *merchantNameLbl=(UILabel *) [cell.contentView viewWithTag:1001];
-    merchantNameLbl.text=transaction.CompanyName;
+    merchantNameLbl.text=[transaction.CompanyName stringWithTitleCase];
     
     UILabel *numberofItemLbl=(UILabel *) [cell.contentView viewWithTag:1002];
     if(transaction.TotalItems.doubleValue>1)
@@ -219,8 +246,8 @@
 {
     TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
      RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
+    transactionDetail.userID = self.userID;
     transactionDetail.orderID = transaction.OrderId;
-    transactionDetail.transActionList = transactionList;
     transactionDetail.index = indexPath.row;
     [self.navigationController pushViewController:transactionDetail animated:YES];
 }
@@ -233,13 +260,14 @@
     
     if (offset >= 0.0 && offset <= 50.0) {
         
-        [self loadMoreUsers];
+        [self loadMoreTransAction];
     }
 }
 
 #pragma  mark - TLTransactionListingManager Delegate Methods
 - (void)transactionListingManagerSuccess:(TLTransactionListingManager *)trancactionListingManager withTrancactionListingManager:(NSArray*)_transactionList;
 {
+    errorView.hidden = YES;
     if (isLoadMorePressed) {
         
         [transactionList addObjectsFromArray:_transactionList];
@@ -277,6 +305,10 @@
 }
 - (void)transactionListingManager:(TLTransactionListingManager *)trancactionListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
+    errorView.hidden = NO;
+    [UIAlertView alertViewWithMessage:errorMsg];
+    errorLbl.text = errorMsg;
+    
     [[ProgressHud shared] hide];
     [transactionList removeAllObjects];
     [allTransactionTableView reloadData];
@@ -286,6 +318,10 @@
 }
 - (void)transactionListingManagerFailed:(TLTransactionListingManager *)trancactionListingManager
 {
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    errorView.hidden = NO;
+    errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");
+    
     [[ProgressHud shared] hide];
     [transactionList removeAllObjects];
     [allTransactionTableView reloadData];

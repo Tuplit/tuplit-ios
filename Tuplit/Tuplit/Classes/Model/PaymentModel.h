@@ -14,5 +14,6 @@
 @property (nonatomic, copy) NSString * PaymentAmount;
 @property (nonatomic, copy) NSString * CurrentBalance;
 @property (nonatomic, copy) NSString * AllowPayment;
+@property (nonatomic, copy) NSString * Message;
 
 @end

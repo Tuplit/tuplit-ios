@@ -45,6 +45,7 @@
 @property (nonatomic, copy) NSString * Category;
 @property (nonatomic, copy) NSString * OrderCount;
 @property (nonatomic, copy) NSString * OrderedFriendsCount;
+@property (nonatomic, copy) NSString * IsGoldenTag;
 
 @property (nonatomic, copy) NSArray * OrderedFriendsList;
 @property (nonatomic, copy) NSArray * Comments;

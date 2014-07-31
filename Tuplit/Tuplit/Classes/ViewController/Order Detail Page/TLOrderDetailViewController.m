@@ -8,6 +8,9 @@
 
 #import "TLOrderDetailViewController.h"
 
+#define AcceptOder @"1"
+#define RecjectOrder @"2"
+
 
 @interface TLOrderDetailViewController ()
 {
@@ -21,6 +24,9 @@
     UILabel *totalTitleLbl;
     UIImageView *lineImgView3;
     UILabel *transactionTitleLbl;
+    
+    UILabel *informativeLbl;
+
     
     UIButton *acceptBtn;
     UIButton *rejectBtn;
@@ -49,8 +55,17 @@
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
     
-    UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,baseViewWidth,baseViewHeight)];
-    baseView.backgroundColor=[UIColor clearColor];
+    int adjustHeight = 64;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        adjustHeight = 64;
+    }
+    else
+    {
+        adjustHeight = 44;
+    }
+    
+    UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,baseViewWidth,baseViewHeight-adjustHeight)];
+    baseView.backgroundColor=[UIColor colorWithPatternImage:getImage(@"bg", NO)];
     [self.view addSubview:baseView];
     
     scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, baseView.width, baseView.height)];
@@ -59,8 +74,18 @@
     scrollView.backgroundColor=[UIColor clearColor];
     [baseView addSubview:scrollView];
     
+    informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(32,0,255, 92)];
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        informativeLbl.textAlignment=NSTextAlignmentCenter;
+    informativeLbl.numberOfLines=0;
+    informativeLbl.textColor=UIColorFromRGB(0X333333);
+    informativeLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:14.0];
+    informativeLbl.backgroundColor=[UIColor clearColor];
+    informativeLbl.text = LString(@"ORDER_INFO_TXT");
+    [scrollView addSubview:informativeLbl];
+    
     UIImage *detailImg=[UIImage imageNamed:@"receipt.png"];
-    detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, 20,baseView.width-10, 254 + tableHeight)];
+    detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseView.width-10, 270 + tableHeight)];
     detailImgView.image=detailImg;
     detailImgView.backgroundColor=[UIColor clearColor];
     [detailImgView setUserInteractionEnabled:YES];
@@ -78,6 +103,7 @@
     merchantAddressLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     merchantAddressLbl.textColor=UIColorFromRGB(0x666666);
     merchantAddressLbl.backgroundColor=[UIColor clearColor];
+    merchantAddressLbl.numberOfLines=0;
     [detailImgView addSubview:merchantAddressLbl];
     
     dateTimeLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMinX(merchantNameLbl.frame),CGRectGetMaxY(merchantAddressLbl.frame)+10,CGRectGetWidth(merchantNameLbl.frame),20)];
@@ -120,13 +146,13 @@
     totalAmtLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:totalAmtLbl];
     
-    lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
-    lineImgView3.image=[UIImage imageNamed:@"line.png"];
-    lineImgView3.backgroundColor=[UIColor clearColor];
-    [detailImgView addSubview:lineImgView3];
+//    lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
+//    lineImgView3.image=[UIImage imageNamed:@"line.png"];
+//    lineImgView3.backgroundColor=[UIColor clearColor];
+//    [detailImgView addSubview:lineImgView3];
     
     acceptBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    acceptBtn.frame=CGRectMake(14, CGRectGetMaxY(lineImgView3.frame)+14, detailImgView.width-28, 45);
+    acceptBtn.frame=CGRectMake(14, CGRectGetMaxY(totalAmtLbl.frame)+25, detailImgView.width-28, 45);
     [acceptBtn setTitle:LString(@"ACCEPT_ORDER") forState:UIControlStateNormal];
     acceptBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
     acceptBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -137,7 +163,7 @@
     [detailImgView addSubview:acceptBtn];
     
     rejectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    rejectBtn.frame= CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+45, detailImgView.width-28, 45);
+    rejectBtn.frame= CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+15, detailImgView.width-28, 45);
     [rejectBtn setTitle:LString(@"REJECT_ORDER") forState:UIControlStateNormal];
     rejectBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
     rejectBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -148,6 +174,16 @@
     
     scrollView.contentSize=CGSizeMake(baseView.width,CGRectGetMaxY(baseView.frame)+((numberOfCell-8)*CELL_HEIGHT));
     
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
 }
 
 - (void)viewDidLoad
@@ -176,7 +212,7 @@
 -(void)updateOrderDetails
 {
     tableHeight=orderdetail.Products.count * CELL_HEIGHT;
-    detailImgView.frame = CGRectMake(5, 20,baseViewWidth-10, 254 + tableHeight);
+    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, 270 + tableHeight);
     merchantNameLbl.text = orderdetail.CompanyName;
     
     merchantAddressLbl.text = orderdetail.Address;
@@ -197,33 +233,28 @@
     float titLblWidth = [totalAmtLbl.text widthWithFont:totalAmtLbl.font];
     totalAmtLbl.frame = CGRectMake((itemsListTable.frame.size.width - titLblWidth) + 2, CGRectGetMaxY(lineImgView2.frame) + 8, titLblWidth, CELL_HEIGHT);
     
-    lineImgView3.frame = CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3);
-    
-    acceptBtn.frame = CGRectMake(20, CGRectGetMaxY(lineImgView3.frame)+14, 270, 45);
-    rejectBtn.frame = CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+45, detailImgView.width-28, 45);
+    acceptBtn.frame = CGRectMake(20, CGRectGetMaxY(totalAmtLbl.frame)+25, 270, 45);
+    rejectBtn.frame = CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+15, detailImgView.width-28, 45);
     [itemsListTable reloadData];
-    scrollView.contentSize=CGSizeMake(baseViewWidth,baseViewHeight+((numberOfCell-8)*CELL_HEIGHT));
+     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(rejectBtn.frame) + 40);
     
 }
 -(void)acceptOrderAction
 {
-    NSDictionary *queryParams = @{
-                                  @"OrderId"   : NSNonNilString(orderdetail.OrderId),
-                                  @"OrderStatus" :NSNonNilString(@"1"),
-                                  };
-    NETWORK_TEST_PROCEDURE
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-
-    orderManager = [[TLOrderManager alloc]init];
-    orderManager.delegate = self;
-    [orderManager processOrders:queryParams];
+    TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+    verifyPINVC.isverifyPin = YES;
+    verifyPINVC.delegate = self;
+    verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 -(void)RejectOrderAction
 {
     NSDictionary *queryParams = @{
                                 @"OrderId"   : NSNonNilString(orderdetail.OrderId),
-                                @"OrderStatus" :NSNonNilString(@"2"),
+                                @"OrderStatus" :NSNonNilString(RecjectOrder),
                                 };
     
     NETWORK_TEST_PROCEDURE
@@ -349,6 +380,20 @@
     
     return cell;
 }
+#pragma  mark - TLPinCodeVerifiedDelegate
+-(void)pincodeVerified
+{
+    NSDictionary *queryParams = @{
+                                  @"OrderId"   : NSNonNilString(orderdetail.OrderId),
+                                  @"OrderStatus" :NSNonNilString(AcceptOder),
+                                  };
+    NETWORK_TEST_PROCEDURE
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    
+    orderManager = [[TLOrderManager alloc]init];
+    orderManager.delegate = self;
+    [orderManager processOrders:queryParams];
+}
 
 #pragma  mark - TLOrderDetailsManager Delegate Methods
 
@@ -377,6 +422,8 @@
     TLOrderConformViewController *orderConfromView = [[TLOrderConformViewController alloc]init];
     orderConfromView.orderStatus = orderStatus;
     orderConfromView.orderID = _orderID;
+    orderConfromView.merchatID = orderdetail.MerchantId;
+    orderConfromView.merchatName = orderdetail.CompanyName;
     [self.navigationController pushViewController:orderConfromView animated:YES];
     
     [[ProgressHud shared] hide];

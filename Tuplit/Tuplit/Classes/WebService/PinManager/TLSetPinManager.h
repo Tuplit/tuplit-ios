@@ -10,7 +10,7 @@
 @class TLSetPinManager;
 @protocol TLSetPinManagerDelegate <NSObject>
 @optional
-- (void)setPinManagerSuccess:(TLSetPinManager *)pinManager updateSuccessfullWithUser:(UserModel *)user;
+- (void)setPinManagerSuccess:(TLSetPinManager *)pinManager updateSuccessfullWithUser:(NSString *)notification;
 - (void)setPinManager:(TLSetPinManager *)pinManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg;
 - (void)setPinManagerFailed:(TLSetPinManager *)pinManager;
 @end

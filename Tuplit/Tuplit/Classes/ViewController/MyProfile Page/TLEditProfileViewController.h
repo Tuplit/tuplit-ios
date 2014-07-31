@@ -15,11 +15,17 @@
 #import "PhotoMoveAndScaleController.h"
 #import "TLEditUpdateManager.h"
 #import "UserModel.h"
+#import "TLCreditCardDeleteManager.h"
 
 #define PROFILE_CELL_HEIGHT 52
 #define HEADER_HEIGHT 40
 
-@interface TLEditProfileViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate, EditProfileCellProtocol,TLCommentDeleteManagerDelegate,TLUserDetailsManagerDelegate,PhotoMoveAndScaleControllerDelegate,TLEditUpdateManagerDelegate,UINavigationControllerDelegate>
+#define kFirstName @"kFirstName"
+#define kLastName @"kLastName"
+#define kPhoto @"kPhoto"
+#define kTPhoto @"kTPhoto"
+
+@interface TLEditProfileViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate, EditProfileCellProtocol,TLCommentDeleteManagerDelegate,TLUserDetailsManagerDelegate,PhotoMoveAndScaleControllerDelegate,TLEditUpdateManagerDelegate,TLCreditCardDeleteManagerDelegate>
 {
     
     UITableView *editProfileTable;
@@ -28,6 +34,7 @@
     NSIndexPath *swipeIndexPath;
 
     NSDictionary *mainDict;
+    NSMutableDictionary *nameDict;
     NSArray *sectionHeader;
 }
 @property(nonatomic,retain) UserDetailModel *userDetail;

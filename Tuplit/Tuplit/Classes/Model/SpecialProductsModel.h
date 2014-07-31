@@ -16,6 +16,9 @@
 @property (nonatomic, copy) NSString * Price;
 @property (nonatomic, copy) NSString * DiscountPrice;
 @property (nonatomic, copy) NSString * DiscountTier;
+@property (nonatomic, copy) NSString * DiscountApplied;
+@property (nonatomic, copy) NSString * Status;
+@property (nonatomic, copy) NSString * Ordering;
 
 @property (nonatomic, copy) NSString * quantity;
 

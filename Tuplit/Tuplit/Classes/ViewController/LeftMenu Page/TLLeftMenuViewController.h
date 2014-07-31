@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "TLUserProfileViewController.h"
+#import "TLOtherUserProfileViewController.h"
+
 @interface TLLeftMenuViewController : UITableViewController<UIScrollViewDelegate> {
     
     UILabel *userNameLbl, *creditBalanceLbl;
     EGOImageView *profileImageView;
-    NSArray *menuArray;
+    NSMutableArray *menuArray;
+    IBOutlet UITableView *mTableView;
     
     NSNumberFormatter *numberFormatter;
 }

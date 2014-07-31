@@ -17,6 +17,10 @@
 
 #pragma mark - View Life Cycle Methods.
 
+-(void)dealloc
+{
+    _delegate = nil;
+}
 -(void) loadView
 {
     [super loadView];
@@ -39,6 +43,7 @@
     
     scrollView=[[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
     scrollView.userInteractionEnabled=YES;
+    scrollView.delaysContentTouches = NO;
     [baseView addSubview:scrollView];
     
     codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseView.frame.size.width, 120)];
@@ -74,6 +79,8 @@
         numberBtn.tag = j + 110;
         [numberBtn addTarget:self action:@selector(numberPadAction:) forControlEvents:UIControlEventTouchUpInside];
         [numberBtn setImage:getImage([normalNumberArray objectAtIndex:j-1], NO) forState:UIControlStateNormal];
+        [numberBtn setImage:getImage([selectedNumberArray objectAtIndex:j-1],NO) forState:UIControlStateSelected];
+        [numberBtn setImage:getImage([selectedNumberArray objectAtIndex:j-1],NO) forState:UIControlStateHighlighted];
        
         numberBtn.backgroundColor=[UIColor clearColor];
         [numberPadView addSubview:numberBtn];
@@ -98,6 +105,17 @@
     clickCount=0;
     isConformPinCode = NO;
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -112,14 +130,14 @@
 
 -(void) closeAction : (id) sender
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void) numberPadAction : (UIButton *) button
 {
    
-        UIButton *clickedBtn = (UIButton *)[numberPadView viewWithTag:button.tag];
-        
+//        UIButton *clickedBtn = (UIButton *)[numberPadView viewWithTag:button.tag];
+    
         int value;
         
         if (button.tag == 120) 
@@ -131,35 +149,48 @@
             value = button.tag - 110;
         }
         
-        [clickedBtn setImage:getImage([selectedNumberArray objectAtIndex:button.tag - 111], NO) forState:UIControlStateNormal];
+//        [clickedBtn setImage:getImage([selectedNumberArray objectAtIndex:button.tag - 111], NO) forState:UIControlStateNormal];
         pinCode = [pinCode stringByAppendingString:[NSString stringWithFormat:@"%d", value]];
         count++;
         [self fillCodeCircles:count];
     
     if (pinCode.length == 4)
     {
-        if(!isConformPinCode)
+        if(!isPinVerfied)
         {
-            self.pinCodeValue = pinCode;
-            [self.navigationItem setTitle:LString(@"CONFORM_PIN_CODE")];
-            [self resetToClear:nil];
+            NETWORK_TEST_PROCEDURE
+            
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            
+            TLVerifyPinManager *setPinCode = [[TLVerifyPinManager alloc]init];
+            setPinCode.delegate = self;
+            [setPinCode verifyPinCode:pinCode];
         }
         else
         {
-            if([pinCode isEqualToString:self.pinCodeValue])
+            if(!isConformPinCode)
             {
-                NETWORK_TEST_PROCEDURE
-                
-                [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-                
-                TLSetPinManager *setPinCode = [[TLSetPinManager alloc]init];
-                setPinCode.delegate = self;
-                [setPinCode updatePinCode:pinCode];
+                self.pinCodeValue = pinCode;
+                [self.navigationItem setTitle:LString(@"CONFORM_PIN_CODE")];
+                [self resetToClear:YES];
             }
             else
             {
-                [UIAlertView alertViewWithMessage:LString(@"PIN_CODE_MISMATCH")];
-                [self resetToClear:nil];
+                if([pinCode isEqualToString:self.pinCodeValue])
+                {
+                    NETWORK_TEST_PROCEDURE
+                    
+                    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+                    
+                    TLSetPinManager *setPinCode = [[TLSetPinManager alloc]init];
+                    setPinCode.delegate = self;
+                    [setPinCode updatePinCode:pinCode];
+                }
+                else
+                {
+                    [UIAlertView alertViewWithMessage:LString(@"PIN_CODE_MISMATCH")];
+                    [self resetToClear:YES];
+                }
             }
         }
     }
@@ -181,7 +212,7 @@
     }
 }
 
--(void)resetToClear : (id) sender
+-(void)resetToClear:(BOOL)isConformPin
 {
     pinCode=@"";
     clickCount = 0;
@@ -192,27 +223,80 @@
     }
     count = 0;
     [self unfillCodeCircles];
-    isConformPinCode = YES;
+    isConformPinCode = isConformPin;
 }
 
 #pragma mark - TLSetPinManager Delegate Methods
 
-- (void)setPinManagerSuccess:(TLSetPinManager *)pinManager updateSuccessfullWithUser:(UserModel *)user
+- (void)setPinManagerSuccess:(TLSetPinManager *)pinManager updateSuccessfullWithUser:(NSString *)notification
 {
     [[ProgressHud shared] hide];
     [self closeAction:nil];
+    [UIAlertView alertViewWithMessage:LString(@"PINCODE_UPDATED")];
 }
 - (void)setPinManager:(TLSetPinManager *)pinManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
      [self closeAction:nil];
-
 }
 - (void)setPinManagerFailed:(TLSetPinManager *)pinManager
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-     [self closeAction:nil];
+    [self closeAction:nil];
 }
+
+#pragma mark - TLVerifyPinManager Delegate Methods
+
+- (void)verifyPinManagerSuccessWithValue:(NSString*)pinType Withnotification:(NSString *)notification
+{
+    if(!isPinVerfied)
+    {
+        if(pinType.intValue)
+        {
+            isPinVerfied = YES;
+            if(self.isverifyPin)
+            {
+                if(_delegate)
+                    [_delegate pincodeVerified];
+                [self closeAction:nil];
+                self.isverifyPin = NO;
+            }
+            else
+            {
+                [self.navigationItem setTitle:LString(@"SET_NEW_PIN_CODE")];
+                [self resetToClear:NO];
+                [[ProgressHud shared] hide];
+            }
+        }
+        else
+        {
+            [UIAlertView alertViewWithMessage:notification];
+            [self resetToClear:NO];
+            [[ProgressHud shared] hide];
+        }
+        
+        
+    }
+    else
+    {
+        
+    }
+}
+- (void)verifyPinManager:(TLVerifyPinManager *)pinManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
+{
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+    [self closeAction:nil];
+    self.isverifyPin = NO;
+}
+- (void)verifyPinManagerFailed:(TLVerifyPinManager *)pinManager
+{
+    [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [self closeAction:nil];
+    self.isverifyPin = NO;
+}
+
 @end

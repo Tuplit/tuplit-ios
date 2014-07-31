@@ -211,8 +211,9 @@
     [baseView addSubview:rightBorder];
     
 	UIToolbar *toolbar = [[UIToolbar alloc] init];
-	[toolbar setBarStyle:UIActionSheetStyleBlackTranslucent];
+	[toolbar setBarStyle:UIBarStyleDefault];
 	toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    toolbar.backgroundColor =[UIColor blackColor];
 	
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
 	

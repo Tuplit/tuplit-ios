@@ -15,14 +15,20 @@
     [encoder encodeObject:self.userModel forKey:@"Details"];
     [encoder encodeObject:self.comments forKey:@"comments"];
     [encoder encodeObject:self.Orders forKey:@"Orders"];
+    [encoder encodeObject:self.UserLinkedCards forKey:@"UserLinkedCards"];
+     [encoder encodeObject:self.UserLinkedCards forKey:@"FriendsOrders"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	
     if ((self = [super init])) {
+        
         self.userModel = [decoder decodeObjectForKey:@"Details"];
         self.comments = [decoder decodeObjectForKey:@"comments"];
         self.Orders = [decoder decodeObjectForKey:@"Orders"];
+        self.UserLinkedCards = [decoder decodeObjectForKey:@"UserLinkedCards"];
+        self.UserLinkedCards = [decoder decodeObjectForKey:@"FriendsOrders"];
+        
     }
     return self;
 }

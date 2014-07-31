@@ -56,6 +56,7 @@
     [baseView addSubview:editProfileTable];
     
     user = [[UserModel alloc]init];
+    nameDict = [[NSMutableDictionary alloc]init];
 }
 
 - (void)viewDidLoad
@@ -74,6 +75,11 @@
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+    
+    if (APP_DELEGATE.isUserProfileEdited) {
+        APP_DELEGATE.isUserProfileEdited = NO;
+        [self callService];
     }
 }
 
@@ -95,25 +101,49 @@
     
 }
 
+//   Credit card delete service
+-(void)callCardDeleteService
+{
+    NETWORK_TEST_PROCEDURE
+    
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    
+    TLCreditCardDeleteManager *cardDeletemanager = [[TLCreditCardDeleteManager alloc]init];
+    cardDeletemanager.delegate = self;
+    [cardDeletemanager deleteCreditCard:@""];
+}
+
 -(void)updateTabledata
 {
     self.user.PinCode = [TLUserDefaults getCurrentUser].PinCode;
-    NSArray *cardDetailsArray = [[NSArray alloc] init];
-    NSArray *_commentsArray = [[NSArray alloc] init];
-    //    if(usermodel.CreditCardDetails.count>0)
-    //    {
-    //        cardDetailsArray = usermodel.CreditCardDetails;
-    //    }
+    NSArray *recentActivityArray = [[NSArray alloc] init];
+    NSArray *commentsArray = [[NSArray alloc] init];
+    NSArray *UserLinkedCardsArray = [[NSArray alloc]init];
+    
+    if(self.userDetail.UserLinkedCards.count>0)
+    {
+        UserLinkedCardsArray = self.userDetail.UserLinkedCards;
+    }
+    if(self.userDetail.Orders.count>0)
+    {
+        recentActivityArray = self.userDetail.Orders;
+    }
     
     if(self.userDetail.comments.count>0)
     {
-        _commentsArray = self.userDetail.comments;
+        commentsArray = self.userDetail.comments;
     }
     
     mainDict = @{
-                 @"Credit Cards": cardDetailsArray,
-                 @"My Comments": _commentsArray,
+                 @"My Comments":commentsArray,
+                 @"Credit Cards":UserLinkedCardsArray,
                  };
+    
+     UserModel *usermodel = [TLUserDefaults getCurrentUser];
+     [nameDict setValue:usermodel.FirstName forKey:kFirstName];
+     [nameDict setValue:usermodel.LastName forKey:kLastName];
+     [nameDict setValue:usermodel.Photo forKey:kPhoto];
+    
     sectionHeader = [NSArray arrayWithObjects:@"User Details",@"Credit Cards",@"My Comments", nil];
     [editProfileTable reloadData];
 }
@@ -121,6 +151,7 @@
 -(void) addCreditCardAction
 {
     TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+    addCrCardViewController.viewController = self;
     [self.navigationController pushViewController:addCrCardViewController animated:YES];
 }
 
@@ -134,7 +165,7 @@
         NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
         [nc postNotificationName:@"UPDATE_EDITED_DETAILS" object:self userInfo:userInfo];
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)didSwipeRightInCellWithIndexPath:(NSIndexPath *)indexPath
@@ -154,14 +185,14 @@
     UITextField *lastNameTxt=(UITextField *) [cell.contentView viewWithTag:3001];
     EGOImageView *profileImgView=(EGOImageView *) [cell.contentView viewWithTag:3002];
     
-    if(firstNameTxt.text.length == 0)
+    if([[[nameDict valueForKey:kFirstName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]==0)
         [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
-    else if(lastNameTxt.text.length == 0)
+    if([[[nameDict valueForKey:kLastName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]== 0)
         [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
     else
     {
         self.user.FirstName = firstNameTxt.text;
-        self.user.LastName = lastNameTxt.text;
+        self.user.LastName =  lastNameTxt.text;
         self.user.Email = [TLUserDefaults getCurrentUser].Email;
         
         if(isPictureUpdated)
@@ -181,7 +212,10 @@
 {
     TLPinCodeViewController *pincodeVC = [[TLPinCodeViewController alloc]init];
     pincodeVC.navigationTitle = LString(@"ENTER_PIN_CODE");
-    [self.navigationController pushViewController:pincodeVC animated:YES];
+    pincodeVC.isverifyPin = NO;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:pincodeVC];
+    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)takePhoto {
@@ -238,7 +272,10 @@
     imagePicker = [[UIImagePickerController alloc] init];
     imagePicker.delegate=self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    [[imagePicker navigationBar] setTintColor:[UIColor whiteColor]];
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        [[imagePicker navigationBar] setTintColor:[UIColor whiteColor]];
+    else
+        [[imagePicker navigationBar] setTintColor:APP_DELEGATE.defaultColor];
     [[imagePicker navigationBar] setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
     
     imagePicker.allowsEditing = NO;
@@ -302,10 +339,20 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if([[mainDict valueForKey:[sectionHeader objectAtIndex:section]]count]>0 && section!=0)
-        return HEADER_HEIGHT;
-    else
+    if (section == 0) {
         return 0;
+    }
+    else if(section == 1) {
+        
+        return HEADER_HEIGHT;
+    }
+    else
+    {
+        if([[mainDict valueForKey:[sectionHeader objectAtIndex:section]]count] > 0)
+            return HEADER_HEIGHT;
+        else
+            return 0;
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -369,10 +416,18 @@
         UITapGestureRecognizer *takePhotoGesture =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePhoto)];
         [profileImgView addGestureRecognizer:takePhotoGesture];
         
-        UserModel *usermodel = [TLUserDefaults getCurrentUser];
-        firstNameTxt.text = usermodel.FirstName;
-        lastNameTxt.text = usermodel.LastName;
-        profileImgView.imageURL = [NSURL URLWithString:usermodel.Photo];
+        
+        firstNameTxt.text = [nameDict valueForKeyPath:kFirstName];
+        firstNameTxt.delegate = self;
+        
+        lastNameTxt.text = [nameDict valueForKey:kLastName];
+        lastNameTxt.delegate = self;
+        
+        if([[nameDict valueForKey:kTPhoto] isKindOfClass:[UIImage class]])
+            profileImgView.image = (UIImage*)[nameDict valueForKey:kTPhoto];
+        else
+            profileImgView.imageURL = [NSURL URLWithString:[nameDict valueForKey:kPhoto]];
+        
         [newPincodeBtn addTarget:self action:@selector(pinCodeAction:) forControlEvents:UIControlEventTouchUpInside];
         
     }
@@ -382,6 +437,8 @@
         
         if (creditCardArray.count > 0) {
             
+            CreditCardModel *creditCard = [creditCardArray objectAtIndex:indexPath.row];
+            
             EGOImageView *cardImgView=(EGOImageView *) [cell.contentView viewWithTag:1000];
             UILabel *cardNumberLbl=(UILabel *) [cell.contentView viewWithTag:1001];
             UILabel *expiryDateLbl=(UILabel *) [cell.contentView viewWithTag:1002];
@@ -390,12 +447,33 @@
             noCardLbl.hidden  = YES;
             
             cardImgView.image=[UIImage imageNamed:@""];
-            cardNumberLbl.text= @"";
-            expiryDateLbl.text=@"";
+            
+            NSPredicate *predicate =  [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CARDAMEX];
+            NSString *cardNum;
+            if ([predicate evaluateWithObject:creditCard.CardNumber])
+            {
+                cardNum = [TuplitConstants filteredPhoneStringFromString:creditCard.CardNumber withFilter:CARDAMEX];
+            }
+            else
+            {
+                cardNum = [TuplitConstants filteredPhoneStringFromString:creditCard.CardNumber withFilter:CARDDEFAULT];
+            }
+            
+            cardImgView.imageURL = [NSURL URLWithString:creditCard.Image];
+            cardNumberLbl.text= cardNum;
+            expiryDateLbl.text=[TuplitConstants filteredPhoneStringFromString:creditCard.ExpirationDate withFilter:DATEFORMAT];
         }
         else
         {
+            EGOImageView *cardImgView=(EGOImageView *) [cell.contentView viewWithTag:1000];
+            UILabel *cardNumberLbl=(UILabel *) [cell.contentView viewWithTag:1001];
+            UILabel *expiryDateLbl=(UILabel *) [cell.contentView viewWithTag:1002];
             UILabel *noCardLbl = (UILabel *) [cell.contentView viewWithTag:1003];
+            
+            cardImgView.image = nil;
+            cardNumberLbl.text= @"";
+            expiryDateLbl.text=@"";
+            
             
             noCardLbl.hidden  = NO;
             noCardLbl.text = @"No Credit Cards Added";
@@ -425,22 +503,59 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 2)
+    if (indexPath.section == 2||indexPath.section == 1)
+    {
+        if (indexPath.section == 1)
+        {
+            NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
+            if (creditCardArray.count > 0)
+                return YES;
+            else
+                return NO;
+        }
         return YES;
-    else
-        return NO;
+    }
+        else
+            return NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 2)
+    if (indexPath.section == 1)
+    {
         if (editingStyle == UITableViewCellEditingStyleDelete) {
+//            NETWORK_TEST_PROCEDURE
+//            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+//            sage:@"Deleting a Credit Card is under construction. Will be available in future demos."];
+            NETWORK_TEST_PROCEDURE
+            
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            
+            NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
+            
+            if (creditCardArray.count > 0) {
+                
+                CreditCardModel *creditCard = [creditCardArray objectAtIndex:indexPath.row];
+                TLCreditCardDeleteManager *cardDeletemanager = [[TLCreditCardDeleteManager alloc]init];
+                cardDeletemanager.delegate = self;
+                [cardDeletemanager deleteCreditCard:creditCard.Id];
+            }
+    
+        }
+    }
+    else if (indexPath.section == 2)
+    {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            NETWORK_TEST_PROCEDURE
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            
             UserCommentsModel *comments = [[mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]]objectAtIndex:indexPath.row];
             TLCommentDeleteManager *commentManager = [[TLCommentDeleteManager alloc]init];
             [commentManager setDelegate:self];
             [commentManager deleteComment:comments.CommentId];
             [self.view endEditing:YES];
         }
+    }
 }
 
 #pragma mark - Text Field Delegate Methods
@@ -450,7 +565,13 @@
     [textField resignFirstResponder];
     return NO;
 }
-
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if(textField.tag==3000)
+        [nameDict setValue:textField.text forKey:kFirstName];
+    else if(textField.tag==3001)
+        [nameDict setValue:textField.text forKey:kLastName];
+}
 #pragma mark - Scroll View delegate methods
 // Change Default Scrolling Behavior of TableView Section
 - (void)scrollViewDidScroll:(UIScrollView *)_scrollView {
@@ -482,6 +603,7 @@
     UITableViewCell *cell = [editProfileTable cellForRowAtIndexPath:
                              [NSIndexPath indexPathForRow:0 inSection:0]];
     EGOImageView *profileImgView = (EGOImageView *)[cell.contentView viewWithTag:3002];
+    [nameDict setValue:_thumbnailImage forKey:kTPhoto];
     profileImgView.image=_thumbnailImage;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
@@ -512,23 +634,9 @@
     }
     else
     {
+       if(buttonIndex == 0)
         [self takePhotoLibraryAction];
     }
-}
-
-#pragma  mark - TLCommentDeleteManager Delegate Methods
-
-- (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
-{
-    [self callService];
-}
-- (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
-{
-    [UIAlertView alertViewWithMessage:errorMsg];
-}
-- (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)loginManager
-{
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLUserDetailManager Delegate Methods
@@ -553,10 +661,11 @@
 
 #pragma mark - TLEditUpdateManagerDelegate methods
 
-- (void)editUpManager:(TLEditUpdateManager *)signUpManager updateSuccessfullWithUser:(UserModel *)user isAlreadyRegistered:(BOOL)isAlreadyRegistered
+- (void)editUpManager:(TLEditUpdateManager *)signUpManager updateSuccessfullWithUser:(UserModel *)user
 {
     APP_DELEGATE.isUserProfileEdited = YES;
-    [self.navigationController popViewControllerAnimated:YES];
+    [self backUserProfilePage:nil];
+    [UIAlertView alertViewWithMessage:LString(@"PROFILE_UPDATED")];
     [[ProgressHud shared] hide];
 }
 - (void)editUpManager:(TLEditUpdateManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
@@ -567,6 +676,41 @@
 - (void)editUpManagerFailed:(TLEditUpdateManager *)signUpManager
 {
      [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [[ProgressHud shared] hide];
+}
+
+#pragma  mark - TLCommentDeleteManager Delegate Methods
+
+- (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
+{
+    APP_DELEGATE.isUserProfileEdited = YES;
+    [self callService];
+}
+- (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+{
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+}
+- (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)loginManager
+{
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [[ProgressHud shared] hide];
+}
+
+#pragma  mark - TLCreditCardDeleteManager Delegate Methods
+- (void)creditCardDeleteManagerSuccess:(TLCreditCardDeleteManager *)creditCardDeleteManager
+{
+    APP_DELEGATE.isUserProfileEdited = YES;
+    [self callService];
+}
+- (void)creditCardDeleteManager:(TLCreditCardDeleteManager *)creditCardDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+{
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+}
+- (void)creditCardDeleteManagerFailed:(TLCreditCardDeleteManager *)creditCardDeleteManager
+{
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
 }
 

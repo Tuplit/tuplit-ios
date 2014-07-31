@@ -11,4 +11,5 @@
 @interface UIBarButtonItem (Tuplit)
 - (void)backButtonWithTarget:(id)target action:(SEL)selector;
 - (void)buttonWithIcon:(UIImage*)image target:(id)target action:(SEL)selector isLeft:(BOOL)isLeft;
+- (void)buttonWithTitle:(NSString*) title withTarget:(id)target action:(SEL)selector;
 @end

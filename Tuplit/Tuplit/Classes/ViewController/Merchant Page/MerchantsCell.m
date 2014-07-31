@@ -21,6 +21,7 @@
         
         productImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:containerView.bounds];
         productImgView.backgroundColor = [UIColor clearColor];
+        [productImgView setContentMode:UIViewContentModeScaleAspectFit];
         productImgView.delegate = self;
         [containerView addSubview:productImgView];
         
@@ -90,6 +91,10 @@
         distanceImageView.image = distanceImage;
         [merchantdetailView addSubview:distanceImageView];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0,containerView.frame.size.height - 2,self.size.width,2)];
+        lineView.backgroundColor = APP_DELEGATE.defaultColor;
+        [containerView addSubview:lineView];
 
     }
     return self;
@@ -115,8 +120,8 @@
     [discountImageView setFrame:discountImageViewFrame];
     
     [merchantImgView setImageURL:[NSURL URLWithString:merchant.Icon]];
-    [merchantNameLbl setText:merchant.CompanyName];
-    [descriptionLbl setText:merchant.ShortDescription];
+    [merchantNameLbl setText:[merchant.CompanyName stringWithTitleCase]];
+    [descriptionLbl setText:[merchant.ShortDescription capitaliseFirstLetter]];
     [distanceLbl setText:[TuplitConstants getDistance:[merchant.distance doubleValue]]];
     
     if (distanceLbl.text.length > 0) {
@@ -156,7 +161,7 @@
         distanceImageView.hidden = YES;
     }
     
-    if ([merchant.IsSpecial intValue] == 0) {
+    if ([merchant.IsGoldenTag intValue] == 0) {
         [discountImageView setImage:[UIImage imageNamed:@"DiscountMap"]];
     }
     else

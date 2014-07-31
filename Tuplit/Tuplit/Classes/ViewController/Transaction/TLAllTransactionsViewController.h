@@ -18,10 +18,6 @@
     UIView *baseView;
     CGFloat baseViewHeight,baseViewWidth;
     
-    NSMutableArray *merchantNameArray,*transactionDateArray;
-    NSMutableArray *numberOfItemArray,*totalAmountArray;
-    NSMutableArray *merchantIconArray;
-    
     NSMutableArray *transactionList;
     
     UIRefreshControl *refreshControl;
@@ -30,4 +26,5 @@
     BOOL isLoadMorePressed,isPullRefreshPressed,isMerchantWebserviceRunning;
 }
 
+@property (nonatomic,strong)NSString *userID;
 @end

@@ -73,6 +73,8 @@
     
     userDetailsManager.delegate = nil;
     userDetailsManager = nil;
+    
+     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
@@ -150,6 +152,9 @@
     
     userDetailsManager = [TLUserDetailsManager new];
     userDetailsManager.delegate = self;
+
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(signUpsuccessAction) name:kCreditCardAdded object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -188,6 +193,9 @@
     
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFBSignupScreen object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookSignUpNotificationCalled:) name:kFBSignupScreen object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -195,7 +203,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 #pragma mark - TextField delegate methods
 
@@ -215,6 +222,16 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+//    Allow only 4 char for PIN code
+    if(textField==textPinCode)
+    {
+        NSString* searchString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+       if(searchString.length<5)
+           return YES;
+        else
+            return NO;
+    }
     
     NSUInteger newLength = [textField.text length] + [string length] - range.length;
     return (newLength > 40) ? NO : YES;
@@ -269,9 +286,7 @@
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
     signIn.shouldFetchGooglePlusUser = YES;
     signIn.shouldFetchGoogleUserEmail = YES;  // Uncomment to get the user's email
-    
-    // You previously set kClientId in the "Initialize the Google+ client" step
-    signIn.clientID = kClientId;
+    signIn.clientID = GOOGLE_CLIENT_ID;
     
     // Uncomment one of these two statements for the scope you chose in the previous step
     signIn.scopes = @[ kGTLAuthScopePlusLogin ];  // "https://www.googleapis.com/auth/plus.login" scope
@@ -291,7 +306,7 @@
     NETWORK_TEST_PROCEDURE;
     isSocialButtonPressed = YES;
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    [self getFBDetails];
+      [APP_DELEGATE doFacebookLogin:self];
 }
 
 - (IBAction)signUpAction:(id)sender {
@@ -314,6 +329,8 @@
 //        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
     else if(textPinCode.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_PIN")];
+    else if(textPinCode.text.length<4)
+        [self showAlertWithMessage:LString(@"PIN_ALERT")];
     else {
         [self dismiss:nil];
         self.user.Email     = textEmail.text;
@@ -481,7 +498,11 @@
     [self.navigationController pushViewController:socialNWSignUp animated:YES];
 }
 
-
+-(void)signUpsuccessAction
+{
+    [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
+   [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+}
 #pragma mark - UIImagePickerViewController Delegate
 
 - (void)imagePickerController:(UIImagePickerController *) Picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -602,106 +623,32 @@
 }
 
 
-#pragma mark - Facebook Methods
+#pragma mark - facebook notification
 
-- (void)getFBDetails {
+-(void)facebookSignUpNotificationCalled:(NSNotification*)notif
+{
     
-    if(!_accountStore)
-        _accountStore = [[ACAccountStore alloc] init];
     
-    ACAccountType *facebookTypeAccount = [_accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-    
-    [_accountStore requestAccessToAccountsWithType:facebookTypeAccount
-                                           options:@{ACFacebookAppIdKey:FacebookAppID, ACFacebookPermissionsKey: @[@"email"]}
-                                        completion:^(BOOL granted, NSError *error) {
-                                            if (granted){
-                                                NSArray *accounts = [_accountStore accountsWithAccountType:facebookTypeAccount];
-                                                self.facebookAccount = [accounts lastObject];
-                                                NSLog(@"Success");
-                                                
-                                                NSURL *meurl = [NSURL URLWithString:@"https://graph.facebook.com/me"];
-                                                
-                                                SLRequest *merequest = [SLRequest requestForServiceType:SLServiceTypeFacebook
-                                                                                          requestMethod:SLRequestMethodGET
-                                                                                                    URL:meurl
-                                                                                             parameters:nil];
-                                                
-                                                merequest.account = self.facebookAccount;
-                                                
-                                                [merequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                                                    
-                                                    NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-                                                    
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        
-                                                        // [self.socialDict setObject:[responseJSON objectForKey:@"id"] forKey:PARAM_FB_ID];
-                                                        
-                                                        
-                                                        NSString *title = @"";
-                                                        NSString *company = @"";
-                                                        
-                                                        NSArray *workAry = [responseJSON objectForKey:@"work"];
-                                                        
-                                                        if(workAry.count > 0) {
-                                                            
-                                                            NSDictionary *workDict = workAry[0];
-                                                            if(workDict != nil) {
-                                                                
-                                                                NSString *compName = [[workDict objectForKey:@"employer"] objectForKey:@"name"];
-                                                                NSString *title_ = [[workDict objectForKey:@"position"] objectForKey:@"name"];
-                                                                company = NSNonNilString(compName);
-                                                                title = NSNonNilString(title_);
-                                                            }
-                                                        }
-                                                        
-                                                        /*
-                                                        NSDictionary *facebookDict = @{@"location": NSNonNilString([[responseJSON objectForKey:@"location"] objectForKey:@"name"]),
-                                                                                       @"title"   : NSNonNilString(title),
-                                                                                       @"company" : NSNonNilString(company),
-                                                                                    };
-                                                        */
-                                                        
-                                                        self.user.FBId = [responseJSON valueForKey:@"id"];
-                                                        self.user.GooglePlusId = @"";
-                                                        self.user.Email = [responseJSON valueForKey:@"email"];
-                                                        self.user.FirstName = [responseJSON valueForKey:@"first_name"];
-                                                        self.user.LastName = [responseJSON valueForKey:@"last_name"];
-                                                        
-                                                        NSLog(@"%@", responseJSON);
-                                                        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", self.user.FBId]]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                            self.user.userImage = [UIImage imageWithData:data];
-                                                            [self callLoginWebService];
-                                                        }];
-                                                    });
-                                                }];
-                                                
-                                            } else {
-                                                
-                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                    
-                                                    // Fail gracefully...
-                                                    NSLog(@"%@",error.description);
-                                                    if([error code]== ACErrorAccountNotFound) {
-                                                        
-                                                        SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-                                                        controller.view.hidden = YES;
-                                                        dontClear = YES;
-                                                        [self presentViewController:controller animated:NO completion:^{
-                                                            [controller.view endEditing:YES];
-                                                        }];
-                                                        
-                                                    } else if([error code]== ACErrorPermissionDenied) {
-                                                        [UIAlertView alertViewWithMessage:LString(@"ACCESS_DENIED")];
-                                                    } else {
-                                                        [UIAlertView alertViewWithMessage:LString(@"UNABLE_CONNECT")];
-                                                    }
-                                                    
-                                                    [[ProgressHud shared] hide];
-                                                    
-                                                });
-                                                
-                                            }
-                                        }];
+    if([notif object])
+    {
+        NSDictionary *dict = (NSDictionary *)[notif object];
+        NSLog(@"facebook dictionary = %@",dict);
+        
+        
+        self.user.FBId = [dict valueForKey:@"id"];
+        self.user.GooglePlusId = @"";
+        self.user.Email = [dict valueForKey:@"email"];
+        self.user.FirstName = [dict valueForKey:@"first_name"];
+        self.user.LastName = [dict valueForKey:@"last_name"];
+        self.user.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[[[dict valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"]]]];
+        [self callLoginWebService];
+        
+    }
+    else
+    {
+        [UIAlertView alertViewWithMessage:LString(@"UNABLE_CONNECT")];
+        [[ProgressHud shared] hide];
+    }
 }
 
 
@@ -716,12 +663,13 @@
     }
     loginManager.user = self.user;
     [loginManager loginUserUsingSocialNW:NO];
+    
 }
 
 - (void)signUpManager:(TLSignUpManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
     
-    [[ProgressHud shared] hide];
     [self showAlertWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
 }
 
 - (void)signUpManagerFailed:(TLSignUpManager *)signUpManager {
@@ -732,11 +680,17 @@
 
 #pragma mark - TLLoginManager delegate method
 
-- (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
+- (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {   
     
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
-    [userDetailsManager getUserDetailsWithUserID:user.UserId];
+    [[ProgressHud shared] hide];
+    
+    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+    addCrCardViewController.viewController = self;
+    addCrCardViewController.isSignUp = YES;
+    [self.navigationController pushViewController:addCrCardViewController animated:YES];
+    
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -763,7 +717,9 @@
     [TLUserDefaults setCurrentUser:user_];
     [TLUserDefaults setIsTutorialSkipped:isSocialButtonPressed];
     [[ProgressHud shared] hide];
-    [self presentAMSlider];
+    
+     [self presentAMSlider];
+    
 }
 
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {

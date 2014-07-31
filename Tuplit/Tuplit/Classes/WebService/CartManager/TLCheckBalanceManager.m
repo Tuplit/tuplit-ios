@@ -24,8 +24,8 @@
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
     
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"" parameters:queryParams];
-   [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
-        
+    [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
+    
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
@@ -50,6 +50,7 @@
                                                                   @"PaymentAmount"      : @"PaymentAmount",
                                                                   @"CurrentBalance"     : @"CurrentBalance",
                                                                   @"AllowPayment"       : @"AllowPayment",
+                                                                  @"Message"            : @"Message",
                                                                   }];
             
             
@@ -60,18 +61,20 @@
             
             if (isMapped && !mappingError)
             {
-                [_delegate checkBalanceManagerSuccessfull:self paymentModel:mapper.mappingResult.firstObject];
+                if([_delegate respondsToSelector:@selector(checkBalanceManagerSuccessfull:paymentModel:)])
+                    [_delegate checkBalanceManagerSuccessfull:self paymentModel:mapper.mappingResult.firstObject];
             }
             
         }
         else
         {
-            [_delegate checkBalanceManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
+            if([_delegate respondsToSelector:@selector(checkBalanceManager:returnedWithErrorCode:errorMsg:)])
+                [_delegate checkBalanceManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		      
-		[_delegate checkBalanceManagerFailed:self];
+        if([_delegate respondsToSelector:@selector(checkBalanceManagerFailed:)])
+            [_delegate checkBalanceManagerFailed:self];
         
 	}];
     

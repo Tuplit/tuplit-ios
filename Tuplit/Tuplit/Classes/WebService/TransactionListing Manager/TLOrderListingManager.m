@@ -34,7 +34,7 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@",responseJSON);
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
@@ -51,10 +51,10 @@
                 @"ProductsCost"           :   @"ProductsCost",
                 @"DiscountPrice"          :   @"DiscountPrice",
                 @"TotalPrice"             :   @"TotalPrice",
-              
+                
                 
             }];
-
+            
             
             RKObjectMapping *responseMapping = [RKObjectMapping mappingForClass:[OrderDetailModel class]];
             [responseMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"Products" toKeyPath:@"Products" withMapping:produstsMapping]];
@@ -86,23 +86,21 @@
                 
                 self.orderDetailsModel = mapper.mappingResult.firstObject;
                 
-                if(delegate)
+                if([delegate respondsToSelector:@selector(orderDetailsManagerSuccessful:withorderDetails:)])
                     [delegate orderDetailsManagerSuccessful:self withorderDetails:self.orderDetailsModel];
             }
-            else
+        }
+        else
+        {
+            NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
+            if([delegate respondsToSelector:@selector(orderDetailsManager:returnedWithErrorCode:errorMsg:)])
             {
-                NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-                if(delegate)
-                {
-                    [delegate orderDetailsManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
-                }
+                [delegate orderDetailsManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
             }
-            
-            
         }
     }failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if(delegate)
+        if([delegate respondsToSelector:@selector(orderDetailsManagerFailed:)])
             [delegate orderDetailsManagerFailed:self];
         
 	}];

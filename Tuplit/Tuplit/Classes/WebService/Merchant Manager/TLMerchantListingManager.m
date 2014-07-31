@@ -49,7 +49,7 @@ AFHTTPRequestOperation *operation;
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@", responseJSON);
         
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
@@ -75,6 +75,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"Longitude": @"Longitude",
                                                                   @"distance": @"distance",
                                                                   @"IsSpecial": @"IsSpecial",
+                                                                  @"IsGoldenTag" : @"IsGoldenTag",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };
@@ -85,21 +86,22 @@ AFHTTPRequestOperation *operation;
                 
                 self.merchantArray = mapper.mappingResult.array.copy;
             
-                if(delegate)
+                if([delegate respondsToSelector:@selector(merchantListingManager:withMerchantList:)])
                     [delegate merchantListingManager:self withMerchantList:self.merchantArray];
             }
         }
         else
         {
             NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-            if(delegate) {
+            if([delegate respondsToSelector:@selector(merchantListingManager:returnedWithErrorCode:errorMsg:)])
+            {
                 [delegate merchantListingManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
             }
         }
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if(delegate)
+        if([delegate respondsToSelector:@selector(merchantListingManager:)])
             [delegate merchantListingManager:self];
         
 	}];

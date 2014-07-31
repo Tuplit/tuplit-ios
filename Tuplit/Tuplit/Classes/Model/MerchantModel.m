@@ -24,6 +24,7 @@
 	[encoder encodeObject:self.Longitude forKey:@"Longitude"];
 	[encoder encodeObject:self.distance forKey:@"distance"];
     [encoder encodeObject:self.IsSpecial forKey:@"IsSpecial"];
+     [encoder encodeObject:self.IsGoldenTag forKey:@"IsGoldenTag"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -42,6 +43,7 @@
         self.Longitude = [decoder decodeObjectForKey:@"Longitude"];
         self.distance = [decoder decodeObjectForKey:@"distance"];
         self.IsSpecial = [decoder decodeObjectForKey:@"IsSpecial"];
+        self.IsGoldenTag = [decoder decodeObjectForKey:@"IsGoldenTag"];
        
     }
     return self;

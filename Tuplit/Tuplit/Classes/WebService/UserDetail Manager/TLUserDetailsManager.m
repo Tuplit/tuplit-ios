@@ -31,18 +31,20 @@
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        NSLog(@"Response %@" ,operation.responseString);
-        
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
+         NSLog(@"Response %@" ,responseJSON);
+        
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
         {
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
             NSDictionary *responseDictionarytoMap = [responseJSON objectForKey:strPropertyName];
+            self.totalOrders = [[responseJSON objectForKey:@"meta"] objectForKey:@"TotalOrders"];
+            self.totalComments = [[responseJSON objectForKey:@"meta"] objectForKey:@"TotalComments"];
             
             RKObjectMapping* userDetailsMapping = [RKObjectMapping mappingForClass:[UserModel class]];
             [userDetailsMapping addAttributeMappingsFromDictionary:@ {
@@ -59,6 +61,14 @@
                 @"UserId": @"UserId",
                 @"AvailableBalance":@"AvailableBalance",
                 
+            }];
+            
+            RKObjectMapping *friendsOrderMapping = [RKObjectMapping mappingForClass:[FriendsModel class]];
+            [friendsOrderMapping addAttributeMappingsFromDictionary:@ {
+                @"FriendId"         : @"FriendId",
+                @"MerchantName"     : @"MerchantName",
+                @"Photo"            : @"Photo",
+                @"FriendName"       : @"FriendName",
             }];
             
             RKObjectMapping* commentsMapping = [RKObjectMapping mappingForClass:[UserCommentsModel class]];
@@ -88,9 +98,22 @@
                 
             }];
             
+            RKObjectMapping* userLinkeCardsMapping = [RKObjectMapping mappingForClass:[CreditCardModel class]];
+            [userLinkeCardsMapping addAttributeMappingsFromDictionary:@ {
+                @"Id"               :   @"Id",
+                @"CardNumbar"       :   @"CardNumber",
+                @"CardType"         :   @"CardType",
+                @"ExpirationDate"   :   @"ExpirationDate",
+                @"Currency"         :   @"Currency",
+                @"Image"            :   @"Image",
+                
+            }];
+            
             RKObjectMapping *responseMapping2 = [RKObjectMapping mappingForClass:[UserDetailModel class]];
+            [responseMapping2 addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"UserLinkedCards" toKeyPath:@"UserLinkedCards" withMapping:userLinkeCardsMapping]];
             [responseMapping2 addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"comments" toKeyPath:@"comments" withMapping:commentsMapping]];
             [responseMapping2 addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"Orders" toKeyPath:@"Orders" withMapping:recentActivityMapping]];
+            [responseMapping2 addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"FriendsOrders" toKeyPath:@"FriendsOrders" withMapping:friendsOrderMapping]];
             
             NSDictionary *mappingsDictionary1 = @{ @"": userDetailsMapping};
             RKMapperOperation *mapper1 = [[RKMapperOperation alloc] initWithRepresentation:[responseDictionarytoMap objectForKey:@"Details"] mappingsDictionary:mappingsDictionary1];
@@ -107,6 +130,7 @@
                 
                 userModel = mapper1.mappingResult.firstObject;
                 userdetailModel = mapper2.mappingResult.firstObject;
+                APP_DELEGATE.friendsRecentOrders = userdetailModel.FriendsOrders;
                 
                 if([_delegate respondsToSelector:@selector(userDetailManagerSuccess:withUser:withUserDetail:)])
                     [_delegate userDetailManagerSuccess:self withUser:userModel withUserDetail:userdetailModel];

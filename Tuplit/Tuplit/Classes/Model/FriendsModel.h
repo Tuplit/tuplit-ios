@@ -10,9 +10,10 @@
 
 @interface FriendsModel : NSObject
 
-@property(nonatomic,strong) NSString *image;
-@property(nonatomic,strong) NSString *firstName;
+@property(nonatomic,strong) NSString *Photo;
+@property(nonatomic,strong) NSString *FriendName;
 @property(nonatomic,strong) NSString *lastName;
-@property(nonatomic,strong) NSString *merchantName;
+@property(nonatomic,strong) NSString *MerchantName;
+@property(nonatomic,strong) NSString *FriendId;
 
 @end

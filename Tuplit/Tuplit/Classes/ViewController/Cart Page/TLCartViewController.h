@@ -11,10 +11,12 @@
 #import "CartDetailViewController.h"
 #import "TLCheckBalanceManager.h"
 #import "TLCreateOrdersManager.h"
+#import "TLCheckLocationManager.h"
+#import "CVSwipe.h"
 
 #define CART_CELL_HEIGHT 52
 
-@interface TLCartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIGestureRecognizerDelegate,CartSwipeCellProtocol,TLCheckBalanceManagerDelegate,TLCreateOrdersManagerDelegate>
+@interface TLCartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIGestureRecognizerDelegate,CartSwipeCellProtocol,TLCheckBalanceManagerDelegate,TLCreateOrdersManagerDelegate,TLPinCodeVerifiedDelegate,TLCheckLocationManagerDelegate,CVSwipeProtocol>
 {
     UIView *contentView,*alertView,*checksOutSubView,*debitCreditView;
     UIView *checkoutView,*actionView;
@@ -26,16 +28,14 @@
     UISlider *swipeSlider;
     UIView *errorView;
     
-    NSTimer *animationTimer;
-    BOOL touchIsDown;
-	int animationTimerCount;
     CGFloat centerX;
     CGFloat baseViewWidth,baseViewHeight;
     NSIndexPath *swipeIndexPath;
     NSInteger numberOfCell,tableHeight;
     NSNumberFormatter *numberFormatter;
     NSMutableArray *itemArray;
+    
+    CVSwipe *cartSwipe;
 }
-
 
 @end

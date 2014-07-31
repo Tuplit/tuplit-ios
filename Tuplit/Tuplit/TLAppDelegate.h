@@ -14,11 +14,19 @@
 #import "TLSettingsViewController.h"
 #import "RESideMenu.h"
 #import "CartModel.h"
+#import <FacebookSDK/FacebookSDK.h>
+#import "TLStaticContentManager.h"
+#import "TLWelcomeViewController.h"
 
-@interface TLAppDelegate : UIResponder <UIApplicationDelegate>
+@interface TLAppDelegate : UIResponder <UIApplicationDelegate,TLStaticContentManagerDelegate>
+{
+     FBSession *fbSession;
+     TLStaticContentManager *staticContentManager;
+     TLWelcomeViewController *welcomeViewController;
+}
 
+@property (strong, nonatomic) FBSession *fbSession;
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) UIViewController *viewController;
 @property (strong, nonatomic) UINavigationController *navigationController;
 
 @property (strong, nonatomic) UIColor *defaultColor;
@@ -26,8 +34,11 @@
 @property (strong, nonatomic) NSString *postalCode;
 @property (strong, nonatomic) RESideMenu *slideMenuController;
 @property (strong, nonatomic) CartModel *cartModel;
+@property (strong, nonatomic) NSArray *friendsRecentOrders;
 @property (strong, nonatomic) NSString *merchantID;
-@property (assign, nonatomic) BOOL isUserProfileEdited;
+@property (assign, nonatomic) BOOL isUserProfileEdited,isFavoriteChanged;
 
 - (void)showNoConnectivityAlertAndQuit:(BOOL)shouldQuit;
+
+-(void)doFacebookLogin:(UIViewController*) viewController;
 @end

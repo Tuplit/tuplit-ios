@@ -15,6 +15,9 @@
 #define kCart @"kCart"
 #define kAccessToken @"kAccessToken"
 #define kDeviceToken @"kDeviceToken"
+#define kIsCommentPromtOpen @"kIsCommentPromtOpen"
+#define kCommentDetails @"kCommentDetails"
+#define kItunesURL @"kItunesURL"
 
 @implementation TLUserDefaults
 
@@ -86,6 +89,40 @@
 + (NSString *)getDeviceToken {
 	
 	return [UserDefaults valueForKey:kDeviceToken];
+}
+
++ (void)setIsCommentPromptOpen:(BOOL)isOpen
+{
+    [UserDefaults setBool:isOpen forKey:kIsCommentPromtOpen];
+    [UserDefaults synchronize];
+}
++ (BOOL)isCommentPromptOpen
+{
+    return [UserDefaults boolForKey:kIsCommentPromtOpen];
+}
+
++ (void)setCommentDetails:(OrderDetailModel*)commentDetails
+{
+    NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:commentDetails];
+    [UserDefaults setValue:encodedObject forKey:kCommentDetails];
+    [UserDefaults synchronize];
+}
++ (OrderDetailModel*)getCommentDetails
+{
+    NSData *objectToDecode = [UserDefaults valueForKey:kCommentDetails];
+    OrderDetailModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
+    return decodedObject;
+}
+
++ (void)setItunesURL:(NSString*) link
+{
+    [UserDefaults setValue:link forKey:kItunesURL];
+    [UserDefaults synchronize];
+}
+
++ (NSString*)getItunesURL
+{
+    return ([UserDefaults valueForKey:kItunesURL]==nil)?@"<Appstore url>":[UserDefaults valueForKey:kItunesURL];
 }
 
 

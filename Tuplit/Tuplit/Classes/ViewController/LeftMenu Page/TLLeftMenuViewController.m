@@ -37,42 +37,37 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    menuArray = [[NSMutableArray alloc]init];
     
     MenuModel *menuModel1 = [[MenuModel alloc] init];
     [menuModel1 setImage:@"MenuHome"];
     [menuModel1 setTitle:LString(@"HOME")];
+    [menuArray addObject:menuModel1];
     
     MenuModel *menuModel2 = [[MenuModel alloc] init];
     [menuModel2 setImage:@"MenuCart"];
     [menuModel2 setTitle:LString(@"CART")];
+    [menuArray addObject:menuModel2];
     
     MenuModel *menuModel3 = [[MenuModel alloc] init];
-    [menuModel3 setImage:@"MenuFriends"];
-    [menuModel3 setTitle:LString(@"FRIENDS")];
+    [menuModel3 setImage:@"MenuFavourites"];
+    [menuModel3 setTitle:LString(@"FAVORITES")];
+    [menuArray addObject:menuModel3];
     
     MenuModel *menuModel4 = [[MenuModel alloc] init];
-    [menuModel4 setImage:@"MenuSettings"];
-    [menuModel4 setTitle:LString(@"SETTINGS")];
+    [menuModel4 setImage:@"MenuFriends"];
+    [menuModel4 setTitle:LString(@"FRIENDS")];
+    [menuArray addObject:menuModel4];
     
-    FriendsModel *friendModel1 = [[FriendsModel alloc] init];
-    [friendModel1 setImage:@"DefaultUser"];
-    [friendModel1 setFirstName:@"John"];
-    [friendModel1 setLastName:@"Doe"];
-    [friendModel1 setMerchantName:@"Burger King NY"];
+   for(FriendsModel *order in APP_DELEGATE.friendsRecentOrders)
+   {
+       [menuArray addObject:order];
+   }
     
-    FriendsModel *friendModel2 = [[FriendsModel alloc] init];
-    [friendModel2 setImage:@"DefaultUser"];
-    [friendModel2 setFirstName:@"Amanda"];
-    [friendModel2 setLastName:@"Kelly"];
-    [friendModel2 setMerchantName:@"Home Depot"];
-    
-    FriendsModel *friendModel3 = [[FriendsModel alloc] init];
-    [friendModel3 setImage:@"DefaultUser"];
-    [friendModel3 setFirstName:@"Rom"];
-    [friendModel3 setLastName:@"Deezer"];
-    [friendModel3 setMerchantName:@"Warner Bros. Shop"];
-    
-    menuArray = [NSArray arrayWithObjects:menuModel1,menuModel2,menuModel3,friendModel1,friendModel2,friendModel3,@"",menuModel4,nil];
+    MenuModel *menuModel5 = [[MenuModel alloc] init];
+    [menuModel5 setImage:@"MenuSettings"];
+    [menuModel5 setTitle:LString(@"SETTINGS")];
+    [menuArray addObject:menuModel5];
     
     float tableHeaderWidth = 220;
     
@@ -185,6 +180,24 @@
     [APP_DELEGATE.slideMenuController hideMenuViewController];
 }
 
+-(void) openfriendProfileVC:(UITapGestureRecognizer *)gesture
+{
+    CGPoint buttonPosition = [(EGOImageView*)gesture.view convertPoint:CGPointZero toView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonPosition];
+
+    FriendsModel *order = [menuArray objectAtIndex:indexPath.row];
+    
+    TLOtherUserProfileViewController *friendProfileVC = [[TLOtherUserProfileViewController alloc] init];
+    friendProfileVC.userID = order.FriendId;
+    friendProfileVC.isLeftMenu = YES;
+    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendProfileVC];
+    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+    
+    [APP_DELEGATE.slideMenuController hideMenuViewController];
+}
+
 #pragma mark - Table view data source methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -259,7 +272,13 @@
             
             EGOImageView *iconImageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser",NO) imageViewFrame:CGRectMake(15,(FRIENDS_CELL_HEIGHT - 20)/2, 20, 20)];
             iconImageView.tag = 2000;
+            iconImageView.layer.cornerRadius = 20/2;
+            iconImageView.contentMode = UIViewContentModeScaleAspectFit;
+            iconImageView.userInteractionEnabled = YES;
+            iconImageView.clipsToBounds = YES;
             iconImageView.backgroundColor = [UIColor clearColor];
+            UITapGestureRecognizer *otherUserprofileGesture =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openfriendProfileVC:)];
+            [iconImageView addGestureRecognizer:otherUserprofileGesture];
             [cell.contentView addSubview:iconImageView];
             
             UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(35 + 10, 0, 150, FRIENDS_CELL_HEIGHT)];
@@ -299,16 +318,16 @@
         EGOImageView *iconView = (EGOImageView*)[cell.contentView viewWithTag:2000];
         UILabel *labelName = (UILabel*)[cell.contentView viewWithTag:2001];
         
-        [iconView setImageURL:[NSURL URLWithString:friendModel.image]];
+        [iconView setImageURL:[NSURL URLWithString:friendModel.Photo]];
     
-        NSString *userName = [NSString stringWithFormat:@"%@ %@",friendModel.firstName,friendModel.lastName];
+        NSString *userName = [[NSString stringWithFormat:@"%@",friendModel.FriendName]stringWithTitleCase];
         NSString *staticText = @"shopped at";
         
-        NSString *string = [NSString stringWithFormat:@"%@ %@ %@",userName,staticText,friendModel.merchantName];
+        NSString *string = [NSString stringWithFormat:@"%@ %@ %@",userName,staticText,[friendModel.MerchantName stringWithTitleCase]];
         NSMutableAttributedString *aString=[[NSMutableAttributedString alloc]initWithString:string attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10]}];
         [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xFFFFFF) range:NSMakeRange(0, userName.length)];
         [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xb8e5e2) range:NSMakeRange(userName.length + 1, staticText.length)];
-        [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xFFFFFF) range:NSMakeRange(userName.length + staticText.length + 2, friendModel.merchantName.length)];
+        [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xFFFFFF) range:NSMakeRange(userName.length + staticText.length + 2, friendModel.MerchantName.length)];
     
         labelName.attributedText = aString;
     }
@@ -362,15 +381,34 @@
         }
         else
         {
-            TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] initWithNibName:@"TLFriendsViewController" bundle:nil];
-            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
+            TLFavouriteListViewController *favoriteVC = [[TLFavouriteListViewController alloc] init];
+            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteVC];
             [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
             [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
             
             [APP_DELEGATE.slideMenuController hideMenuViewController];
-
         }
+    }
+    else if(indexPath.row == 3) {
+        
+//        if ([TLUserDefaults getCurrentUser] == nil) {
+//            
+//            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+//            alertView.tag = 9000;
+//            [alertView show];
+//        }
+//        else
+//        {
+//            TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] init];
+//            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
+//            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+//            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+//            [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//            
+//            [APP_DELEGATE.slideMenuController hideMenuViewController];
+//        }
+        [UIAlertView alertViewWithMessage:@"Friends is under construction. Will be available in future demos."];
     }
     else if(indexPath.row == menuArray.count - 1) {
         

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MerchantsDetailsModel.h"
-#import "OrderedFriendsListModel.h"
+#import "FriendsListModel.h"
 #import "OpeningHoursModel.h"
 #import "CommentsModel.h"
 #import "ProductListModel.h"

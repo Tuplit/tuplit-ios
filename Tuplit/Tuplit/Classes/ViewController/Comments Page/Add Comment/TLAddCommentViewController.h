@@ -10,11 +10,11 @@
 #import "CustomSwitch.h"
 #import "TuplitConstants.h"
 #import "TLAddCommentManager.h"
+#import <Social/Social.h>
 
 @interface TLAddCommentViewController : UIViewController<UITextViewDelegate,TLAddCommentManagerDelegate>
 {
     CustomSwitch *facebookSwitch,*twitterSwitch;
     CGFloat baseViewWidth,baseViewHeight;
 }
-@property (strong, nonatomic) NSString *merchantID;
 @end

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "UserModel.h"
 #import "UserDetailModel.h"
+#import "CreditCardModel.h"
+#import "FriendsModel.h"
 
 @class TLUserDetailsManager;
 @protocol TLUserDetailsManagerDelegate <NSObject>
@@ -27,5 +29,7 @@
 @property(nonatomic, unsafe_unretained) id <TLUserDetailsManagerDelegate> delegate;
 
 - (void)getUserDetailsWithUserID:(NSString*) userID;
+@property(nonatomic,strong)NSString* totalOrders;
+@property(nonatomic,strong)NSString* totalComments;
 
 @end

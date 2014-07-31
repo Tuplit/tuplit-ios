@@ -14,8 +14,11 @@
     IBOutlet UILabel *labelHeader, *labelDesc;
     IBOutlet UIButton *buttonNext, *buttonPrev, *buttonSkip;
     IBOutlet UIView *viewFooterBase;
+    EGOImageView *imageView;
     int numberOfSlides;
     NSTimer *timer;
+    int leftPos,rightPos,pos;
+    BOOL isTimer;     
 }
 @end
 
@@ -36,7 +39,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
     NSString *actualString = @"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Curabitur ac pretium ante. Suspendisse feugiat varous placerat.\n\nFusce eu nisi ac tellus scelerisque euismod in vel nibh. Ut congue enim ac dolor.\n\nPellentesque in aliquam est.";
     
@@ -44,73 +46,110 @@
     
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
-        self.automaticallyAdjustsScrollViewInsets = NO;
+        self.automaticallyAdjustsScrollViewInsets = YES;
     }
     
-    self.view.backgroundColor = APP_DELEGATE.defaultColor;
+//    self.view.backgroundColor = APP_DELEGATE.defaultColor;
+    self.view.backgroundColor=UIColorFromRGB(0x31869B);
     
-    // To manage the number of slides
     numberOfSlides = [Global instance].tutorialScreenImages.count;
-    for(int i = 0; i<numberOfSlides ; i++) {
-        EGOImageView *imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(i*320, 0, 320, scrollView.frame.size.height)];
-        imageView.imageURL = [NSURL URLWithString:[Global instance].tutorialScreenImages[i]];
-        imageView.contentMode = UIViewContentModeScaleToFill;
-        [scrollView addSubview:imageView];
-    }
+    leftPos=0;
+    rightPos=0;
+    
+    buttonNext.tag=101;
+    buttonNext.tag=100;
+    
+    [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[numberOfSlides-1]] atPosition:0];
+
+    for(int i = 0; i<numberOfSlides; i++) 
+    {
+        [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[i]] atPosition:i];
+    }	
+    [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[0]] atPosition:numberOfSlides];
     
     scrollView.bounces = NO;
     scrollView.delegate = self;
-    [scrollView setContentSize:CGSizeMake(320*numberOfSlides, 0)];
+	scrollView.contentSize = CGSizeMake((320*numberOfSlides)+ 320, 324); 
+	[scrollView scrollRectToVisible:CGRectMake(0,0,320,324) animated:NO]; 
     [scrollView setContentOffset:CGPointMake(0, 0)];
     
-    scrollView.backgroundColor = [UIColor clearColor];
     [buttonSkip setTitleColor:APP_DELEGATE.defaultColor forState:UIControlStateNormal];
     
-    timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
-    [self performSelector:@selector(timerFireDelay) withObject:nil afterDelay:3];
+    isTimer =YES;
+    [self timerAction];
 }
 
+-(void) timerAction
+{
+    if (!isTimer)
+    {
+        [timer invalidate];
+    }
+    else
+    {
+        timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+        [self performSelector:@selector(timerFireDelay) withObject:nil afterDelay:3];
+    }
+}
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
+-(void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+-(void) viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    isTimer=YES;
+    [self timerAction];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
 
 #pragma mark - Action methods
 
-
-- (void)timerFireDelay {
+- (void)addImageWithName:(NSURL*)imageString atPosition:(int)position 
+{
+    imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*320, 0, 320, scrollView.frame.size.height)];
+    imageView.imageURL = imageString;    
+    imageView.contentMode = UIViewContentModeScaleToFill;
+    [scrollView addSubview:imageView];
     
+}
+- (void)timerFireDelay 
+{
     [timer fire];
 }
 
-- (void)timerMethod {
+- (void)timerMethod
+{
+    NSInteger page = (scrollView.contentOffset.x) / 320;
     
-    int page = 0;
-    if(((scrollView.contentOffset.x) / 320) == numberOfSlides-1)
-        page = 0;
+    if (page == numberOfSlides)
+        page=0;
     else
-        page = ((scrollView.contentOffset.x) / 320)+1;
+        page++;
+    
+    if (page == 5)
+        page=0;
     
     int offsetX = page * scrollView.width;
     int offsetY = 0;
-    
     CGPoint offset = CGPointMake(offsetX, offsetY);
-	[self setScrollOffset:offset];
+    [self setScrollOffset:offset];
 }
 
 - (IBAction)skipAction:(id)sender {
@@ -119,58 +158,99 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (IBAction)previousAction:(id)sender 
+{
+    NSInteger page = (scrollView.contentOffset.x) / 320;
+    ++page;
+    if(page == 1) 
+    {
+        [self previousButtonAction];  
+    }
+    else 
+    {
+        [self setScrollOffset:CGPointMake((page-2)*320, 0)];
+        leftPos=0;
+    }
+}
+
+-(void) previousButtonAction
+{
+    if(leftPos< numberOfSlides +1)
+    {
+        leftPos +=1;
+        if (leftPos == numberOfSlides +1)
+        {
+            leftPos=1;
+        }
+        NSLog(@"%d",numberOfSlides-leftPos);
+        [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[numberOfSlides-leftPos]] atPosition:numberOfSlides-leftPos];
+        [scrollView setContentOffset:CGPointMake(320*(numberOfSlides), 0)];
+    } 
+    if (numberOfSlides-leftPos == 1)
+    {
+        [scrollView scrollRectToVisible:CGRectMake(320*(numberOfSlides+1),0,320,324) animated:NO]; 
+    }
+}
+
 - (IBAction)nextAction:(id)sender {
     
     NSInteger page = (scrollView.contentOffset.x) / 320;
     page++;
-    
-    if(page==numberOfSlides) {
-        [buttonNext setImage:getImage(@"TutorNextLight", NO) forState:UIControlStateNormal];
-        
-    } else {
+    isTimer=NO;
+    [self timerAction];
+    if(page==numberOfSlides)
+    {
+        [self nextButtonAction];
+    } 
+    else
+    {
         [self setScrollOffset:CGPointMake(page*320, 0)];
-        [buttonNext setImage:getImage(@"TutorNext", NO) forState:UIControlStateNormal];
     }
 }
 
-- (IBAction)previousAction:(id)sender {
-    
-    NSInteger page = (scrollView.contentOffset.x) / 320;
-    page++;
-    
-    if(page == 1) {
-        [buttonPrev setImage:getImage(@"TutorPreviousLight", NO) forState:UIControlStateNormal];
-    } else {
-        [buttonPrev setImage:getImage(@"TutorPrevious", NO) forState:UIControlStateNormal];
-        [self setScrollOffset:CGPointMake((page-2)*320, 0)];
-    }
-}
-
-- (void)setScrollOffset:(CGPoint)offset {
-    
-    if(numberOfSlides == 1) {
-        [buttonNext setImage:getImage(@"TutorNext", NO) forState:UIControlStateNormal];
-        [buttonPrev setImage:getImage(@"TutorPrevious", NO) forState:UIControlStateNormal];
+-(void) nextButtonAction
+{
+    if(rightPos< numberOfSlides +1)
+    {
+        rightPos +=1;
+        if (rightPos == numberOfSlides +1)
+        {
+            rightPos=1;
+        }
         
-    } else if(offset.x == 0) {
-        [buttonPrev setImage:getImage(@"TutorPreviousLight", NO) forState:UIControlStateNormal];
-        [buttonNext setImage:getImage(@"TutorNext", NO) forState:UIControlStateNormal];
-    } else if (offset.x == numberOfSlides*320) {
-        [buttonPrev setImage:getImage(@"TutorPrevious", NO) forState:UIControlStateNormal];
-        [buttonNext setImage:getImage(@"TutorNextLight", NO) forState:UIControlStateNormal];
-    } else {
-        [buttonPrev setImage:getImage(@"TutorPrevious", NO) forState:UIControlStateNormal];
-        [buttonNext setImage:getImage(@"TutorNext", NO) forState:UIControlStateNormal];
-    }
-    
-    [scrollView setContentOffset:offset animated:YES];
+        [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[rightPos-1]] atPosition:rightPos-1];
+        [scrollView setContentOffset:CGPointMake(0, 0)];
+        
+        if (rightPos-1 == numberOfSlides- 1)
+        {
+            [scrollView scrollRectToVisible:CGRectMake(0,0,320,324) animated:NO];         
+        }
+    } 
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView_ {
-    
-    [self setScrollOffset:scrollView.contentOffset];
+- (void)setScrollOffset:(CGPoint)offset 
+{
+    if (offset.x == 320*(numberOfSlides)) 
+    {
+        [scrollView scrollRectToVisible:CGRectMake(0,0,320,324) animated:NO];    
+    }
+    else
+        [scrollView setContentOffset:offset animated:YES];   
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)sender 
+{            
+    if (scrollView.contentOffset.x == 0) 
+    {         
+        [scrollView scrollRectToVisible:CGRectMake(320*(numberOfSlides),0,320,324) animated:NO];     
+	}    
+    else if (scrollView.contentOffset.x >= 320*numberOfSlides)
+    {         
+        [scrollView scrollRectToVisible:CGRectMake(0,0,320,324) animated:NO];         
+	} 
 }
 
 
 @end
+
 

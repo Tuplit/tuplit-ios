@@ -95,13 +95,13 @@ static NSString *RKStringDescribingStream(NSStream *stream)
 
 @interface RKObjectRequestOperationLogger : NSObject
 
-+ (id)sharedLogger;
++ (id)shareNSLogger;
 
 @end
 
 @implementation RKObjectRequestOperationLogger
 
-+ (id)sharedLogger
++ (id)shareNSLogger
 {
     static RKObjectRequestOperationLogger *sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -114,7 +114,7 @@ static NSString *RKStringDescribingStream(NSStream *stream)
 + (void)load
 {
     @autoreleasepool {
-        [self sharedLogger];
+        [self shareNSLogger];
     };
 }
 

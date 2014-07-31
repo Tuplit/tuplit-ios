@@ -61,7 +61,7 @@
     [scrollView addSubview:detailImgView];
     
     UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(14,27, detailImgView.width-28, 20)];
-    merchantNameLbl.text=APP_DELEGATE.cartModel.companyName;
+    merchantNameLbl.text=[APP_DELEGATE.cartModel.companyName stringWithTitleCase];
     merchantNameLbl.textAlignment=NSTextAlignmentCenter;
     merchantNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0]; 
     merchantNameLbl.textColor=UIColorFromRGB(0x333333);
@@ -155,6 +155,16 @@
     [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.automaticallyAdjustsScrollViewInsets = FALSE;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -171,13 +181,21 @@
 
 -(void) closeViewController:(id) sender
 {
-    APP_DELEGATE.cartModel = [[CartModel alloc] init];
     
     TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
+    [TLUserDefaults setIsCommentPromptOpen:YES];
+    
+    OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
+    cmtDetail.MerchantId = APP_DELEGATE.cartModel.merchantID;
+    cmtDetail.CompanyName = APP_DELEGATE.cartModel.companyName;
+   
+    [TLUserDefaults setCommentDetails:cmtDetail];
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
     [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
     [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+    
+    APP_DELEGATE.cartModel = [[CartModel alloc] init];
 }
 
 -(void) updateCart {

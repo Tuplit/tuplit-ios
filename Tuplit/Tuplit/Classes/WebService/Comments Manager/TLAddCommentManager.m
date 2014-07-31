@@ -36,18 +36,21 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        NSLog(@"Response: %@", operation.responseString);
+        NSLog(@"Response: %@", responseJSON);
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         if(code==200 || code==201)
         {
-            [_delegate commentAddManagerSuccess:self];
+            if([_delegate respondsToSelector:@selector(commentAddManagerSuccess:)])
+                [_delegate commentAddManagerSuccess:self];
         }
         else
         {
-            [_delegate commentAddManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
+            if([_delegate respondsToSelector:@selector(commentAddManager:returnedWithErrorCode:errorMsg:)])
+                [_delegate commentAddManager:self returnedWithErrorCode:[NSString stringWithFormat:@"%d",code] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
     }failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [_delegate commentAddManagerFailed:self];
+        if([_delegate respondsToSelector:@selector(commentAddManagerFailed:)])
+            [_delegate commentAddManagerFailed:self];
         
 	}];
     [operation start];

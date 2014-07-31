@@ -22,5 +22,6 @@
 @property (nonatomic, copy) NSString * Longitude;
 @property (nonatomic, copy) NSString * distance;
 @property (nonatomic, copy) NSString * IsSpecial;
+@property (nonatomic, copy) NSString * IsGoldenTag;
 
 @end

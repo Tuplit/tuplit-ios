@@ -20,6 +20,9 @@
     [encoder encodeObject:self.Price forKey:@"Price"];
     [encoder encodeObject:self.DiscountPrice forKey:@"DiscountPrice"];
     [encoder encodeObject:self.DiscountTier forKey:@"DiscountTier"];
+    [encoder encodeObject:self.DiscountApplied forKey:@"DiscountApplied"];
+    [encoder encodeObject:self.Ordering forKey:@"Ordering"];
+    [encoder encodeObject:self.Status forKey:@"Status"];
     
 }
 
@@ -33,6 +36,9 @@
         self.Price = [decoder decodeObjectForKey:@"Price"];
         self.DiscountPrice = [decoder decodeObjectForKey:@"DiscountPrice"];
         self.DiscountTier = [decoder decodeObjectForKey:@"DiscountTier"];
+        self.DiscountApplied = [decoder decodeObjectForKey:@"DiscountApplied"];
+        self.Ordering = [decoder decodeObjectForKey:@"Ordering"];
+        self.Status = [decoder decodeObjectForKey:@"Status"];
         
     }
     return self;

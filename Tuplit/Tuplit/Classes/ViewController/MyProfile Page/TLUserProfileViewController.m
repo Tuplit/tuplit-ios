@@ -90,6 +90,7 @@
 
 #pragma mark - User Defined Methods
 
+//   User details service
 -(void)callService
 {
     NETWORK_TEST_PROCEDURE
@@ -102,18 +103,25 @@
     
 }
 
+//   Credit card delete service
+-(void)callCardDeleteService
+{
+   
+}
+
 -(void)updateUserDetails
 {
     UserModel *usermodel = [TLUserDefaults getCurrentUser];
-    [self.navigationItem setTitle:[NSString stringWithFormat:@"%@ %@",usermodel.FirstName,usermodel.LastName]];
+    [self.navigationItem setTitle:[[NSString stringWithFormat:@"%@ %@",usermodel.FirstName,usermodel.LastName]stringWithTitleCase]];
     
-    NSArray *cardDetailsArray = [[NSArray alloc] init];
     NSArray *recentActivityArray = [[NSArray alloc] init];
     NSArray *commentsArray = [[NSArray alloc] init];
-    //    if(usermodel.CreditCardDetails.count>0)
-    //    {
-    //        cardDetailsArray = usermodel.CreditCardDetails;
-    //    }
+    NSArray *UserLinkedCardsArray = [[NSArray alloc]init];
+    
+    if(userdeatilmodel.UserLinkedCards.count>0)
+    {
+        UserLinkedCardsArray = userdeatilmodel.UserLinkedCards;
+    }
     if(userdeatilmodel.Orders.count>0)
     {
         recentActivityArray = userdeatilmodel.Orders;
@@ -125,10 +133,11 @@
     }
     
     mainDict = @{
-                 @"Credit Cards": cardDetailsArray,
-                 @"Recent Activity":recentActivityArray,
-                 @"My Comments": commentsArray,
+                 @"Recent Activity": recentActivityArray,
+                 @"My Comments":commentsArray,
+                 @"Credit Cards":UserLinkedCardsArray,
                  };
+    
     sectionHeader = [NSArray arrayWithObjects:@"User Details",@"Credit Cards",@"Recent Activity",@"My Comments", nil];
     
     [userProfileTable reloadData];
@@ -159,6 +168,7 @@
 -(void) addCreditCardAction
 {
     TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+    addCrCardViewController.viewController = self;
     [self.navigationController pushViewController:addCrCardViewController animated:YES];
 }
 
@@ -168,30 +178,35 @@
     
     TLEditProfileViewController * editProfileVC = [[TLEditProfileViewController alloc] init];
     editProfileVC.userDetail = userdeatilmodel;
-    [self.navigationController pushViewController:editProfileVC animated:YES];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editProfileVC];
+    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void) topUpAction:(id) sender
 {
-    TopUpViewController *topUp=[[TopUpViewController alloc] init];
+    TLTopUpViewController *topUp=[[TLTopUpViewController alloc] init];
+    topUp.userLinkedCards = userdeatilmodel.UserLinkedCards;
     [self.navigationController pushViewController:topUp animated:YES];
 }
 
 -(void) transferAction : (id) sender
 {
-    TopUpViewController2 *topUp2=[[TopUpViewController2 alloc] init];
-    [self.navigationController pushViewController:topUp2 animated:YES];
+    TLTransferViewController *transferVC=[[TLTransferViewController alloc] init];
+    [self.navigationController pushViewController:transferVC animated:YES];
 }
 
 -(void) allTransaction
 {
     TLAllTransactionsViewController *allTransViewControl=[[TLAllTransactionsViewController alloc] init];
+    allTransViewControl.userID = [TLUserDefaults getCurrentUser].UserId;
     [self.navigationController pushViewController:allTransViewControl animated:YES];
 }
 
 -(void)allcomments
 {
     TLAllCommentsViewController *allCommentsVC=[[TLAllCommentsViewController alloc] init];
+    allCommentsVC.userID = [TLUserDefaults getCurrentUser].UserId;
     [self.navigationController pushViewController:allCommentsVC animated:YES];
 }
 
@@ -221,7 +236,7 @@
     }
     else
     {
-       return [[mainDict valueForKey:[sectionHeader objectAtIndex:section]]count];
+        return [[mainDict valueForKey:[sectionHeader objectAtIndex:section]]count];
     }
 }
 
@@ -279,20 +294,26 @@
     {
         rightHeaderNameLbl.text = @"Add Credit Card";//LString(@"ADD_CREDIT_CARD");
         UITapGestureRecognizer *addCreidtCardTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCreditCardAction)];
-        //        [rightHeaderNameLbl addGestureRecognizer:addCreidtCardTap];
+        [rightHeaderNameLbl addGestureRecognizer:addCreidtCardTap];
     }
     else if(section == 2)
     {
-        rightHeaderNameLbl.text = @"See All" ;// LString(@"SEE_ALL");
-        
-        UITapGestureRecognizer *allTransactionTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(allTransaction)];
-        [rightHeaderNameLbl addGestureRecognizer:allTransactionTap];
+        if(totalOrders>3)
+        {
+            rightHeaderNameLbl.text = @"See All" ;// LString(@"SEE_ALL");
+            
+            UITapGestureRecognizer *allTransactionTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(allTransaction)];
+            [rightHeaderNameLbl addGestureRecognizer:allTransactionTap];
+        }
     }
     else if(section == 3)
     {
-        rightHeaderNameLbl.text = @"See All"; // LString(@"SEE_ALL");    }
-        UITapGestureRecognizer *allTransactionTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(allcomments)];
-        [rightHeaderNameLbl addGestureRecognizer:allTransactionTap];
+        if(totalComments >3)
+        {
+            rightHeaderNameLbl.text = @"See All"; // LString(@"SEE_ALL");    }
+            UITapGestureRecognizer *allTransactionTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(allcomments)];
+            [rightHeaderNameLbl addGestureRecognizer:allTransactionTap];
+        }
     }
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width,HEADER_HEIGHT)];
     headerView.backgroundColor = [UIColor whiteColor];
@@ -305,13 +326,13 @@
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifire[]={@"UserDetails",@"CreditCards",@"RecentActivity",@"MyComments",nil};
+    static NSString *cellIdentifire[]={@"UserDetails",@"Credit Cards",@"RecentActivity",@"MyComments",nil};
     
     UserProfileCell *cell = (UserProfileCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifire[indexPath.section]];
     
     if (cell == nil)
     {
-       cell = [[UserProfileCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifire[indexPath.section]];
+        cell = [[UserProfileCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifire[indexPath.section]];
     }
     cell.indexPaths=indexPath;
     cell.delegate=self;
@@ -328,15 +349,18 @@
         profileImgView.imageURL = [NSURL URLWithString:usermodel.Photo];
         balAmountLbl.text = [[TuplitConstants getCurrencyFormat] stringFromNumber:[NSNumber numberWithDouble:usermodel.AvailableBalance.doubleValue]];
         userIDLbl.text = usermodel.UserId;
-        //        [transferBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
-        //        [topUpBtn addTarget:self action:@selector(topUpAction:) forControlEvents:UIControlEventTouchUpInside];
+       
+        [transferBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
+       [topUpBtn addTarget:self action:@selector(topUpAction:) forControlEvents:UIControlEventTouchUpInside];
         
     }
-    if (indexPath.section == 1)
+    else if (indexPath.section == 1)
     {
         NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
         
         if (creditCardArray.count > 0) {
+            
+            CreditCardModel *creditCard = [creditCardArray objectAtIndex:indexPath.row];
             
             EGOImageView *cardImgView=(EGOImageView *) [cell.contentView viewWithTag:1000];
             UILabel *cardNumberLbl=(UILabel *) [cell.contentView viewWithTag:1001];
@@ -345,13 +369,32 @@
             
             noCardLbl.hidden  = YES;
             
-            cardImgView.image=[UIImage imageNamed:@""];
-            cardNumberLbl.text= @"";
-            expiryDateLbl.text=@"";
+            NSPredicate *predicate =  [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CARDAMEX];
+            NSString *cardNum;
+            if ([predicate evaluateWithObject:creditCard.CardNumber])
+            {
+                cardNum = [TuplitConstants filteredPhoneStringFromString:creditCard.CardNumber withFilter:CARDAMEX];
+            }
+            else
+            {
+                cardNum = [TuplitConstants filteredPhoneStringFromString:creditCard.CardNumber withFilter:CARDDEFAULT];
+            }
+            
+            cardImgView.imageURL = [NSURL URLWithString:creditCard.Image];
+            cardNumberLbl.text= cardNum;
+            expiryDateLbl.text=[TuplitConstants filteredPhoneStringFromString:creditCard.ExpirationDate withFilter:DATEFORMAT];
         }
         else
         {
+            EGOImageView *cardImgView=(EGOImageView *) [cell.contentView viewWithTag:1000];
+            UILabel *cardNumberLbl=(UILabel *) [cell.contentView viewWithTag:1001];
+            UILabel *expiryDateLbl=(UILabel *) [cell.contentView viewWithTag:1002];
             UILabel *noCardLbl = (UILabel *) [cell.contentView viewWithTag:1003];
+            
+            cardImgView.image = nil;
+            cardNumberLbl.text= @"";
+            expiryDateLbl.text=@"";
+            
             
             noCardLbl.hidden  = NO;
             noCardLbl.text = @"No Credit Cards Added";
@@ -401,6 +444,8 @@
         commentLbl.frame = newRect;
         
         totalDaysLbl.text=[TuplitConstants calculateTimeDifference:comments.CommentDate];
+        int timeLblWidth = [totalDaysLbl.text widthWithFont:totalDaysLbl.font]+1;
+        totalDaysLbl.frame =  CGRectMake(cell.frame.size.width-timeLblWidth-16,15, timeLblWidth, 20);
         
     }
     return cell;
@@ -416,9 +461,47 @@
         TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
         RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
         transactionDetail.orderID = transaction.OrderId;
-        transactionDetail.transActionList = transactionList;
+        transactionDetail.userID = [TLUserDefaults getCurrentUser].UserId;
         transactionDetail.index = indexPath.row;
         [self.navigationController pushViewController:transactionDetail animated:YES];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1)
+    {
+        NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
+        if (creditCardArray.count > 0)
+            return YES;
+        else
+            return NO;
+    }
+    else
+        return NO;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1)
+    {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            
+//            [UIAlertView alertViewWithMessage:@"Deleting a Credit Card is under construction. Will be available in future demos."];
+            NETWORK_TEST_PROCEDURE
+            
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            
+            NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
+            
+            if (creditCardArray.count > 0) {
+                
+                CreditCardModel *creditCard = [creditCardArray objectAtIndex:indexPath.row];
+                TLCreditCardDeleteManager *cardDeletemanager = [[TLCreditCardDeleteManager alloc]init];
+                cardDeletemanager.delegate = self;
+                [cardDeletemanager deleteCreditCard:creditCard.Id];
+            }
+        }
     }
 }
 
@@ -438,6 +521,8 @@
 {
     [TLUserDefaults setCurrentUser:user_];
     userdeatilmodel = userDetail_;
+    totalOrders = userDetailsManager.totalOrders.intValue;
+    totalComments = userDetailsManager.totalComments.intValue;
     [self updateUserDetails];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
@@ -446,7 +531,7 @@
 }
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
@@ -454,5 +539,50 @@
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
 }
+
+#pragma  mark - TLCreditCardDeleteManager Delegate Methods
+
+- (void)creditCardDeleteManagerSuccess:(TLCreditCardDeleteManager *)creditCardDeleteManager
+{
+    [self callService];
+}
+- (void)creditCardDeleteManager:(TLCreditCardDeleteManager *)creditCardDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+{
+    [UIAlertView alertViewWithMessage:errorMsg];
+    [[ProgressHud shared] hide];
+}
+- (void)creditCardDeleteManagerFailed:(TLCreditCardDeleteManager *)creditCardDeleteManager
+{
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [[ProgressHud shared] hide];
+}
+
+//#pragma mark - TLCreditCardListingManagerDelegate
+//
+//- (void)creditCardListManagerSuccessfull:(TLCreditCardListingManager *)creditCardListManager withCreditCardList:(NSArray*)creditCardList
+//{
+//    NSArray *cardDetailsArray = [[NSArray alloc] init];
+//
+//    if(creditCardList.count>0)
+//    {
+//        cardDetailsArray = creditCardList;
+//    }
+//
+//    [mainDict setValue:cardDetailsArray forKey:@"Credit Cards"];
+//    NSLog(@"%@",mainDict);
+//    [userProfileTable reloadData];
+//    [[ProgressHud shared] hide];
+//}
+//- (void)creditCardListManager:(TLCreditCardListingManager *)creditCardListManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+//{
+//
+//    NSLog(@"%@",mainDict);
+//    [[ProgressHud shared] hide];
+//}
+//- (void)creditCardListanagerFailed:(TLCreditCardListingManager *)creditCardListManager
+//{
+//    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+//    [[ProgressHud shared] hide];
+//}
 
 @end
