@@ -52,6 +52,8 @@
     editProfileTable.dataSource=self;
     editProfileTable.separatorColor=[UIColor whiteColor];
     editProfileTable.separatorStyle=UITableViewCellSeparatorStyleNone;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        editProfileTable.delaysContentTouches = NO;
     editProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, editProfileTable.frame.size.width, 20)];
     [baseView addSubview:editProfileTable];
     
@@ -364,29 +366,40 @@
     leftHeaderNameLbl.backgroundColor=[UIColor clearColor];
     leftHeaderNameLbl.text = [sectionHeader objectAtIndex:section];
     
-    UILabel *rightHeaderNameLbl = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
-    rightHeaderNameLbl.textColor = UIColorFromRGB(0x999999);
-    rightHeaderNameLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
-    rightHeaderNameLbl.textAlignment = NSTextAlignmentRight;
-    rightHeaderNameLbl.userInteractionEnabled=YES;
-    rightHeaderNameLbl.backgroundColor=[UIColor clearColor];
+    UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    headerBtn.frame = CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT);
+    headerBtn.backgroundColor = [UIColor clearColor];
+    headerBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    headerBtn.titleLabel.textAlignment = NSTextAlignmentRight;
+    headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    UIImage * topUpImage = getImage(@"btn_img", NO);
+    UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+    [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
+    [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
     
     if(section == 1)
     {
-        rightHeaderNameLbl.text =LString(@"ADD_CREDIT_CARD");
-        UITapGestureRecognizer *addCreidtCardTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCreditCardAction)];
-        [rightHeaderNameLbl addGestureRecognizer:addCreidtCardTap];
+        [headerBtn setTitle: LString(@"ADD_CREDIT_CARD") forState:UIControlStateNormal];
+        [headerBtn addTarget:self action:@selector(addCreditCardAction) forControlEvents:UIControlEventTouchUpInside];
+        float btnWidth = [LString(@"ADD_CREDIT_CARD") widthWithFont:headerBtn.titleLabel.font]+2;
+        headerBtn.width = btnWidth;
+        [headerBtn positionAtX:baseViewWidth-btnWidth-15];
     }
     
     else if(section == 2)
     {
-        rightHeaderNameLbl.text =LString(@"SWIPE_TO_EDIT");
+        [headerBtn setTitle: LString(@"SWIPE_TO_EDIT") forState:UIControlStateNormal];
+//        [headerBtn addTarget:self action:@selector(addCreditCardAction) forControlEvents:UIControlEventTouchUpInside];
+        float btnWidth = [LString(@"SWIPE_TO_EDIT") widthWithFont:headerBtn.titleLabel.font]+2;
+        headerBtn.width = btnWidth;
+        headerBtn.enabled = NO;
+        [headerBtn positionAtX:baseViewWidth-btnWidth-15];
     }
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width,HEADER_HEIGHT)];
     headerView.backgroundColor = [UIColor clearColor];
     [headerView addSubview:leftHeaderNameLbl];
-    [headerView addSubview:rightHeaderNameLbl];
+    [headerView addSubview:headerBtn];
     [tableView addSubview:headerView];
     return  headerView;
 }

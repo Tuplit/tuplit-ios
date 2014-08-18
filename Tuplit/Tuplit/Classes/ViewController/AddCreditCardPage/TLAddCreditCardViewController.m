@@ -73,10 +73,13 @@
     scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, baseView.width, baseView.height)];
     scrollView.bounces=YES;
     scrollView.userInteractionEnabled=YES;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        scrollView.delaysContentTouches = NO;
     scrollView.backgroundColor=[UIColor clearColor];
+    
     [baseView addSubview:scrollView];
     
-    scanningBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    scanningBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     scanningBtn.frame=CGRectMake(20, 20, scrollView.width - 40, 45);
     [scanningBtn setTitle:LString(@"SCAN_IO") forState:UIControlStateNormal];
     scanningBtn.titleLabel.font= [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -145,7 +148,7 @@
     
     dollarAmtTextField=[[UITextField alloc]initWithFrame:CGRectMake(CGRectGetMaxX(switchYesOrNo.frame) + 25, CGRectGetMaxY(accountTopUpLbl.frame), scrollView.width-switchYesOrNo.width- 25-40-19, 45)];
     dollarAmtTextField.keyboardType=UIKeyboardTypeDecimalPad;
-    dollarAmtTextField.placeholder=@"$0.00 ";
+    dollarAmtTextField.placeholder=@"£0.00 ";
     dollarAmtTextField.delegate=self;
     dollarAmtTextField.backgroundColor=[UIColor clearColor];
     dollarAmtTextField.font=[UIFont fontWithName:@"HelveticaNeue-Regular" size:16.0];
@@ -293,7 +296,7 @@
                 
                 if (topUpAmount.intValue<100)
                 {
-                    [UIAlertView alertViewWithMessage:@"Enter minimum $100.00 or above to Top up"];
+                    [UIAlertView alertViewWithMessage:@"Enter minimum £100.00 or above to Top up"];
                 }
                 else
                 {
@@ -486,14 +489,14 @@
     //Dollar Amount Conversion
     else if (textField.tag==1003) {
         
-        NSInteger MAX_DIGITS = 9; // $999,999,999.99
+        NSInteger MAX_DIGITS = 9; // €999,999,999.99
         
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
         [numberFormatter setMinimumFractionDigits:0];
         [numberFormatter setMaximumFractionDigits:0];
         
-        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
         [numberFormatter setLocale:english];
         
         NSString *stringMaybeChanged = [NSString stringWithString:string];

@@ -34,7 +34,7 @@
 
 /******** APP Id's ********/
 #define GOOGLE_CLIENT_ID      @"67542159633-3t664mkheusv6r5fp4qjdq8n241v3rbf.apps.googleusercontent.com";
-#define FACEBOOK_APP_ID       @"1443093035941769" // 664739730282382
+#define FACEBOOK_APP_ID       @"1516322561916139" // @"664739730282382"       //"1443093035941769" // 664739730282382 
 
 #define CLIENTID              @"8acc207693494259fd435dd54915fe9b6465d3a7"
 #define CLIENT_SECRET_ID      @"b915d9fed580e700b8831be8c8ecd0cb205fce57"
@@ -53,7 +53,11 @@
 #ifdef DEBUG
 #   define NSLog(...) NSLog(__VA_ARGS__)
 #else
+#if TARGET_IPHONE_SIMULATOR
+#   define NSLog(...) NSLog(__VA_ARGS__)
+#else
 #   define NSLog(...)
+#endif
 #endif
 
 /******** WEB SERVICE END-POINTS ********/
@@ -95,6 +99,7 @@
 #define FRIENDS_LIST_URL            RESOURCE_URL @"/v1/users/friends"
 #define CHECK_FRIENDS_URL           RESOURCE_URL @"/v1/users/checkfriends"
 #define INVITE_FRIENDS_URL          RESOURCE_URL @"/v1/invites/"
+#define SETTINGS_URL                RESOURCE_URL @"/v1/users/settings"
 
 /****** Notifications **************/
 
@@ -116,6 +121,10 @@
 #define PHONE_NUM_FORMAT    @"(###)###-####"
 
 #define CAEDAMEXEXP      @"^3[47][0-9]{5,}$"
+
+/****** Customer Support ************/
+#define CUSTOMER_SUPPORT_EMAIL @"help@tuplit.com"
+#define CUSTOMER_SUPPORT_PNUMBER @"+1 234 567 8"
 
 
 @interface TuplitConstants : NSObject

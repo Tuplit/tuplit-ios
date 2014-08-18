@@ -17,6 +17,7 @@
 @property (nonatomic, retain)NSArray *welcomeScreenImages;
 @property (nonatomic, retain)NSArray *tutorialScreenImages;
 @property (nonatomic, retain)UserModel *user;
+@property (nonatomic, retain)NSDictionary *discoutTiers;
 + (Global *)instance;
 
 @end

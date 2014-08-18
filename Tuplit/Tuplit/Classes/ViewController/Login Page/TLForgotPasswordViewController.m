@@ -136,13 +136,14 @@
 
 - (void)forgotPasswordManager:(TLForgotPasswordManager *)forgotPasswordManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
     
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)forgotPasswordManagerFailed:(TLForgotPasswordManager *)forgotPasswordManager {
     
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

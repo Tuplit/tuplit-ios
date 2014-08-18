@@ -88,9 +88,11 @@
     facebookTable.dataSource=self;
     facebookTable.tag=101;
     facebookTable.separatorStyle=UITableViewCellSeparatorStyleNone;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        facebookTable.delaysContentTouches = NO;
     [baseView addSubview:facebookTable];
     
-    [self menuButtonAction:facebookBtn];
+    [self menuButtonAction:contactsBtn];
     
     errorView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(menuView.frame)+10, baseViewWidth, CGRectGetHeight(facebookTable.frame))];
     errorView.hidden = YES;
@@ -122,7 +124,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self facebookFriendAction];  
+//    [self facebookFriendAction];  
 //     [self promptUserWithAccountNameForStatusUpdate];
     
 }
@@ -163,29 +165,7 @@
     
     if (button.tag == 201)
     {
-        isFacebook = YES;
-        [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
-        [contactsBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-        contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-        
-        [facebookBtn setBackgroundImage:Nil forState:UIControlStateNormal];
-        [facebookBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-        
-        [facebookBtn setUserInteractionEnabled:NO];
-        [contactsBtn setUserInteractionEnabled:YES];
-        [facebookTable reloadData];
-        
-        if(fbFriendArray.count==0)
-        {
-            errorView.hidden = NO;
-            errorLbl.text =LString(@"NO_FB_FRIEND_FOUND");
-        }
-        else
-        {
-            errorView.hidden = YES;
-        }
-
+        [UIAlertView alertViewWithMessage:@"Facebook is not supported to invite friends."];
         
     }
     else
@@ -300,21 +280,47 @@
     NSIndexPath *indexPath = [facebookTable indexPathForRowAtPoint:buttonPosition];
     if (indexPath != nil)
     {
-        if(isFacebook)
+         Person *contactuser = [contactArray objectAtIndex:indexPath.row];
+        
+        if([MFMailComposeViewController canSendMail])
         {
-            selectedIndex = indexPath.row;
-            CheckUserModel *friend = [fbFriendArray objectAtIndex:indexPath.row];
-            NSDictionary *queryParams = @{
-                                          @"FBId"            :  NSNonNilString(friend.Id),
-                                          };
+            MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
+            controller.mailComposeDelegate = self;
+            if([[controller navigationBar] respondsToSelector:@selector(setTintColor:)])
+                [[controller navigationBar] setTintColor:APP_DELEGATE.defaultColor];
+            [controller setSubject:@"Check out Tuplit app"];
+            [controller setToRecipients:[NSArray arrayWithObject:contactuser.email]];
             
-            NETWORK_TEST_PROCEDURE
-            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            UIImage *image = [UIImage imageNamed:@"Icon"];
+            //include your app icon here
+            [controller addAttachmentData:UIImageJPEGRepresentation(image, 1) mimeType:@"image/jpg" fileName:@"icon.jpg"];
+            // your message and link
+            NSString *defaultBody =@"check out this cool app, Tuplit";
+            [controller setMessageBody:defaultBody isHTML:YES];
             
-            TLFriendsInviteManager *inviteFriend = [[TLFriendsInviteManager alloc]init];
-            inviteFriend.delegate = self;
-            [inviteFriend callService:queryParams];
+            [self presentViewController:controller animated:YES completion:nil];
         }
+        else
+        {
+            [UIAlertView alertViewWithMessage:@"Please setup a email account"];
+        }
+        
+        
+//        if(isFacebook)
+//        {
+//            selectedIndex = indexPath.row;
+//            CheckUserModel *friend = [fbFriendArray objectAtIndex:indexPath.row];
+//            NSDictionary *queryParams = @{
+//                                          @"FBId"            :  NSNonNilString(friend.Id),
+//                                          };
+//            
+//            NETWORK_TEST_PROCEDURE
+//            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+//            
+//            TLFriendsInviteManager *inviteFriend = [[TLFriendsInviteManager alloc]init];
+//            inviteFriend.delegate = self;
+//            [inviteFriend callService:queryParams];
+//        }
         
     }
 }
@@ -404,11 +410,11 @@
          
      }
      ];
-    
+//    
 //    [fbFriendArray removeAllObjects];
 //    [fbFriendsIDArray removeAllObjects];
 //    
-//    [FBRequestConnection startWithGraphPath:@"/me/taggable_friends?fields=name,id,picture"
+//    [FBRequestConnection startWithGraphPath:@"/me/friends"
 //                                 parameters:nil
 //                                 HTTPMethod:@"GET"
 //                          completionHandler:^(
@@ -453,7 +459,6 @@
         return [fbFriendArray count];
     else
     {
-        NSLog(@"%d",[contactArray count]);
         return [contactArray count];
     }
 }
@@ -514,6 +519,19 @@
             [cell.contentView addSubview:lineView];
             
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            
+            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            {
+                for (id obj in cell.subviews)
+                {
+                    if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+                    {
+                        UIScrollView *scroll = (UIScrollView *) obj;
+                        scroll.delaysContentTouches = NO;
+                        break;
+                    }
+                }
+            }
         }
     if(isFacebook)
     {
@@ -523,7 +541,7 @@
         UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
         UILabel *mailIDLbl=(UILabel *)[cell.contentView viewWithTag:1002];
         
-        NSLog(@"picture url = %@",fbuser.picture);
+//        NSLog(@"picture url = %@",fbuser.picture);
         profileImgView.imageURL = [NSURL URLWithString:fbuser.picture];
         profileNameLbl.text=fbuser.name;
         mailIDLbl.text=@"sample@mail.com";
@@ -536,7 +554,7 @@
         UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
         UILabel *mailIDLbl=(UILabel *)[cell.contentView viewWithTag:1002];
         
-        NSLog(@"%@ %@",contactuser.name,contactuser.email);
+//        NSLog(@"%@ %@",contactuser.name,contactuser.email);
         if(contactuser.contactImage)
             profileImgView.image = contactuser.contactImage;
         else
@@ -548,6 +566,19 @@
         return cell;
    
 }
+
+#pragma mark - mail compose delegate
+-(void)mailComposeController:(MFMailComposeViewController *)controller
+         didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+    if (result) {
+        NSLog(@"Result : %d",result);
+    }
+    if (error) {
+        NSLog(@"Error : %@",error);
+    }
+    [self.navigationController  dismissViewControllerAnimated:YES completion:NULL];
+}
+
 
 #pragma  mark - TLFacebookIDManager Delegate Methods
 
@@ -606,6 +637,7 @@
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
+
 
 #pragma  mark - TLFriendsInviteManager Delegate Methods
 

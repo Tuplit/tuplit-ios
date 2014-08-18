@@ -9,6 +9,8 @@
 #import "TuplitConstants.h"
 #import "TLLeftMenuViewController.h"
 #import "TLMerchantsViewController.h"
+#import <GooglePlus/GooglePlus.h>
+#import <GoogleOpenSource/GoogleOpenSource.h>
 
 @implementation TuplitConstants
 
@@ -209,13 +211,13 @@ NSString *LString(NSString* key) {
             [priceString appendString:@"("];
         if(i==1)
             [priceString appendString:@"-"];
-        [priceString appendString:[NSString stringWithFormat:@"$%@",string]];
+        [priceString appendString:[NSString stringWithFormat:@"£%@",string]];
         if(i==1)
             [priceString appendString:@")"];
         
         i++;
     }
-    NSAttributedString *dollarAttrString = [[NSAttributedString alloc]initWithString:@"$$ " attributes:
+    NSAttributedString *dollarAttrString = [[NSAttributedString alloc]initWithString:@"££ " attributes:
                                             @{
                                               NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:12],
                                               NSForegroundColorAttributeName:UIColorFromRGB(0x333333) ,
@@ -250,6 +252,9 @@ NSString *LString(NSString* key) {
     [TLUserDefaults setIsGuestUser:NO];
     [TLUserDefaults setIsCommentPromptOpen:NO];
     [TLUserDefaults setCommentDetails:nil];
+    GPPSignIn *signIn = [GPPSignIn sharedInstance];
+    if([signIn hasAuthInKeychain])
+    [signIn signOut];
     [APP_DELEGATE.navigationController dismissViewControllerAnimated:YES completion:nil];
     APP_DELEGATE.cartModel = [[CartModel alloc] init];
 }
@@ -258,7 +263,7 @@ NSString *LString(NSString* key) {
     if(!numberFormatter)
         numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
     return numberFormatter;
 }
 

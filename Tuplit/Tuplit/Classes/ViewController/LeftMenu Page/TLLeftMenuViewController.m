@@ -108,7 +108,7 @@
     
     numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
     
     [self.view setBackgroundColor:[UIColor clearColor]];
     
@@ -155,7 +155,7 @@
         userNameLbl.text = @"Guest User";
         userNameLbl.userInteractionEnabled = NO;
         
-        creditBalanceLbl.text = @"$0.00";
+        creditBalanceLbl.text = @"£0.00";
     }
     else
     {
@@ -363,6 +363,7 @@
         else
         {
             TLCartViewController *cartVC = [[TLCartViewController alloc] init];
+            cartVC.isMerchant = NO;
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
             [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
             [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
@@ -392,23 +393,22 @@
     }
     else if(indexPath.row == 3) {
         
-//        if ([TLUserDefaults getCurrentUser] == nil) {
-//            
-//            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
-//            alertView.tag = 9000;
-//            [alertView show];
-//        }
-//        else
-//        {
-//            TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] init];
-//            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
-//            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-//            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-//            [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-//            
-//            [APP_DELEGATE.slideMenuController hideMenuViewController];
-//        }
-        [UIAlertView alertViewWithMessage:@"Friends is under construction. Will be available in future demos."];
+        if ([TLUserDefaults getCurrentUser] == nil) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+            alertView.tag = 9000;
+            [alertView show];
+        }
+        else
+        {
+            TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] init];
+            UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
+            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+            [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+            
+            [APP_DELEGATE.slideMenuController hideMenuViewController];
+        }
     }
     else if(indexPath.row == menuArray.count - 1) {
         

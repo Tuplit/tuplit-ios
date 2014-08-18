@@ -111,7 +111,6 @@
     }
     else
     {
-        
         CGRect descriptionFrame = descriptionLbl.frame;
         descriptionFrame.size.width = 200;
         descriptionLbl.frame = descriptionFrame;
@@ -149,6 +148,5 @@
     distanceImageView.hidden = YES;
     discountImageView.hidden = YES;
 }
-
 
 @end

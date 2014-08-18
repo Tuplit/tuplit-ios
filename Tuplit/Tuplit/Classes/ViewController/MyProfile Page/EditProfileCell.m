@@ -91,6 +91,19 @@
             newPincodeBtn.backgroundColor = [UIColor clearColor];
             [userDetailView addSubview:newPincodeBtn];
             
+            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            {
+                for (id obj in self.subviews)
+                {
+                    if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+                    {
+                        UIScrollView *scroll = (UIScrollView *) obj;
+                        scroll.delaysContentTouches = NO;
+                        break;
+                    }
+                }
+            }
+            
         }
         else if ([reuseIdentifier isEqualToString:@"Credit Cards"])
         {

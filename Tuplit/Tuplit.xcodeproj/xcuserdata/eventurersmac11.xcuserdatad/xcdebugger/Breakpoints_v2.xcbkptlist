@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Tuplit/Classes/ViewController/MyProfile Page/TLEditProfileViewController.m"
-            timestampString = "428304057.804938"
+            timestampString = "429540364.922524"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "425"
-            endingLineNumber = "425"
+            startingLineNumber = "438"
+            endingLineNumber = "438"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,22 +58,6 @@
             startingLineNumber = "607"
             endingLineNumber = "607"
             landmarkName = "-favouriteManagerSuccessfull:withFavouriteList:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tuplit/Classes/ViewController/Merchant Page/Favourites/TLFavouriteListViewController.m"
-            timestampString = "428324712.151476"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "307"
-            endingLineNumber = "307"
-            landmarkName = "-hideSearch"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

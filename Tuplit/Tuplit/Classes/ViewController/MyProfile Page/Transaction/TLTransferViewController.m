@@ -50,7 +50,7 @@
     
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
-
+    
     baseView=[[UIView alloc] initWithFrame:CGRectMake(0,0, baseViewWidth, baseViewHeight)];
     baseView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:baseView];
@@ -183,6 +183,25 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+-(void)callTransferService
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
+    NSString *string = amountTxt.text;
+    NSString *transferAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    NSDictionary *queryParams = @{
+                                  @"ToUserId"  : NSNonNilString(self.userID),
+                                  @"Amount"    : NSNonNilString(transferAmount),
+                                  @"Notes"     : NSNonNilString(messageTxtView.text),
+                                  };
+    
+    NETWORK_TEST_PROCEDURE
+    
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    
+    TLTransferManager *transferManager = [[TLTransferManager alloc]init];
+    transferManager.delegate = self;
+    [transferManager callService:queryParams];
+}
 -(void) callFriendslistWebserviceWithstartCount:(long) start withSearchSring:(NSString*)str showProgress:(BOOL)showProgressIndicator
 {
     NETWORK_TEST_PROCEDURE
@@ -233,21 +252,21 @@
 {
     DISMISS_KEYBOARD;
     
-//    if ([messageTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length==0)
-//    {
-//        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"TextField is Empty,\nEnter Your message" delegate:self cancelButtonTitle:LString(@"OK") otherButtonTitles:nil, nil];
-//        [alert show];
-//        return;
-//    }
-//    else
-//    {
-//        
-//    }
+    //    if ([messageTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length==0)
+    //    {
+    //        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"TextField is Empty,\nEnter Your message" delegate:self cancelButtonTitle:LString(@"OK") otherButtonTitles:nil, nil];
+    //        [alert show];
+    //        return;
+    //    }
+    //    else
+    //    {
+    //
+    //    }
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
     NSString *string = amountTxt.text;
     NSString *transferAmount;
     if(string.length>0)
-         transferAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+        transferAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
     else
         transferAmount = @"";
     
@@ -261,13 +280,20 @@
     }
     else
     {
-        TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
-        verifyPINVC.isverifyPin = YES;
-        verifyPINVC.delegate = self;
-        verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
-        [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [self presentViewController:nav animated:YES completion:nil];
+        if([TLUserDefaults getCurrentUser].Passcode)
+        {
+            TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+            verifyPINVC.isverifyPin = YES;
+            verifyPINVC.delegate = self;
+            verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+            [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        else
+        {
+            [self callTransferService];
+        }
     }
     
 }
@@ -287,11 +313,11 @@
 
 -(void) searchSendTo : (id) sender
 {
-//    if ([toTxt.text isEqualToString:@""])
-//    {
-//        [self callFriendslistWebserviceWithstartCount:0 withSearchSring:@"" showProgress:NO];
-//        isFriendsWebserviceRunning = NO;
-//    }
+    //    if ([toTxt.text isEqualToString:@""])
+    //    {
+    //        [self callFriendslistWebserviceWithstartCount:0 withSearchSring:@"" showProgress:NO];
+    //        isFriendsWebserviceRunning = NO;
+    //    }
 }
 
 #pragma mark - Text Field Delegates
@@ -336,7 +362,7 @@
         [numberFormatter setMinimumFractionDigits:0];
         [numberFormatter setMaximumFractionDigits:0];
         
-        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
         [numberFormatter setLocale:english];
         
         NSString *stringMaybeChanged = [NSString stringWithString:string];
@@ -391,7 +417,7 @@
                 textField.text = [NSString stringWithFormat:@""];
                 return NO;
             }
-
+            
             NSDecimalNumber *textFieldTextNewNum = [textFieldTextNum decimalNumberByDividingBy:divideByNum];
             NSString *textFieldTextNewStr = [numberFormatter stringFromNumber:textFieldTextNewNum];
             
@@ -487,7 +513,7 @@
     static NSString *cellIdentifier=@"cell";
     
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-//    [cell.s]
+    //    [cell.s]
     
     if (cell == nil)
     {
@@ -510,9 +536,9 @@
         profileNameLbl.backgroundColor=[UIColor clearColor];
         [cell.contentView addSubview:profileNameLbl];
         
-        UIView *lineView1 = [[UIView alloc] initWithFrame:CGRectMake(12, cell.contentView.frame.size.height+7, cell.contentView.frame.size.width-12, 0.5)];
-        [lineView1 setBackgroundColor:[UIColor grayColor]];
-        [cell.contentView addSubview:lineView1];
+        UIView *lineView=[[UIView alloc] initWithFrame:CGRectMake(75, CGRectGetMaxY(profileNameLbl.frame) + 5, baseViewWidth - 75, 1)];
+        lineView.backgroundColor=UIColorFromRGB(0xCCCCCC);
+        [cell.contentView addSubview:lineView];
     }
     
     FriendsListModel *friendsList = [friendsArray objectAtIndex:indexPath.row];
@@ -538,22 +564,7 @@
 #pragma  mark - TLPinCodeVerifiedDelegate
 -(void)pincodeVerified
 {
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
-    NSString *string = amountTxt.text;
-    NSString *transferAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
-    NSDictionary *queryParams = @{
-                                  @"ToUserId"  : NSNonNilString(self.userID),
-                                  @"Amount"    : NSNonNilString(transferAmount),
-                                  @"Notes"     : NSNonNilString(messageTxtView.text),
-                                  };
-    
-    NETWORK_TEST_PROCEDURE
-    
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    
-    TLTransferManager *transferManager = [[TLTransferManager alloc]init];
-    transferManager.delegate = self;
-    [transferManager callService:queryParams];
+    [self callTransferService];
 }
 
 #pragma mark - TLFriendsListingManager
@@ -601,7 +612,7 @@
     [friendsArray removeAllObjects];
     [toProfileNameTable reloadData];
     isFriendsWebserviceRunning =NO;
-     [toProfileNameTable setTableFooterView:nil];
+    [toProfileNameTable setTableFooterView:nil];
     
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
@@ -613,7 +624,7 @@
     
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     
-     [toProfileNameTable setTableFooterView:nil];
+    [toProfileNameTable setTableFooterView:nil];
     
     isFriendsWebserviceRunning = NO;
     [[ProgressHud shared] hide];

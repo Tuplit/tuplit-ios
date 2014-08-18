@@ -35,7 +35,7 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-         NSLog(@"Response %@" ,responseJSON);
+         NSLog(@"Response %@" ,operation.responseString);
         
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
@@ -58,8 +58,13 @@
                 @"PushNotification": @"PushNotification",
                 @"RecieveCredit": @"RecieveCredit",
                 @"SendCredit": @"SendCredit",
+                @"DealsOffers": @"DealsOffers",
                 @"UserId": @"UserId",
                 @"AvailableBalance":@"AvailableBalance",
+                @"Sounds" : @"Sounds",
+                @"RememberMe" : @"RememberMe",
+                @"PaymentPreference" : @"PaymentPreference",
+                @"Passcode" : @"Passcode",
                 
             }];
             

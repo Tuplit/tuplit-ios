@@ -25,10 +25,19 @@ static const int animationFramesPerSec = 8;
     
     [self.navigationItem setTitle:LString(@"CART")];
     
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
-    [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
-    [self.navigationItem setLeftBarButtonItem:navleftButton];
-    
+    if(self.isMerchant)
+    {
+        UIBarButtonItem *backBtn = [[UIBarButtonItem alloc] init];
+        [backBtn buttonWithIcon:getImage(@"back_arrow", NO) target:self action:@selector(backButtonAction) isLeft:YES];
+        [self.navigationItem setLeftBarButtonItem:backBtn];
+    }
+    else
+    {
+        UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+        [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
+        [self.navigationItem setLeftBarButtonItem:navleftButton];
+    }
+   
     self.view.backgroundColor=[UIColor whiteColor];
     
     baseViewWidth=self.view.frame.size.width;
@@ -92,7 +101,7 @@ static const int animationFramesPerSec = 8;
     [debitCreditView addSubview:totalTitleLbl];
     
     fixedAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(totalTitleLbl.frame) + 85,5, 25, 28)];
-    fixedAmtTotalLbl.text=@"$13";
+    fixedAmtTotalLbl.text=@"£13";
     fixedAmtTotalLbl.textColor=[UIColor grayColor];
     fixedAmtTotalLbl.textAlignment=NSTextAlignmentCenter;
     fixedAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:10.0];
@@ -100,7 +109,7 @@ static const int animationFramesPerSec = 8;
     [debitCreditView addSubview:fixedAmtTotalLbl];
     
     discountAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(fixedAmtTotalLbl.frame),5, 30, 28)];
-    discountAmtTotalLbl.text=@"$10";
+    discountAmtTotalLbl.text=@"£10";
     discountAmtTotalLbl.textColor=UIColorFromRGB(0x00b3a4);
     discountAmtTotalLbl.textAlignment=NSTextAlignmentRight;
     discountAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -155,7 +164,7 @@ static const int animationFramesPerSec = 8;
     
     numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
     
     if (numberOfCell != 0 )
     {
@@ -198,6 +207,11 @@ static const int animationFramesPerSec = 8;
 }
 
 #pragma mark - UserDefined methods
+
+- (void)backButtonAction
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (void) callWebserviceForLocationMatch {
     
@@ -369,17 +383,24 @@ static const int animationFramesPerSec = 8;
     return cell;
 }
 
-#pragma mark - CVSwipeProtocol Delegate 
+#pragma mark - CVSwipeProtocol Delegate
 
 -(void) performAction
 {
-    TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
-    verifyPINVC.isverifyPin = YES;
-    verifyPINVC.delegate = self;
-    verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
-    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [self presentViewController:nav animated:YES completion:nil];
+    if([TLUserDefaults getCurrentUser].Passcode)
+    {
+        TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+        verifyPINVC.isverifyPin = YES;
+        verifyPINVC.delegate = self;
+        verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+        [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    else
+    {
+        [self callWebserviceForLocationMatch];
+    }
 }
 
 
@@ -401,10 +422,10 @@ static const int animationFramesPerSec = 8;
     else
     {
         [UIAlertView alertViewWithMessage:message];
-         [[ProgressHud shared] hide];
+        [[ProgressHud shared] hide];
     }
     
-   
+    
 }
 
 - (void)checkLocationManager:(TLCheckLocationManager *)checkLocationManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -426,12 +447,12 @@ static const int animationFramesPerSec = 8;
     if ([paymentModel.AllowPayment intValue] == 0) {
         
         [UIAlertView alertViewWithMessage:paymentModel.Message];
-         [[ProgressHud shared] hide];
+        [[ProgressHud shared] hide];
     }
     else
     {
         [self callWebserviceForOrderItems];
-       
+        
     }
     
 }

@@ -150,6 +150,7 @@
         [fbSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
          fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
              [self backToUserProfile];
+             [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
          };
         [self presentViewController:fbSheet animated:YES completion:nil];
     }
@@ -162,6 +163,7 @@
         [tweetSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
         tweetSheet.completionHandler = ^(SLComposeViewControllerResult result) {
             [self backToUserProfile];
+            [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
         };
         [self presentViewController:tweetSheet animated:YES completion:nil];
     }
@@ -230,6 +232,7 @@
                     [tweetSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
                     tweetSheet.completionHandler = ^(SLComposeViewControllerResult result) {
                         [self backToUserProfile];
+                        [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
                     };
                     [self presentViewController:tweetSheet animated:YES completion:nil];
                 }
@@ -249,6 +252,7 @@
     else
     {
         [self backToUserProfile];
+        [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
        
     }
 }

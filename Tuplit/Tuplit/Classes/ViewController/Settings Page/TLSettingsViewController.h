@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface TLSettingsViewController : UIViewController
-
+#import <MessageUI/MFMailComposeViewController.h>
+#import "TLSettingsManager.h"
+@interface TLSettingsViewController : UIViewController<MFMailComposeViewControllerDelegate,TLSettingsManagerDelegate>
+@property(strong)UserModel *user_model;
 @end

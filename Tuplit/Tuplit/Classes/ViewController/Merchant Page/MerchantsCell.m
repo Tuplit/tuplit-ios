@@ -92,7 +92,7 @@
         [merchantdetailView addSubview:distanceImageView];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0,containerView.frame.size.height - 2,self.size.width,2)];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0,containerView.frame.size.height - 1,self.size.width,1)];
         lineView.backgroundColor = APP_DELEGATE.defaultColor;
         [containerView addSubview:lineView];
 

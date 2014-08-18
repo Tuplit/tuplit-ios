@@ -143,7 +143,7 @@
     spinner.center = scrollView.center;
     [spinner startAnimating];
     
-    if ([TLUserDefaults getCurrentUser]) {
+    if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
         [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
         userDetailsManager = [TLUserDetailsManager new];
         userDetailsManager.delegate = self;

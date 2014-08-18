@@ -26,11 +26,11 @@
     UILabel *transactionTitleLbl;
     
     UILabel *informativeLbl;
-
+    
     
     UIButton *acceptBtn;
     UIButton *rejectBtn;
-
+    
 }
 
 @end
@@ -45,12 +45,12 @@
     [self.navigationItem setTitle:LString(@"YOUR_ORDER")];
     self.view.backgroundColor=[UIColor whiteColor];
     
-//    UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
-//    [back backButtonWithTarget:self action:@selector(backUserProfileAction)];
-//    [self.navigationItem setLeftBarButtonItem:back];
-//    
-//    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithTitle:LString(@"NEXT") style:UIBarButtonItemStylePlain target:self action:@selector(nextViewController:)];
-//    [self.navigationItem setRightBarButtonItem:navleftButton];
+    //    UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
+    //    [back backButtonWithTarget:self action:@selector(backUserProfileAction)];
+    //    [self.navigationItem setLeftBarButtonItem:back];
+    //
+    //    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithTitle:LString(@"NEXT") style:UIBarButtonItemStylePlain target:self action:@selector(nextViewController:)];
+    //    [self.navigationItem setRightBarButtonItem:navleftButton];
     
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
@@ -146,10 +146,10 @@
     totalAmtLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:totalAmtLbl];
     
-//    lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
-//    lineImgView3.image=[UIImage imageNamed:@"line.png"];
-//    lineImgView3.backgroundColor=[UIColor clearColor];
-//    [detailImgView addSubview:lineImgView3];
+    //    lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
+    //    lineImgView3.image=[UIImage imageNamed:@"line.png"];
+    //    lineImgView3.backgroundColor=[UIColor clearColor];
+    //    [detailImgView addSubview:lineImgView3];
     
     acceptBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     acceptBtn.frame=CGRectMake(14, CGRectGetMaxY(totalAmtLbl.frame)+25, detailImgView.width-28, 45);
@@ -236,35 +236,54 @@
     acceptBtn.frame = CGRectMake(20, CGRectGetMaxY(totalAmtLbl.frame)+25, 270, 45);
     rejectBtn.frame = CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+15, detailImgView.width-28, 45);
     [itemsListTable reloadData];
-     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(rejectBtn.frame) + 40);
+    scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(rejectBtn.frame) + 40);
     
 }
 -(void)acceptOrderAction
 {
-    TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
-    verifyPINVC.isverifyPin = YES;
-    verifyPINVC.delegate = self;
-    verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
-    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [self presentViewController:nav animated:YES completion:nil];
+    if([TLUserDefaults getCurrentUser].Passcode)
+    {
+        TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+        verifyPINVC.isverifyPin = YES;
+        verifyPINVC.delegate = self;
+        verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+        [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    else
+    {
+        [self callOrderService];
+    }
 }
 
 -(void)RejectOrderAction
 {
     NSDictionary *queryParams = @{
-                                @"OrderId"   : NSNonNilString(orderdetail.OrderId),
-                                @"OrderStatus" :NSNonNilString(RecjectOrder),
-                                };
+                                  @"OrderId"   : NSNonNilString(orderdetail.OrderId),
+                                  @"OrderStatus" :NSNonNilString(RecjectOrder),
+                                  };
     
     NETWORK_TEST_PROCEDURE
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-
+    
     orderManager = [[TLOrderManager alloc]init];
     orderManager.delegate = self;
     [orderManager processOrders:queryParams];
 }
-
+-(void)callOrderService
+{
+    NSDictionary *queryParams = @{
+                                  @"OrderId"   : NSNonNilString(orderdetail.OrderId),
+                                  @"OrderStatus" :NSNonNilString(AcceptOder),
+                                  };
+    NETWORK_TEST_PROCEDURE
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    
+    orderManager = [[TLOrderManager alloc]init];
+    orderManager.delegate = self;
+    [orderManager processOrders:queryParams];
+}
 #pragma mark - TableView Delegate
 
 -(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
@@ -383,16 +402,7 @@
 #pragma  mark - TLPinCodeVerifiedDelegate
 -(void)pincodeVerified
 {
-    NSDictionary *queryParams = @{
-                                  @"OrderId"   : NSNonNilString(orderdetail.OrderId),
-                                  @"OrderStatus" :NSNonNilString(AcceptOder),
-                                  };
-    NETWORK_TEST_PROCEDURE
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    
-    orderManager = [[TLOrderManager alloc]init];
-    orderManager.delegate = self;
-    [orderManager processOrders:queryParams];
+    [self callOrderService];
 }
 
 #pragma  mark - TLOrderDetailsManager Delegate Methods
@@ -432,7 +442,7 @@
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
-
+    
 }
 - (void)processOrdersManagerFailed:(TLOrderManager *)processOrdersManager
 {

@@ -11,9 +11,10 @@
 #import "TLFacebookIDManager.h"
 #import "TLFriendsInviteManager.h"
 #import "CheckUserModel.h"
+#import <MessageUI/MFMailComposeViewController.h>
 #import "Person.h"
 
-@interface TLInviteFriendsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,TLFacebookIDManagerDelegate,TLFriendsInviteManagerDelegate>
+@interface TLInviteFriendsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,MFMailComposeViewControllerDelegate,TLFacebookIDManagerDelegate,TLFriendsInviteManagerDelegate>
 {
     UIView *baseView,*menuView;
     UITableView *facebookTable;

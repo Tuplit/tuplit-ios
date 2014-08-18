@@ -176,9 +176,8 @@
 
 -(void) inviteFriendsAction :(UIButton *) sender
 {
-    [UIAlertView alertViewWithMessage:@"Invite Friends is under construction. Will be available in future demos."];
-//    TLInviteFriendsViewController *inviteFriendsViewController=[[TLInviteFriendsViewController alloc] init];
-//    [self.navigationController pushViewController:inviteFriendsViewController animated:YES];
+    TLInviteFriendsViewController *inviteFriendsViewController=[[TLInviteFriendsViewController alloc] init];
+    [self.navigationController pushViewController:inviteFriendsViewController animated:YES];
 }
 
 -(void) callFriendslistWebserviceWithstartCount:(long) start showProgress:(BOOL)showProgressIndicator
@@ -200,7 +199,7 @@
     }
     
     NSString *searchText;
-    if(searchTxt.hidden)
+    if(searchbarView.hidden)
         searchText = @"";
     else
         searchText = searchTxt.text;
@@ -246,7 +245,7 @@
             
             inviteFriendsBtn.hidden = YES;
             searchbarView.hidden = NO;
-            
+
             friendsTable.frame = CGRectMake(0,CGRectGetMaxY(searchbarView.frame)+1,baseViewWidth, baseViewHeight-CGRectGetMaxY(searchbarView.frame) - adjustHeight - 1);
             errorView.frame = CGRectMake(0,CGRectGetMaxY(searchbarView.frame)+1,baseViewWidth, baseViewHeight-CGRectGetMaxY(searchbarView.frame) - adjustHeight - 1);
             errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
@@ -262,6 +261,8 @@
             friendsTable.frame =  CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
             errorView.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
             errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+            [self callFriendslistWebserviceWithstartCount:0 showProgress:YES];
+
         }
         
     }];

@@ -12,4 +12,5 @@
 @property (nonatomic, retain) IBOutlet UIWebView *webView;
 @property (nonatomic, retain) NSURL *resourceUrl;
 @property (nonatomic, retain) NSString *titleString;
+@property (nonatomic,strong)UIViewController *viewController;
 @end

@@ -53,6 +53,8 @@
     userProfileTable.delegate = self;
     userProfileTable.backgroundColor = [UIColor clearColor];
     userProfileTable.tag = 1003;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        userProfileTable.delaysContentTouches = NO;
     userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 20)];
     [baseView addSubview:userProfileTable];
     
@@ -283,42 +285,61 @@
     leftHeaderNameLbl.backgroundColor=[UIColor clearColor];
     leftHeaderNameLbl.text = [sectionHeader objectAtIndex:section];
     
-    UILabel *rightHeaderNameLbl = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
-    rightHeaderNameLbl.textColor = UIColorFromRGB(0x999999);
-    rightHeaderNameLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
-    rightHeaderNameLbl.textAlignment = NSTextAlignmentRight;
-    rightHeaderNameLbl.userInteractionEnabled=YES;
-    rightHeaderNameLbl.backgroundColor=[UIColor clearColor];
+    UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];//[[UIButton alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
+    headerBtn.frame = CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT);
+    headerBtn.backgroundColor = [UIColor clearColor];
+    headerBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    headerBtn.titleLabel.textAlignment = NSTextAlignmentRight;
+    headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    UIImage * topUpImage = getImage(@"btn_img", NO);
+    UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+    
+    [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
+    [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
+    [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
+    
+    [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+    [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+    [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+
     
     if(section == 1)
     {
-        rightHeaderNameLbl.text = @"Add Credit Card";//LString(@"ADD_CREDIT_CARD");
-        UITapGestureRecognizer *addCreidtCardTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCreditCardAction)];
-        [rightHeaderNameLbl addGestureRecognizer:addCreidtCardTap];
+        [headerBtn setTitle: @"Add Credit Card" forState:UIControlStateNormal];
+        [headerBtn addTarget:self action:@selector(addCreditCardAction) forControlEvents:UIControlEventTouchUpInside];
+        float btnWidth = [@"Add Credit Card" widthWithFont:headerBtn.titleLabel.font]+2;
+        headerBtn.width = btnWidth;
+        [headerBtn positionAtX:baseViewWidth-btnWidth-15];
     }
     else if(section == 2)
     {
         if(totalOrders>3)
         {
-            rightHeaderNameLbl.text = @"See All" ;// LString(@"SEE_ALL");
-            
-            UITapGestureRecognizer *allTransactionTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(allTransaction)];
-            [rightHeaderNameLbl addGestureRecognizer:allTransactionTap];
+            [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
+            [headerBtn addTarget:self action:@selector(allTransaction) forControlEvents:UIControlEventTouchUpInside];
+            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+2;
+            headerBtn.width = btnWidth;
+            [headerBtn positionAtX:baseViewWidth-btnWidth-15];
         }
     }
     else if(section == 3)
     {
         if(totalComments >3)
         {
-            rightHeaderNameLbl.text = @"See All"; // LString(@"SEE_ALL");    }
-            UITapGestureRecognizer *allTransactionTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(allcomments)];
-            [rightHeaderNameLbl addGestureRecognizer:allTransactionTap];
+            [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
+            [headerBtn addTarget:self action:@selector(allcomments) forControlEvents:UIControlEventTouchUpInside];
+            
+            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+2;
+            headerBtn.width = btnWidth;
+            [headerBtn positionAtX:baseViewWidth-btnWidth-15];
+
         }
     }
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width,HEADER_HEIGHT)];
     headerView.backgroundColor = [UIColor whiteColor];
     [headerView addSubview:leftHeaderNameLbl];
-    [headerView addSubview:rightHeaderNameLbl];
+    [headerView addSubview:headerBtn];
+     [headerView setAutoresizingMask:UIViewAutoresizingNone];
     [tableView addSubview:headerView];
     
     return  headerView;
@@ -352,7 +373,6 @@
        
         [transferBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
        [topUpBtn addTarget:self action:@selector(topUpAction:) forControlEvents:UIControlEventTouchUpInside];
-        
     }
     else if (indexPath.section == 1)
     {

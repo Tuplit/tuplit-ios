@@ -40,4 +40,7 @@
 + (void)setItunesURL:(NSString*) link;
 + (NSString*)getItunesURL;
 
++ (void)setIsPINCodeEnabled:(BOOL)isEnabled;
++ (BOOL)isPINCodeEnabled;
+
 @end

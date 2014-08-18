@@ -23,5 +23,7 @@
 @property (nonatomic, copy) NSString * distance;
 @property (nonatomic, copy) NSString * IsSpecial;
 @property (nonatomic, copy) NSString * IsGoldenTag;
+@property (nonatomic, copy) NSString * Category;
+@property (nonatomic, copy) NSString * TotalUsersShopped;
 
 @end

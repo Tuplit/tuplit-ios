@@ -65,6 +65,36 @@
             endingLineNumber = "227"
             landmarkName = "-commentAddManagerSuccess:"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[TLAddCommentViewController commentAddManagerSuccess:]"
+                  moduleName = "Tuplit"
+                  urlString = "file:///Volumes/Work/Satya/Backup/IOS/Tuplit/08Aug/12%20demo%208/Tuplit/Tuplit/Classes/ViewController/Comments%20Page/Add%20Comment/TLAddCommentViewController.m"
+                  timestampString = "429704882.015908"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "227"
+                  endingLineNumber = "227"
+                  offsetFromSymbolStart = "363">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__55-[TLAddCommentViewController commentAddManagerSuccess:]_block_invoke"
+                  moduleName = "Tuplit"
+                  urlString = "file:///Volumes/Work/Satya/Backup/IOS/Tuplit/08Aug/12%20demo%208/Tuplit/Tuplit/Classes/ViewController/Comments%20Page/Add%20Comment/TLAddCommentViewController.m"
+                  timestampString = "429704882.016175"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "229"
+                  endingLineNumber = "229"
+                  offsetFromSymbolStart = "15">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

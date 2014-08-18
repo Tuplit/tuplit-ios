@@ -53,7 +53,7 @@
     tenRupeeTopUpBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [tenRupeeTopUpBtn setFrame:CGRectMake(14, 0,94,CGRectGetHeight(buttonView.frame))];
     [tenRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
-    [tenRupeeTopUpBtn setTitle:@"$100" forState:UIControlStateNormal];
+    [tenRupeeTopUpBtn setTitle:@"£100" forState:UIControlStateNormal];
     tenRupeeTopUpBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     tenRupeeTopUpBtn.tag=100;
     [tenRupeeTopUpBtn addTarget:self action:@selector(rechargeTenRupeeTopUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -63,7 +63,7 @@
     twentyRupeeTopUpBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [twentyRupeeTopUpBtn setFrame:CGRectMake(CGRectGetMaxX(tenRupeeTopUpBtn.frame) + 5 ,0,CGRectGetWidth(tenRupeeTopUpBtn.frame),CGRectGetHeight(buttonView.frame))];
     [twentyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
-    [twentyRupeeTopUpBtn setTitle:@"$200" forState:UIControlStateNormal];
+    [twentyRupeeTopUpBtn setTitle:@"£200" forState:UIControlStateNormal];
     twentyRupeeTopUpBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     [twentyRupeeTopUpBtn addTarget:self action:@selector(rechargeTwentyRupeeTopUp:) forControlEvents:UIControlEventTouchUpInside];
     twentyRupeeTopUpBtn.tag=101;
@@ -74,7 +74,7 @@
     [fiftyRupeeTopUpBtn setFrame:CGRectMake(CGRectGetMaxX(twentyRupeeTopUpBtn.frame) + 5, 0,CGRectGetWidth(tenRupeeTopUpBtn.frame),CGRectGetHeight(buttonView.frame))];
     fiftyRupeeTopUpBtn.tag=102;
     [fiftyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
-    [fiftyRupeeTopUpBtn setTitle:@"$500" forState:UIControlStateNormal];
+    [fiftyRupeeTopUpBtn setTitle:@"£500" forState:UIControlStateNormal];
     fiftyRupeeTopUpBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     fiftyRupeeTopUpBtn.backgroundColor=[UIColor clearColor];
     [fiftyRupeeTopUpBtn addTarget:self action:@selector(rechargeFiftyRupeeTopUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -99,7 +99,7 @@
     topUpAmountTxt.backgroundColor=[UIColor clearColor];
     [topUpAmountTxt setBackground:getImage(@"textFieldBg.png", NO)];
     [topUpAmountTxt addTarget:self action:@selector(textFieldAmount:) forControlEvents:UIControlEventEditingDidBegin];
-    topUpAmountTxt.placeholder = @"$0.00";
+    topUpAmountTxt.placeholder = @"£0.00";
     [topUpAmountTxt setupForTuplitStyle];
     [baseView addSubview:topUpAmountTxt];
     
@@ -210,7 +210,7 @@
 
 -(void) rechargeTenRupeeTopUp: (id) sender
 {
-    topUpAmountTxt.text=@"$100";
+    topUpAmountTxt.text=@"£100";
     [tenRupeeTopUpBtn setBackgroundImage:getImage(@"rotateButtonBg", NO) forState:UIControlStateNormal];
     [tenRupeeTopUpBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [twentyRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
@@ -221,7 +221,7 @@
 }
 -(void) rechargeTwentyRupeeTopUp: (id) sender
 {
-    topUpAmountTxt.text=@"$200";
+    topUpAmountTxt.text=@"£200";
     [twentyRupeeTopUpBtn setBackgroundImage:getImage(@"rotateButtonBg", NO) forState:UIControlStateNormal];
     [twentyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [tenRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
@@ -233,7 +233,7 @@
 }
 -(void) rechargeFiftyRupeeTopUp : (id) sender
 {
-    topUpAmountTxt.text=@"$500";
+    topUpAmountTxt.text=@"£500";
     [fiftyRupeeTopUpBtn setBackgroundImage:getImage(@"rotateButtonBg", NO) forState:UIControlStateNormal];
     [fiftyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [twentyRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
@@ -266,7 +266,7 @@
    
     if (topUpAmount.intValue<100)
     {
-        [UIAlertView alertViewWithMessage:@"Enter minimum $100 or above to Top up"];
+        [UIAlertView alertViewWithMessage:@"Enter minimum £100 or above to Top up"];
     }
     else
     {
@@ -378,7 +378,7 @@
         [numberFormatter setMinimumFractionDigits:0];
         [numberFormatter setMaximumFractionDigits:0];
         
-        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
         [numberFormatter setLocale:english];
         
         NSString *stringMaybeChanged = [NSString stringWithString:string];

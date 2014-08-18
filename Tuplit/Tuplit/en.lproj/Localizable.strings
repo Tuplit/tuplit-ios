@@ -71,6 +71,7 @@
 "PIN_ALLOWS"                    = "PIN code allows you to check out with no need to enter your password.";
 "OK_GOT_IT"                     = "OK, got it!";
 "TERMS_OF_SERVICE"              = "Terms of Service";
+"TERMS_OF_USE"                  = "Terms of Use";
 
 "PRIVACY_POLICY"                = "Privacy Policy";
 "NO_VALID_CAMERA"               = "No valid camera source available.";
@@ -163,6 +164,7 @@
 "MESSAGE_OPTIONAL"              = "Share your message";
 "COMMENT_ALERT_MESSAGE"         = "Please enter the comment to post";
 "COMMENT_PLACEHOLDER"           = "Enter your comment";
+"FEED_BACK"                     = "Thank you for the feedback";
 /* Pin View */
 
 "ENTER_PIN_CODE"               = "Enter PIN Code";
@@ -226,19 +228,19 @@
 "NOTIFICATION"                  = "Notifications";
 "ALL_NOTIFICATION"              = "All Notifications";
 "BUY_SOMETHING"                 = "I buy something";
-"RECEIVE_MONEY"                 = "I Receive money";
+"RECEIVE_MONEY"                 = "I receive money";
 "SEND_MONEY"                    = "I send money";
 "DEAL_OFFERS"                   = "Deals and Offers";
 "SECURITY"                      = "Security";
 "PASSCODE"                      = "Passcode";
-"PAYMENT_PREFER"                = "Payment PReferences";
+"PAYMENT_PREFER"                = "Payment Preferences";
 "REMEMBER_ME"                   = "Remember Me";
 "CHANGE_PIN_CODE"               = "Change PIN Code";
 "ADD_NUMBER"                    = "Add a Number";
 "OFF"                           = "Off";
 "ON"                            = "On";
-"EMAIL"                         = "Email:";
-"PHONE"                         = "Phone:";
+"EMAIL"                         = "Email: ";
+"PHONE"                         = "Phone: ";
 "FAQ"                           = "FAQ";
 "TUTORIALS"                     = "Tutorials";
 "TERMS_LEGAL_INFO"              = "Terms Of Use & More Legal Info";

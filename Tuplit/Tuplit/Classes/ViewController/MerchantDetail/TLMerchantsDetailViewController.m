@@ -79,7 +79,7 @@
     [merchantImageView setContentMode:UIViewContentModeScaleAspectFit];
     [containerView addSubview:merchantImageView];
     
-    UIImage * customerShoppedImage1 = getImage(@"shop_bag", NO);;
+    UIImage * customerShoppedImage1 = getImage(@"shop_bag", NO);
     UIImageView * customerShopedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8,8 ,customerShoppedImage1.size.width, customerShoppedImage1.size.height)];
     customerShopedImageView.backgroundColor = [UIColor clearColor];
     customerShopedImageView.image = customerShoppedImage1;
@@ -208,11 +208,13 @@
     [orderButton setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [menuView addSubview:orderButton];
     
-    merchantDetailTable = [[UITableView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(menuView.frame),baseViewWidth,baseViewHeight-CGRectGetMaxY(menuView.frame)-adjustHeight)style:UITableViewStylePlain];
+    merchantDetailTable = [[UITableView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(menuView.frame)
+                                                                        +1,baseViewWidth,baseViewHeight-CGRectGetMaxY(menuView.frame)-1-adjustHeight)style:UITableViewStylePlain];
     [merchantDetailTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     merchantDetailTable.dataSource = self;
     merchantDetailTable.delegate= self;
-    merchantDetailTable.delaysContentTouches = NO;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        merchantDetailTable.delaysContentTouches = NO;
     merchantDetailTable.tag= 103;
     [merchantDetailTable reloadData];
     [baseView addSubview:merchantDetailTable];
@@ -266,7 +268,7 @@
     
     numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -277,6 +279,7 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
+    [self updateCartDetails];
 }
 
 - (void)viewDidLoad
@@ -351,10 +354,12 @@
 -(void) openCartPage {
     
     TLCartViewController *cartVC = [[TLCartViewController alloc] init];
-    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
-    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+    cartVC.isMerchant = YES;
+    [self.navigationController pushViewController:cartVC animated:YES];
+//    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
+//    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+//    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+//    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
 }
 
 -(void) updateCartView
@@ -366,23 +371,31 @@
                     completion:NULL];
 
     cartBarView.hidden = NO;
+    [self updateCartDetails];
     
-    [APP_DELEGATE.cartModel calculateTotalPrice];
-    
-    cartItemCountLbl.text = [NSString stringWithFormat:@"%d item(s) in cart",APP_DELEGATE.cartModel.products.count];;
-    float cartLblWidth = [cartItemCountLbl.text widthWithFont:cartItemCountLbl.font];
-    CGRect tempRect = cartItemCountLbl.frame;
-    tempRect.size.width = cartLblWidth;
-    cartItemCountLbl.frame =tempRect;
-    
-    
-    totItemPrizeLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.discountedTotal]];
-    float prizeLblWidth = [totItemPrizeLbl.text widthWithFont:totItemPrizeLbl.font];
-    CGRect tempRect1 = cartItemCountLbl.frame;
-    tempRect1.origin.x = CGRectGetWidth(cartBarView.frame) - 70 - prizeLblWidth;
-    tempRect1.size.width = prizeLblWidth;
-    totItemPrizeLbl.frame = tempRect1;
-    
+}
+-(void)updateCartDetails
+{
+    if(APP_DELEGATE.cartModel.products.count>0)
+    {
+        [APP_DELEGATE.cartModel calculateTotalPrice];
+        
+        cartItemCountLbl.text = [NSString stringWithFormat:@"%d item(s) in cart",APP_DELEGATE.cartModel.products.count];
+        float cartLblWidth = [cartItemCountLbl.text widthWithFont:cartItemCountLbl.font];
+        CGRect tempRect = cartItemCountLbl.frame;
+        tempRect.size.width = cartLblWidth;
+        cartItemCountLbl.frame =tempRect;
+        
+        
+        totItemPrizeLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.discountedTotal]];
+        float prizeLblWidth = [totItemPrizeLbl.text widthWithFont:totItemPrizeLbl.font];
+        CGRect tempRect1 = cartItemCountLbl.frame;
+        tempRect1.origin.x = CGRectGetWidth(cartBarView.frame) - 70 - prizeLblWidth;
+        tempRect1.size.width = prizeLblWidth;
+        totItemPrizeLbl.frame = tempRect1;
+    }
+    else
+        cartBarView.hidden = YES;
 }
 
 - (void) buttonDetailOrderAction:(UIButton*) button
@@ -755,9 +768,23 @@
             if(merchantdetailmodel.CategoryList.count==0)
                 shortheight = [merchantdetailmodel.ShortDescription heigthWithWidth:130 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
             else
-                return stringHeight + 35;
+            {
+//                NSMutableString *categorynames = [NSMutableString new];
+//                int i=0;
+//                for(CategoryModel *categoryModel in merchantdetailmodel.CategoryList)
+//                {
+//                    //                CategoryModel *categoryModel = [merchantdetailmodel.CategoryList objectAtIndex:0];
+//                    [categorynames appendString:categoryModel.CategoryName];
+//                    i++;
+//                    if(i<[merchantdetailmodel.CategoryList count])
+//                        [categorynames appendString:@", "];
+//                }
+//                int height = [categorynames heigthWithWidth:130 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
+               
+                return stringHeight + 35 + 15;
+            }
 
-            return stringHeight + shortheight+ 16;
+            return stringHeight + shortheight+ 16 + 15;
         }
         
         else if (indexPath.section==1)
@@ -922,6 +949,7 @@
                 descriptionLabel.textColor = UIColorFromRGB(0x333333);
                 descriptionLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
                 [cell.contentView addSubview:descriptionLabel];
+                
             }
             
             else if (indexPath.section == 1)
@@ -967,6 +995,19 @@
                 addCartBtn.backgroundColor = [UIColor clearColor];
                 [addCartBtn addTarget:self action:@selector(addToCart:) forControlEvents:UIControlEventTouchUpInside];
                 [cellBaseView addSubview:addCartBtn];
+                
+                if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+                {
+                    for (id obj in cell.subviews)
+                    {
+                        if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+                        {
+                            UIScrollView *scroll = (UIScrollView *) obj;
+                            scroll.delaysContentTouches = NO;
+                            break;
+                        }
+                    }
+                }
             }
             
             else if ( indexPath.section == 2)
@@ -1104,20 +1145,41 @@
             UILabel *descriptionLabel = (UILabel*)[cell.contentView viewWithTag:1004];
             UIView *catgView = (UIView*)[cell.contentView viewWithTag:1005];
             
+//            int i =0;
             if(merchantdetailmodel.CategoryList.count > 0) {
-                
+//                NSMutableString *categorynames = [NSMutableString new];
                 CategoryModel *categoryModel = [merchantdetailmodel.CategoryList objectAtIndex:0];
                 [restaurantImageView setImageURL:[NSURL URLWithString:categoryModel.CategoryIcon]];
                 restaurantLabel.text = categoryModel.CategoryName;
+//                for(CategoryModel *categoryModel in merchantdetailmodel.CategoryList)
+//                {
+////                CategoryModel *categoryModel = [merchantdetailmodel.CategoryList objectAtIndex:0];
+//                    [categorynames appendString:categoryModel.CategoryName];
+//                    i++;
+//                    if(i<[merchantdetailmodel.CategoryList count])
+//                        [categorynames appendString:@", "];
+//                }
+//                restaurantLabel.text = categorynames;
+//                int height = [restaurantLabel.text heigthWithWidth:CGRectGetWidth(restaurantLabel.frame) andFont:restaurantLabel.font];
+//                
+//                if(height>30)
+//                {
+//                    restaurantLabel.height = height+1;
+//                    catgView.height = height;
+//                }
             }
             else
             {
                 restaurantImageView.image = getImage(@"res", NO);
                 restaurantLabel.text = [merchantdetailmodel.ShortDescription capitaliseFirstLetter];
                 int height = [restaurantLabel.text heigthWithWidth:CGRectGetWidth(restaurantLabel.frame) andFont:restaurantLabel.font];
-                restaurantLabel.height = height+1;
+                
                 if(height>30)
-                    catgView.height = height;
+                {
+                    restaurantLabel.height = height+1;
+                     catgView.height = height;
+                }
+                
             }
             
             if(favouriteType)
@@ -1336,6 +1398,19 @@
             [addCartBtn setImage:addcartImage forState:UIControlStateNormal];
             [addCartBtn addTarget:self action:@selector(addToCart:) forControlEvents:UIControlEventTouchUpInside];
             [cellBaseView addSubview:addCartBtn];
+            
+            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            {
+                for (id obj in cell.subviews)
+                {
+                    if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+                    {
+                        UIScrollView *scroll = (UIScrollView *) obj;
+                        scroll.delaysContentTouches = NO;
+                        break;
+                    }
+                }
+            }
         }
         
         SpecialProductsModel *specialProduct = [[orderedMainDict valueForKey:[orderSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];

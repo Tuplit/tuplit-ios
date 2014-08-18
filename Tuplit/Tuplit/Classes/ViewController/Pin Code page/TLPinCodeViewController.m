@@ -43,7 +43,8 @@
     
     scrollView=[[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
     scrollView.userInteractionEnabled=YES;
-    scrollView.delaysContentTouches = NO;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        scrollView.delaysContentTouches = NO;
     [baseView addSubview:scrollView];
     
     codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseView.frame.size.width, 120)];

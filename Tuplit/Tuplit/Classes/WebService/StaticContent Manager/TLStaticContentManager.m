@@ -46,13 +46,14 @@
             
             NSArray *array = [[responseJSON objectForKey:strPropertyName] valueForKey:@"cms"];
             
+            NSLog(@"%@",array);
             for (NSDictionary *dict in array) {
                 
                 if([[dict valueForKey:@"PageName"] isEqualToString:@"About"])
                     obj.aboutContent = dict[@"Content"];
                 else if([[dict valueForKey:@"PageName"] isEqualToString:@"Privacy Policy"])
                     obj.privacyContent = dict[@"Content"];
-                else if([[dict valueForKey:@"PageName"] isEqualToString:@"Terms of Service"])
+                else if([[dict valueForKey:@"PageName"] isEqualToString:@"Terms of Use"])
                     obj.termsContent = dict[@"Content"];
                 else if([[dict valueForKey:@"PageName"] isEqualToString:@"FAQ"])
                     obj.faqUrl = dict[@"Content"];
@@ -63,6 +64,8 @@
             
             array = [[responseJSON objectForKey:strPropertyName] valueForKey:@"TutorialSlider"];
             obj.tutorialScreenImages = [array valueForKey:@"ImageUrl"];
+            
+            obj.discoutTiers = [[responseJSON objectForKey:strPropertyName]valueForKey:@"DiscountTier"];
             
             if([_delegate respondsToSelector:@selector(staticContentManagerSuccess:)])
                 [_delegate staticContentManagerSuccess:self];

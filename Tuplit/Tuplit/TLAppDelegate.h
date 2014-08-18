@@ -37,6 +37,7 @@
 @property (strong, nonatomic) NSArray *friendsRecentOrders;
 @property (strong, nonatomic) NSString *merchantID;
 @property (assign, nonatomic) BOOL isUserProfileEdited,isFavoriteChanged;
+@property (strong, nonatomic) NSMutableDictionary *catgDict;
 
 - (void)showNoConnectivityAlertAndQuit:(BOOL)shouldQuit;
 

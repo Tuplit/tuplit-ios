@@ -76,6 +76,8 @@ AFHTTPRequestOperation *operation;
                                                                   @"distance": @"distance",
                                                                   @"IsSpecial": @"IsSpecial",
                                                                   @"IsGoldenTag" : @"IsGoldenTag",
+                                                                  @"Category" : @"Category",
+                                                                  @"TotalUsersShopped" : @"TotalUsersShopped",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };

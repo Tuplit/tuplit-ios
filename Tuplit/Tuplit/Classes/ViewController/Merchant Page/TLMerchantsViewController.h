@@ -18,6 +18,7 @@
 #import "TLAddCommentViewController.h"
 #define MERCHANT_CELL_HEIGHT 130
 #define SEARCH_CELL_HEIGHT    50
+#define DISCOUNT_CELL_HEIGHT   35
 
 typedef NS_ENUM(NSInteger, ActionRequestType) {
     MCSearch = 0,
@@ -42,9 +43,13 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     UIView *cellContainer;
     UIView *cmtPromptView;
     UILabel *merchantNameLabel;
-    ChoiceButton *choiceButton;
+    
     UILabel *merchantErrorLabel,*searchErrorLabel;
     NSMutableArray *merchantsArray,*searchArray,*categoryArray;
+    NSDictionary *disCountDict;
+    
+    UITableView * discountTable;
+    UIView *discountView;
     
     TLMerchantListingModel *merchantListingModel;
     TLMerchantListingManager *merchantListingManager;
@@ -55,11 +60,14 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     int adjustHeight;
     int menuSelected,discountTierValue;
     int totalUserListCount,lastFetchCount;
-    BOOL isLoadMorePressed,isPullRefreshPressed,isTextFieldClearPressed,isMerchantWebserviceRunning,isKeyBoardOpen;
+    BOOL isLoadMorePressed,isPullRefreshPressed,isTextFieldClearPressed,isMerchantWebserviceRunning,isKeyBoardOpen,isnearBy;
     
     int adjustViewForIOS7;
     NSString *categoryId;
     
     MerchantModel *callOutmerchant;
+    
+    NSMutableDictionary *catgDict;
+
 }
 @end

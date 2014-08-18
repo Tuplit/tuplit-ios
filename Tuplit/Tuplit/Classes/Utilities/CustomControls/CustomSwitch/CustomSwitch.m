@@ -77,9 +77,9 @@
     self.on = NO;
     self.isRounded = YES;
     self.inactiveColor = [UIColor clearColor];
-    self.activeColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.00f];
-    self.onColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"on.png"]];
-    self.offColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"off.png"]];
+    self.activeColor = [UIColor clearColor];
+    self.onColor = [APP_DELEGATE defaultColor];
+    self.offColor= [UIColor lightGrayColor];
    // self.borderColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.91f alpha:1.00f];
     self.knobColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"grayBg.png"]];
     

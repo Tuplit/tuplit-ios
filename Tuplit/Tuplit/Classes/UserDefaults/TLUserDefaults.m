@@ -18,6 +18,8 @@
 #define kIsCommentPromtOpen @"kIsCommentPromtOpen"
 #define kCommentDetails @"kCommentDetails"
 #define kItunesURL @"kItunesURL"
+#define kISPINCodeDisabled @"kISPINCodeDisabled"
+
 
 @implementation TLUserDefaults
 
@@ -125,8 +127,13 @@
     return ([UserDefaults valueForKey:kItunesURL]==nil)?@"<Appstore url>":[UserDefaults valueForKey:kItunesURL];
 }
 
-
++ (void)setIsPINCodeEnabled:(BOOL)isEnabled
+{
+    [UserDefaults setBool:isEnabled forKey:kISPINCodeDisabled];
+    [UserDefaults synchronize];
+}
++ (BOOL)isPINCodeEnabled
+{
+    return [UserDefaults boolForKey:kISPINCodeDisabled];
+}
 @end
-
-
-

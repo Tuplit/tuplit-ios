@@ -87,7 +87,7 @@
             UIButton *topUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
             topUpButton.tag = 4003;
             [topUpButton setTitle:LString(@"TOP_UP") forState:UIControlStateNormal];
-            UIImage * topUpImage = [UIImage imageNamed:@"buttonBg.png"];
+            UIImage * topUpImage = getImage(@"buttonBg", NO);
             UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
             [topUpButton setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
             topUpButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -97,12 +97,25 @@
             
             UIButton *transferButton = [UIButton buttonWithType:UIButtonTypeCustom];
             transferButton.tag = 4004;
-            UIImage * transferImage = [UIImage imageNamed:@"buttonBg.png"];
+            UIImage * transferImage = getImage(@"buttonBg", NO);
             [transferButton setBackgroundImage:transferImage forState:UIControlStateNormal];    [transferButton setTitle:LString(@"TRANSFER") forState:UIControlStateNormal];
             transferButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             transferButton.frame = CGRectMake(CGRectGetMaxX(topUpButton.frame)+5,0,142, 35);
             [transferButton setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
             [menuView addSubview:transferButton];
+            
+            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            {
+                for (id obj in self.subviews)
+                {
+                    if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+                    {
+                        UIScrollView *scroll = (UIScrollView *) obj;
+                        scroll.delaysContentTouches = NO;
+                        break;
+                    }
+                }
+            }
             
         }
         else if ([reuseIdentifier isEqualToString:@"OtherUserDetails"])
@@ -157,6 +170,19 @@
             sendCreditBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             [sendCreditBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
             [topView addSubview:sendCreditBtn];
+            
+            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            {
+                for (id obj in self.subviews)
+                {
+                    if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
+                    {
+                        UIScrollView *scroll = (UIScrollView *) obj;
+                        scroll.delaysContentTouches = NO;
+                        break;
+                    }
+                }
+            }
         }
         else if ([reuseIdentifier isEqualToString:@"Credit Cards"])
         {

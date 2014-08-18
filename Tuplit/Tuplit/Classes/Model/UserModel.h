@@ -22,6 +22,11 @@
 @property (nonatomic, copy) NSString *RecieveCredit;
 @property (nonatomic, copy) NSString *SendCredit;
 @property (nonatomic, copy) NSString *BuySomething;
+@property (nonatomic, copy) NSString *DealsOffers;
+@property (nonatomic, copy) NSString *Sounds;
+@property (nonatomic, copy) NSString *Passcode;
+@property (nonatomic, copy) NSString *PaymentPreference;
+@property (nonatomic, copy) NSString *RememberMe;
 
 @property (nonatomic, copy) NSString *UserName;
 @property (nonatomic, copy) NSString *ZipCode;

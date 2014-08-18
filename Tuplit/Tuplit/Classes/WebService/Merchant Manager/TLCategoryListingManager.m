@@ -82,8 +82,8 @@ AFHTTPRequestOperation *operation;
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if([delegate respondsToSelector:@selector(categoryListingManager:)])
-            [delegate categoryListingManager:self];
+        if([delegate respondsToSelector:@selector(categoryListingManagerOnFailed:)])
+            [delegate categoryListingManagerOnFailed:self];
         
 	}];
     

@@ -24,12 +24,15 @@
     UIImageView *customCalloutView;
     UIImageView * nextImageView;
     UIImageView * annDistanceImgView;
+    UIImageView * annCusShoppedImgView;
     
     UIImage *stretchableBackButtonImage;
     UIImage * callOutImage;
     
     UILabel * annDistanceLbl;
     UILabel * annMerchantNameLbl;
+    UILabel * annMerchantCatgLbl;
+    UILabel * customershoppedLbl;
     UILabel * annDiscountLbl;
     
     NSString * logoImageUrl;

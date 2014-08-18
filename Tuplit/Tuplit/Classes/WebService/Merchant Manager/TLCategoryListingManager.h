@@ -14,7 +14,7 @@
 @optional
 - (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager withCategoryList:(NSArray*) categoryArray;
 - (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg;
-- (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager;
+- (void)categoryListingManagerOnFailed:(TLCategoryListingManager *)categoryListingManager;
 @end
 
 @interface TLCategoryListingManager : NSObject

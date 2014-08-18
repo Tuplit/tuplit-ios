@@ -349,7 +349,7 @@
         if (annotationView == nil) {
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
-            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0, 0.0,250,55);
+            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0, 0.0,250,70);
             annotationView.centerOffset      = CGPointMake(6,-58);
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;

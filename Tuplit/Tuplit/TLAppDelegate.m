@@ -17,11 +17,11 @@
 
 @implementation TLAppDelegate
 
-@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged;
+@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
+    self.catgDict = [NSMutableDictionary new];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     //Register Push Notification
@@ -128,6 +128,16 @@
         [APP_DELEGATE.slideMenuController hideMenuViewController];
         
     }
+    else if ([[dict objectForKey:@"type"] intValue] == 1)
+    {
+        TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
+        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
+        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+    }
 }
 
 -(void) dealloc {
@@ -153,7 +163,7 @@
     [FBSession.activeSession closeAndClearTokenInformation];
     
     // premissions
-    NSArray *permissions = [NSArray arrayWithObjects:@"read_friendlists",@"user_birthday",nil];
+    NSArray *permissions = [NSArray arrayWithObjects:@"read_friendlists",@"user_birthday",@"email",nil];
 //public_profile",@"read_friendlists",@"user_friends
     
     [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES  completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {

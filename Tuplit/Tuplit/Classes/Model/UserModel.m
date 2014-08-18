@@ -28,12 +28,17 @@
     [encoder encodeObject:self.SendCredit forKey:@"SendCredit"];
     [encoder encodeObject:self.RecieveCredit forKey:@"RecieveCredit"];
     [encoder encodeObject:self.BuySomething forKey:@"BuySomething"];
+    [encoder encodeObject:self.DealsOffers forKey:@"DealsOffers"];
     [encoder encodeObject:self.Password forKey:@"Password"];
     [encoder encodeObject:self.GooglePlusId forKey:@"GooglePlusId"];
     [encoder encodeObject:self.PinCode forKey:@"PinCode"];
-    [encoder encodeObject:self.PinCode forKey:@"CellNumber"];
+    [encoder encodeObject:self.CellNumber forKey:@"CellNumber"];
     [encoder encodeObject:self.Location forKey:@"Location"];
     [encoder encodeObject:self.AvailableBalance forKey:@"AvailableBalance"];
+    [encoder encodeObject:self.Passcode forKey:@"Passcode"];
+    [encoder encodeObject:self.PaymentPreference forKey:@"PaymentPreference"];
+    [encoder encodeObject:self.RememberMe forKey:@"RememberMe"];
+    [encoder encodeObject:self.Sounds forKey:@"Sounds"];
     
 }
 
@@ -56,12 +61,17 @@
         self.SendCredit = [decoder decodeObjectForKey:@"SendCredit"];
         self.RecieveCredit = [decoder decodeObjectForKey:@"RecieveCredit"];
         self.BuySomething = [decoder decodeObjectForKey:@"BuySomething"];
+        self.DealsOffers = [decoder decodeObjectForKey:@"DealsOffers"];
         self.Password = [decoder decodeObjectForKey:@"Password"];
         self.GooglePlusId = [decoder decodeObjectForKey:@"GooglePlusId"];
         self.PinCode = [decoder decodeObjectForKey:@"PinCode"];
         self.CellNumber = [decoder decodeObjectForKey:@"CellNumber"];
         self.Location = [decoder decodeObjectForKey:@"Location"];
         self.AvailableBalance = [decoder decodeObjectForKey:@"AvailableBalance"];
+        self.Passcode = [decoder decodeObjectForKey:@"Passcode"];
+        self.PaymentPreference = [decoder decodeObjectForKey:@"PaymentPreference"];
+        self.RememberMe = [decoder decodeObjectForKey:@"RememberMe"];
+        self.Sounds = [decoder decodeObjectForKey:@"Sounds"];
         
     }
     return self;
