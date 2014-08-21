@@ -21,11 +21,17 @@
             img = getImage(@"nav", NO);
         else
             img = getImage(@"nav_64", NO);
-        [[UINavigationBar appearance] setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
-        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-        [[UINavigationBar appearance] setBarStyle:UIBarStyleBlackTranslucent];
+//        [[UINavigationBar appearance] setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
+//        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+//        [[UINavigationBar appearance] setBarStyle:UIBarStyleBlackTranslucent];
+        
         if(SYSTEM_VERSION_EQUAL_TO(@"6.0"))
             [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
+        
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            [[UINavigationBar appearance] setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarPosition:UIBarPositionTopAttached barMetrics:UIBarMetricsDefault]; // MFMailComposeViewController's navigationBar backgroundcolor
+        else
+            [[UINavigationBar appearance] setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
         
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
     }

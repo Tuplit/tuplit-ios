@@ -32,8 +32,6 @@ NSString *LString(NSString* key) {
 	TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
     
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
 	APP_DELEGATE.slideMenuController = [[RESideMenu alloc]initWithContentViewController:slideNavigationController leftMenuViewController:leftMenuVC rightMenuViewController:nil];
     APP_DELEGATE.slideMenuController.backgroundImage = [UIImage imageNamed:@"Stars"];

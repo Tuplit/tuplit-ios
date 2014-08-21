@@ -50,7 +50,7 @@
     }
     
     //    self.view.backgroundColor = APP_DELEGATE.defaultColor;
-//    self.view.backgroundColor=UIColorFromRGB(0x31869B);
+    //    self.view.backgroundColor=UIColorFromRGB(0x31869B);
     
     numberOfSlides = [Global instance].tutorialScreenImages.count;
     leftPos=0;
@@ -71,16 +71,8 @@
     scrollView.delegate = self;
 	scrollView.contentSize = CGSizeMake((320*numberOfSlides)+ 320, 324);
 	[scrollView scrollRectToVisible:CGRectMake(0,0,320,324) animated:NO];
-    scrollView.backgroundColor = [UIColor clearColor];
     [scrollView setContentOffset:CGPointMake(0, 0)];
-    
-//    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, -200, scrollView.bounds.size.width, 324)];
-//    [topView setBackgroundColor:APP_DELEGATE.defaultColor];
-//    [scrollView addSubview:topView];
-//    
-//    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, scrollView.bounds.size.height, scrollView.bounds.size.width, 324)];
-//    [bottomView setBackgroundColor:APP_DELEGATE.defaultColor];
-//    [scrollView addSubview:bottomView];
+    //    scrollView.backgroundColor = APP_DELEGATE.defaultColor;
     
     [buttonSkip setTitleColor:APP_DELEGATE.defaultColor forState:UIControlStateNormal];
     
@@ -90,16 +82,16 @@
 
 -(void) timerAction
 {
-    if (!isTimer)
-    {
-        [timer invalidate];
-    }
-    else
-    {
-        timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-        [self performSelector:@selector(timerFireDelay) withObject:nil afterDelay:3];
-    }
+    //    if (!isTimer)
+    //    {
+    [timer invalidate];
+    //    }
+    //    else
+    //    {
+    timer = [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    [self performSelector:@selector(timerFireDelay) withObject:nil afterDelay:8];
+    //    }
 }
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -132,7 +124,7 @@
 
 - (void)addImageWithName:(NSURL*)imageString atPosition:(int)position
 {
-    imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*320, 0, 320, scrollView.frame.size.height)];
+    imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*320, 0, 320, 324)];
     imageView.imageURL = imageString;
     imageView.contentMode = UIViewContentModeScaleToFill;
     [scrollView addSubview:imageView];
@@ -152,8 +144,8 @@
     else
         page++;
     
-    if (page == 5)
-        page=0;
+    //    if (page == 5)
+    //        page=0;
     
     int offsetX = page * scrollView.width;
     int offsetY = 0;
@@ -169,6 +161,7 @@
 
 - (IBAction)previousAction:(id)sender
 {
+    [self timerAction];
     NSInteger page = (scrollView.contentOffset.x) / 320;
     ++page;
     if(page == 1)
@@ -184,6 +177,7 @@
 
 -(void) previousButtonAction
 {
+    [self timerAction];
     if(leftPos< numberOfSlides +1)
     {
         leftPos +=1;
@@ -202,7 +196,7 @@
 }
 
 - (IBAction)nextAction:(id)sender {
-    
+    [self timerAction];
     NSInteger page = (scrollView.contentOffset.x) / 320;
     page++;
     isTimer=NO;
@@ -219,6 +213,7 @@
 
 -(void) nextButtonAction
 {
+    [self timerAction];
     if(rightPos< numberOfSlides +1)
     {
         rightPos +=1;
@@ -253,11 +248,30 @@
     {
         [scrollView scrollRectToVisible:CGRectMake(320*(numberOfSlides),0,320,324) animated:NO];
 	}
-    else if (scrollView.contentOffset.x >= 320*numberOfSlides)
+    else if (scrollView.contentOffset.x == 320*numberOfSlides)
     {
         [scrollView scrollRectToVisible:CGRectMake(0,0,320,324) animated:NO];
 	}
 }
+
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+//{
+//    [self timerAction];
+//}
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)sender
+//{
+//    // The key is repositioning without animation
+//    if (scrollView.contentOffset.x == 0) {
+//        // user is scrolling to the left from image 1 to image 10.
+//        // reposition offset to show image 10 that is on the right in the scroll view
+//        [scrollView scrollRectToVisible:CGRectMake(3520,0,320,480) animated:NO];
+//    }
+//    else if (scrollView.contentOffset.x == 3840) {
+//        // user is scrolling to the right from image 10 to image 1.
+//        // reposition offset to show image 1 that is on the left in the scroll view
+//        [scrollView scrollRectToVisible:CGRectMake(320,0,320,480) animated:NO];
+//    }
+//}
 
 
 @end

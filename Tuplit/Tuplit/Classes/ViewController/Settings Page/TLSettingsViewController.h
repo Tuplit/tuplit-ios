@@ -10,5 +10,5 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import "TLSettingsManager.h"
 @interface TLSettingsViewController : UIViewController<MFMailComposeViewControllerDelegate,TLSettingsManagerDelegate>
-@property(strong)UserModel *user_model;
+@property(strong,nonatomic)UserModel *user_model;
 @end

@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     MCPopular = 3,
 };
 
-@interface TLMerchantsViewController : UIViewController <UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,TLMerchantListingManagerDelegate,ChoiceButtonDelegate,TLCategoryListingManagerDelegate,CustomCallOutViewDelegate>
+@interface TLMerchantsViewController : UIViewController <UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,TLMerchantListingManagerDelegate,TLCategoryListingManagerDelegate,CustomCallOutViewDelegate>
 {
     UIBarButtonItem *rightExpandButton;
     UIView *contentView,*menuView,*searchbarView;

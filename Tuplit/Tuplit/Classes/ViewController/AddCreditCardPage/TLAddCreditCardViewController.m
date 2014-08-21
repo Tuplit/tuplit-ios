@@ -294,9 +294,9 @@
                 else
                     topUpAmount = @"";
                 
-                if (topUpAmount.intValue<100)
+                if (topUpAmount.intValue<10)
                 {
-                    [UIAlertView alertViewWithMessage:@"Enter minimum £100.00 or above to Top up"];
+                    [UIAlertView alertViewWithMessage:@"Enter minimum £10.0 or above to Top up"];
                 }
                 else
                 {
@@ -602,7 +602,7 @@
     APP_DELEGATE.isUserProfileEdited = YES;
     [[ProgressHud shared] hide];
     
-    [UIAlertView alertViewWithMessage:creditCardStatus];
+//    [UIAlertView alertViewWithMessage:creditCardStatus];
     [self skipButtonClicked];
 }
 - (void)addCreditCardManager:(TLAddCreditCardManager *)addCreditCardManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
@@ -613,7 +613,8 @@
 - (void)addCreditCardManagerFailed:(TLAddCreditCardManager *)addCreditCardManager
 {
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [self skipButtonClicked];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    
 }
 @end

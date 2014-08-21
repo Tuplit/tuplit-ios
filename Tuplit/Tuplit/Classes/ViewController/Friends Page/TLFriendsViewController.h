@@ -11,7 +11,7 @@
 #import "TLFriendsListingManager.h"
 #import "FriendsListModel.h"
 
-#define FRIENDS_CELL_HEIGHT 51
+#define FRIENDS_CEL_HEIGHT 51
 
 @interface TLFriendsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,TLFriendsListingManagerDelegate>
 

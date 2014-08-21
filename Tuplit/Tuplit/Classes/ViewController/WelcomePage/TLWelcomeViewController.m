@@ -42,6 +42,7 @@
     NSTimer *timer;
     
     TLUserDetailsManager *userDetailsManager;
+    BOOL isSocialLogin;
 }
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) ACAccount *facebookAccount;
@@ -143,12 +144,23 @@
     spinner.center = scrollView.center;
     [spinner startAnimating];
     
-    if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
-        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-        userDetailsManager = [TLUserDetailsManager new];
-        userDetailsManager.delegate = self;
-        [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
-    }
+//    if([TLUserDefaults isGuestUser])
+//    {
+//        [TLUserDefaults setCurrentUser:nil];
+//        [TLUserDefaults setIsGuestUser:NO];
+//
+////        [self presentAMSlider];
+//    }
+//    else
+//    {
+//        if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
+////            [self presentAMSlider];
+//            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+//            userDetailsManager = [TLUserDetailsManager new];
+//            userDetailsManager.delegate = self;
+//            [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
+//        }
+//    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -170,6 +182,21 @@
     [timer invalidate];
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+    if([TLUserDefaults isGuestUser])
+    {
+        [TLUserDefaults setCurrentUser:nil];
+        [TLUserDefaults setIsGuestUser:NO];
+    }
+    else
+    {
+        if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
+            [self presentAMSlider];
+            isSocialLogin = NO;
+            [self performSelectorOnMainThread:@selector(callUserService) withObject:nil waitUntilDone:NO];
+        }
+    }  
+}
 
 #pragma mark UIScrollViewDelegate
 
@@ -188,14 +215,14 @@
 }
 
 - (IBAction)faceBookSignin:(id)sender {
-    
+    isSocialLogin = YES;
     NETWORK_TEST_PROCEDURE;
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     [APP_DELEGATE doFacebookLogin:self];
 }
 
 - (IBAction)googlePlusSignIn:(id)sender {
-    
+    isSocialLogin = YES;
     NETWORK_TEST_PROCEDURE;
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     
@@ -313,7 +340,14 @@
 	CGPoint offset = CGPointMake(offsetX, offsetY);
 	[scrollView setContentOffset:offset animated:YES];
 }
+-(void)callUserService
+{
+//    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    userDetailsManager = [TLUserDetailsManager new];
+    userDetailsManager.delegate = self;
+    [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
 
+}
 
 #pragma mark - GooglePlus methods
 
@@ -450,7 +484,8 @@
     
     [TLUserDefaults setCurrentUser:user_];
     [[ProgressHud shared] hide];
-    [self presentAMSlider];
+    if(isSocialLogin)
+        [self presentAMSlider];
 }
 
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {

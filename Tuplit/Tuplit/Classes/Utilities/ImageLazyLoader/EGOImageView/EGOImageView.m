@@ -188,4 +188,43 @@
     [super dealloc];
 }
 
+#pragma mark - Touch events
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    if(self.isUserInteractionEnabled)
+    {
+        
+        [UIView animateWithDuration:0.25 animations:^{
+            self.alpha = 1.0;
+            self.transform =CGAffineTransformMakeScale(1.1,1.1);
+        }];
+    }
+}
+
+-(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
+    //The touch may be cancelled, due to scrolling etc. Restore the alpha if that is the case.
+    if(self.isUserInteractionEnabled)
+    {
+        [UIView animateWithDuration:0.25 animations:^{
+            self.alpha = 1.0;
+            self.transform =CGAffineTransformMakeScale(1,1);
+        }];
+    }
+    
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    //Restore the alpha to its original state.
+    self.alpha = 1;
+    if(self.isUserInteractionEnabled)
+    {
+        [UIView animateWithDuration:0.25 animations:^{
+            self.alpha = 1.0;
+            self.transform =CGAffineTransformMakeScale(1,1);
+        }];
+    }
+}
+
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
+    
+}
 @end

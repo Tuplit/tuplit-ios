@@ -551,13 +551,13 @@
 }
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLCreditCardDeleteManager Delegate Methods
@@ -568,41 +568,13 @@
 }
 - (void)creditCardDeleteManager:(TLCreditCardDeleteManager *)creditCardDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)creditCardDeleteManagerFailed:(TLCreditCardDeleteManager *)creditCardDeleteManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
-
-//#pragma mark - TLCreditCardListingManagerDelegate
-//
-//- (void)creditCardListManagerSuccessfull:(TLCreditCardListingManager *)creditCardListManager withCreditCardList:(NSArray*)creditCardList
-//{
-//    NSArray *cardDetailsArray = [[NSArray alloc] init];
-//
-//    if(creditCardList.count>0)
-//    {
-//        cardDetailsArray = creditCardList;
-//    }
-//
-//    [mainDict setValue:cardDetailsArray forKey:@"Credit Cards"];
-//    NSLog(@"%@",mainDict);
-//    [userProfileTable reloadData];
-//    [[ProgressHud shared] hide];
-//}
-//- (void)creditCardListManager:(TLCreditCardListingManager *)creditCardListManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
-//{
-//
-//    NSLog(@"%@",mainDict);
-//    [[ProgressHud shared] hide];
-//}
-//- (void)creditCardListanagerFailed:(TLCreditCardListingManager *)creditCardListManager
-//{
-//    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-//    [[ProgressHud shared] hide];
-//}
 
 @end

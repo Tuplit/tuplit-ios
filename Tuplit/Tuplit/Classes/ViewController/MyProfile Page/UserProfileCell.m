@@ -39,7 +39,6 @@
             profileImageView.tag = 4000;
             profileImageView.backgroundColor = [UIColor whiteColor];
             profileImageView.layer.cornerRadius = 100/2;
-            profileImageView.userInteractionEnabled = YES;
             profileImageView.clipsToBounds = YES;
             [topView addSubview:profileImageView];
             
@@ -140,7 +139,7 @@
             profileImageView.tag = 5000;
             profileImageView.backgroundColor = [UIColor whiteColor];
             profileImageView.layer.cornerRadius = 100/2;
-            profileImageView.userInteractionEnabled = YES;
+//            profileImageView.userInteractionEnabled = YES;
             profileImageView.clipsToBounds = YES;
             [topView addSubview:profileImageView];
             
@@ -310,14 +309,15 @@
             cellBaseview.backgroundColor = [UIColor clearColor];
             [self.contentView addSubview:cellBaseview];
 
-            EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(15, 10,30,30)];
+            EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake(15, 10,30,30)];
             merchantIconImgView.tag=3000;
             merchantIconImgView.layer.cornerRadius =15;
-            merchantIconImgView.userInteractionEnabled = YES;
-            merchantIconImgView.clipsToBounds = YES;
+            [merchantIconImgView setContentMode:UIViewContentModeScaleAspectFit];
+             merchantIconImgView.clipsToBounds = YES;
+//            merchantIconImgView.userInteractionEnabled = YES;
             [cellBaseview addSubview:merchantIconImgView];
             
-            UILabel *merchantNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(55,4,cellBaseview.frame.size.width-120, 20)];
+            UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(merchantIconImgView.frame)+8, 8,200, 17)];
             merchantNameLbl.textColor=UIColorFromRGB(0x333333);
             merchantNameLbl.tag=3001;
             merchantNameLbl.textAlignment=NSTextAlignmentLeft;

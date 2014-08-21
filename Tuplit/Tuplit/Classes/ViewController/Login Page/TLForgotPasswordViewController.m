@@ -137,7 +137,7 @@
 - (void)forgotPasswordManager:(TLForgotPasswordManager *)forgotPasswordManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:errorMsg];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)forgotPasswordManagerFailed:(TLForgotPasswordManager *)forgotPasswordManager {

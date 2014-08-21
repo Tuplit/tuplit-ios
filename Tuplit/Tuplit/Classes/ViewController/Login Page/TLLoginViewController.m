@@ -192,8 +192,6 @@
 - (void)loginManagerLoginFailed:(TLLoginManager *)loginManager {
     
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-
 }
 
 
@@ -209,7 +207,7 @@
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:errorMsg];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {

@@ -8,12 +8,13 @@
 
 #import "TLCartViewController.h"
 #import "JSON.h"
+#import "TLTopUpViewController.h"
 
 @interface TLCartViewController ()
 
 @end
 
-static const int animationFramesPerSec = 8;
+//static const int animationFramesPerSec = 8;
 
 @implementation TLCartViewController
 
@@ -445,28 +446,41 @@ static const int animationFramesPerSec = 8;
 - (void)checkBalanceManagerSuccessfull:(TLCheckBalanceManager *)checkBalanceManager paymentModel:(PaymentModel *)paymentModel {
     
     if ([paymentModel.AllowPayment intValue] == 0) {
-        
-        [UIAlertView alertViewWithMessage:paymentModel.Message];
-        [[ProgressHud shared] hide];
-    }
-    else
-    {
-        [self callWebserviceForOrderItems];
-        
-    }
+        [UIAlertView alertViewWithTitle:LString(@"TUPLIT") message:paymentModel.Message cancelButtonTitle:LString(@"CANCEL") otherButtonTitles:[NSArray arrayWithObject:@"Topup"] onDismiss:^(int buttonIndex)
+         {
+             
+             TLTopUpViewController *topupVC = [[TLTopUpViewController alloc] init];
+             topupVC.viewController = self;
+             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
+             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+             [APP_DELEGATE.slideMenuController hideMenuViewController];
+         }
+                               onCancel:^()
+         {
+             
+         }];
     
+    //        [UIAlertView alertViewWithMessage:paymentModel.Message];
+    [[ProgressHud shared] hide];
+}
+else
+{
+    [self callWebserviceForOrderItems];
+    
+}
+
 }
 
 - (void)checkBalanceManager:(TLCheckBalanceManager *)checkBalanceManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)checkBalanceManagerFailed:(TLCheckBalanceManager *)checkBalanceManager {
     
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma mark - TLCreateOrdersManager Delegates
@@ -489,15 +503,14 @@ static const int animationFramesPerSec = 8;
 
 - (void)createOrdersManager:(TLCreateOrdersManager *)createOrdersManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)createOrdersManagerFailed:(TLCreateOrdersManager *)createOrdersManager {
     
-    
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

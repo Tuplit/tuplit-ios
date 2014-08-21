@@ -74,7 +74,7 @@
     UIView *tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableHeaderWidth, 100)];
     [tableHeader setBackgroundColor:[UIColor clearColor]];
     
-    profileImageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake((tableHeaderWidth - 65)/2, 50, 60, 60)];
+    profileImageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake((tableHeaderWidth - 65)/2, 34, 60, 60)];
     profileImageView.backgroundColor = [UIColor whiteColor];
     profileImageView.layer.cornerRadius = 60/2;
     profileImageView.userInteractionEnabled = YES;
@@ -83,7 +83,7 @@
     profileImageView.clipsToBounds = YES;
     [tableHeader addSubview:profileImageView];
     
-    userNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(0,50 + 60 + 3, tableHeaderWidth, 25)];
+    userNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(0,34 + 60 + 3, tableHeaderWidth, 25)];
     userNameLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
     userNameLbl.textAlignment = NSTextAlignmentCenter;
     userNameLbl.textColor = [UIColor whiteColor];
@@ -173,8 +173,6 @@
 {
     TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
-    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
     
     [APP_DELEGATE.slideMenuController hideMenuViewController];
@@ -191,8 +189,6 @@
     friendProfileVC.userID = order.FriendId;
     friendProfileVC.isLeftMenu = YES;
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendProfileVC];
-    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
     
     [APP_DELEGATE.slideMenuController hideMenuViewController];
@@ -248,7 +244,7 @@
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor clearColor];
             
-            UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-44/2, (MENU_CELL_HEIGHT - 44)/2, 44, 44)];
+            UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, (MENU_CELL_HEIGHT - 39)/2, 39, 39)];
             iconImageView.tag = 1000;
             iconImageView.backgroundColor = [UIColor clearColor];
             [cell.contentView addSubview:iconImageView];
@@ -345,10 +341,7 @@
      
         TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        
         [APP_DELEGATE.slideMenuController hideMenuViewController];
         
     }
@@ -356,7 +349,7 @@
         
         if ([TLUserDefaults getCurrentUser] == nil) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to do the purchase. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to register in the app to do the purchase. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
             alertView.tag = 9000;
             [alertView show];
         }
@@ -365,10 +358,7 @@
             TLCartViewController *cartVC = [[TLCartViewController alloc] init];
             cartVC.isMerchant = NO;
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
-            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-            
             [APP_DELEGATE.slideMenuController hideMenuViewController];
         }
     }
@@ -376,7 +366,7 @@
         
         if ([TLUserDefaults getCurrentUser] == nil) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to register in the app to view your favorites. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
             alertView.tag = 9000;
             [alertView show];
         }
@@ -384,10 +374,7 @@
         {
             TLFavouriteListViewController *favoriteVC = [[TLFavouriteListViewController alloc] init];
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteVC];
-            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-            
             [APP_DELEGATE.slideMenuController hideMenuViewController];
         }
     }
@@ -403,10 +390,7 @@
         {
             TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] init];
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
-            [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-            [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-            
             [APP_DELEGATE.slideMenuController hideMenuViewController];
         }
     }
@@ -414,10 +398,7 @@
         
         TLSettingsViewController *settingsVC = [[TLSettingsViewController alloc] initWithNibName:@"TLSettingsViewController" bundle:nil];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
-        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        
         [APP_DELEGATE.slideMenuController hideMenuViewController];
     }
 }

@@ -313,22 +313,6 @@
     return cell;
 }
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-//    if (indexPath.section == 0) {
-//        return;
-//    }
-//    else if (indexPath.section == 1) {
-//        
-//        NSArray *transactionList = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
-//        TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
-//        RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
-//        transactionDetail.orderID = transaction.OrderId;
-//        transactionDetail.userID = userModel.UserId;
-//        transactionDetail.index = indexPath.row;
-//        [self.navigationController pushViewController:transactionDetail animated:YES];
-//    }
-}
 #pragma mark - Scroll View Delegate Methods
 
 // Change Default Scrolling Behavior of TableView Section
@@ -354,13 +338,13 @@
 }
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

@@ -391,10 +391,12 @@
 - (void)orderDetailsManager:(TLOrderListingManager *)orderDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)orderDetailsManagerFailed:(TLOrderListingManager *)orderDetailsManager
 {
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLTransactionListingManager Delegate Methods
@@ -427,15 +429,14 @@
 }
 - (void)transactionListingManager:(TLTransactionListingManager *)trancactionListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     isMerchantWebserviceRunning =NO;
+    [UIAlertView alertViewWithMessage:errorMsg];
   
 }
 - (void)transactionListingManagerFailed:(TLTransactionListingManager *)trancactionListingManager
 {
+      isMerchantWebserviceRunning =NO;
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-    isMerchantWebserviceRunning =NO;
-
 }
 
 @end

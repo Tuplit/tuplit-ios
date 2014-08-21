@@ -35,5 +35,6 @@
 
 @property(nonatomic,retain) UserDetailModel *userdeatilmodel;
 @property(nonatomic,strong)NSArray *userLinkedCards;
+@property(nonatomic ,strong)UIViewController *viewController;
 
 @end

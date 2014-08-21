@@ -374,8 +374,14 @@
     headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     UIImage * topUpImage = getImage(@"btn_img", NO);
     UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+    
     [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
+    [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
+    [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
+    
     [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+    [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+    [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
     
     if(section == 1)
     {
@@ -663,13 +669,13 @@
 }
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-     [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
 {
-     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma mark - TLEditUpdateManagerDelegate methods
@@ -678,18 +684,18 @@
 {
     APP_DELEGATE.isUserProfileEdited = YES;
     [self backUserProfilePage:nil];
-    [UIAlertView alertViewWithMessage:LString(@"PROFILE_UPDATED")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"PROFILE_UPDATED")];
 }
 - (void)editUpManager:(TLEditUpdateManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
 {
-     [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)editUpManagerFailed:(TLEditUpdateManager *)signUpManager
 {
-     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLCommentDeleteManager Delegate Methods
@@ -701,13 +707,13 @@
 }
 - (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)loginManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLCreditCardDeleteManager Delegate Methods
@@ -718,13 +724,13 @@
 }
 - (void)creditCardDeleteManager:(TLCreditCardDeleteManager *)creditCardDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)creditCardDeleteManagerFailed:(TLCreditCardDeleteManager *)creditCardDeleteManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 

@@ -337,6 +337,9 @@
 		FEA228D11959BBE300D69E33 /* UserDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA228D01959BBE300D69E33 /* UserDetailModel.m */; };
 		FEA547111958292A0083E588 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEA547101958292A0083E588 /* AVFoundation.framework */; };
 		FEA5471419582C290083E588 /* libCardIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEA5471319582C290083E588 /* libCardIO.a */; };
+		FEAB915A19A4B058008CAB59 /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = FEAB915819A4B058008CAB59 /* delete.png */; };
+		FEAB915B19A4B058008CAB59 /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEAB915919A4B058008CAB59 /* delete@2x.png */; };
+		FEACB988199B2CD900918B0D /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = FEACB987199B2CD900918B0D /* FXBlurView.m */; };
 		FEB850E6198B5A9A005F1389 /* TLSettingsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB850E5198B5A9A005F1389 /* TLSettingsManager.m */; };
 		FEB850E9198B6C6C005F1389 /* fb_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB850E7198B6C6C005F1389 /* fb_icon.png */; };
 		FEB850EA198B6C6C005F1389 /* fb_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB850E8198B6C6C005F1389 /* fb_icon@2x.png */; };
@@ -346,7 +349,6 @@
 		FEC1884F19583E10008D69AD /* done@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC1884719583E10008D69AD /* done@2x.png */; };
 		FEC1885019583E10008D69AD /* edit_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC1884819583E10008D69AD /* edit_icon.png */; };
 		FEC1885119583E10008D69AD /* edit_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC1884919583E10008D69AD /* edit_icon@2x.png */; };
-		FEC1885219583E10008D69AD /* ProfileImage.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC1884A19583E10008D69AD /* ProfileImage.png */; };
 		FEC1885319583E10008D69AD /* visa@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC1884B19583E10008D69AD /* visa@2x.png */; };
 		FEC4704F197CD01800537309 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC4704E197CD01800537309 /* Person.m */; };
 		FEC5C39D1936FD4600D59D05 /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC5C3981936FD4600D59D05 /* RECommonFunctions.m */; };
@@ -412,6 +414,7 @@
 		FED5D33C196AD471006BF2A1 /* TLAddCreditCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D33B196AD471006BF2A1 /* TLAddCreditCardManager.m */; };
 		FED5D33F196AD6FF006BF2A1 /* TLCreditCardListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D33E196AD6FF006BF2A1 /* TLCreditCardListingManager.m */; };
 		FED5D342196AD7CE006BF2A1 /* CreditCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D341196AD7CE006BF2A1 /* CreditCardModel.m */; };
+		FEE55AB219A37A05008B8B75 /* TLCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE55AB119A37A05008B8B75 /* TLCategoryView.m */; };
 		FEEA485C195C598F0013C749 /* OrderDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA485B195C598F0013C749 /* OrderDetailModel.m */; };
 		FEEA485F195C5ADF0013C749 /* OrderProductModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA485E195C5ADF0013C749 /* OrderProductModel.m */; };
 		FEEA4863195C5E4E0013C749 /* TLOrderListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA4862195C5E4E0013C749 /* TLOrderListingManager.m */; };
@@ -934,6 +937,10 @@
 		FEA5470E195829190083E588 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FEA547101958292A0083E588 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		FEA5471319582C290083E588 /* libCardIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCardIO.a; path = Tuplit/Classes/Utilities/CardIO/libCardIO.a; sourceTree = "<group>"; };
+		FEAB915819A4B058008CAB59 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
+		FEAB915919A4B058008CAB59 /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
+		FEACB986199B2CD900918B0D /* FXBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXBlurView.h; sourceTree = "<group>"; };
+		FEACB987199B2CD900918B0D /* FXBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXBlurView.m; sourceTree = "<group>"; };
 		FEB850E4198B5A9A005F1389 /* TLSettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLSettingsManager.h; path = "Settings manager/TLSettingsManager.h"; sourceTree = "<group>"; };
 		FEB850E5198B5A9A005F1389 /* TLSettingsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLSettingsManager.m; path = "Settings manager/TLSettingsManager.m"; sourceTree = "<group>"; };
 		FEB850E7198B6C6C005F1389 /* fb_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fb_icon.png; sourceTree = "<group>"; };
@@ -944,7 +951,6 @@
 		FEC1884719583E10008D69AD /* done@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "done@2x.png"; sourceTree = "<group>"; };
 		FEC1884819583E10008D69AD /* edit_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icon.png; sourceTree = "<group>"; };
 		FEC1884919583E10008D69AD /* edit_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icon@2x.png"; sourceTree = "<group>"; };
-		FEC1884A19583E10008D69AD /* ProfileImage.png */ = {isa = PBXFileReference; explicitFileType = image.png; path = ProfileImage.png; sourceTree = "<group>"; };
 		FEC1884B19583E10008D69AD /* visa@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visa@2x.png"; sourceTree = "<group>"; };
 		FEC4704D197CD01800537309 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		FEC4704E197CD01800537309 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
@@ -1022,6 +1028,8 @@
 		FED5D33E196AD6FF006BF2A1 /* TLCreditCardListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCreditCardListingManager.m; path = "CreditCard Manager/TLCreditCardListingManager.m"; sourceTree = "<group>"; };
 		FED5D340196AD7CE006BF2A1 /* CreditCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreditCardModel.h; sourceTree = "<group>"; };
 		FED5D341196AD7CE006BF2A1 /* CreditCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreditCardModel.m; sourceTree = "<group>"; };
+		FEE55AB019A37A05008B8B75 /* TLCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLCategoryView.h; path = CategoryView/TLCategoryView.h; sourceTree = "<group>"; };
+		FEE55AB119A37A05008B8B75 /* TLCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCategoryView.m; path = CategoryView/TLCategoryView.m; sourceTree = "<group>"; };
 		FEEA485A195C598F0013C749 /* OrderDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderDetailModel.h; sourceTree = "<group>"; };
 		FEEA485B195C598F0013C749 /* OrderDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderDetailModel.m; sourceTree = "<group>"; };
 		FEEA485D195C5ADF0013C749 /* OrderProductModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderProductModel.h; sourceTree = "<group>"; };
@@ -1532,6 +1540,7 @@
 		2D23F5601934B38900C8FC3B /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				FEACB985199B2CD900918B0D /* FXblurView */,
 				FEF8AE34197565B700DE2EAD /* SliderButton */,
 				FE920B3D19739BB5006C4D9D /* FBGraphAPI */,
 				FEA546FA195826F00083E588 /* CardIO */,
@@ -1601,6 +1610,7 @@
 		2D23F58F1934B38900C8FC3B /* CustomControls */ = {
 			isa = PBXGroup;
 			children = (
+				FEE55AAB19A379C9008B8B75 /* CategoryView */,
 				2D00E43F193882C7008321F5 /* ChoiceButton */,
 				2D23F6251934B89A00C8FC3B /* CustomSwitch */,
 				2D23F5901934B38900C8FC3B /* ImageCropper */,
@@ -2263,6 +2273,15 @@
 			path = CardIO;
 			sourceTree = "<group>";
 		};
+		FEACB985199B2CD900918B0D /* FXblurView */ = {
+			isa = PBXGroup;
+			children = (
+				FEACB986199B2CD900918B0D /* FXBlurView.h */,
+				FEACB987199B2CD900918B0D /* FXBlurView.m */,
+			);
+			path = FXblurView;
+			sourceTree = "<group>";
+		};
 		FEB850DF198B5A70005F1389 /* Settings manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -2281,7 +2300,6 @@
 				FEC1884719583E10008D69AD /* done@2x.png */,
 				FEC1884819583E10008D69AD /* edit_icon.png */,
 				FEC1884919583E10008D69AD /* edit_icon@2x.png */,
-				FEC1884A19583E10008D69AD /* ProfileImage.png */,
 				FEC1884B19583E10008D69AD /* visa@2x.png */,
 			);
 			path = MyProfile;
@@ -2355,6 +2373,8 @@
 				FEC7058D196135A400BC8F8B /* 9_n@2x.png */,
 				FEC7058E196135A400BC8F8B /* cross.png */,
 				FEC7058F196135A400BC8F8B /* cross@2x.png */,
+				FEAB915819A4B058008CAB59 /* delete.png */,
+				FEAB915919A4B058008CAB59 /* delete@2x.png */,
 				FEC70590196135A400BC8F8B /* dot.png */,
 				FEC70591196135A400BC8F8B /* dot@2x.png */,
 				FEC70592196135A400BC8F8B /* dot_s.png */,
@@ -2395,6 +2415,15 @@
 				FE74649B196D602000D93D19 /* TLCreditCardDeleteManager.m */,
 			);
 			name = "CreditCard Manager";
+			sourceTree = "<group>";
+		};
+		FEE55AAB19A379C9008B8B75 /* CategoryView */ = {
+			isa = PBXGroup;
+			children = (
+				FEE55AB019A37A05008B8B75 /* TLCategoryView.h */,
+				FEE55AB119A37A05008B8B75 /* TLCategoryView.m */,
+			);
+			name = CategoryView;
 			sourceTree = "<group>";
 		};
 		FEEA4860195C5CCA0013C749 /* Transaction Manager */ = {
@@ -2606,6 +2635,7 @@
 				2D028CA319640E6F00984559 /* button.png in Resources */,
 				2D23EFDA1934A74300C8FC3B /* DiscountMap.png in Resources */,
 				2D23EFD51934A74300C8FC3B /* ButtonLightBg@2x.png in Resources */,
+				FEAB915B19A4B058008CAB59 /* delete@2x.png in Resources */,
 				FEC705AC196135A500BC8F8B /* 5_n@2x.png in Resources */,
 				2D23EFFE1934A74300C8FC3B /* TutorPreviousLight.png in Resources */,
 				FEC705A5196135A500BC8F8B /* 4.png in Resources */,
@@ -2665,7 +2695,6 @@
 				2D23EFDD1934A74300C8FC3B /* FavouriteStar@2x.png in Resources */,
 				FEF8AE3B19756FFD00DE2EAD /* rotateButtonBg@2x.png in Resources */,
 				2D23EFE91934A74300C8FC3B /* ListGreen@2x.png in Resources */,
-				FEC1885219583E10008D69AD /* ProfileImage.png in Resources */,
 				2D23EFC41934A74300C8FC3B /* buttonBg.png in Resources */,
 				2D23EFD91934A74300C8FC3B /* DiscountEnable@2x.png in Resources */,
 				FEC1885019583E10008D69AD /* edit_icon.png in Resources */,
@@ -2685,6 +2714,7 @@
 				2D735BC1194ED6CA00BD44F7 /* line.png in Resources */,
 				EE54588F1977F863000F9F9A /* MenuFriends.png in Resources */,
 				FECC0867196819AB00906FAF /* fav_y@2x.png in Resources */,
+				FEAB915A19A4B058008CAB59 /* delete.png in Resources */,
 				2D23F0051934A74300C8FC3B /* WelcomeFooter@2x.png in Resources */,
 				2D23EFE51934A74300C8FC3B /* search@2x.png in Resources */,
 				2D391270195006F4002CFFC6 /* add_bag1@2x.png in Resources */,
@@ -2813,6 +2843,7 @@
 				2D23F0CC1934A75900C8FC3B /* FriendsModel.m in Sources */,
 				2D23F1051934A75900C8FC3B /* TLForgotPasswordViewController.m in Sources */,
 				2D391246194FF9CD002CFFC6 /* MenuProductsModel.m in Sources */,
+				FEE55AB219A37A05008B8B75 /* TLCategoryView.m in Sources */,
 				2D23F5F21934B38900C8FC3B /* SBJsonParser.m in Sources */,
 				2D23EF661934A71D00C8FC3B /* main.m in Sources */,
 				FE74648F196D1CFC00D93D19 /* TLOtherUserProfileViewController.m in Sources */,
@@ -2944,6 +2975,7 @@
 				FE920B4719739BB5006C4D9D /* FbGraphFile.m in Sources */,
 				FEC70564196133EB00BC8F8B /* TLPinCodeViewController.m in Sources */,
 				FED5D33F196AD6FF006BF2A1 /* TLCreditCardListingManager.m in Sources */,
+				FEACB988199B2CD900918B0D /* FXBlurView.m in Sources */,
 				2D391245194FF9CD002CFFC6 /* CommentsModel.m in Sources */,
 				2D23F5EB1934B38900C8FC3B /* EGOImageLoadConnection.m in Sources */,
 				FEC4704F197CD01800537309 /* Person.m in Sources */,

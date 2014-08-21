@@ -34,7 +34,7 @@
 "SEARCH"                        = "Search";
 "NO_ITEM_FOUND"                 = "No item found";
 "SEND"                          = "Send";
-
+"GUEST_RESTRICT_ALERT"          = "You need to register in the app to do the purchase. Would you like to register?";
 
 
 /* Welcome Screen */

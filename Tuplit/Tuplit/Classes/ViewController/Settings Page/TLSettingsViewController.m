@@ -501,6 +501,7 @@
     [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
     [self presentViewController:nav animated:YES completion:nil];
 }
+
 -(void) termsAndLegalInfoAction
 {
     TLWebViewController *webVC = [[TLWebViewController alloc] initWithNibName:@"TLWebViewController" bundle:nil];
@@ -513,29 +514,25 @@
 
 -(void) soundSwitchAction : (CustomSwitch *) sender
 {
-    NSDictionary *queryParams = @{
-                                  @"Type"   : NSNonNilString(@"Sounds"),
-                                  @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
-                                  };
-    [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
+    
+    _user_model = [self getcurrentUserDetails];
     
     if(sender.isOn)
         _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
     else
         _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
+    
+    NSDictionary *queryParams = @{
+                                  @"Type"   : NSNonNilString(@"Sounds"),
+                                  @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
+                                  };
+     [self callService:queryParams];
    
 }
 
 -(void) notificationSwitchAction : (CustomSwitch *) sender
 {
-    NSDictionary *queryParams = @{
-                                  @"Type"   : NSNonNilString(@"All"),
-                                  @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
-                                  };
-    [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    
+    _user_model = [self getcurrentUserDetails];
     if(sender.isOn)
     {
         buySwitch.on = YES;
@@ -562,146 +559,143 @@
         _user_model.RecieveCredit = [NSString stringWithFormat:@"%d",0];
         _user_model.SendCredit = [NSString stringWithFormat:@"%d",0];
         _user_model.DealsOffers = [NSString stringWithFormat:@"%d",0];
-        
-//        buySwitch.onColor = [UIColor grayColor];
-//        receiveSwitch.onColor = [UIColor grayColor];
-//        sendMoneySwitch.onColor = [UIColor grayColor];
-//        dealOfferSwitch.onColor = [UIColor grayColor];
     }
+    NSDictionary *queryParams = @{
+                                  @"Type"   : NSNonNilString(@"All"),
+                                  @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
+                                  };
+      [self callService:queryParams];
 }
 
 
 -(void) buySwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.BuySomething = [NSString stringWithFormat:@"%d",sender.isOn];
+
+    [self checkButtons];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"BuySomething"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
+
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
-    [self checkButtons];
 
 }
 
 
 -(void) receiveSwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.RecieveCredit = [NSString stringWithFormat:@"%d",sender.isOn];
+    
+    [self checkButtons];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"RecieveCredit"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
-    [self checkButtons];
 
 }
 
 
 -(void) senMoneySwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.SendCredit = [NSString stringWithFormat:@"%d",sender.isOn];
+    
+    [self checkButtons];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"SendCredit"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
-    [self checkButtons];
 
 }
 
 
 -(void) dealOfferSwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.DealsOffers = [NSString stringWithFormat:@"%d",sender.isOn];
+    
+    [self checkButtons];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"DealsOffers"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
-    [self checkButtons];
 
 }
 
 
 -(void) passcodeSwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.Passcode = [NSString stringWithFormat:@"%d",sender.isOn];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"Passcode"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-       _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
-    [self checkButtons];
 }
 
 
 -(void) paymentSwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.PaymentPreference = [NSString stringWithFormat:@"%d",sender.isOn];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"PaymentPreference"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
 }
 
 -(void) rememberSwitchAction : (CustomSwitch *) sender
 {
+    _user_model = [self getcurrentUserDetails];
+    _user_model.RememberMe = [NSString stringWithFormat:@"%d",sender.isOn];
+    
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"RememberMe"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-    _user_model = [TLUserDefaults getCurrentUser];
-    if(sender.isOn)
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",1];
-    else
-        _user_model.Sounds = [NSString stringWithFormat:@"%d",0];
 }
 
 -(void)supportMailAction
 {
-    if([MFMailComposeViewController canSendMail])
-    {
-    MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-    controller.mailComposeDelegate = self;
-    [controller setToRecipients:[NSArray arrayWithObject:CUSTOMER_SUPPORT_EMAIL]];
-    //    [controller setSubject:@"My Subject"];
-    //    [controller setMessageBody:@"Hello there." isHTML:NO];
-    
-        [[controller navigationBar] setTintColor:APP_DELEGATE.defaultColor];
-   
+    if ([MFMailComposeViewController canSendMail]) {
+        
+        MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
+        controller.navigationBar.barStyle = UIBarStyleDefault;
+        [[controller navigationBar] setTintColor:UIColorFromRGB(0XFFFFFF)];
+        controller.mailComposeDelegate = self;
+        [controller setToRecipients:[NSArray arrayWithObject:CUSTOMER_SUPPORT_EMAIL]];
+        [controller setSubject:@"Tuplit"];
+        
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+           
+            [controller.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        }
+        else
+        {
+            [controller.navigationBar setTintColor:[UIColor blackColor]];
+        }
+        
         [self presentViewController:controller animated:YES completion:nil];
     }
     else
     {
-        [UIAlertView alertViewWithMessage:@"Please setup a email account"];
+         [UIAlertView alertViewWithMessage:@"Please setup a email account"];
     }
-    
 }
 -(void)phoneNumCallAction
 {
@@ -710,11 +704,14 @@
     alertView.tag = 9010;
     [alertView show];
 }
+-(UserModel*)getcurrentUserDetails
+{
+    UserModel *user = [UserModel new];
+    user = [TLUserDefaults getCurrentUser];
+    return user;
+}
 -(void)checkButtons
 {
-   
-    _user_model = [TLUserDefaults getCurrentUser];
-    
     if(buySwitch.isOn && receiveSwitch.isOn && sendMoneySwitch.isOn && dealOfferSwitch.isOn)
     {
          notificationSwitch.on = YES;
@@ -781,13 +778,13 @@
 }
 - (void)settingsManagererror:(TLSettingsManager *)settingsManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)settingsManagerFailed:(TLSettingsManager *)settingsManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 @end
 

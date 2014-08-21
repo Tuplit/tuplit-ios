@@ -606,9 +606,6 @@
 }
 - (void)friendsListingManager:(TLFriendsListingManager *)friendsListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    errorView.hidden = NO;
-    errorLbl.text = errorMsg;
-    
     [friendsArray removeAllObjects];
     [toProfileNameTable reloadData];
     isFriendsWebserviceRunning =NO;
@@ -616,19 +613,20 @@
     
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+    errorView.hidden = NO;
+    errorLbl.text = errorMsg;
 }
 - (void)friendsListingManagerFailed:(TLFriendsListingManager *)friendsListingManager
 {
     errorView.hidden = NO;
-    errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");
-    
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-    
     [toProfileNameTable setTableFooterView:nil];
     
     isFriendsWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+    errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");
+    
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLTransferManager Delegate Methods
@@ -642,13 +640,35 @@
 }
 - (void)transferManager:(TLTransferManager *)transferManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
-    [[ProgressHud shared] hide];
+    if([errorCode isEqualToString:@"2009"])
+    {
+        [UIAlertView alertViewWithTitle:LString(@"TUPLIT") message:errorMsg cancelButtonTitle:LString(@"CANCEL") otherButtonTitles:[NSArray arrayWithObject:@"Topup"] onDismiss:^(int buttonIndex)
+         {
+             
+             TLTopUpViewController *topupVC = [[TLTopUpViewController alloc] init];
+             topupVC.viewController = self;
+             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
+             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+             [APP_DELEGATE.slideMenuController hideMenuViewController];
+         }
+                               onCancel:^()
+         {
+             
+         }];
+        [[ProgressHud shared] hide];
+
+    }
+    else
+    {
+        [[ProgressHud shared] hide];
+        [UIAlertView alertViewWithMessage:errorMsg];
+    }
+   
 }
 - (void)transferManagerFailed:(TLTransferManager *)transferManager
 {
+     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-    [[ProgressHud shared] hide];
 }
 @end
 

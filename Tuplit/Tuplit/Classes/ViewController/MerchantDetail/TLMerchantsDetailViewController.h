@@ -23,6 +23,7 @@
 #import "TLOtherUserProfileViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "TLFavouriteListViewController.h"
+#import "FXBlurView.h"
 
 
 @interface TLMerchantsDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate, MKMapViewDelegate,UIAlertViewDelegate,MFMailComposeViewControllerDelegate,TLMerchantDetailsManagerDelegate,TLAddFavouriteManagerDelegate>
@@ -68,6 +69,8 @@
     UILabel *totItemPrizeLbl;
     UIView *cartBarView;
     UIButton *selectedCartButton;
+    
+    UIView *blurView;
 
 }
 

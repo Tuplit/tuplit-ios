@@ -24,7 +24,7 @@
     UIImageView *customCalloutView;
     UIImageView * nextImageView;
     UIImageView * annDistanceImgView;
-    UIImageView * annCusShoppedImgView;
+    UIImageView * anncustomerShoppedImg;
     
     UIImage *stretchableBackButtonImage;
     UIImage * callOutImage;

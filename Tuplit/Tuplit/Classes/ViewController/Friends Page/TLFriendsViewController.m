@@ -69,7 +69,7 @@
     searchbarView.hidden = YES;
     [baseView addSubview:searchbarView];
 
-    searchTxt = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, searchbarView.frame.size.width - 40, searchbarView.frame.size.height)];
+    searchTxt = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, searchbarView.frame.size.width - 10, searchbarView.frame.size.height)];
     searchTxt.delegate = self;
     searchTxt.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
     searchTxt.textColor = UIColorFromRGB(0xb2b2b2);
@@ -327,7 +327,7 @@
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return FRIENDS_CELL_HEIGHT;
+    return FRIENDS_CEL_HEIGHT;
 }
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -344,10 +344,10 @@
         cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.backgroundColor=[UIColor whiteColor];
         
-        EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16, 2, 45, FRIENDS_CELL_HEIGHT -1 -5 )];
+        EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16, 2, 45, FRIENDS_CEL_HEIGHT -1 -5 )];
         profileImgView.backgroundColor = [UIColor whiteColor];
         profileImgView.layer.cornerRadius=45/2;
-        profileImgView.userInteractionEnabled=YES;
+//        profileImgView.userInteractionEnabled=YES;
         profileImgView.clipsToBounds=YES;
         profileImgView.tag=1000;
         [cell.contentView addSubview:profileImgView];
@@ -357,7 +357,7 @@
         fbImageView.layer.cornerRadius=10/2;
         [profileImgView addSubview:fbImageView];
         
-        UILabel *profileNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) +75 ,5, baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CELL_HEIGHT-1)/2)];
+        UILabel *profileNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) +75 ,5, baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CEL_HEIGHT-1)/2)];
         profileNameLbl.textColor=UIColorFromRGB(0x333333);
         profileNameLbl.numberOfLines=0;
         profileNameLbl.tag=1001;
@@ -366,7 +366,7 @@
         profileNameLbl.backgroundColor=[UIColor clearColor];
         [cell.contentView addSubview:profileNameLbl];
         
-        UILabel *companyNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 75 ,CGRectGetMaxY(profileNameLbl.frame), baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CELL_HEIGHT-1)/2 -10)];
+        UILabel *companyNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 75 ,CGRectGetMaxY(profileNameLbl.frame), baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CEL_HEIGHT-1)/2 -10)];
         companyNameLbl.textColor=UIColorFromRGB(0x333333);
         companyNameLbl.numberOfLines=0;
         companyNameLbl.tag=1002;
@@ -462,13 +462,13 @@
     errorView.hidden = NO;
     errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");
     
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-    
     [friendsTable setTableFooterView:nil];
     
     isFriendsWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+    
+     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

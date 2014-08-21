@@ -286,8 +286,9 @@
         {
             MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
             controller.mailComposeDelegate = self;
-            if([[controller navigationBar] respondsToSelector:@selector(setTintColor:)])
-                [[controller navigationBar] setTintColor:APP_DELEGATE.defaultColor];
+            controller.navigationBar.barStyle = UIBarStyleDefault;
+            [[controller navigationBar] setTintColor:UIColorFromRGB(0XFFFFFF)];
+            
             [controller setSubject:@"Check out Tuplit app"];
             [controller setToRecipients:[NSArray arrayWithObject:contactuser.email]];
             
@@ -297,6 +298,15 @@
             // your message and link
             NSString *defaultBody =@"check out this cool app, Tuplit";
             [controller setMessageBody:defaultBody isHTML:YES];
+            
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+                
+                [controller.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+            }
+            else
+            {
+                [controller.navigationBar setTintColor:[UIColor blackColor]];
+            }
             
             [self presentViewController:controller animated:YES completion:nil];
         }
@@ -480,7 +490,7 @@
             EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16,(INVITE_CELL_HEIGHT-40)/2, 40, 40 )];
             profileImgView.backgroundColor = [UIColor whiteColor];
             profileImgView.layer.cornerRadius=40/2;
-            profileImgView.userInteractionEnabled=YES;
+//            profileImgView.userInteractionEnabled=YES;
             profileImgView.clipsToBounds=YES;
             profileImgView.tag=1000;
             [cell.contentView addSubview:profileImgView];
@@ -559,7 +569,7 @@
             profileImgView.image = contactuser.contactImage;
         else
             profileImgView.image = getImage(@"UserPlaceHolder", NO);
-        profileNameLbl.text=contactuser.name;
+        profileNameLbl.text=[contactuser.name stringWithTitleCase];
         mailIDLbl.text=contactuser.email;
     }
     
@@ -626,8 +636,8 @@
     errorView.hidden = NO;
     errorLbl.text = errorMsg;
     
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)fbIDManagerFailed:(TLFacebookIDManager *)fbIDManager
 {
@@ -643,7 +653,7 @@
 
 - (void)inviteManagerSuccess:(TLFriendsInviteManager *)inviteManager withinviteStatus:(NSString*)invitemessage
 {
-    FriendsListModel *friend = [fbFriendArray objectAtIndex:selectedIndex];
+   // FriendsListModel *friend = [fbFriendArray objectAtIndex:selectedIndex];
 //    
 //    NSMutableDictionary *parmaDic = [NSMutableDictionary dictionaryWithCapacity:4];
 //    [parmaDic setObject:[NSString stringWithFormat:@"hello world"] forKey:@"message"]; // if you want send message

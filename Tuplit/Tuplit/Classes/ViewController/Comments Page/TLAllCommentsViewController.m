@@ -335,16 +335,16 @@
     APP_DELEGATE.isUserProfileEdited = YES;
     [commentsArray removeObjectAtIndex:deletedCmtIndex];
     [allCommentsTable reloadData];
-     [[ProgressHud shared] hide];
+    [[ProgressHud shared] hide];
 }
 - (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
+    [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
-     [[ProgressHud shared] hide];
 }
 - (void)commentDeleteManagerFailed:(TLCommentDeleteManager *)loginManager
 {
+    [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-     [[ProgressHud shared] hide];
 }
 @end

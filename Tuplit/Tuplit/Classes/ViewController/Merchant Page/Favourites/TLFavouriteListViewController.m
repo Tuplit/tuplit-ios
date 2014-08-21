@@ -286,6 +286,15 @@
         pinAnnotation.subtitle = merchantModel.IsSpecial;
         [mapView addAnnotation:pinAnnotation];
     }
+    
+    MKMapRect zoomRect = MKMapRectNull;
+    for (id <MKAnnotation> annotation in mapView.annotations)
+    {
+        MKMapPoint annotationPoint = MKMapPointForCoordinate(annotation.coordinate);
+        MKMapRect pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.9, 0.9);
+        zoomRect = MKMapRectUnion(zoomRect, pointRect);
+    }
+    [mapView setVisibleMapRect:zoomRect animated:YES];
 }
 
 -(void) refreshTableView:(id) sender {
@@ -307,9 +316,17 @@
     searchTxt.text = @"";
     searchTable.hidden = YES;
     searchErrorLabel.hidden = YES;
-    mapView.hidden = NO;
-    mapIconImgView.hidden = NO;
-    merchantTable.hidden = NO;
+    
+    if(isMapShown)
+    {
+        mapView.hidden = NO;
+        mapIconImgView.hidden = NO;
+    }
+    else
+    {
+        merchantTable.hidden = NO;
+    }
+    
     
 }
 
@@ -327,10 +344,10 @@
     if ([annotation isKindOfClass:[PinAnnotation class]]) {
         
         identifier = @"Pin";
-        annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        annotationView = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
         
         if (annotationView == nil)
-            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+            annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
         
         annotationView.canShowCallout = NO;
         
@@ -339,7 +356,7 @@
         else
             annotationView.image = getImage(@"MapPinBlackWithStar", NO);
     }
-    
+
     //   Callout annotation.
     else if ([annotation isKindOfClass:[CalloutAnnotation class]])
     {
@@ -350,7 +367,7 @@
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
             ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0, 0.0,250,70);
-            annotationView.centerOffset      = CGPointMake(6,-58);
+            annotationView.centerOffset      = CGPointMake(-2,-51);
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;
         }
@@ -363,10 +380,11 @@
             ((CustomCallOutView *)annotationView).merchant = merchant;
         }
         // Move the display position of MapView.
-        [UIView animateWithDuration:0.5f
-                         animations:^(void) {
-                             mapView.centerCoordinate = calloutAnnotation.coordinate;
-                         }];
+        if(isMapShown)
+            [UIView animateWithDuration:0.5f
+                             animations:^(void) {
+                                 mapView.centerCoordinate = calloutAnnotation.coordinate;
+                             }];
     }
     
     annotationView.annotation = annotation;
@@ -390,12 +408,22 @@
         [_mapView addAnnotation:calloutAnnotation]; //removing the annotation a bit later
         
     }
+    else
+    {
+        CalloutAnnotation *annotation = (CalloutAnnotation*)view.annotation;
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",annotation.title];
+        NSArray *result = [favouritesArray filteredArrayUsingPredicate:pred];
+        if(result.count > 0){
+            MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
+            TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+            detailsVC.merchantModel = merchant;
+            [self.navigationController pushViewController:detailsVC animated:YES];
+        }
+    }
 }
 
 -(void)mapView:(MKMapView *)_mapView didDeselectAnnotationView:(MKAnnotationView *)view {
-//      for (UIView *subview in view.subviews ){
-//            [subview removeFromSuperview];
-//       }
+    
     if ([view.annotation isKindOfClass:[PinAnnotation class]]) {
         //         Deselected the pin annotation.
         PinAnnotation *pinAnnotation = ((PinAnnotation *)view.annotation);
@@ -408,6 +436,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [mapView removeAnnotation:oldAnnotation]; //removing the annotation a bit later
             });
+            
         }
     }
 }
@@ -536,9 +565,9 @@
     merchantTable.hidden = YES;
     isSearch = YES;
     
-    isMapShown = NO;
-    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
-    mapIconImgView.image = img;
+//    isMapShown = NO;
+//    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
+//    mapIconImgView.image = img;
     
     CGRect searchTableFrame = searchTable.frame;
     searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - 216;
@@ -704,6 +733,7 @@
             CGRect frame = merchantErrorLabel.frame;
             frame.origin.y = CGRectGetMaxY(searchbarView.frame);
             [merchantErrorLabel setFrame:frame];
+            [merchantErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
             
             [favouritesArray removeAllObjects];
             [merchantTable reloadData];
@@ -722,13 +752,13 @@
 }
 - (void)favouriteManagerFailed:(TLFavouriteListingManager *) favouriteListManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-    
     [merchantErrorLabel setHidden:YES];
     isMerchantWebserviceRunning = NO;
 //    searchTxt.enabled = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma mark - CalloutAnnotationViewDelegate

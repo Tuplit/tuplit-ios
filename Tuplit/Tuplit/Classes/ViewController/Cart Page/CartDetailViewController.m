@@ -191,8 +191,6 @@
    
     [TLUserDefaults setCommentDetails:cmtDetail];
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
     
     APP_DELEGATE.cartModel = [[CartModel alloc] init];

@@ -7,6 +7,7 @@
 //
 
 #import "TLMerchantsDetailViewController.h"
+#import "TLCategoryView.h"
 
 @interface TLMerchantsDetailViewController ()
 {
@@ -17,6 +18,7 @@
     UILabel *errorLbl;
     UIView *errorView;
     int favouriteType;
+    TLCategoryView *categoryView;
 }
 
 @end
@@ -78,6 +80,14 @@
     merchantImageView.tag = 101;
     [merchantImageView setContentMode:UIViewContentModeScaleAspectFit];
     [containerView addSubview:merchantImageView];
+   
+    
+    blurView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, 40)];
+    blurView.backgroundColor = [UIColor blackColor];
+    blurView.alpha = 0.2;
+//    [blurView setBlurRadius:10];
+    blurView.hidden = YES;
+    [containerView addSubview:blurView];
     
     UIImage * customerShoppedImage1 = getImage(@"shop_bag", NO);
     UIImageView * customerShopedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8,8 ,customerShoppedImage1.size.width, customerShoppedImage1.size.height)];
@@ -93,6 +103,7 @@
 //    customerLabel.numberOfLines= 3;
     customerLabel.lineBreakMode= NSLineBreakByTruncatingTail;
     customerLabel.textAlignment= NSTextAlignmentLeft;
+//    [self setShadow:customerLabel];
     [containerView addSubview : customerLabel];
     
     UIImageView * customerShopedImageView1 = [[UIImageView alloc] initWithFrame:CGRectMake(8,CGRectGetMaxY(customerLabel.frame)+2 ,customerShoppedImage1.size.width, customerShoppedImage1.size.height)];
@@ -108,6 +119,7 @@
 //    specialSoldLabel.numberOfLines= 3;
     specialSoldLabel.lineBreakMode= NSLineBreakByTruncatingTail;
     specialSoldLabel.textAlignment= NSTextAlignmentLeft;
+//     [self setShadow:customerLabel];
     [containerView addSubview : specialSoldLabel];
     
     labelDiscount = [[UILabel alloc ] initWithFrame:CGRectMake(CGRectGetMaxX(containerView.frame)-35,6,30,14)];
@@ -332,7 +344,7 @@
 {
     if([TLUserDefaults isGuestUser])
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to do the purchase. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to add to favorites. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
         alertView.tag = 9002;
         [alertView show];
     }
@@ -441,7 +453,7 @@
 -(void)updateMerchantDetails
 {
     [self.navigationItem setTitle:[merchantdetailmodel.CompanyName stringWithTitleCase]];
-    
+    blurView.hidden = NO;
     merchantImageView.imageURL = [NSURL URLWithString:merchantdetailmodel.Image];
     labelDiscount.text  = merchantdetailmodel.DiscountTier;
     merchantLogoView.imageURL = [NSURL URLWithString:merchantdetailmodel.Icon];
@@ -581,7 +593,12 @@
     NSString *userID;
     if(imgView.tag == 5001)
     {
-        UITableViewCell *cell = (UITableViewCell *)[gesture view].superview.superview.superview;
+        UITableViewCell *cell;
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            cell = (UITableViewCell *)[gesture view].superview.superview.superview;
+        else
+            cell = (UITableViewCell *)[gesture view].superview.superview;
+        
         NSIndexPath *indexPath = [merchantDetailTable indexPathForCell:cell];
         
         NSString *keyString = [detailSectionNamesArray objectAtIndex:indexPath.section];
@@ -724,6 +741,14 @@
     [self presentViewController:activityVC animated:YES completion:nil];
 }
 
+-(void)setShadow:(UILabel*)textLabel
+{
+    textLabel.layer.shadowOpacity = 1.0;
+    textLabel.layer.shadowRadius = 0.0;
+    textLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+    textLabel.layer.shadowOffset = CGSizeMake(0.0, -1.0);
+}
+
 #pragma mark - Table View Data Source Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -762,26 +787,18 @@
         if (indexPath.section==0)
         {
             float shortheight;
-            float stringHeight = [merchantdetailmodel.Description heigthWithWidth:285 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
+             float stringHeight = [merchantdetailmodel.Description heigthWithWidth:285 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
             
-           
             if(merchantdetailmodel.CategoryList.count==0)
                 shortheight = [merchantdetailmodel.ShortDescription heigthWithWidth:130 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
             else
             {
-//                NSMutableString *categorynames = [NSMutableString new];
-//                int i=0;
-//                for(CategoryModel *categoryModel in merchantdetailmodel.CategoryList)
-//                {
-//                    //                CategoryModel *categoryModel = [merchantdetailmodel.CategoryList objectAtIndex:0];
-//                    [categorynames appendString:categoryModel.CategoryName];
-//                    i++;
-//                    if(i<[merchantdetailmodel.CategoryList count])
-//                        [categorynames appendString:@", "];
-//                }
-//                int height = [categorynames heigthWithWidth:130 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
                
-                return stringHeight + 35 + 15;
+                categoryView = [[TLCategoryView alloc]initWithFrame:CGRectMake(0, 0, tableView.frame.size.width/2,1)];
+                [categoryView setUpCategoryView:merchantdetailmodel.CategoryList andWidth:tableView.width/2];
+                categoryView.height = categoryView.ctgviewHeight;
+                return categoryView.ctgviewHeight+stringHeight+20;
+//                return stringHeight + 35 + 15;
             }
 
             return stringHeight + shortheight+ 16 + 15;
@@ -865,7 +882,7 @@
     [view setBackgroundColor:[UIColor clearColor]];
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, view.frame.size.width - 20, view.frame.size.height)];
-    [label setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:18]];
+    [label setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:20]];
     [label setTextColor:UIColorFromRGB(0x00b3a4)];
     [label setBackgroundColor:[UIColor clearColor]];
     
@@ -904,26 +921,16 @@
             {
                 cell.contentView.backgroundColor = [UIColor whiteColor];
                 
-                UIView *categoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
-                [categoryView setBackgroundColor:[UIColor clearColor]];
-                categoryView.tag = 1005;
-                [cell.contentView addSubview:categoryView];
+                UIView *ctgBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, categoryView.height)];
+                [ctgBaseView setBackgroundColor:[UIColor clearColor]];
+                ctgBaseView.tag = 1005;
+                [cell.contentView addSubview:ctgBaseView];
                 
-                UIImage * categoryImg = getImage(@"res", NO);
-                EGOImageView *categoryImgView = [[EGOImageView alloc] initWithPlaceholderImage:categoryImg imageViewFrame:CGRectMake(10,(categoryView.frame.size.height - categoryImg.size.height)/2,categoryImg.size.width, categoryImg.size.height)];
-                categoryImgView.tag = 1000;
-                categoryImgView.backgroundColor = [UIColor clearColor];
-                [categoryView addSubview:categoryImgView];
+             
+                categoryView.tag = 1001;
+                [ctgBaseView addSubview:categoryView];
                 
-                UILabel * categoryLbl = [[UILabel alloc] initWithFrame:CGRectMake(10 + 20,0,130,categoryView.frame.size.height)];
-                categoryLbl.tag = 1001;
-                categoryLbl.numberOfLines = 0;
-                categoryLbl.backgroundColor = [UIColor clearColor];
-                categoryLbl.textColor = UIColorFromRGB(0x999999);
-                categoryLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
-                [categoryView addSubview:categoryLbl];
-                
-                UILabel * favoriteLabel = [[UILabel alloc] initWithFrame:CGRectMake(tableView.frame.size.width - 100 - 10,0,100,categoryView.frame.size.height)];
+                UILabel * favoriteLabel = [[UILabel alloc] initWithFrame:CGRectMake(tableView.frame.size.width - 100 - 10,0,100,30)];
                 favoriteLabel.tag = 1003;
                 favoriteLabel.backgroundColor = [UIColor clearColor];
                 favoriteLabel.textColor = UIColorFromRGB(0x00b3a4);
@@ -931,18 +938,18 @@
                 UITapGestureRecognizer* favoriteLabelGeture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callAddToFavouriteServiceWith)];
                 [favoriteLabel setUserInteractionEnabled:YES];
                 [favoriteLabel addGestureRecognizer:favoriteLabelGeture];
-                [categoryView addSubview:favoriteLabel];
+                [ctgBaseView addSubview:favoriteLabel];
                 
                 UIImage * favoriteImage = getImage(@"fav", NO);
-                UIImageView *favoriteImageView = [[UIImageView alloc] initWithFrame:CGRectMake((favoriteLabel.frame.origin.x - favoriteImage.size.width) - 5,(categoryView.frame.size.height - favoriteImage.size.height)/2,favoriteImage.size.width, favoriteImage.size.height)];
+                UIImageView *favoriteImageView = [[UIImageView alloc] initWithFrame:CGRectMake((favoriteLabel.frame.origin.x - favoriteImage.size.width) - 5,(30 - favoriteImage.size.height)/2,favoriteImage.size.width, favoriteImage.size.height)];
                 favoriteImageView.tag = 1002;
                 favoriteImageView.backgroundColor = [UIColor clearColor];
                 favoriteImageView.userInteractionEnabled = YES;
-                 UITapGestureRecognizer* favoriteImgGeture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callAddToFavouriteServiceWith)];
-                 [favoriteImageView addGestureRecognizer:favoriteImgGeture];
-                [categoryView addSubview:favoriteImageView];
+                UITapGestureRecognizer* favoriteImgGeture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callAddToFavouriteServiceWith)];
+                [favoriteImageView addGestureRecognizer:favoriteImgGeture];
+                [ctgBaseView addSubview:favoriteImageView];
                 
-                UILabel * descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(13,CGRectGetMaxY(categoryView.frame),285,60)];
+                UILabel * descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(13,CGRectGetMaxY(ctgBaseView.frame)+10,285,60)];
                 descriptionLabel.tag = 1004;
                 descriptionLabel.backgroundColor = [UIColor clearColor];
                 descriptionLabel.numberOfLines = 0;
@@ -1110,14 +1117,14 @@
                 UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
                 [iconImageView addGestureRecognizer:friendsImgGesture1];
                 
-                UILabel * firstNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(45+8, 13,200, 17)];
+                UILabel * firstNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(iconImageView.frame)+8, 8,200, 17)];
                 firstNameLabel.tag = 5002;
                 firstNameLabel.backgroundColor = [UIColor clearColor];
                 firstNameLabel.textColor = UIColorFromRGB(0x333333);
                 firstNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
                 [cell.contentView addSubview:firstNameLabel];
                 
-                UILabel * commentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(45+8,CGRectGetMaxY(firstNameLabel.frame), 230,30)];
+                UILabel * commentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMinX(firstNameLabel.frame),CGRectGetMaxY(firstNameLabel.frame), 230,30)];
                 commentsLabel.tag = 5004;
                 commentsLabel.backgroundColor = [UIColor clearColor];
                 commentsLabel.textColor = UIColorFromRGB(0x333333);
@@ -1138,50 +1145,11 @@
         // Assigning Values
         if ( indexPath.section == 0 )
         {
-            EGOImageView *restaurantImageView = (EGOImageView*)[cell.contentView viewWithTag:1000];
-            UILabel *restaurantLabel = (UILabel*)[cell.contentView viewWithTag:1001];
             UIImageView *favoriteImageView = (UIImageView*)[cell.contentView viewWithTag:1002];
             UILabel *favoriteLabel = (UILabel*)[cell.contentView viewWithTag:1003];
             UILabel *descriptionLabel = (UILabel*)[cell.contentView viewWithTag:1004];
-            UIView *catgView = (UIView*)[cell.contentView viewWithTag:1005];
-            
-//            int i =0;
-            if(merchantdetailmodel.CategoryList.count > 0) {
-//                NSMutableString *categorynames = [NSMutableString new];
-                CategoryModel *categoryModel = [merchantdetailmodel.CategoryList objectAtIndex:0];
-                [restaurantImageView setImageURL:[NSURL URLWithString:categoryModel.CategoryIcon]];
-                restaurantLabel.text = categoryModel.CategoryName;
-//                for(CategoryModel *categoryModel in merchantdetailmodel.CategoryList)
-//                {
-////                CategoryModel *categoryModel = [merchantdetailmodel.CategoryList objectAtIndex:0];
-//                    [categorynames appendString:categoryModel.CategoryName];
-//                    i++;
-//                    if(i<[merchantdetailmodel.CategoryList count])
-//                        [categorynames appendString:@", "];
-//                }
-//                restaurantLabel.text = categorynames;
-//                int height = [restaurantLabel.text heigthWithWidth:CGRectGetWidth(restaurantLabel.frame) andFont:restaurantLabel.font];
-//                
-//                if(height>30)
-//                {
-//                    restaurantLabel.height = height+1;
-//                    catgView.height = height;
-//                }
-            }
-            else
-            {
-                restaurantImageView.image = getImage(@"res", NO);
-                restaurantLabel.text = [merchantdetailmodel.ShortDescription capitaliseFirstLetter];
-                int height = [restaurantLabel.text heigthWithWidth:CGRectGetWidth(restaurantLabel.frame) andFont:restaurantLabel.font];
-                
-                if(height>30)
-                {
-                    restaurantLabel.height = height+1;
-                     catgView.height = height;
-                }
-                
-            }
-            
+            UIView *catgBaseView = (UIView*)[cell.contentView viewWithTag:1005];
+        
             if(favouriteType)
             {
                 favoriteImageView.image =  getImage(@"fav_y", NO);
@@ -1201,11 +1169,10 @@
             descriptionLabel.text = [merchantdetailmodel.Description stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             float newLblHeight =[descriptionLabel.text heigthWithWidth:285 andFont:descriptionLabel.font];
             descriptionLabel.height = newLblHeight;
-            [descriptionLabel positionAtY:CGRectGetMaxY(catgView.frame)+5];
         }
         else if (indexPath.section == 1)
         {
-            SpecialProductsModel *specialProduct = [[detailMainDict valueForKey:@"Specials"] objectAtIndex:indexPath.row];
+            SpecialProductsModel *specialProduct = [[detailMainDict valueForKey:[detailSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
             
             EGOImageView *iconImageView = (EGOImageView *)[cell.contentView viewWithTag:2000];
             iconImageView.imageURL = [NSURL URLWithString:specialProduct.Photo];
@@ -1262,7 +1229,7 @@
             webUrlLabel.frame =CGRectMake(15,CGRectGetMaxY(phoneNumLabel.frame), 150,webUrlLblHeight);
             
             CLLocationCoordinate2D coord = {.latitude = merchantdetailmodel.Latitude.doubleValue, .longitude =  merchantdetailmodel.Longitude.doubleValue};
-            MKCoordinateSpan span = {.latitudeDelta =  0.1, .longitudeDelta =  0.1};
+            MKCoordinateSpan span = {.latitudeDelta =  0.09, .longitudeDelta =  0.09};
             MKCoordinateRegion region = {coord, span};
             [mapView setRegion:region];
         }
@@ -1414,10 +1381,10 @@
         }
         
         SpecialProductsModel *specialProduct = [[orderedMainDict valueForKey:[orderSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
-                
+        
         EGOImageView *iconImageView = (EGOImageView *)[cell.contentView viewWithTag:2000];
         UILabel * itemNameLbl = (UILabel *)[cell.contentView viewWithTag:2001];
-
+        
         NSString *priceValue;
         if(!specialProduct.DiscountPrice.intValue)
             priceValue =[NSString stringWithFormat:@"%@",[numberFormatter stringFromNumber:[NSNumber numberWithDouble:specialProduct.Price.doubleValue]]];
@@ -1470,7 +1437,7 @@
         return cell;
     }
     
-}
+} 
 
 #pragma mark - Table View Delegate Source Methods
 
@@ -1613,12 +1580,12 @@
 }
 - (void)addFavouriteManager:(TLAddFavouriteManager *) addFavouriteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
-     [[ProgressHud shared] hide];
+    [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)addFavouriteManagerFailed:(TLAddFavouriteManager *) addFavouritesManager
 {
-     [[ProgressHud shared] hide];
+    [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 

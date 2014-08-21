@@ -44,12 +44,7 @@
     self.window.rootViewController = self.navigationController;
     self.window.backgroundColor = UIColorFromRGB(0x00998c);
     [self.window makeKeyAndVisible];
-    
-    // Changing navigation controller appearance.
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:self.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-    [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
-
+        
     return YES;
 }
 
@@ -121,9 +116,6 @@
         orderDetailVC.orderID = processId;
         
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:orderDetailVC];
-        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         [APP_DELEGATE.slideMenuController hideMenuViewController];
         
@@ -132,8 +124,6 @@
     {
         TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
-        [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         
         [APP_DELEGATE.slideMenuController hideMenuViewController];

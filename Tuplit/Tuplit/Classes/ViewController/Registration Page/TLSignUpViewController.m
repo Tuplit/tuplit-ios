@@ -282,6 +282,9 @@
 - (IBAction)googlePlusSignIn:(id)sender {
     
     NETWORK_TEST_PROCEDURE;
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+
+    
     isSocialButtonPressed = YES;
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
     signIn.shouldFetchGooglePlusUser = YES;
@@ -298,7 +301,6 @@
     if(![signIn trySilentAuthentication])
         [signIn authenticate];
     
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
 }
 
 - (IBAction)faceBookSignin:(id)sender {
@@ -627,8 +629,6 @@
 
 -(void)facebookSignUpNotificationCalled:(NSNotification*)notif
 {
-    
-    
     if([notif object])
     {
         NSDictionary *dict = (NSDictionary *)[notif object];
@@ -668,13 +668,14 @@
 
 - (void)signUpManager:(TLSignUpManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
     
-    [self showAlertWithMessage:errorMsg];
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)signUpManagerFailed:(TLSignUpManager *)signUpManager {
     
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 
@@ -702,11 +703,13 @@
         [UIAlertView alertViewWithMessage:errorMsg];
         [[ProgressHud shared] hide];
     }
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)loginManagerLoginFailed:(TLLoginManager *)loginManager {
     
     [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 
@@ -725,13 +728,13 @@
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:errorMsg];
+     [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {
     
     [[ProgressHud shared] hide];
-    
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

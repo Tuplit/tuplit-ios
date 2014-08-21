@@ -7,6 +7,8 @@
 //
 
 #import "TLTopUpViewController.h"
+#import "TLUserProfileViewController.h"
+#import "TLCartViewController.h"
 
 @interface TLTopUpViewController ()
 {
@@ -26,10 +28,19 @@
     [self.navigationItem setTitle:LString(@"TOP_UP_TITLE")];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
-    [navleftButton backButtonWithTarget:self action:@selector(backToUserProfile)];
-    [self.navigationItem setLeftBarButtonItem:navleftButton];
-    
+    if([self.viewController isKindOfClass:[TLCartViewController class]]||[self.viewController isKindOfClass:[TLTransferViewController class]])
+    {
+        UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+        [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
+        [self.navigationItem setLeftBarButtonItem:navleftButton];
+        [self callService];
+    }
+    else
+    {
+        UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+        [navleftButton backButtonWithTarget:self action:@selector(backToUserProfile)];
+        [self.navigationItem setLeftBarButtonItem:navleftButton];
+    }
     
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
@@ -53,7 +64,7 @@
     tenRupeeTopUpBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [tenRupeeTopUpBtn setFrame:CGRectMake(14, 0,94,CGRectGetHeight(buttonView.frame))];
     [tenRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
-    [tenRupeeTopUpBtn setTitle:@"£100" forState:UIControlStateNormal];
+    [tenRupeeTopUpBtn setTitle:@"£10" forState:UIControlStateNormal];
     tenRupeeTopUpBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     tenRupeeTopUpBtn.tag=100;
     [tenRupeeTopUpBtn addTarget:self action:@selector(rechargeTenRupeeTopUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -63,7 +74,7 @@
     twentyRupeeTopUpBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [twentyRupeeTopUpBtn setFrame:CGRectMake(CGRectGetMaxX(tenRupeeTopUpBtn.frame) + 5 ,0,CGRectGetWidth(tenRupeeTopUpBtn.frame),CGRectGetHeight(buttonView.frame))];
     [twentyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
-    [twentyRupeeTopUpBtn setTitle:@"£200" forState:UIControlStateNormal];
+    [twentyRupeeTopUpBtn setTitle:@"£20" forState:UIControlStateNormal];
     twentyRupeeTopUpBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     [twentyRupeeTopUpBtn addTarget:self action:@selector(rechargeTwentyRupeeTopUp:) forControlEvents:UIControlEventTouchUpInside];
     twentyRupeeTopUpBtn.tag=101;
@@ -74,7 +85,7 @@
     [fiftyRupeeTopUpBtn setFrame:CGRectMake(CGRectGetMaxX(twentyRupeeTopUpBtn.frame) + 5, 0,CGRectGetWidth(tenRupeeTopUpBtn.frame),CGRectGetHeight(buttonView.frame))];
     fiftyRupeeTopUpBtn.tag=102;
     [fiftyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
-    [fiftyRupeeTopUpBtn setTitle:@"£500" forState:UIControlStateNormal];
+    [fiftyRupeeTopUpBtn setTitle:@"£50" forState:UIControlStateNormal];
     fiftyRupeeTopUpBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     fiftyRupeeTopUpBtn.backgroundColor=[UIColor clearColor];
     [fiftyRupeeTopUpBtn addTarget:self action:@selector(rechargeFiftyRupeeTopUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -210,7 +221,7 @@
 
 -(void) rechargeTenRupeeTopUp: (id) sender
 {
-    topUpAmountTxt.text=@"£100";
+    topUpAmountTxt.text=@"£10";
     [tenRupeeTopUpBtn setBackgroundImage:getImage(@"rotateButtonBg", NO) forState:UIControlStateNormal];
     [tenRupeeTopUpBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [twentyRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
@@ -221,7 +232,7 @@
 }
 -(void) rechargeTwentyRupeeTopUp: (id) sender
 {
-    topUpAmountTxt.text=@"£200";
+    topUpAmountTxt.text=@"£20";
     [twentyRupeeTopUpBtn setBackgroundImage:getImage(@"rotateButtonBg", NO) forState:UIControlStateNormal];
     [twentyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [tenRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
@@ -233,7 +244,7 @@
 }
 -(void) rechargeFiftyRupeeTopUp : (id) sender
 {
-    topUpAmountTxt.text=@"£500";
+    topUpAmountTxt.text=@"£50";
     [fiftyRupeeTopUpBtn setBackgroundImage:getImage(@"rotateButtonBg", NO) forState:UIControlStateNormal];
     [fiftyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [twentyRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
@@ -264,9 +275,9 @@
     else
         topUpAmount = @"";
    
-    if (topUpAmount.intValue<100)
+    if (topUpAmount.intValue<10)
     {
-        [UIAlertView alertViewWithMessage:@"Enter minimum £100 or above to Top up"];
+        [UIAlertView alertViewWithMessage:@"Enter minimum £10 or above to Top up"];
     }
     else
     {
@@ -460,10 +471,17 @@
 - (void)topupManagerSuccessfull:(TLTopupManager *)topupManager withStatus:(NSString*)topupStatus
 {
     APP_DELEGATE.isUserProfileEdited = YES;
-    
-    [self backToUserProfile];
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:topupStatus];
+    
+    if([self.viewController isKindOfClass:[TLCartViewController class]]||[self.viewController isKindOfClass:[TLTransferViewController class]])
+    {
+        TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
+        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
+        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+    }
+    else
+        [self backToUserProfile];
 }
 
 - (void)topupManager:(TLTopupManager *)topupManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
@@ -493,9 +511,12 @@
 - (void)creditCardListManager:(TLCreditCardListingManager *)creditCardListManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     [[ProgressHud shared] hide];
+    if(![errorCode isEqualToString:@"2000"])
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)creditCardListanagerFailed:(TLCreditCardListingManager *)creditCardListManager
 {
     [[ProgressHud shared] hide];
+     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 @end

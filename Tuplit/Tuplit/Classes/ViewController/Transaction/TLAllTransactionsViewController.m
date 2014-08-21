@@ -306,7 +306,6 @@
 - (void)transactionListingManager:(TLTransactionListingManager *)trancactionListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     errorView.hidden = NO;
-    [UIAlertView alertViewWithMessage:errorMsg];
     errorLbl.text = errorMsg;
     
     [[ProgressHud shared] hide];
@@ -315,10 +314,11 @@
     isMerchantWebserviceRunning =NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+    
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)transactionListingManagerFailed:(TLTransactionListingManager *)trancactionListingManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     errorView.hidden = NO;
     errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");
     
@@ -328,5 +328,7 @@
     isMerchantWebserviceRunning =NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
+    
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 @end

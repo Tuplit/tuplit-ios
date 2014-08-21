@@ -31,8 +31,8 @@
     [navleftButton buttonWithIcon:getImage(@"close", NO) target:self action:@selector(closeAction:) isLeft:NO];
     [self.navigationItem setLeftBarButtonItem:navleftButton];
     
-    normalNumberArray = [NSMutableArray arrayWithObjects:@"1_n.png", @"2_n.png", @"3_n.png", @"4_n.png", @"5_n.png", @"6_n.png",@"7_n.png", @"8_n.png", @"9_n.png", @"0_n.png", nil];
-    selectedNumberArray = [NSMutableArray arrayWithObjects:@"1.png", @"2.png", @"3.png", @"4.png", @"5.png", @"6.png", @"7.png", @"8.png", @"9.png", @"0.png", nil];
+    normalNumberArray = [NSMutableArray arrayWithObjects:@"1_n", @"2_n", @"3_n", @"4_n", @"5_n", @"6_n",@"7_n", @"8_n", @"9_n", @"0_n", nil];
+    selectedNumberArray = [NSMutableArray arrayWithObjects:@"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0", nil];
     
     baseViewWidth= self.view.frame.size.width;
     baseViewHeight= self.view.frame.size.height;
@@ -63,7 +63,7 @@
         xposition = CGRectGetMaxX(codeSelectorImgView.frame);
     }
     
-    numberPadView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(codeSelectorView.frame), baseView.frame.size.width, 382)];
+    numberPadView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(codeSelectorView.frame), baseView.frame.size.width, CGRectGetHeight(scrollView.frame)-xposition)];
     numberPadView.backgroundColor = [UIColor clearColor];
     [scrollView addSubview:numberPadView];
     
@@ -76,7 +76,12 @@
         float ypos = yposition;
         
         UIButton *numberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 76, 76);
+        
+//        if([ [ UIScreen mainScreen ] bounds ].size.height<568)
+//            numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 60, 60);
+//        else
+            numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 76, 76);
+        
         numberBtn.tag = j + 110;
         [numberBtn addTarget:self action:@selector(numberPadAction:) forControlEvents:UIControlEventTouchUpInside];
         [numberBtn setImage:getImage([normalNumberArray objectAtIndex:j-1], NO) forState:UIControlStateNormal];
@@ -96,6 +101,21 @@
             row++;
         }
     }
+    
+    UILabel *deleteLbl = [[UILabel alloc]initWithFrame:CGRectMake(210, 290, 90, 50)];
+    deleteLbl.backgroundColor = [UIColor clearColor];
+    deleteLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+    deleteLbl.textColor = APP_DELEGATE.defaultColor;
+    deleteLbl.textAlignment = NSTextAlignmentCenter;
+    deleteLbl.numberOfLines = 2;
+//    deleteLbl.layer.borderWidth = 1.0;
+//    deleteLbl.layer.borderColor = [APP_DELEGATE.defaultColor CGColor];
+    deleteLbl.userInteractionEnabled = YES;
+    deleteLbl.text = LString(@"Delete");
+    [numberPadView addSubview:deleteLbl];
+    
+    UITapGestureRecognizer *deleteTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(deleteAction)];
+    [deleteLbl addGestureRecognizer:deleteTap];
     
     if (baseViewHeight <= 480) 
     {
@@ -226,6 +246,17 @@
     [self unfillCodeCircles];
     isConformPinCode = isConformPin;
 }
+-(void)deleteAction
+{
+    if(count > 0)
+    {
+        UIImageView *selectorImage = (UIImageView *)[codeSelectorView viewWithTag:count];
+        [selectorImage setImage:getImage(@"dot", NO)];
+        
+        pinCode = [pinCode substringToIndex:[pinCode length] - 1];
+        count--;
+    }
+}
 
 #pragma mark - TLSetPinManager Delegate Methods
 
@@ -287,17 +318,17 @@
 }
 - (void)verifyPinManager:(TLVerifyPinManager *)pinManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
 {
-    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
     [self closeAction:nil];
     self.isverifyPin = NO;
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)verifyPinManagerFailed:(TLVerifyPinManager *)pinManager
 {
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     [self closeAction:nil];
     self.isverifyPin = NO;
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end
