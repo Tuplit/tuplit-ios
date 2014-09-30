@@ -58,6 +58,7 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
+    emailTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     
     // Back Button
     UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
@@ -75,6 +76,14 @@
     
     userDetailsManager = [[TLUserDetailsManager alloc] init];
     userDetailsManager.delegate = self;
+    
+    NSDictionary *logindetails = [TLUserDefaults getRememberedDict];
+    
+    if([TLUserDefaults IsRememberMe])
+    {
+        emailTextField.text = [logindetails valueForKey:@"Email"];
+        passwordTextField.text = [logindetails valueForKey:@"Password"];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -177,10 +186,17 @@
 
 - (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
-  
+    APP_DELEGATE.loginDetails = @{
+                                  @"Email"            : NSNonNilString(emailTextField.text),
+                                  @"Password"         : NSNonNilString(passwordTextField.text),
+                                  };
+    [TLUserDefaults setRememberMeDetails:APP_DELEGATE.loginDetails];
+    
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
     [userDetailsManager getUserDetailsWithUserID:user.UserId];
+    
+    [[TLAppLocationController sharedManager]startUpdatingLocation];
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
@@ -199,6 +215,14 @@
 
 - (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
     
+    if(user_.RememberMe.intValue==1) {
+        [TLUserDefaults setIsRememberMe:YES];
+    }
+    else
+    {
+        [TLUserDefaults setIsRememberMe:NO];
+    }
+    
     [TLUserDefaults setCurrentUser:user_];
     [self presentAMSlider];
     [[ProgressHud shared] hide];
@@ -207,7 +231,7 @@
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {

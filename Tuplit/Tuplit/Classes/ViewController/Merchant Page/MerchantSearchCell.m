@@ -64,9 +64,21 @@
         discountImageView.image = discountImage;
         [containerView addSubview:discountImageView];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(61,self.size.height+6.30,320-60,0.5)];
+        int yPosition;
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+            yPosition = self.size.height + 6.30;
+        }
+        else{
+            yPosition = self.size.height + 5;
+        }
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(61, yPosition, (320 - 60), 0.5)];
         lineView.backgroundColor = [UIColor lightGrayColor];
         [self addSubview:lineView];
+        
+        //        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(61,self.size.height+6.30,320-60,0.5)];
+        //        lineView.backgroundColor = [UIColor lightGrayColor];
+        //        [self addSubview:lineView];
     }
     return self;
 }
@@ -119,12 +131,28 @@
         distanceImageView.hidden = YES;
     }
     
-    if ([merchant.IsGoldenTag intValue] == 0) {
-        discountImageView.hidden = YES;
+    discountImageView.hidden = NO;
+    if([merchant.NewTag intValue]==1)
+    {
+        discountImageView.image = getImage(@"NewIcon", NO);
     }
     else
     {
-        discountImageView.hidden = NO;
+        
+        if ([merchant.TagType intValue] == 1) {
+            [discountImageView setImage:[UIImage imageNamed:@"DiscountMap"]];
+        }
+        else if([merchant.TagType intValue] == 2)
+        {
+            [discountImageView setImage:[UIImage imageNamed:@"red_tag"]];
+        }
+        else if([merchant.TagType intValue] == 3)
+        {
+            [discountImageView setImage:[UIImage imageNamed:@"specialIcon"]];
+        }
+        else{
+            discountImageView.hidden = YES;
+        }
     }
 }
 

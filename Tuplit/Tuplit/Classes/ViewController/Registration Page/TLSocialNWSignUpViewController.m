@@ -70,7 +70,7 @@
     [textFirstName setupForTuplitStyle];
     [textLastName setupForTuplitStyle];
     [textPinCode setupForTuplitStyle];
-// [textCellNumber setupForTuplitStyle];
+    // [textCellNumber setupForTuplitStyle];
     [textPinCode setRightViewIcon:getImage(@"Question", NO) target:self action:@selector(pinCodeAction)];
     textFirstName.delegate = textLastName.delegate = textPinCode.delegate = self;
     textFirstName.inputAccessoryView = textLastName.inputAccessoryView = textPinCode.inputAccessoryView = inputAccessoryView;
@@ -155,15 +155,15 @@
 #pragma mark - TextField delegate methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-
+    
     currentTextField = textField;
     
     if(textField == textPinCode) {
         if(![UI isIPhone5]) {
             if(textField == textPinCode)
                 [scrollView setContentOffset:CGPointMake(0, CGRectGetMinY(textPinCode.frame)-10) animated:YES];
-           // else
-             //   [scrollView setContentOffset:CGPointMake(0, CGRectGetMinY(textCellNumber.frame)-10) animated:YES];
+            // else
+            //   [scrollView setContentOffset:CGPointMake(0, CGRectGetMinY(textCellNumber.frame)-10) animated:YES];
         }
         else
             [scrollView setContentOffset:CGPointMake(0, 10) animated:YES];
@@ -174,7 +174,7 @@
         }
     } else {
         if(![UI isIPhone5])
-        [scrollView setContentOffset:CGPointZero animated:YES];
+            [scrollView setContentOffset:CGPointZero animated:YES];
     }
     
     [scrollView setContentSize:CGSizeMake(320, scrollContentHeight)];
@@ -191,7 +191,7 @@
         else
             return NO;
     }
-
+    
     NSUInteger newLength = [textField.text length] + [string length] - range.length;
     return (newLength > 40) ? NO : YES;
 }
@@ -240,8 +240,8 @@
         [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
     else if(textLastName.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
-//    else if(textCellNumber.text.length == 0)
-//        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
+    //    else if(textCellNumber.text.length == 0)
+    //        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
     else if(textPinCode.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_PIN")];
     else {
@@ -359,8 +359,8 @@
 }
 
 - (IBAction)presentAMSlider {
-
-   [TuplitConstants loadSliderHomePageWithAnimation:YES];
+    
+    [TuplitConstants loadSliderHomePageWithAnimation:YES];
 }
 
 -(void)signUpsuccessAction
@@ -433,7 +433,9 @@
     addCrCardViewController.viewController = self;
     addCrCardViewController.isSignUp = YES;
     [self.navigationController pushViewController:addCrCardViewController animated:YES];
-   
+    
+    [[TLAppLocationController sharedManager]startUpdatingLocation];
+    
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -449,7 +451,7 @@
 #pragma mark - TLUserDetailsManagerDelegate methods
 
 - (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
-        
+    
     [TLUserDefaults setCurrentUser:user_];
     [[ProgressHud shared] hide];
     

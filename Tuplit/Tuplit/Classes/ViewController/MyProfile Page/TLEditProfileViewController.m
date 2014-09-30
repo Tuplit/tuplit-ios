@@ -21,6 +21,11 @@
 
 #pragma mark - View Life Cycle Methods.
 
+-(void)dealloc
+{
+    editProfileTable.editing = NO;
+}
+
 -(void) loadView
 {
     [super loadView];
@@ -70,6 +75,7 @@
     isPictureUpdated = NO;
 }
 
+
 -(void)viewWillAppear:(BOOL)animated
 {
     isUserInfoEdited = NO;
@@ -100,7 +106,6 @@
     TLUserDetailsManager *usermanager = [[TLUserDetailsManager alloc]init];
     usermanager.delegate = self;
     [usermanager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
-    
 }
 
 //   Credit card delete service
@@ -141,10 +146,10 @@
                  @"Credit Cards":UserLinkedCardsArray,
                  };
     
-     UserModel *usermodel = [TLUserDefaults getCurrentUser];
-     [nameDict setValue:usermodel.FirstName forKey:kFirstName];
-     [nameDict setValue:usermodel.LastName forKey:kLastName];
-     [nameDict setValue:usermodel.Photo forKey:kPhoto];
+    UserModel *usermodel = [TLUserDefaults getCurrentUser];
+    [nameDict setValue:usermodel.FirstName forKey:kFirstName];
+    [nameDict setValue:usermodel.LastName forKey:kLastName];
+    [nameDict setValue:usermodel.Photo forKey:kPhoto];
     
     sectionHeader = [NSArray arrayWithObjects:@"User Details",@"Credit Cards",@"My Comments", nil];
     [editProfileTable reloadData];
@@ -308,6 +313,7 @@
         NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:section]];
         
         if (creditCardArray.count > 0) {
+            
             return creditCardArray.count;
         }
         else
@@ -394,9 +400,9 @@
     
     else if(section == 2)
     {
-        [headerBtn setTitle: LString(@"SWIPE_TO_EDIT") forState:UIControlStateNormal];
-//        [headerBtn addTarget:self action:@selector(addCreditCardAction) forControlEvents:UIControlEventTouchUpInside];
-        float btnWidth = [LString(@"SWIPE_TO_EDIT") widthWithFont:headerBtn.titleLabel.font]+2;
+        [headerBtn setTitle: LString(@"SWIPE_TO_DELETE") forState:UIControlStateNormal];
+        //        [headerBtn addTarget:self action:@selector(addCreditCardAction) forControlEvents:UIControlEventTouchUpInside];
+        float btnWidth = [LString(@"SWIPE_TO_DELETE") widthWithFont:headerBtn.titleLabel.font]+2;
         headerBtn.width = btnWidth;
         headerBtn.enabled = NO;
         [headerBtn positionAtX:baseViewWidth-btnWidth-15];
@@ -516,6 +522,8 @@
         commentLbl.frame = newRect;
         
         totalDaysLbl.text=[TuplitConstants calculateTimeDifference:comments.CommentDate];
+        int timeLblWidth = [totalDaysLbl.text widthWithFont:totalDaysLbl.font]+1;
+        totalDaysLbl.frame =  CGRectMake(cell.frame.size.width-timeLblWidth-16,15, timeLblWidth, 20);
     }
     return cell;
 }
@@ -534,8 +542,8 @@
         }
         return YES;
     }
-        else
-            return NO;
+    else
+        return NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -543,9 +551,9 @@
     if (indexPath.section == 1)
     {
         if (editingStyle == UITableViewCellEditingStyleDelete) {
-//            NETWORK_TEST_PROCEDURE
-//            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-//            sage:@"Deleting a Credit Card is under construction. Will be available in future demos."];
+            //            NETWORK_TEST_PROCEDURE
+            //            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            //            sage:@"Deleting a Credit Card is under construction. Will be available in future demos."];
             NETWORK_TEST_PROCEDURE
             
             [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
@@ -559,7 +567,7 @@
                 cardDeletemanager.delegate = self;
                 [cardDeletemanager deleteCreditCard:creditCard.Id];
             }
-    
+            
         }
     }
     else if (indexPath.section == 2)
@@ -653,8 +661,8 @@
     }
     else
     {
-       if(buttonIndex == 0)
-        [self takePhotoLibraryAction];
+        if(buttonIndex == 0)
+            [self takePhotoLibraryAction];
     }
 }
 
@@ -670,12 +678,12 @@
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
 {
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma mark - TLEditUpdateManagerDelegate methods
@@ -690,12 +698,12 @@
 - (void)editUpManager:(TLEditUpdateManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
 {
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)editUpManagerFailed:(TLEditUpdateManager *)signUpManager
 {
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLCommentDeleteManager Delegate Methods
@@ -732,6 +740,5 @@
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
-
 
 @end

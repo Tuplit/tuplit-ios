@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface TLCategoryView : UIView
-
+@property double ctgviewHeight;
 
 - (void)setUpCategoryView:(NSArray *)categories andWidth:(float)width;
-@property double ctgviewHeight;
+-(void) removeCtgViews;
 
 @end

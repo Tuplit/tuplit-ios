@@ -19,8 +19,15 @@
 
 @interface TLFriendsListingManager : NSObject
 
--(void)callService:(NSDictionary*)queryParams;
+
+
 @property(nonatomic, unsafe_unretained) id <TLFriendsListingManagerDelegate> delegate;
 @property(nonatomic, assign) long listedCount;
 @property(nonatomic, assign) long totalCount;
+
+-(void) cancelRequest;
+-(void)callService:(NSDictionary*)queryParams;
+
 @end
+
+

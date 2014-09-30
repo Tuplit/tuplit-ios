@@ -30,6 +30,7 @@
 #import "ProgressHud.h"
 #import "UITextField+Tuplit.h"
 #import "TLAppDelegate.h"
+#import "TLAppLocationController.h"
 #import "UIBarButtonItem+Tuplit.h"
 #import "UINavigationItem+TitleView.h"
 #import "UIAlertView+BlockAlert.h"

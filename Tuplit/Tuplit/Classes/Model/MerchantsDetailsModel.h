@@ -40,6 +40,7 @@
 @property (nonatomic, copy) NSString * PriceRange;
 @property (nonatomic, copy) NSString * SpecialsSold;
 @property (nonatomic, copy) NSString * CustomersCount;
+@property (nonatomic, copy) NSString * TagType;
 
 @property (nonatomic, copy) NSString * AlreadyFavourited;
 @property (nonatomic, copy) NSString * Category;
@@ -49,6 +50,7 @@
 
 @property (nonatomic, copy) NSArray * OrderedFriendsList;
 @property (nonatomic, copy) NSArray * Comments;
+@property (nonatomic, copy) NSArray * slideshow;
 
 @property (nonatomic, copy) NSArray * ProductList;
 

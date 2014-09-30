@@ -27,6 +27,6 @@
 @property(nonatomic,retain)NSString *orderID;
 @property(nonatomic,strong)NSMutableArray *transActionList;
 @property (nonatomic,strong)NSString *userID;
-@property int index;
+@property int index,lastFetchCount,totalUserListCount;
 
 @end

@@ -40,10 +40,15 @@ AFHTTPRequestOperation *operation;
     NSLog(@"Request : %@", [request.URL absoluteString]);
     NSLog(@"Method  : %@", request.HTTPMethod);
     
-	operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    NSDate *start=[NSDate date];
+ 
+    operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"MerchantListResponsetime = %f",ellapsedSeconds);
         
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
@@ -76,8 +81,10 @@ AFHTTPRequestOperation *operation;
                                                                   @"distance": @"distance",
                                                                   @"IsSpecial": @"IsSpecial",
                                                                   @"IsGoldenTag" : @"IsGoldenTag",
+                                                                  @"NewTag" : @"NewTag",
                                                                   @"Category" : @"Category",
                                                                   @"TotalUsersShopped" : @"TotalUsersShopped",
+                                                                  @"TagType" : @"TagType",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };
@@ -103,8 +110,11 @@ AFHTTPRequestOperation *operation;
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        if([delegate respondsToSelector:@selector(merchantListingManager:)])
-            [delegate merchantListingManager:self];
+        if(error.code!=-999)
+        {
+            if([delegate respondsToSelector:@selector(merchantListingManager:)])
+                [delegate merchantListingManager:self];
+        }
         
 	}];
     

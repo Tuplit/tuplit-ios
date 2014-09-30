@@ -8,6 +8,7 @@
 
 #import "TLMerchantsDetailViewController.h"
 #import "TLCategoryView.h"
+#import "SlideShowView.h"
 
 @interface TLMerchantsDetailViewController ()
 {
@@ -19,6 +20,8 @@
     UIView *errorView;
     int favouriteType;
     TLCategoryView *categoryView;
+    SlideShowView *slideshow;
+    UIView *friendsListView;
 }
 
 @end
@@ -75,17 +78,22 @@
     containerView.backgroundColor = [UIColor lightGrayColor];
     [baseView addSubview:containerView];
     
-    merchantImageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0,0,containerView.size.width,containerView.size.height)];
-    merchantImageView.backgroundColor = [UIColor clearColor];
-    merchantImageView.tag = 101;
-    [merchantImageView setContentMode:UIViewContentModeScaleAspectFit];
-    [containerView addSubview:merchantImageView];
-   
+//    merchantImageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0,0,containerView.size.width,containerView.size.height)];
+//    merchantImageView.backgroundColor = [UIColor clearColor];
+//    merchantImageView.tag = 101;
+//    [merchantImageView setContentMode:UIViewContentModeScaleAspectFit];
+//    [containerView addSubview:merchantImageView];
+    
+    slideshow = [[SlideShowView alloc]initWithFrame:CGRectMake(0,0,containerView.size.width,containerView.size.height)];
+    slideshow.tag = 101;
+    slideshow.slideShowInterval = 5;
+    [containerView addSubview:slideshow];
+    
     
     blurView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, 40)];
     blurView.backgroundColor = [UIColor blackColor];
     blurView.alpha = 0.2;
-//    [blurView setBlurRadius:10];
+    //    [blurView setBlurRadius:10];
     blurView.hidden = YES;
     [containerView addSubview:blurView];
     
@@ -100,10 +108,10 @@
     customerLabel.backgroundColor = [UIColor clearColor];
     customerLabel.font= [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     customerLabel.userInteractionEnabled = YES;
-//    customerLabel.numberOfLines= 3;
+    //    customerLabel.numberOfLines= 3;
     customerLabel.lineBreakMode= NSLineBreakByTruncatingTail;
     customerLabel.textAlignment= NSTextAlignmentLeft;
-//    [self setShadow:customerLabel];
+    //    [self setShadow:customerLabel];
     [containerView addSubview : customerLabel];
     
     UIImageView * customerShopedImageView1 = [[UIImageView alloc] initWithFrame:CGRectMake(8,CGRectGetMaxY(customerLabel.frame)+2 ,customerShoppedImage1.size.width, customerShoppedImage1.size.height)];
@@ -116,10 +124,10 @@
     specialSoldLabel.backgroundColor = [UIColor clearColor];
     specialSoldLabel.font= [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     specialSoldLabel.userInteractionEnabled = YES;
-//    specialSoldLabel.numberOfLines= 3;
+    //    specialSoldLabel.numberOfLines= 3;
     specialSoldLabel.lineBreakMode= NSLineBreakByTruncatingTail;
     specialSoldLabel.textAlignment= NSTextAlignmentLeft;
-//     [self setShadow:customerLabel];
+    //     [self setShadow:customerLabel];
     [containerView addSubview : specialSoldLabel];
     
     labelDiscount = [[UILabel alloc ] initWithFrame:CGRectMake(CGRectGetMaxX(containerView.frame)-35,6,30,14)];
@@ -131,7 +139,7 @@
     UIImage* discountImage = getImage(@"DiscountMap",NO);
     discountImageView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(labelDiscount.frame)-discountImage.size.width - 3 ,6,discountImage.size.width, discountImage.size.height)];
     discountImageView.backgroundColor = [UIColor clearColor];
-//    discountImageView.image= discountImage;
+    //    discountImageView.image= discountImage;
     [containerView addSubview:discountImageView];
     
     backShadeImgView = [[UIImageView alloc]initWithFrame:CGRectMake((containerView.frame.size.width-68)/2,(containerView.frame.size.height-68)/3,68,68)];
@@ -147,9 +155,15 @@
     [containerView addSubview:merchantLogoView];
     
     // OrderedFriends details
-    UIView *friendsListView = [[UIView alloc]initWithFrame:CGRectMake(0, containerView.frame.size.height-35, containerView.frame.size.width, 31)];
-    [friendsListView setBackgroundColor:[UIColor clearColor]];
+    friendsListView = [[UIView alloc]initWithFrame:CGRectMake(0, containerView.frame.size.height-35, containerView.frame.size.width, 35)];
+    friendsListView.backgroundColor = [UIColor clearColor];
+    friendsListView.hidden = YES;
     [containerView addSubview:friendsListView];
+    
+    UIView *friendsbgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, 35)];
+    friendsbgView.backgroundColor = [UIColor blackColor];
+    friendsbgView.alpha = 0.2;
+    [friendsListView addSubview:friendsbgView];
     
     friendsLabel= [[UILabel alloc ] initWithFrame:CGRectMake(9,0,180,30)];
     friendsLabel.textColor= UIColorFromRGB(0Xffffff);
@@ -264,11 +278,11 @@
     totItemPrizeLbl.textColor = UIColorFromRGB(0xffffff);
     totItemPrizeLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:12];;
     [cartBarView addSubview:totItemPrizeLbl];
-  
-//  error handling
+    
+    //  error handling
     errorView = [[UIView alloc] initWithFrame:CGRectMake(0, 5, merchantDetailTable.frame.size.width, merchantDetailTable.frame.size.height-10)];
     [errorView setBackgroundColor:[UIColor whiteColor]];
-     errorView.hidden=YES;
+    errorView.hidden=YES;
     [merchantDetailTable addSubview:errorView];
     
     errorLbl = [[UILabel alloc] initWithFrame:CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100)];
@@ -278,9 +292,7 @@
     errorLbl.numberOfLines = 0;
     [errorView addSubview:errorLbl];
     
-    numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+    numberFormatter = [TuplitConstants getCurrencyFormat];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -320,7 +332,7 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-  
+
 -(void) callMerchantDetailsWebservice
 {
     if(self.merchantModel)
@@ -344,7 +356,7 @@
 {
     if([TLUserDefaults isGuestUser])
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to add to favorites. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to register in the app to add to favorites. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
         alertView.tag = 9002;
         [alertView show];
     }
@@ -368,10 +380,10 @@
     TLCartViewController *cartVC = [[TLCartViewController alloc] init];
     cartVC.isMerchant = YES;
     [self.navigationController pushViewController:cartVC animated:YES];
-//    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
-//    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-//    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-//    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+    //    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
+    //    [slideNavigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    //    [slideNavigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    //    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
 }
 
 -(void) updateCartView
@@ -381,7 +393,7 @@
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:NULL
                     completion:NULL];
-
+    
     cartBarView.hidden = NO;
     [self updateCartDetails];
     
@@ -392,7 +404,7 @@
     {
         [APP_DELEGATE.cartModel calculateTotalPrice];
         
-        cartItemCountLbl.text = [NSString stringWithFormat:@"%d item(s) in cart",APP_DELEGATE.cartModel.products.count];
+        cartItemCountLbl.text = [NSString stringWithFormat:@"%d item(s) in cart",APP_DELEGATE.cartModel.productCount];
         float cartLblWidth = [cartItemCountLbl.text widthWithFont:cartItemCountLbl.font];
         CGRect tempRect = cartItemCountLbl.frame;
         tempRect.size.width = cartLblWidth;
@@ -443,7 +455,7 @@
             }
         }
     }
-
+    
     [merchantDetailTable reloadData];
     
     //   Set visible to top in merchantDetailTable
@@ -452,18 +464,44 @@
 
 -(void)updateMerchantDetails
 {
+    NSLog(@"slideshow = %@",merchantdetailmodel.slideshow);
+    
+    if(merchantdetailmodel.slideshow.count>0)
+    {
+        slideshow.slideShowImages = merchantdetailmodel.slideshow;
+    }
+    else
+    {
+        slideshow.slideShowImages = [NSArray arrayWithObject:merchantdetailmodel.Image];
+    }
+    [slideshow loadData];
+    
     [self.navigationItem setTitle:[merchantdetailmodel.CompanyName stringWithTitleCase]];
     blurView.hidden = NO;
-    merchantImageView.imageURL = [NSURL URLWithString:merchantdetailmodel.Image];
+//    merchantImageView.imageURL = [NSURL URLWithString:merchantdetailmodel.Image];
     labelDiscount.text  = merchantdetailmodel.DiscountTier;
     merchantLogoView.imageURL = [NSURL URLWithString:merchantdetailmodel.Icon];
     backShadeImgView.hidden = NO;
     favouriteType = merchantdetailmodel.AlreadyFavourited.intValue;
     
-    if(merchantdetailmodel.IsGoldenTag.intValue)
-        discountImageView.image = getImage(@"specialIcon",NO);
+    discountImageView.hidden = NO;
+    
+    if ([merchantdetailmodel.TagType intValue] == 1) {
+        [discountImageView setImage:[UIImage imageNamed:@"DiscountMap"]];
+    }
+    else if([merchantdetailmodel.TagType intValue] == 2)
+    {
+        [discountImageView setImage:[UIImage imageNamed:@"red_tag"]];
+    }
+    else if ([merchantdetailmodel.TagType intValue] == 3)
+    {
+        [discountImageView setImage:[UIImage imageNamed:@"specialIcon"]];
+    }
     else
-        discountImageView.image = getImage(@"DiscountMap",NO);
+    {
+        discountImageView.hidden = YES;
+    }
+    
     
     if (merchantdetailmodel.CustomersCount != nil)
     {
@@ -501,6 +539,7 @@
         friendsImgView1.hidden = YES;
         friendsImgView2.hidden = YES;
         friendsImgView3.hidden = NO;
+        friendsListView.hidden = NO;
     }
     else  if(orderedFriendsCount==2)
     {
@@ -520,6 +559,7 @@
         friendsImgView1.hidden = YES;
         friendsImgView2.hidden = NO;
         friendsImgView3.hidden = NO;
+        friendsListView.hidden = NO;
     }
     else  if(orderedFriendsCount>2)
     {
@@ -532,7 +572,7 @@
             checkplural = @"friend shopped here!";
         else
             checkplural = @"friends shopped here!";
-            
+        
         if([friendModel3.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
             friendsLabel.text =[NSString stringWithFormat:@"You, %@ %@ & another %d %@",[friendModel2.FirstName stringWithTitleCase],[friendModel2.LastName stringWithTitleCase],orderedFriendsCount-2,checkplural];
         else if([friendModel2.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
@@ -549,6 +589,7 @@
         friendsImgView1.hidden = NO;
         friendsImgView2.hidden = NO;
         friendsImgView3.hidden = NO;
+        friendsListView.hidden = NO;
     }
     else  if(orderedFriendsCount==0)
     {
@@ -556,6 +597,7 @@
         friendsImgView2.hidden = YES;
         friendsImgView3.hidden = YES;
         friendsLabel.hidden = YES;
+        friendsListView.hidden = YES;
     }
     
     [merchantDetailTable reloadData];
@@ -593,20 +635,23 @@
     NSString *userID;
     if(imgView.tag == 5001)
     {
-        UITableViewCell *cell;
-        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
-            cell = (UITableViewCell *)[gesture view].superview.superview.superview;
-        else
-            cell = (UITableViewCell *)[gesture view].superview.superview;
+//        UITableViewCell *cell;
+//        if(SYSTEM_VERSION_LESS_THAN(@"7.0"))
+//            cell = (UITableViewCell *)[gesture view].superview.superview;
+//        else if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+//            cell = (UITableViewCell *)[gesture view].superview.superview.superview.superview;
+//        else
+//             cell = (UITableViewCell *)[gesture view].superview.superview.superview;
         
-        NSIndexPath *indexPath = [merchantDetailTable indexPathForCell:cell];
+        CGPoint buttonPosition = [imgView convertPoint:CGPointZero toView:merchantDetailTable];
+        NSIndexPath *indexPath = [merchantDetailTable indexPathForRowAtPoint:buttonPosition];
         
         NSString *keyString = [detailSectionNamesArray objectAtIndex:indexPath.section];
         CommentsModel *cmtdata = [[detailMainDict valueForKey:keyString] objectAtIndex:indexPath.row];
         NSLog(@"%@",cmtdata.UsersId);
         userID = cmtdata.UsersId;
     }
-   
+    
     else
     {
         int index;
@@ -616,10 +661,10 @@
             index =  1;
         else
             index = 2;
-
-          FriendsListModel *friendModel =[merchantdetailmodel.OrderedFriendsList objectAtIndex:index];
+        
+        FriendsListModel *friendModel =[merchantdetailmodel.OrderedFriendsList objectAtIndex:index];
         userID = friendModel.Id;
-       
+        
     }
     
     if([userID isEqualToString:[TLUserDefaults getCurrentUser].UserId])
@@ -656,11 +701,11 @@
     }
     
     if ([APP_DELEGATE.cartModel.merchantID isEqualToString:@""]) {
-        
+        APP_DELEGATE.cartModel.productCount = 0;
         // Dont handle anything
     }
     else if (![APP_DELEGATE.cartModel.merchantID isEqualToString:merchantdetailmodel.MerchantId]) {
-     
+        
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You can purchase items from one merchant at a time. Would you like to remove all the items in the cart?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:LString(@"YES"), nil];
         alertView.tag = 9000;
         [alertView show];
@@ -668,6 +713,7 @@
         return;
     }
     
+    APP_DELEGATE.cartModel.productCount = APP_DELEGATE.cartModel.productCount+1;
     APP_DELEGATE.cartModel.merchantID = merchantdetailmodel.MerchantId;
     APP_DELEGATE.cartModel.companyName = [merchantdetailmodel.CompanyName stringWithTitleCase];
     APP_DELEGATE.cartModel.address = merchantdetailmodel.Address;
@@ -688,7 +734,7 @@
     {
         specialProduct = [[orderedMainDict valueForKey:[orderSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
     }
-
+    
     [APP_DELEGATE.cartModel addItems:specialProduct];
     [self updateCartView];
 }
@@ -697,7 +743,7 @@
 {
     if ([self numberOfSectionsInTableView:merchantDetailTable] > 0)
     {
-       merchantDetailTable.contentOffset = CGPointMake(0, 0 -merchantDetailTable.contentInset.top);
+        merchantDetailTable.contentOffset = CGPointMake(0, 0 -merchantDetailTable.contentInset.top);
     }
 }
 
@@ -725,17 +771,17 @@
     
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         excludeActivities = @[UIActivityTypeAirDrop,
-                                   UIActivityTypePrint,
-                                   UIActivityTypeAssignToContact,
-                                   UIActivityTypeSaveToCameraRoll,
-                                   UIActivityTypeAddToReadingList,
-                                   UIActivityTypePostToFlickr,
-                                   UIActivityTypePostToVimeo];
+                              UIActivityTypePrint,
+                              UIActivityTypeAssignToContact,
+                              UIActivityTypeSaveToCameraRoll,
+                              UIActivityTypeAddToReadingList,
+                              UIActivityTypePostToFlickr,
+                              UIActivityTypePostToVimeo];
     else
         excludeActivities = @[UIActivityTypePrint,
                               UIActivityTypeAssignToContact,
                               UIActivityTypeSaveToCameraRoll,
-                            ];
+                              ];
     
     activityVC.excludedActivityTypes = excludeActivities;
     [self presentViewController:activityVC animated:YES completion:nil];
@@ -787,21 +833,21 @@
         if (indexPath.section==0)
         {
             float shortheight;
-             float stringHeight = [merchantdetailmodel.Description heigthWithWidth:285 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
+            float stringHeight = [merchantdetailmodel.Description heigthWithWidth:285 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
             
             if(merchantdetailmodel.CategoryList.count==0)
                 shortheight = [merchantdetailmodel.ShortDescription heigthWithWidth:130 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
             else
             {
-               
+                
                 categoryView = [[TLCategoryView alloc]initWithFrame:CGRectMake(0, 0, tableView.frame.size.width/2,1)];
                 [categoryView setUpCategoryView:merchantdetailmodel.CategoryList andWidth:tableView.width/2];
                 categoryView.height = categoryView.ctgviewHeight;
-                return categoryView.ctgviewHeight+stringHeight+20;
-//                return stringHeight + 35 + 15;
+                return categoryView.ctgviewHeight+stringHeight+25;
+                //                return stringHeight + 35 + 15;
             }
-
-            return stringHeight + shortheight+ 16 + 15;
+            
+            return stringHeight + shortheight+ 16 + 20;
         }
         
         else if (indexPath.section==1)
@@ -811,32 +857,39 @@
             
             NSString *addressStr = [NSString stringWithFormat:@"%@\n%@\n%@",merchantdetailmodel.Address,merchantdetailmodel.PhoneNumber,merchantdetailmodel.WebsiteUrl];
             float stringHeight = [addressStr heigthWithWidth:150 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
-            if(stringHeight > 80)
+             NSLog(@"stringHeight = %f",stringHeight);
+            if(stringHeight > 70)
                 return stringHeight + 30 + 15;
             else
-                return 115;
-
+                return 107;
+            
         }
         else if (indexPath.section==3)
         {
             OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
             
             if(openingHrsModel.Open.count == 0)
-                return 75;
+                return 60;
             else {
-                
-                float height = 30 + (openingHrsModel.Open.count * 15);
-                if (height > 75) {
-                    return height;
+                float height;
+                if(openingHrsModel.Closed.length>0)
+                {
+                    float closedayHeight = [openingHrsModel.Closed heigthWithWidth:baseViewWidth andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
+                    height = 30 + (openingHrsModel.Open.count * 15)+closedayHeight+30;
+                }
+                else
+                    height = 30 + (openingHrsModel.Open.count * 15);
+                if (height > 50) {
+                    return height+15;
                 }
                 else{
-                    return 75;
+                    return 60 ;
                 }
             }
         }
         else if (indexPath.section == 4) {
             
-            CommentsModel *cmtDetails = [[detailMainDict valueForKey:@"Customer's Comments"] objectAtIndex:indexPath.row];
+            CommentsModel *cmtDetails = [[detailMainDict valueForKey:[detailSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
             float cmtLblHeight = [cmtDetails.CommentsText heigthWithWidth:self.view.frame.size.width-120 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12.0]];
             return cmtLblHeight + 25;
         }
@@ -926,7 +979,6 @@
                 ctgBaseView.tag = 1005;
                 [cell.contentView addSubview:ctgBaseView];
                 
-             
                 categoryView.tag = 1001;
                 [ctgBaseView addSubview:categoryView];
                 
@@ -1021,7 +1073,7 @@
             {
                 cell.contentView.backgroundColor = [UIColor whiteColor];
                 
-                UILabel * addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,5, 150,50)];
+                UILabel * addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,10, 150,50)];
                 addressLabel.tag = 3001;
                 addressLabel.backgroundColor = [UIColor clearColor];
                 addressLabel.textColor = UIColorFromRGB(0x333333);
@@ -1051,7 +1103,7 @@
                 [cell.contentView addSubview:webUrlLabel];
                 webUrlLabel.userInteractionEnabled = YES;
                 
-                MKMapView * mapView = [[MKMapView alloc] initWithFrame:CGRectMake(tableView.frame.size.width - 125 - 15,10,125,75)];
+                MKMapView * mapView = [[MKMapView alloc] initWithFrame:CGRectMake(tableView.frame.size.width - 125 - 15,15,125,75)];
                 mapView.mapType = MKMapTypeStandard;
                 mapView.userInteractionEnabled=NO;
                 mapView.tag = 3004;
@@ -1103,6 +1155,26 @@
                 priceRangeLabel.backgroundColor = [UIColor clearColor];
                 [priceRangeView addSubview:priceRangeLabel];
                 
+                UIView *closedayView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(openHrsView.frame), cell.contentView.frame.size.width, 50)];
+                closedayView.tag = 4009;
+                [closedayView setBackgroundColor:[UIColor clearColor]];
+                [cell.contentView addSubview:closedayView];
+                
+                UILabel *closeHeaderLbl = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, openHrsView.frame.size.width - 20, 30)];
+                closeHeaderLbl.tag = 4008;
+                closeHeaderLbl.backgroundColor = [UIColor clearColor];
+                closeHeaderLbl.textColor = UIColorFromRGB(0x00b3a4);
+                closeHeaderLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+                [closedayView addSubview:closeHeaderLbl];
+                
+                UILabel *closedayLabel = [[UILabel alloc]initWithFrame:CGRectMake(10,CGRectGetMaxY(closeHeaderLbl.frame)+1,cell.width,30)];
+                closedayLabel.textColor = UIColorFromRGB(0x999999);
+                closedayLabel.numberOfLines = 0;
+                closedayLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
+                closedayLabel.tag = 4007;
+                closedayLabel.backgroundColor = [UIColor clearColor];
+                [closedayView addSubview:closedayLabel];
+                
             }
             else if (indexPath.section == 4)
             {
@@ -1117,7 +1189,7 @@
                 UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
                 [iconImageView addGestureRecognizer:friendsImgGesture1];
                 
-                UILabel * firstNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(iconImageView.frame)+8, 8,200, 17)];
+                UILabel * firstNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(iconImageView.frame)+5, 12,200, 17)];
                 firstNameLabel.tag = 5002;
                 firstNameLabel.backgroundColor = [UIColor clearColor];
                 firstNameLabel.textColor = UIColorFromRGB(0x333333);
@@ -1148,8 +1220,8 @@
             UIImageView *favoriteImageView = (UIImageView*)[cell.contentView viewWithTag:1002];
             UILabel *favoriteLabel = (UILabel*)[cell.contentView viewWithTag:1003];
             UILabel *descriptionLabel = (UILabel*)[cell.contentView viewWithTag:1004];
-            UIView *catgBaseView = (UIView*)[cell.contentView viewWithTag:1005];
-        
+//            UIView *catgBaseView = (UIView*)[cell.contentView viewWithTag:1005];
+            
             if(favouriteType)
             {
                 favoriteImageView.image =  getImage(@"fav_y", NO);
@@ -1160,6 +1232,7 @@
                 favoriteImageView.image =  getImage(@"fav", NO);
                 favoriteLabel.text =LString(@"ADD_TO_FAVOURITE");
             }
+            
             int width = [favoriteLabel.text widthWithFont:favoriteLabel.font];
             favoriteLabel.frame = CGRectMake(baseViewWidth- width+5 - 10,0,width+5,favoriteLabel.frame.size.height);
             CGRect imgViewRect = favoriteImageView.frame;
@@ -1232,18 +1305,26 @@
             MKCoordinateSpan span = {.latitudeDelta =  0.09, .longitudeDelta =  0.09};
             MKCoordinateRegion region = {coord, span};
             [mapView setRegion:region];
+            
+            MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+            [annotation setCoordinate:coord];
+            [mapView addAnnotation:annotation];
         }
         
         else if ( indexPath.section == 3)
         {
             UILabel *openHeaderLbl = (UILabel *)[cell.contentView viewWithTag:4000];
             UILabel *priceHeaderLbl = (UILabel *)[cell.contentView viewWithTag:4004];
-            openHeaderLbl.text = @"Opening hours";
-            priceHeaderLbl.text = @"Price range";
+            UILabel *closeHeaderLbl = (UILabel *)[cell.contentView viewWithTag:4008];
+            
+            openHeaderLbl.text = LString(@"OPENING_HOUR");
+            priceHeaderLbl.text = LString(@"PRICE_RANGE");
+            closeHeaderLbl.text = LString(@"CLOSING_DAY");
             
             int i=0;
             if([merchantdetailmodel.OpeningHours count]>0)
             {
+                openHeaderLbl.hidden = NO;
                 OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
                 UILabel * daysLbl = (UILabel *)[cell.contentView viewWithTag:4006];
                 daysLbl.numberOfLines = 0;
@@ -1258,6 +1339,7 @@
                     [opendaysString  appendAttributedString:[TuplitConstants getOpeningHrs:string isTimeFormat:NO]];
                     i++;
                 }
+                
                 [daysLbl setAttributedText:opendaysString];
                 CGRect dayFrame = daysLbl.frame;
                 dayFrame.size.height =(i * 15);
@@ -1277,19 +1359,59 @@
                     [openHrsString  appendAttributedString:[TuplitConstants getOpeningHrs:string isTimeFormat:YES]];
                     i++;
                 }
+                
                 [openingHrsLbl setAttributedText:openHrsString];
-                CGRect openFrame = openingHrsLbl.frame;
-                openFrame.size.height = (i * 15);
-                [openingHrsLbl setFrame:openFrame];
+                openingHrsLbl.height = (i * 15);
                 
                 UIView *openHrsView = (UILabel *)[cell.contentView viewWithTag:4005];
-                CGRect openViewFrame = openHrsView.frame;
-                openViewFrame.size.height = CGRectGetMaxY(openingHrsLbl.frame);
-                [openHrsView setFrame:openViewFrame];
+                openHrsView.height = CGRectGetMaxY(openingHrsLbl.frame);
+                
+                UIView *closedayView = (UIView *)[cell.contentView viewWithTag:4009];
+                
+                if(openingHrsModel.Open.count==0)
+                {
+                    openHeaderLbl.hidden = YES;
+                    [closedayView positionAtY:0];
+                    
+                    UILabel * closeDaysLbl = (UILabel *)[cell.contentView viewWithTag:4007];
+                    closeDaysLbl.text = openingHrsModel.Closed;
+                    closeDaysLbl.width = cell.width/2-10;
+                    float closeLblHeight = [closeDaysLbl.text heigthWithWidth:closeDaysLbl.frame.size.width andFont:closeDaysLbl.font];
+                    closeDaysLbl.height = closeLblHeight+1;
+                }
+                else
+                {
+                    [closedayView positionAtY:CGRectGetMaxY(openHrsView.frame)];
+                    UILabel * closeDaysLbl = (UILabel *)[cell.contentView viewWithTag:4007];
+                    closeDaysLbl.text = openingHrsModel.Closed;
+                    
+                    float closeLblHeight = [closeDaysLbl.text heigthWithWidth:closeDaysLbl.frame.size.width andFont:closeDaysLbl.font];
+                    closeDaysLbl.height = closeLblHeight+1;
+                }
+                
+//                UILabel * closeDaysLbl = (UILabel *)[cell.contentView viewWithTag:4007];
+//                closeDaysLbl.text = openingHrsModel.Closed;
+//                
+//                float closeLblHeight = [closeDaysLbl.text heigthWithWidth:closeDaysLbl.frame.size.width andFont:closeDaysLbl.font];
+//                closeDaysLbl.height = closeLblHeight+1;
+                
+                if(openingHrsModel.Closed.length==0)
+                {
+                    closeHeaderLbl.hidden = YES;
+                }
             }
             
             UILabel * priceRangeLabel1 = (UILabel *)[cell.contentView viewWithTag:4003];
-            priceRangeLabel1.attributedText = [TuplitConstants getPriceRange:merchantdetailmodel.PriceRange];
+            if(merchantdetailmodel.PriceRange.length>0)
+            {
+                priceRangeLabel1.hidden = NO;
+                priceRangeLabel1.attributedText = [TuplitConstants getPriceRange:merchantdetailmodel.PriceRange];
+            }
+            else
+            {
+                priceRangeLabel1.hidden = YES;
+            }
+            
         }
         
         else if (indexPath.section == 4)
@@ -1299,7 +1421,7 @@
             UILabel * commentsLabel = (UILabel *) [cell.contentView viewWithTag:5004];
             UILabel * daysLabel = (UILabel *) [cell.contentView viewWithTag:5005];
             
-            CommentsModel *cmtDetails = [[detailMainDict valueForKey:@"Customer's Comments"] objectAtIndex:indexPath.row];
+            CommentsModel *cmtDetails = [[detailMainDict valueForKey:[detailSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
             iconImageView.imageURL = [NSURL URLWithString:cmtDetails.Photo];
             firstNameLabel.text =[NSString stringWithFormat:@"%@ %@",[cmtDetails.FirstName stringWithTitleCase],[cmtDetails.LastName stringWithTitleCase]];
             
@@ -1437,13 +1559,24 @@
         return cell;
     }
     
-} 
+}
 
 #pragma mark - Table View Delegate Source Methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
+}
+
+#pragma mark - mapView delegates
+
+-(MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    
+    MKAnnotationView *pin=[[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"current"];
+    pin.highlighted = NO;
+    pin.image = [UIImage imageNamed:@"orange_icon"];
+    
+    return pin;
 }
 
 #pragma mark - UIAlertViewDelegate Source Methods
@@ -1520,19 +1653,19 @@
     // Details content
     
     detailMainDict = @{
-      @"Description": @"",
-      @"Specials": specialProductArray,
-      @"Address": @"",
-      @"Opening Hours": merchantdetailmodel.OpeningHours,
-      @"Customer's Comments": merchantdetailmodel.Comments,
-      };
-    detailSectionNamesArray = [NSArray arrayWithObjects:@"Description",@"Specials",@"Address",@"Opening Hours",@"Customer's Comments", nil];
+                       LString(@"DESCRIPTION"): @"",
+                       LString(@"SPECIALS"): specialProductArray,
+                       LString(@"ADDRESS"): @"",
+                       LString(@"OPENING_HOURS"): merchantdetailmodel.OpeningHours,
+                       LString(@"CUSTOMER_COMMENTS"): merchantdetailmodel.Comments,
+                       };
+    detailSectionNamesArray = [NSArray arrayWithObjects:LString(@"DESCRIPTION"),LString(@"SPECIALS"),LString(@"ADDRESS"),LString(@"OPENING_HOURS"), LString(@"CUSTOMER_COMMENTS"), nil];
     
     //Order Content
     
     orderedMainDict = @{
-                       @"Discounted": discountProductArray,
-                       };
+                        @"Discounted": discountProductArray,
+                        };
     orderSectionNamesArray = [NSMutableArray arrayWithObjects:@"Discounted", nil];
     
     if (menuProductArray.count > 0) {
@@ -1544,7 +1677,7 @@
             [dict setObject:menuProductModel.Items forKey:menuProductModel.CategoryName];
             [orderSectionNamesArray addObject:menuProductModel.CategoryName];
         }
-    
+        
         orderedMainDict = [NSDictionary dictionaryWithDictionary:dict];
     }
     
@@ -1576,7 +1709,7 @@
         favouriteType=1;
     
     [merchantDetailTable reloadData];
-     [[ProgressHud shared] hide];
+    [[ProgressHud shared] hide];
 }
 - (void)addFavouriteManager:(TLAddFavouriteManager *) addFavouriteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {

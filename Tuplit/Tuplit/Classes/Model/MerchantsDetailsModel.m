@@ -42,15 +42,17 @@
     [encoder encodeObject:self.PriceRange forKey:@"PriceRange"];
     [encoder encodeObject:self.SpecialsSold forKey:@"SpecialsSold"];
     [encoder encodeObject:self.IsGoldenTag forKey:@"IsGoldenTag"];
-    
     [encoder encodeObject:self.AlreadyFavourited forKey:@"AlreadyFavourited"];
     [encoder encodeObject:self.Category forKey:@"Category"];
     [encoder encodeObject:self.OrderCount forKey:@"OrderCount"];
     [encoder encodeObject:self.OrderedFriendsCount forKey:@"OrderedFriendsCount"];
     [encoder encodeObject:self.CustomersCount forKey:@"CustomersCount"];
+    [encoder encodeObject:self.TagType forKey:@"TagType"];
+
     
 	[encoder encodeObject:self.OrderedFriendsList forKey:@"OrderedFriendsList"];
     [encoder encodeObject:self.Comments forKey:@"Comments"];
+    [encoder encodeObject:self.slideshow forKey:@"slideshow"];
     
     [encoder encodeObject:self.ProductList forKey:@"ProductList"];
     
@@ -96,15 +98,16 @@
         self.PriceRange = [decoder decodeObjectForKey:@"PriceRange"];
 		self.Description = [decoder decodeObjectForKey:@"Description"];
         self.IsGoldenTag = [decoder decodeObjectForKey:@"IsGoldenTag"];
-        
         self.AlreadyFavourited = [decoder decodeObjectForKey:@"AlreadyFavourited"];
         self.Category = [decoder decodeObjectForKey:@"Category"];
         self.OrderCount = [decoder decodeObjectForKey:@"OrderCount"];
         self.OrderedFriendsCount = [decoder decodeObjectForKey:@"OrderedFriendsCount"];
         self.CustomersCount = [decoder decodeObjectForKey:@"CustomersCount"];
+        self.TagType = [decoder decodeObjectForKey:@"TagType"];
         
         self.OrderedFriendsList = [decoder decodeObjectForKey:@"OrderedFriendsList"];
         self.Comments = [decoder decodeObjectForKey:@"Comments"];
+        self.slideshow = [decoder decodeObjectForKey:@"slideshow"];
         
         self.ProductList = [decoder decodeObjectForKey:@"ProductList"];
         

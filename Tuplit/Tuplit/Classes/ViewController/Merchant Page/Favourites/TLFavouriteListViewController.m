@@ -63,7 +63,7 @@
     UIView *lineView1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, searchbarView.frame.size.width, 0.5)];
     [lineView1 setBackgroundColor:[UIColor grayColor]];
     [contentView addSubview:lineView1];
-//
+    //
     UIView *lineView2 = [[UIView alloc] initWithFrame:CGRectMake(0, searchbarView.frame.size.height - 1, searchbarView.frame.size.width, 1)];
     [lineView2 setBackgroundColor:[UIColor lightGrayColor]];
     [contentView addSubview:lineView2];
@@ -74,6 +74,7 @@
     searchTxt.textColor = UIColorFromRGB(0xb2b2b2);
     searchTxt.backgroundColor = [UIColor clearColor];
     searchTxt.placeholder = @"Search";
+    [searchTxt setReturnKeyType:UIReturnKeySearch];
     searchTxt.textAlignment = NSTextAlignmentLeft;
     
     if ([searchTxt respondsToSelector:@selector(tintColor)]) // Check for property before calling because calling it crashes the app on iOS6
@@ -81,7 +82,7 @@
         searchTxt.tintColor = UIColorFromRGB(0x01b3a5);
     }
     searchTxt.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
-    searchTxt.clearButtonMode = UITextFieldViewModeWhileEditing;
+    searchTxt.clearButtonMode = UITextFieldViewModeUnlessEditing;
     searchTxt.userInteractionEnabled = YES;
     [searchbarView addSubview:searchTxt];
     
@@ -156,7 +157,7 @@
     
     favouritesArray = [[NSMutableArray alloc] init];
     merchantListingModel = [[TLMerchantListingModel alloc] init];
-     searchArray = [[NSMutableArray alloc] init];
+    searchArray = [[NSMutableArray alloc] init];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChange:) name:@"UITextFieldTextDidChangeNotification" object:searchTxt];
@@ -179,8 +180,16 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
     contentView.hidden = NO;
-    if(APP_DELEGATE.isFavoriteChanged)
-        [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
+//    if(APP_DELEGATE.isFavoriteChanged||isDetailFrmSearch)
+//    {
+//        isDetailFrmSearch = NO;
+//        [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
+//    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self hideSearch];
 }
 
 - (void)didReceiveMemoryWarning
@@ -223,9 +232,9 @@
         case MCNearBy:
         {
             merchantListingModel.Start = [NSString stringWithFormat:@"%ld",start];
-            merchantListingModel.SearchKey = @"";
+            merchantListingModel.SearchKey = NSNonNilString(searchTxt.text);
             break;
-
+            
         }
         default:
         {
@@ -242,28 +251,29 @@
 
 - (void) mapIconImgViewAction: (id) sender
 {
-    [searchTxt setText:@""];
-    [self.view endEditing:YES];
-    
-    isMapShown=!isMapShown;
-    
-    if (!isMapShown)
+    if(favouritesArray.count>0)
     {
-        UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
-        mapIconImgView.image = img;
-        merchantTable.hidden = NO;
-        mapView.hidden = YES;
-    }
-    else
-    {
-        UIImage *img = [UIImage imageNamed:@"ListGreen.png"];
-        mapIconImgView.image = img;
-        merchantTable.hidden = YES;
-        mapView.hidden = NO;
+        [self.view endEditing:YES];
         
-        [self addMapAnnotations];
+        isMapShown=!isMapShown;
+        
+        if (!isMapShown)
+        {
+            UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
+            mapIconImgView.image = img;
+            merchantTable.hidden = NO;
+            mapView.hidden = YES;
+        }
+        else
+        {
+            UIImage *img = [UIImage imageNamed:@"ListGreen.png"];
+            mapIconImgView.image = img;
+            merchantTable.hidden = YES;
+            mapView.hidden = NO;
+            
+            [self addMapAnnotations];
+        }
     }
-    
 }
 
 -(void)backBtnAction
@@ -313,7 +323,7 @@
 
 -(void)hideSearch
 {
-    searchTxt.text = @"";
+//    searchTxt.text = @"";
     searchTable.hidden = YES;
     searchErrorLabel.hidden = YES;
     
@@ -356,7 +366,7 @@
         else
             annotationView.image = getImage(@"MapPinBlackWithStar", NO);
     }
-
+    
     //   Callout annotation.
     else if ([annotation isKindOfClass:[CalloutAnnotation class]])
     {
@@ -366,8 +376,8 @@
         if (annotationView == nil) {
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
-            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0, 0.0,250,70);
-            annotationView.centerOffset      = CGPointMake(-2,-51);
+            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0,0.0,250,70);
+            annotationView.centerOffset      = CGPointMake(-2,-50);
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;
         }
@@ -463,7 +473,7 @@
     }
     else if(tableView.tag == 1003)
     {
-         return SEARCH_CELL_HEIGHT;
+        return SEARCH_CELL_HEIGHT;
     }
     else
     {
@@ -476,7 +486,7 @@
     static NSString *cellIdentifier[] = {@"Merchants",@"Search"};
     
     int cellId = 2;
-     if(tableView.tag == 1004) {
+    if(tableView.tag == 1004) {
         
         cellId = 0;
         
@@ -504,7 +514,7 @@
         if(merchantsCell == nil) {
             
             merchantsCell = [[MerchantSearchCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier[cellId]];
-            merchantsCell.selectionStyle = UITableViewCellSelectionStyleNone;
+            merchantsCell.selectionStyle = UITableViewCellSelectionStyleGray;
             merchantsCell.backgroundColor = [UIColor clearColor];
             
         }
@@ -533,14 +543,15 @@
     }
     else  if (tableView.tag == 1003)
     {
-        [self hideSearch];
         [self.view endEditing:YES];
+                
         MerchantModel *merchantModel = [searchArray objectAtIndex:indexPath.row];
         
         TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
         detailsVC.merchantModel = merchantModel;
         [self.navigationController pushViewController:detailsVC animated:YES];
     }
+    [self hideSearch];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -565,9 +576,9 @@
     merchantTable.hidden = YES;
     isSearch = YES;
     
-//    isMapShown = NO;
-//    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
-//    mapIconImgView.image = img;
+    //    isMapShown = NO;
+    //    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
+    //    mapIconImgView.image = img;
     
     CGRect searchTableFrame = searchTable.frame;
     searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - 216;
@@ -576,7 +587,7 @@
     searchErrorLabel.height =searchTable.frame.size.height;
     
     [searchArray removeAllObjects];
-    [searchTable reloadData];  
+    [searchTable reloadData];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -584,9 +595,9 @@
     isSearch = NO;
     searchTable.height = contentView.frame.size.height - CGRectGetMaxY(searchbarView.frame);
     searchErrorLabel.height = searchTable.frame.size.height;
+//    isMerchantWebserviceRunning = NO;
     [self hideSearch];
-    isMerchantWebserviceRunning = NO;
-//    [self callMerchantWebserviceWithActionType:4 startCount:0 showProgressIndicator:YES];
+   [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
 }
 
 - (void) textFieldDidChange:(NSNotification*) notification {
@@ -622,6 +633,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
+    [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
     
     return YES;
 }
@@ -632,7 +644,10 @@
 {
     switch (favouriteListManager.merchantListModel.actionType) {
         case MCSearch:
+        case MCNearBy:
         {
+            if([searchTxt isFirstResponder])
+            {
             [searchArray removeAllObjects];
             searchArray = [NSMutableArray arrayWithArray:_favouriteArray];
             [searchTable reloadData];
@@ -641,54 +656,55 @@
             isMerchantWebserviceRunning =NO;
             [[ProgressHud shared] hide];
             [refreshControl endRefreshing];
-            break;
-        }
-        case MCNearBy:
-        {
-            
-            if (isLoadMorePressed) {
+           
+            }
+            else
+            {
+                if (isLoadMorePressed) {
+                    
+                    [favouritesArray addObjectsFromArray:_favouriteArray];
+                }
+                else
+                {
+                    favouritesArray = [NSMutableArray arrayWithArray:_favouriteArray];
+                    lastFetchCount = 0;
+                }
                 
-                [favouritesArray addObjectsFromArray:_favouriteArray];
+                totalUserListCount = favouriteListManager.totalCount;
+                
+                if ((favouriteListManager.listedCount % 10) == 0) {
+                    lastFetchCount = lastFetchCount + favouriteListManager.listedCount;
+                }
+                else
+                {
+                    lastFetchCount = favouritesArray.count;
+                }
+                
+                if (lastFetchCount < totalUserListCount)
+                    [merchantTable setTableFooterView:cellContainer];
+                else
+                    [merchantTable setTableFooterView:nil];
+                
+                //   Leave comment option
+                if([TLUserDefaults isCommentPromptOpen])
+                    cmtPromptView.hidden = NO;
+                
+                [merchantTable reloadData];
+                
+                if (mapView.annotations.count > 0) {
+                    [mapView removeAnnotations:mapView.annotations];
+                }
+                
+                [self addMapAnnotations];
+                
+                if ([favouriteListManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
+                    [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                }
+
             }
-            else
-            {
-                favouritesArray = [NSMutableArray arrayWithArray:_favouriteArray];
-                lastFetchCount = 0;
-            }
-            
-            totalUserListCount = favouriteListManager.totalCount;
-            
-            if ((favouriteListManager.listedCount % 10) == 0) {
-                lastFetchCount = lastFetchCount + favouriteListManager.listedCount;
-            }
-            else
-            {
-                lastFetchCount = favouritesArray.count;
-            }
-            
-            if (lastFetchCount < totalUserListCount)
-                [merchantTable setTableFooterView:cellContainer];
-            else
-                [merchantTable setTableFooterView:nil];
-            
-            //   Leave comment option
-            if([TLUserDefaults isCommentPromptOpen])
-                cmtPromptView.hidden = NO;
-            
-            [merchantTable reloadData];
-            
-            if (mapView.annotations.count > 0) {
-                [mapView removeAnnotations:mapView.annotations];
-            }
-            
-            [self addMapAnnotations];
-            
-            if ([favouriteListManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
-                [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-            }
-            
-            break;
+             break;
         }
+        
         default:
         {
             break;
@@ -700,7 +716,7 @@
     isMerchantWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
-
+    
 }
 - (void)favouriteManager:(TLFavouriteListingManager *) favouriteListManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
@@ -710,7 +726,9 @@
             if(isKeyBoardOpen)
             {
                 [searchArray removeAllObjects];
+                [favouritesArray removeAllObjects];
                 [searchTable reloadData];
+                [merchantTable reloadData];
                 
                 [searchErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
                 [searchErrorLabel setHidden:NO];
@@ -723,8 +741,8 @@
             isMerchantWebserviceRunning =NO;
             [[ProgressHud shared] hide];
             [refreshControl endRefreshing];
-
-             break;
+            
+            break;
         }
         case MCNearBy:
         {
@@ -748,16 +766,18 @@
             break;
         }
     }
-    
+    [merchantErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
+    [merchantErrorLabel setHidden:NO];
+    [[ProgressHud shared] hide];
 }
 - (void)favouriteManagerFailed:(TLFavouriteListingManager *) favouriteListManager
 {
     [merchantErrorLabel setHidden:YES];
     isMerchantWebserviceRunning = NO;
-//    searchTxt.enabled = NO;
+    //    searchTxt.enabled = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
-
+    
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 

@@ -45,7 +45,6 @@ static CKPlaceFinder *_shared = nil;
 	[self cancelRequest];
 }
 
-
 /******************************** Userdefined methods ***************************************/
 
 - (void)cancelRequest {

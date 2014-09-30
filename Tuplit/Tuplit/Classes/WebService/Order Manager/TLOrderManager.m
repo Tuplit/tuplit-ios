@@ -18,7 +18,7 @@
 
 -(void)processOrders:(NSDictionary*) queryParams{
     
-    NSLog(@"QueryParams : %@",queryParams);
+   
     
     NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:ORDERS_URL]];
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
@@ -28,10 +28,17 @@
     NSData *postData = [strValue dataUsingEncoding:NSUTF8StringEncoding];
     [request setHTTPBody:postData];
     
+     NSLog(@"QueryParams : %@",queryParams);
+    NSDate *start=[NSDate date];
+
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
   	[operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"ordermanagerResponsetime = %f",ellapsedSeconds);
+        
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];

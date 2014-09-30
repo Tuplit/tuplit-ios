@@ -27,5 +27,8 @@
 
 - (void)setOn:(BOOL)on animated:(BOOL)animated;
 - (BOOL)isOn;
+
+- (void)showOn:(BOOL)animated;
+- (void)showOff:(BOOL)animated;
 @end
 

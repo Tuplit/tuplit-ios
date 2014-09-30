@@ -28,19 +28,19 @@
     [self.navigationItem setTitle:LString(@"TOP_UP_TITLE")];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    if([self.viewController isKindOfClass:[TLCartViewController class]]||[self.viewController isKindOfClass:[TLTransferViewController class]])
-    {
-        UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
-        [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
-        [self.navigationItem setLeftBarButtonItem:navleftButton];
-        [self callService];
-    }
-    else
-    {
+//    if([self.viewController isKindOfClass:[TLCartViewController class]]||[self.viewController isKindOfClass:[TLTransferViewController class]])
+//    {
+//        UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
+//        [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
+//        [self.navigationItem setLeftBarButtonItem:navleftButton];
+//        [self callService];
+//    }
+//    else
+//    {
         UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
         [navleftButton backButtonWithTarget:self action:@selector(backToUserProfile)];
         [self.navigationItem setLeftBarButtonItem:navleftButton];
-    }
+//    }
     
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
@@ -153,10 +153,10 @@
     [navigationBar setItems:array];
     topUpAmountTxt.inputAccessoryView=navigationBar;
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+//    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+//    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     
-//    creditCard=[[CreditCardModel alloc] init];
+    //    creditCard=[[CreditCardModel alloc] init];
     
     value=@"";
     appendString=@"";
@@ -177,8 +177,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-//    [self callService];
+    if([self.viewController isKindOfClass:[TLCartViewController class]]||[self.viewController isKindOfClass:[TLTransferViewController class]])
+       [self callService];
 }
 
 - (void)didReceiveMemoryWarning
@@ -209,9 +209,9 @@
 
 -(void)backToUserProfile
 {
-//    NSLog(@"%@",APP_DELEGATE.navigationController.viewControllers);
-//    NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
-//    for (UIViewController *aViewController in allViewControllers) {
+    //    NSLog(@"%@",APP_DELEGATE.navigationController.viewControllers);
+//        NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+//    for (UIViewController *aViewController in self.navigationController.viewControllers) {
 //        if ([aViewController isKindOfClass:[TLUserProfileViewController class]]) {
 //            [self.navigationController popToViewController:aViewController animated:YES];
 //        }
@@ -230,6 +230,7 @@
     [fiftyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
     DISMISS_KEYBOARD;
 }
+
 -(void) rechargeTwentyRupeeTopUp: (id) sender
 {
     topUpAmountTxt.text=@"£20";
@@ -240,8 +241,8 @@
     [fiftyRupeeTopUpBtn setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
     [fiftyRupeeTopUpBtn setTitleColor:UIColorFromRGB(0x00b3a4) forState:UIControlStateNormal];
     DISMISS_KEYBOARD;
-    
 }
+
 -(void) rechargeFiftyRupeeTopUp : (id) sender
 {
     topUpAmountTxt.text=@"£50";
@@ -274,7 +275,7 @@
         topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
     else
         topUpAmount = @"";
-   
+    
     if (topUpAmount.intValue<10)
     {
         [UIAlertView alertViewWithMessage:@"Enter minimum £10 or above to Top up"];
@@ -288,7 +289,7 @@
             CreditCardModel *creditCard = [self.userLinkedCards objectAtIndex:indexPath.row];
             NETWORK_TEST_PROCEDURE
             [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-           
+            
             NSDictionary *queryParams = @{
                                           @"CardId": NSNonNilString(creditCard.Id),
                                           @"Amount": NSNonNilString(topUpAmount),
@@ -350,7 +351,7 @@
     }
     
     UIButton *topUpCardBtn=(UIButton*)[cell viewWithTag:1001];
-   CreditCardModel *creditCard = [self.userLinkedCards objectAtIndex:indexPath.row];
+    CreditCardModel *creditCard = [self.userLinkedCards objectAtIndex:indexPath.row];
     
     NSString *trimmedCardNum=[creditCard.CardNumber substringFromIndex:[creditCard.CardNumber length]-8];
     NSString *cardType;
@@ -359,7 +360,7 @@
         cardType = @"MasterCard";
     else
         cardType = creditCard.CardType;
-        
+    
     
     [topUpCardBtn setTitle:[NSString stringWithFormat:@"Top up using %@ %@",cardType,[TuplitConstants filteredPhoneStringFromString:trimmedCardNum withFilter:@"#### ####"]] forState:UIControlStateNormal];
     
@@ -384,13 +385,10 @@
     {
         NSInteger MAX_DIGITS = 9; // $999,999,999.99
         
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        NSNumberFormatter *numberFormatter = [TuplitConstants getCurrencyFormat];
         [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
         [numberFormatter setMinimumFractionDigits:0];
         [numberFormatter setMaximumFractionDigits:0];
-        
-        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
-        [numberFormatter setLocale:english];
         
         NSString *stringMaybeChanged = [NSString stringWithString:string];
         if (stringMaybeChanged.length > 1)
@@ -470,17 +468,34 @@
 
 - (void)topupManagerSuccessfull:(TLTopupManager *)topupManager withStatus:(NSString*)topupStatus
 {
-    APP_DELEGATE.isUserProfileEdited = YES;
+//    APP_DELEGATE.isUserProfileEdited = YES;
     [[ProgressHud shared] hide];
     
-    if([self.viewController isKindOfClass:[TLCartViewController class]]||[self.viewController isKindOfClass:[TLTransferViewController class]])
-    {
-        TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
-    }
-    else
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
+    NSString *string = topUpAmountTxt.text;
+    NSString *topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    
+    UserModel *userModel = [TLUserDefaults getCurrentUser];
+    double balance = userModel.AvailableBalance.doubleValue;
+    userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance + topUpAmount.doubleValue)];
+    [TLUserDefaults setCurrentUser:userModel];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
+    
+//    if([self.viewController isKindOfClass:[TLTransferViewController class]])
+//    {
+//        TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
+//        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
+//        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//        [APP_DELEGATE.slideMenuController hideMenuViewController];
+//    }
+//    else if([self.viewController isKindOfClass:[TLCartViewController class]])
+//    {
+//        TLCartViewController *cartVC = [[TLCartViewController alloc] init];
+//        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
+//        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//        [APP_DELEGATE.slideMenuController hideMenuViewController];
+//    }
+//    else
         [self backToUserProfile];
 }
 
@@ -502,7 +517,7 @@
     if(creditCardList.count>0)
         addCreditCardBtn.hidden = YES;
     else
-         addCreditCardBtn.hidden = NO;
+        addCreditCardBtn.hidden = NO;
     
     self.userLinkedCards = creditCardList;
     [topupTable reloadData];
@@ -512,11 +527,11 @@
 {
     [[ProgressHud shared] hide];
     if(![errorCode isEqualToString:@"2000"])
-    [UIAlertView alertViewWithMessage:errorMsg];
+        [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)creditCardListanagerFailed:(TLCreditCardListingManager *)creditCardListManager
 {
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 @end

@@ -22,7 +22,7 @@
         if ([reuseIdentifier isEqualToString:@"User Details"])
         {
             self.backgroundColor=[UIColor whiteColor];
-                        
+            
             CGFloat baseViewWidth = 320;
             
             UIView *userDetailView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, 212)];
@@ -32,7 +32,7 @@
             UIView *userNameView = [[UIView alloc]initWithFrame:CGRectMake(0, 20, baseViewWidth, 45)];
             userNameView.backgroundColor = [UIColor clearColor];
             [userDetailView addSubview:userNameView];
-           
+            
             UITextField *firstNameTxt=[[UITextField alloc] initWithFrame:CGRectMake(15,0, 142, 45)];
             firstNameTxt.tag = 3000;
             firstNameTxt.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
@@ -87,7 +87,7 @@
             newPincodeBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             [newPincodeBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
             [newPincodeBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
-//            [newPincodeBtn addTarget:self action:@selector(pinCodeAction:) forControlEvents:UIControlEventTouchUpInside];
+            //            [newPincodeBtn addTarget:self action:@selector(pinCodeAction:) forControlEvents:UIControlEventTouchUpInside];
             newPincodeBtn.backgroundColor = [UIColor clearColor];
             [userDetailView addSubview:newPincodeBtn];
             
@@ -107,12 +107,12 @@
         }
         else if ([reuseIdentifier isEqualToString:@"Credit Cards"])
         {
-             self.contentView.backgroundColor=UIColorFromRGB(0xF5F5F5);
+            self.contentView.backgroundColor=UIColorFromRGB(0xF5F5F5);
             
             UIView *cellBaseview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)];
             cellBaseview.backgroundColor = UIColorFromRGB(0xF5F5F5);
             [self.contentView addSubview:cellBaseview];
-
+            
             
             EGOImageView *cardImgView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(10,0, PROFILE_CELL_HEIGHT, PROFILE_CELL_HEIGHT)];
             cardImgView.backgroundColor = [UIColor clearColor];
@@ -153,8 +153,8 @@
         }
         else if ([reuseIdentifier isEqualToString:@"My Comments"])
         {
-//            swipeView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,self.contentView.frame.size.width,PROFILE_CELL_HEIGHT)];
-//            swipeView.backgroundColor=[UIColor whiteColor];
+            //            swipeView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,self.contentView.frame.size.width,PROFILE_CELL_HEIGHT)];
+            //            swipeView.backgroundColor=[UIColor whiteColor];
             
             UIView *cellBaseview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)];
             cellBaseview.backgroundColor = [UIColor clearColor];

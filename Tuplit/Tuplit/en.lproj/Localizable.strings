@@ -85,6 +85,17 @@
 "NO_FAVORITES_FOUND"            = "No Favorites found";
 
 /* Merchant Detail Screen */
+
+"OPENING_HOUR"                  = "Opening hours";
+"PRICE_RANGE"                   = "Price range";
+"CLOSING_DAY"                   = "Closed on";
+
+"DESCRIPTION"                   = "Description";
+"SPECIALS"                      = "Specials";
+"ADDRESS"                       = "Address";
+"OPENING_HOURS"                 = "Opening Hours";
+"CUSTOMER_COMMENTS"             = "Customer's Comments";
+
 "ADD_TO_FAVOURITE"              = "Add to Favorites";
 "REMOVE_FROM_FAVOURITE"         = "Remove from Favorites";
 "SETUP_EMAIL"                   = "Please setup an email account on this device to continue.";
@@ -115,6 +126,7 @@
 "CHECK_OUT"                     = "CHECK OUT FASTER";
 "PIN_CODE"                      = "Set New PIN Code";
 "SWIPE_TO_EDIT"                 = "Swipe To Edit";
+"SWIPE_TO_DELETE"               = "Swipe To Delete";
 "CHECK_OUT_INFO"                = "Your face should be clearly visible in the photo so the staff can identify you easily";
 "PINCODE_UPDATED"               = "Your new PIN code updated successfully";
 
@@ -165,6 +177,9 @@
 "COMMENT_ALERT_MESSAGE"         = "Please enter the comment to post";
 "COMMENT_PLACEHOLDER"           = "Enter your comment";
 "FEED_BACK"                     = "Thank you for the feedback";
+"TWITTER_ALERT"                 = "No Twitter accounts Found! Please add Twitter accounts in Settings app.";
+"FACBOOK_ALERT"                 = "No Facebook accounts Found! Please add Facebook accounts in Settings app.";
+
 /* Pin View */
 
 "ENTER_PIN_CODE"               = "Enter PIN Code";
@@ -193,7 +208,7 @@
 "CREDITED_CARD_ADDED"           = "Credit Card added successfully";
 
 /*Add Credit Card*/
-"ADD_CREDIT_CARD"                   = "Add Credit Card";
+"ADD_CREDIT_CARD"               = "Add Credit Card";
 "SKIP"                          = "Skip";
 "SCANNING_TEXT"                 = "Just one last thing... Add your credit card,\nadd funds and check out smoothly in the future.";
 "SCAN_IO"                       = "Scan using Scan.io";
@@ -209,7 +224,7 @@
 /* Friends Screen */
 "INVITE_FRIENDS"                = "Invite Friends";
 "NO_CONTACT_FOUND"              = "No Contacts Found";
-"NO_FB_FRIEND_FOUND"            = "No Facebook Friends Found";
+"NO_FB_FRIEND_FOUND"            = "No Google+ Friends Found";
 "NO_FRIEND_FOUND"               = "No friends found";
 "ACCESS_DENIED"                 = "Access is Denied";
 
@@ -231,6 +246,8 @@
 "RECEIVE_MONEY"                 = "I receive money";
 "SEND_MONEY"                    = "I send money";
 "DEAL_OFFERS"                   = "Deals and Offers";
+"HELP_CENTER"                   = "Help Center";
+"LEGAL"                         = "Legal";
 "SECURITY"                      = "Security";
 "PASSCODE"                      = "Passcode";
 "PAYMENT_PREFER"                = "Payment Preferences";
@@ -243,6 +260,7 @@
 "PHONE"                         = "Phone: ";
 "FAQ"                           = "FAQ";
 "TUTORIALS"                     = "Tutorials";
+"LEGAL"                         = "Legal";
 "TERMS_LEGAL_INFO"              = "Terms Of Use & More Legal Info";
 "CUSTOMER_SUPPORT"              = "Customer Support";
 "LOG_OUT"                       = "Log Out";

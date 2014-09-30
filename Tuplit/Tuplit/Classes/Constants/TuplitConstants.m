@@ -26,7 +26,7 @@ NSString *LString(NSString* key) {
     return NSLocalizedStringFromTableInBundle(key, nil, bundle, nil);
 }
 
-+(void)loadSliderHomePageWithAnimation:(BOOL)animated
++(void) loadSliderHomePageWithAnimation:(BOOL)animated
 {
     TLLeftMenuViewController *leftMenuVC = [[TLLeftMenuViewController alloc] initWithNibName:@"TLLeftMenuViewController" bundle:nil];
 	TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
@@ -88,48 +88,82 @@ NSString *LString(NSString* key) {
     NSTimeInterval theTimeInterval = [date timeIntervalSinceDate:dateFromWebServiceString];
     
     // Get the system calendar
-    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+//    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
     
     // Create the NSDates
     NSDate *date1 = [[NSDate alloc] init];
     NSDate *date2 = [[NSDate alloc] initWithTimeInterval:theTimeInterval sinceDate:date1];
     
-    // Get conversion to years, months, days, hours, minutes,seconds
-    unsigned int secFlags   = NSSecondCalendarUnit;
-    unsigned int minFlags   = NSMinuteCalendarUnit;
-    unsigned int hourFlags  = NSHourCalendarUnit;
-    unsigned int dayFlags   = NSDayCalendarUnit;
-    unsigned int monthFlags = NSMonthCalendarUnit;
-    unsigned int yearFlags  = NSYearCalendarUnit;
-   
-     NSDateComponents *secdownInfo = [sysCalendar components:secFlags fromDate:date1  toDate:date2  options:0];
-     NSDateComponents *mindownInfo = [sysCalendar components:minFlags fromDate:date1  toDate:date2  options:0];
-     NSDateComponents *hourdownInfo = [sysCalendar components:hourFlags fromDate:date1  toDate:date2  options:0];
-     NSDateComponents *daydownInfo = [sysCalendar components:dayFlags fromDate:date1  toDate:date2  options:0];
-     NSDateComponents *monthdownInfo = [sysCalendar components:monthFlags fromDate:date1  toDate:date2  options:0];
-     NSDateComponents *yeardownInfo = [sysCalendar components:yearFlags fromDate:date1  toDate:date2  options:0];
     
-    NSString *dateStr;
-    // Calculating time to display
-    if([secdownInfo second]<60)
-    {
-        if([secdownInfo second]>0)
-            dateStr = [NSString stringWithFormat:@"%ds",[secdownInfo second]];
-        else
-            dateStr = [NSString stringWithFormat:@"Just now"];
+    NSCalendarUnit units = NSSecondCalendarUnit | NSMinuteCalendarUnit| NSHourCalendarUnit | NSDayCalendarUnit | NSWeekOfYearCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit;
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:units
+                                                                   fromDate:[NSDate date]
+                                                                     toDate:date2
+                                                                    options:0];
+    if (components.year > 0) {
+        return [NSString stringWithFormat:@"%ld yr", (long)components.year];
+    } else if (components.month > 0) {
+        return [NSString stringWithFormat:@"%ld mon", (long)components.month];
+    } else if (components.weekOfYear > 0) {
+        return [NSString stringWithFormat:@"%ld wk", (long)components.weekOfYear];
+    } else if (components.day > 0) {
+        if (components.day > 1) {
+            return [NSString stringWithFormat:@"%ld day", (long)components.day];
+        } else {
+            return @"Yesterday";
+        }
+    } else {
+        if(components.hour < 1) {
+            if(components.minute <= 0)
+                return [NSString stringWithFormat:@"just now"];
+            else if (components.minute < 1)
+                return [NSString stringWithFormat:@"%ld sec", (long)components.second];
+            else if (components.minute > 1)
+                return [NSString stringWithFormat:@"%ld min", (long)components.minute];
+            else
+                return [NSString stringWithFormat:@"%ld min", (long)components.minute];
+        } else {
+            return [NSString stringWithFormat:@"%ld hr", (long)components.hour];
+        }
     }
-    else if([mindownInfo minute]<60)
-        dateStr = [NSString stringWithFormat:@"%dm",[mindownInfo minute]];
-    else if([hourdownInfo hour]<24)
-        dateStr = [NSString stringWithFormat:@"%dh",[hourdownInfo hour]];
-    else if([daydownInfo day]<30)
-        dateStr = [NSString stringWithFormat:@"%dd",[daydownInfo day]];
-    else if([monthdownInfo month]<12)
-        dateStr = [NSString stringWithFormat:@"%dm",[monthdownInfo month]];
-    else if([yeardownInfo year])
-        dateStr = [NSString stringWithFormat:@"%dy",[yeardownInfo year]];
     
-    return dateStr;
+//    // Get conversion to years, months, days, hours, minutes,seconds
+//    unsigned int secFlags   = NSSecondCalendarUnit;
+//    unsigned int minFlags   = NSMinuteCalendarUnit;
+//    unsigned int hourFlags  = NSHourCalendarUnit;
+//    unsigned int dayFlags   = NSDayCalendarUnit;
+//    unsigned int monthFlags = NSMonthCalendarUnit;
+//    unsigned int yearFlags  = NSYearCalendarUnit;
+//   
+//     NSDateComponents *secdownInfo = [sysCalendar components:secFlags fromDate:date1  toDate:date2  options:0];
+//     NSDateComponents *mindownInfo = [sysCalendar components:minFlags fromDate:date1  toDate:date2  options:0];
+//     NSDateComponents *hourdownInfo = [sysCalendar components:hourFlags fromDate:date1  toDate:date2  options:0];
+//     NSDateComponents *daydownInfo = [sysCalendar components:dayFlags fromDate:date1  toDate:date2  options:0];
+//     NSDateComponents *monthdownInfo = [sysCalendar components:monthFlags fromDate:date1  toDate:date2  options:0];
+//     NSDateComponents *yeardownInfo = [sysCalendar components:yearFlags fromDate:date1  toDate:date2  options:0];
+//    
+//    NSString *dateStr;
+//    // Calculating time to display
+//    if([secdownInfo second]<60)
+//    {
+//        if([secdownInfo second]>0)
+//            dateStr = [NSString stringWithFormat:@"%ds",[secdownInfo second]];
+//        else
+//            dateStr = [NSString stringWithFormat:@"Just now"];
+//    }
+//    else if([mindownInfo minute]<60)
+//        dateStr = [NSString stringWithFormat:@"%dm",[mindownInfo minute]];
+//    else if([hourdownInfo hour]<24)
+//        dateStr = [NSString stringWithFormat:@"%dh",[hourdownInfo hour]];
+//    else if([daydownInfo day]<30)
+//        dateStr = [NSString stringWithFormat:@"%dd",[daydownInfo day]];
+//    else if([monthdownInfo month]<12)
+//        dateStr = [NSString stringWithFormat:@"%dm",[monthdownInfo month]];
+//    else if([yeardownInfo year])
+//        dateStr = [NSString stringWithFormat:@"%dy",[yeardownInfo year]];
+//    
+//    return dateStr;
 }
 
 +(NSMutableAttributedString*)getOpeningHrs:(NSString*)datestring isTimeFormat:(BOOL)isTime
@@ -250,6 +284,8 @@ NSString *LString(NSString* key) {
     [TLUserDefaults setIsGuestUser:NO];
     [TLUserDefaults setIsCommentPromptOpen:NO];
     [TLUserDefaults setCommentDetails:nil];
+    [[TLAppLocationController sharedManager]stopUpdatingLocation];
+    
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
     if([signIn hasAuthInKeychain])
     [signIn signOut];
@@ -259,9 +295,11 @@ NSString *LString(NSString* key) {
 +(NSNumberFormatter*) getCurrencyFormat
 {
     if(!numberFormatter)
+    {
         numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+        [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+    }
     return numberFormatter;
 }
 
@@ -280,7 +318,7 @@ NSString *LString(NSString* key) {
         dateformat= [[NSDateFormatter alloc]init];
     [dateformat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *transdate= [dateformat dateFromString:date];
-    [dateformat setDateFormat:@"d/M/yyyy, h:mm a"];
+    [dateformat setDateFormat:@"MM/dd/yyyy, h:mm a"];
     return [dateformat stringFromDate:transdate];
 }
 

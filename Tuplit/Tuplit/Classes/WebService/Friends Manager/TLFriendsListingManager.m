@@ -8,6 +8,8 @@
 
 #import "TLFriendsListingManager.h"
 
+AFHTTPRequestOperation *operation;
+
 @implementation TLFriendsListingManager
 
 
@@ -25,10 +27,16 @@
     NSLog(@"Request : %@", [request.URL absoluteString]);
     NSLog(@"Method  : %@", request.HTTPMethod);
     
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    NSDate *start=[NSDate date];
+    
+	operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"FriendsListingResponsetime = %f",ellapsedSeconds);
         
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
@@ -73,11 +81,18 @@
         
     }failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
-        [_delegate friendsListingManagerFailed:self];
+        if(error.code!=-999)
+        {
+            [_delegate friendsListingManagerFailed:self];
+        }
         
 	}];
     [operation start];
     
 }
 
+-(void) cancelRequest {
+    
+    [operation cancel];
+}
 @end

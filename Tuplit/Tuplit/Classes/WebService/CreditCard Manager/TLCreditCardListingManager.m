@@ -23,10 +23,16 @@
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:nil];
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     
+    NSDate *startTime=[NSDate date];
+   
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:startTime];
+        NSLog(@"CreditCardListingResponsetime = %f",ellapsedSeconds);
         
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;

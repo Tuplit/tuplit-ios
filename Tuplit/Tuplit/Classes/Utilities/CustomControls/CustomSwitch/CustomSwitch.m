@@ -309,6 +309,7 @@
 
 - (void)showOn:(BOOL)animated
 {
+    on = YES;
     CGFloat normalKnobWidth = 49;
     CGFloat activeKnobWidth = normalKnobWidth + 1;
     
@@ -376,6 +377,7 @@
 }
 - (void)showOff:(BOOL)animated 
 {
+    on = NO;
     CGFloat normalKnobWidth = 49;
     CGFloat activeKnobWidth = normalKnobWidth + 1;
     

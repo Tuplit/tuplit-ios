@@ -38,7 +38,7 @@
     baseViewWidth  = self.view.frame.size.width;
     baseViewHeight  = self.view.frame.size.height;
     
-     adjustHeight = 64;
+    adjustHeight = 64;
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         adjustHeight = 64;
     }
@@ -78,13 +78,14 @@
     
     if ([searchTxt respondsToSelector:@selector(tintColor)]) // Check for property before calling because calling it crashes the app on iOS6
     {
-       searchTxt.tintColor = UIColorFromRGB(0x01b3a5);
+        searchTxt.tintColor = UIColorFromRGB(0x01b3a5);
     }
     searchTxt.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     searchTxt.clearButtonMode = UITextFieldViewModeUnlessEditing;
     searchTxt.userInteractionEnabled = YES;
+    [searchTxt setReturnKeyType:UIReturnKeySearch];
     [searchbarView addSubview:searchTxt];
-        
+    
     UIImage *searchImg = [UIImage imageNamed:@"search.png"];
     UIImageView *searchImgView = [[UIImageView alloc]initWithFrame:CGRectMake(0,0, searchImg.size.width + 20, searchImg.size.height)];
     [searchImgView setContentMode:UIViewContentModeScaleAspectFit];
@@ -159,7 +160,7 @@
     //    discountView.opaque = 0.5;
     transperantView.alpha = .5;
     [discountView addSubview:transperantView];
-
+    
     discountTable =[[UITableView alloc]initWithFrame:CGRectMake(baseViewWidth-120, 0, 120, CGRectGetHeight(baseView.frame))];
     discountTable.dataSource = self;
     discountTable.delegate = self;
@@ -200,7 +201,7 @@
     [searchErrorLabel setHidden:YES];
     [contentView addSubview:searchErrorLabel];
     
-//    Comment Prompt View
+    //    Comment Prompt View
     if([TLUserDefaults isCommentPromptOpen])
     {
         cmtPromptView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(merchantTable.frame)-88, baseViewWidth, 88)];
@@ -213,7 +214,7 @@
         merchantNameLabel.backgroundColor = [UIColor clearColor];
         merchantNameLabel.numberOfLines = 0;
         if([TLUserDefaults getCommentDetails].CompanyName)
-        merchantNameLabel.text =[NSString stringWithFormat:@"How Was %@?",[[TLUserDefaults getCommentDetails].CompanyName stringWithTitleCase]];
+            merchantNameLabel.text =[NSString stringWithFormat:@"How Was %@?",[[TLUserDefaults getCommentDetails].CompanyName stringWithTitleCase]];
         
         merchantNameLabel.textColor = UIColorFromRGB(0xffffff);
         merchantNameLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16];
@@ -285,7 +286,19 @@
         cmtPromptView.hidden = NO;
     
     disCountDict = [Global instance].discoutTiers;
+    
+//    if(isDetailFrmSearch)
+//    {
+//        isDetailFrmSearch = NO;
+//        [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
+//    }
+    
+}
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self hideSearch];
+//    searchTxt.text =@"";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -364,7 +377,7 @@
             merchantListingModel.Category = @"";
             merchantListingModel.Type = @"1";
             merchantListingModel.Start = [NSString stringWithFormat:@"%ld",start];
-            merchantListingModel.SearchKey = @"";
+            merchantListingModel.SearchKey = NSNonNilString(searchTxt.text);
             merchantListingModel.DiscountTier = (discountTierValue==0)?@"":[NSString stringWithFormat:@"%d",discountTierValue];
             break;
         }
@@ -373,7 +386,7 @@
             merchantListingModel.Category = @"";
             merchantListingModel.Type = @"2";
             merchantListingModel.Start = [NSString stringWithFormat:@"%ld",start];
-            merchantListingModel.SearchKey = @"";
+            merchantListingModel.SearchKey = NSNonNilString(searchTxt.text);
             merchantListingModel.DiscountTier = (discountTierValue==0)?@"":[NSString stringWithFormat:@"%d",discountTierValue];
             break;
         }
@@ -406,7 +419,7 @@
     else
         [rightExpandButton buttonWithIcon:getImage(@"DiscountDisable.png", NO) target:self action:@selector(onDiscountPressed) isLeft:NO];
     
- 
+    
     [UIView animateWithDuration:0.35 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^ {
         if (!isDiscountShown)
         {
@@ -417,42 +430,44 @@
             discountView.hidden = NO;
             discountTable.frame = CGRectMake(baseViewWidth-120, 0, 120,baseViewHeight-adjustHeight);
         }
-
+        
     }completion:^(BOOL finished) {
         if(finished)
-             if (!isDiscountShown)
-                 discountView.hidden = YES;
-            
+            if (!isDiscountShown)
+                discountView.hidden = YES;
+        
     }];
 }
 
 - (void) mapIconImgViewAction: (id) sender
 {
-    [searchTxt setText:@""];
-    [searchErrorLabel setHidden:YES];
-    [self.view endEditing:YES];
-    
-    isMapShown=!isMapShown;
-    
-    if (!isMapShown)
+    if(merchantsArray.count>0)
     {
-        UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
-        mapIconImgView.image = img;
-        merchantTable.hidden = NO;
-        mapView.hidden = YES;
-    }
-    else
-    {
-        UIImage *img = [UIImage imageNamed:@"ListGreen.png"];
-        mapIconImgView.image = img;
-        merchantTable.hidden = YES;
-        mapView.hidden = NO;
+        [searchErrorLabel setHidden:YES];
+        [self.view endEditing:YES];
         
-        [self addMapAnnotations];
+        isMapShown=!isMapShown;
+        
+        if (!isMapShown)
+        {
+            UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
+            mapIconImgView.image = img;
+            merchantTable.hidden = NO;
+            mapView.hidden = YES;
+        }
+        else
+        {
+            UIImage *img = [UIImage imageNamed:@"ListGreen.png"];
+            mapIconImgView.image = img;
+            merchantTable.hidden = YES;
+            mapView.hidden = NO;
+            
+            [self addMapAnnotations];
+        }
+        if (searchTable.hidden == NO) {
+            searchTable.hidden = YES;
+        }
     }
-    if (searchTable.hidden == NO) {
-        searchTable.hidden = YES;
-    }  
 }
 
 -(void) addMapAnnotations {
@@ -496,7 +511,7 @@
             for (id <MKAnnotation> annotation in mapView.annotations)
             {
                 MKMapPoint annotationPoint = MKMapPointForCoordinate(annotation.coordinate);
-                MKMapRect pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.9, 0.9);
+                MKMapRect pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.5, 0.5);
                 zoomRect = MKMapRectUnion(zoomRect, pointRect);
             }
             [mapView setVisibleMapRect:zoomRect animated:YES];
@@ -508,6 +523,8 @@
 {
     UIButton *buttonnearby = (UIButton*)[contentView viewWithTag:1001];
     UIButton *buttonPopular = (UIButton*)[contentView viewWithTag:1002];
+    
+     [self.navigationItem setTitle:LString(@"MERCHANTS")];
     
     if (button.tag == 1001)
     {
@@ -528,7 +545,6 @@
             
             isnearBy = YES;
         }
-        
     }
     else
     {
@@ -549,13 +565,13 @@
             
             isnearBy = NO;
         }
-        
     }
 }
 
 -(void) refreshTableView:(id) sender {
     
     isPullRefreshPressed = YES;
+     searchTxt.text = @"";
     
     if (menuSelected == 1) {
         [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:NO];
@@ -595,12 +611,13 @@
     {
         [categoryName addObject:category.CategoryName];
     }
+    
     NSIndexSet *indexes = [categoryName indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop){
         NSString *s = (NSString*)obj;
         NSRange range = [[s lowercaseString] rangeOfString: search];
         return range.location != NSNotFound;
     }];
-   
+    
     [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [searchArray addObject:[categoryArray objectAtIndex:idx]];
     }];
@@ -608,9 +625,9 @@
 }
 -(void)hideSearch
 {
-    searchTxt.text = @"";
+//    searchTxt.text = @"";
     searchTable.hidden = YES;
-   
+    
     if(isMapShown)
     {
         mapView.hidden = NO;
@@ -643,7 +660,7 @@
     MKAnnotationView *annotationView;
     NSString *identifier;
     
-//  Pin annotation.
+    //  Pin annotation.
     if ([annotation isKindOfClass:[PinAnnotation class]]) {
         
         identifier = @"Pin";
@@ -654,36 +671,37 @@
         
         annotationView.canShowCallout = NO;
         
-//        NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",annotation.title];
-//        NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
-//        if(result.count > 0){
-//            MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
-//            
-//            UIImage *annImg = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:merchant.Icon]]];
-//            annImg = [self  imageWithImage:annImg scaledToSize:CGSizeMake(40, 40)];
-//            annotationView.image = annImg;
-//        }
+        //        NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",annotation.title];
+        //        NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
+        //        if(result.count > 0){
+        //            MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
+        //
+        //            UIImage *annImg = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:merchant.Icon]]];
+        //            annImg = [self  imageWithImage:annImg scaledToSize:CGSizeMake(40, 40)];
+        //            annotationView.image = annImg;
+        //        }
         if([annotation subtitle].intValue == 0)
             annotationView.image = getImage(@"MapPinBlack", NO);
         else
             annotationView.image = getImage(@"MapPinBlackWithStar", NO);
     }
     
-//   Callout annotation.    
+    //   Callout annotation.
     else if ([annotation isKindOfClass:[CalloutAnnotation class]])
     {
         identifier = @"Callout";
         annotationView = (CustomCallOutView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
         
         if (annotationView == nil) {
+    
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
-            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0, 0.0,250,70);
-            annotationView.centerOffset      = CGPointMake(-2,-51);
+            ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0,0.0,250,70);
+            annotationView.centerOffset      = CGPointMake(-2,-50);
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;
         }
-       
+        
         CalloutAnnotation *calloutAnnotation = (CalloutAnnotation *)annotation;
         NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",[calloutAnnotation title]];
         NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
@@ -693,10 +711,10 @@
         }
         // Move the display position of MapView.
         if(isMapShown)
-        [UIView animateWithDuration:0.5f
-                         animations:^(void) {
-                             mapView.centerCoordinate = calloutAnnotation.coordinate;
-                         }];
+            [UIView animateWithDuration:0.5f
+                             animations:^(void) {
+                                 mapView.centerCoordinate = calloutAnnotation.coordinate;
+                             }];
     }
     
     annotationView.annotation = annotation;
@@ -710,7 +728,7 @@
     
     if ([view.annotation isKindOfClass:[PinAnnotation class]]) {
         
-//       Selected the pin annotation.
+        //       Selected the pin annotation.
         CalloutAnnotation *calloutAnnotation = [[CalloutAnnotation alloc] init];
         
         PinAnnotation *pinAnnotation = ((PinAnnotation *)view.annotation);
@@ -718,7 +736,7 @@
         calloutAnnotation.coordinate    = pinAnnotation.coordinate;
         pinAnnotation.calloutAnnotation = calloutAnnotation;
         [_mapView addAnnotation:calloutAnnotation]; //removing the annotation a bit later
-       
+        
     }
     else
     {
@@ -735,9 +753,9 @@
 }
 
 -(void)mapView:(MKMapView *)_mapView didDeselectAnnotationView:(MKAnnotationView *)view {
-
+    
     if ([view.annotation isKindOfClass:[PinAnnotation class]]) {
-//         Deselected the pin annotation.
+        //         Deselected the pin annotation.
         PinAnnotation *pinAnnotation = ((PinAnnotation *)view.annotation);
         
         if (pinAnnotation.calloutAnnotation.coordinate.latitude == view.annotation.coordinate.latitude&&
@@ -748,7 +766,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [mapView removeAnnotation:oldAnnotation]; //removing the annotation a bit later
             });
-
+            
         }
     }
 }
@@ -813,7 +831,7 @@
         if(merchantsCell == nil) {
             
             merchantsCell = [[MerchantSearchCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier[cellId]];
-            merchantsCell.selectionStyle = UITableViewCellSelectionStyleNone;
+            merchantsCell.selectionStyle = UITableViewCellSelectionStyleGray;
             merchantsCell.backgroundColor = [UIColor clearColor];
             
         }
@@ -891,14 +909,14 @@
             [cell setSelectionStyle:UITableViewCellSelectionStyleGray];
         }
         
-         UILabel * disLabel = (UILabel*)[cell.contentView viewWithTag:200];
+        UILabel * disLabel = (UILabel*)[cell.contentView viewWithTag:200];
         if(indexPath.row==0)
         {
             disLabel.text = @"All Discounts";
         }
         else
         {
-        disLabel.text = [NSString stringWithFormat:@"Only %@%%",[disCountDict valueForKey:[NSString stringWithFormat:@"%d",indexPath.row]]];
+            disLabel.text = [NSString stringWithFormat:@"Only %@%%",[disCountDict valueForKey:[NSString stringWithFormat:@"%d",indexPath.row]]];
         }
         
         return cell;
@@ -924,34 +942,40 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView.tag == 1003) {
-
+        
         if (searchArray.count > 0) {
             
             if([[searchArray objectAtIndex:indexPath.row] isKindOfClass:[MerchantModel class]])
             {
                 [self.view endEditing:YES];
                 MerchantModel *merchantModel = [searchArray objectAtIndex:indexPath.row];
-                
                 TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
                 detailsVC.merchantModel = merchantModel;
                 [self.navigationController pushViewController:detailsVC animated:YES];
             }
             else
             {
+                [self hideSearch];
+//                searchTxt.text = @"";
                 CategoryModel *categoryModel = [searchArray objectAtIndex:indexPath.row];
                 categoryId = categoryModel.CategoryId;
-                [self.view endEditing:YES];
                 [self callMerchantWebserviceWithActionType:MCCategory startCount:0 showProgressIndicator:YES];
+//                    searchTxt.text = categoryModel.CategoryName;
+                [self.view endEditing:YES];
             }
-           
+            
         }
         else
         {
+            [self hideSearch];
+//            searchTxt.text = @"";
+            [self.view endEditing:YES];
             CategoryModel *categoryModel = [categoryArray objectAtIndex:indexPath.row];
             categoryId = categoryModel.CategoryId;
-            [self.view endEditing:YES];
+//            searchTxt.text = categoryModel.CategoryName;
             [self callMerchantWebserviceWithActionType:MCCategory startCount:0 showProgressIndicator:YES];
         }
+        
     }
     else if (tableView.tag == 1004) {
         
@@ -1010,15 +1034,19 @@
     mapView.hidden = YES;
     merchantTable.hidden = YES;
     
-//    isMapShown = NO;
-//    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
-//    mapIconImgView.image = img;
-
+    //    isMapShown = NO;
+    //    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
+    //    mapIconImgView.image = img;
+    
     CGRect searchTableFrame = searchTable.frame;
     
     searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - 216;
     [searchTable setFrame:searchTableFrame];
     searchErrorLabel.height =searchTable.frame.size.height;
+    
+    if (textField.text.length >= 3) {
+        [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:NO];
+    }
     
     [searchArray removeAllObjects];
     [searchTable reloadData];
@@ -1029,7 +1057,8 @@
     searchTable.height = contentView.frame.size.height - CGRectGetMaxY(searchbarView.frame);
     searchErrorLabel.height = searchTable.frame.size.height;
     [self hideSearch];
-
+    [merchantTable reloadData];
+    
 }
 
 - (void) textFieldDidChange:(NSNotification*) notification {
@@ -1051,6 +1080,7 @@
     {
         isTextFieldClearPressed = NO;
     }
+   
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
@@ -1065,7 +1095,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
-    
+    [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
     return YES;
 }
 
@@ -1074,70 +1104,74 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager withMerchantList:(NSArray*) _merchantsArray {
     
-    switch (_merchantListingManager.merchantListModel.actionType) {
-        case MCSearch:
-        {
-            [searchArray removeAllObjects];
-            [self performSearchCategory];
-//            searchArray = [NSMutableArray arrayWithArray:_merchantsArray];
-            [searchArray addObjectsFromArray:_merchantsArray];
-            [searchTable reloadData];
-            
-            break;
-        }
-        case MCCategory:
-        case MCNearBy:
-        case MCPopular:
-        {
-            if (isLoadMorePressed) {
+//    switch (_merchantListingManager.merchantListModel.actionType) {
+//        case MCSearch:
+//        case MCCategory:
+//        case MCNearBy:
+//        case MCPopular:
+//        {
+            if([searchTxt isFirstResponder])
+            {
+                [searchArray removeAllObjects];
+               
+                //            searchArray = [NSMutableArray arrayWithArray:_merchantsArray];
+                [searchArray addObjectsFromArray:_merchantsArray];
+                [self performSearchCategory];
+                [searchTable reloadData];
+            }
+            else
+            {
+                if (isLoadMorePressed) {
+                    
+                    [merchantsArray addObjectsFromArray:_merchantsArray];
+                }
+                else
+                {
+                    merchantsArray = [NSMutableArray arrayWithArray:_merchantsArray];
+                    lastFetchCount = 0;
+                }
                 
-                [merchantsArray addObjectsFromArray:_merchantsArray];
-            }
-            else
-            {
-                merchantsArray = [NSMutableArray arrayWithArray:_merchantsArray];
-                lastFetchCount = 0;
-            }
-            
-            totalUserListCount = _merchantListingManager.totalCount;
-            
-            if ((_merchantListingManager.listedCount % 10) == 0) {
-                lastFetchCount = lastFetchCount + _merchantListingManager.listedCount;
-            }
-            else
-            {
-                lastFetchCount = merchantsArray.count;
-            }
-            
-            if (lastFetchCount < totalUserListCount)
-                [merchantTable setTableFooterView:cellContainer];
-            else
-                [merchantTable setTableFooterView:nil];
-            
- //   Leave comment option
-            if([TLUserDefaults isCommentPromptOpen])
-                cmtPromptView.hidden = NO;
-            
-            [merchantTable reloadData];
-            
-            if (mapView.annotations.count > 0) {
-                [mapView removeAnnotations:mapView.annotations];
-            }
-            
-            [self addMapAnnotations];
-            
-            if ([_merchantListingManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
-                [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                totalUserListCount = _merchantListingManager.totalCount;
+                
+                if ((_merchantListingManager.listedCount % 10) == 0) {
+                    lastFetchCount = lastFetchCount + _merchantListingManager.listedCount;
+                }
+                else
+                {
+                    lastFetchCount = merchantsArray.count;
+                }
+                
+                if (lastFetchCount < totalUserListCount)
+                    [merchantTable setTableFooterView:cellContainer];
+                else
+                    [merchantTable setTableFooterView:nil];
+                
+                //   Leave comment option
+                if([TLUserDefaults isCommentPromptOpen])
+                    cmtPromptView.hidden = NO;
+                
+                [merchantTable reloadData];
+                
+                if (mapView.annotations.count > 0) {
+                    [mapView removeAnnotations:mapView.annotations];
+                }
+                
+                [self addMapAnnotations];
+                
+                if ([_merchantListingManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
+                    [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                }
+                
             }
             
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-    
+//            break;
+//        }
+//        default:
+//        {
+//            break;
+//        }
+//    }
+//    
     [searchErrorLabel setHidden:YES];
     [merchantErrorLabel setHidden:YES];
     isPullRefreshPressed = NO;
@@ -1149,57 +1183,63 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
-    switch (_merchantListingManager.merchantListModel.actionType) {
-        case MCSearch:
-        {
-            [searchArray removeAllObjects];
-            [self performSearchCategory];
-
-            [searchTable reloadData];
+    //    switch (_merchantListingManager.merchantListModel.actionType) {
+    //        case MCSearch:
+    //        case MCCategory:
+    //        case MCNearBy:
+    //        case MCPopular:
+    //        {
+    if([searchTxt isFirstResponder])
+    {
+        [searchArray removeAllObjects];
+        [merchantsArray removeAllObjects];
+        [merchantTable reloadData];
+        
+        
+        [self performSearchCategory];
+        [searchTable reloadData];
+        
+        if (searchTxt.text.length > 0 && searchArray.count == 0) {
             
+            [searchErrorLabel setText:errorMsg];
+            [searchErrorLabel setHidden:NO];
             
-            if (searchTxt.text.length > 0 && searchArray.count == 0) {
-                
-                [searchErrorLabel setText:errorMsg];
-                [searchErrorLabel setHidden:NO];
-                
-                CGRect frame = searchErrorLabel.frame;
-                frame.origin.y = CGRectGetMaxY(searchbarView.frame);
-                [searchErrorLabel setFrame:frame];
-            }
-            else
-            {
-                [searchErrorLabel setHidden:YES];
-                [merchantErrorLabel setHidden:YES];
-            }
-            
-            break;
+            CGRect frame = searchErrorLabel.frame;
+            frame.origin.y = CGRectGetMaxY(searchbarView.frame);
+            [searchErrorLabel setFrame:frame];
         }
-        case MCCategory:
-        case MCNearBy:
-        case MCPopular:
+        else
         {
-            [merchantErrorLabel setText:errorMsg];
-            [merchantErrorLabel setHidden:NO];
-            
-            CGRect frame = merchantErrorLabel.frame;
-            frame.origin.y = CGRectGetMaxY(menuView.frame);
-            [merchantErrorLabel setFrame:frame];
-            
-            [merchantsArray removeAllObjects];
-            [merchantTable reloadData];
-            
-            break;
-        }
-        default:
-        {
-            break;
+            [searchErrorLabel setHidden:YES];
+            [merchantErrorLabel setHidden:YES];
         }
     }
-    
-    isMerchantWebserviceRunning =NO;
-    [[ProgressHud shared] hide];
-    [refreshControl endRefreshing];
+    else
+    {
+        
+        
+        
+        [merchantErrorLabel setText:errorMsg];
+        [merchantErrorLabel setHidden:NO];
+        
+        CGRect frame = merchantErrorLabel.frame;
+        frame.origin.y = CGRectGetMaxY(menuView.frame);
+        [merchantErrorLabel setFrame:frame];
+        
+        [merchantsArray removeAllObjects];
+        [merchantTable reloadData];
+        
+    }
+
+//        default:
+//        {
+//            break;
+//        }
+//    }
+
+isMerchantWebserviceRunning =NO;
+[[ProgressHud shared] hide];
+[refreshControl endRefreshing];
 }
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager {
@@ -1214,7 +1254,8 @@
 }
 #pragma mark - TLCategoryListingManagerDelegate
 
-- (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager withCategoryList:(NSArray*) _categoryArray {
+- (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager withCategoryList:(NSArray*) _categoryArray
+{
     
     catgDict = [NSMutableDictionary new];
     [categoryArray removeAllObjects];

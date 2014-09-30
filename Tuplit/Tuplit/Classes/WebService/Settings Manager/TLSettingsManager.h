@@ -20,5 +20,6 @@
 @interface TLSettingsManager : NSObject
 
 -(void)callService:(NSDictionary*)queryParams;
+@property(nonatomic, strong) NSString *serviceType;
 @property(nonatomic, unsafe_unretained) id <TLSettingsManagerDelegate> delegate;
 @end

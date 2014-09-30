@@ -26,9 +26,10 @@
     [self.navigationItem setHidesBackButton:YES];
     self.view.backgroundColor=[UIColor whiteColor];
     
-    UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] initWithImage:getImage(@"close.png", NO) style:UIBarButtonItemStylePlain target:self action:@selector(closeViewController:)];
-    [self.navigationItem setRightBarButtonItem:navleftButton];
-
+    UIBarButtonItem *navRightButton = [[UIBarButtonItem alloc] init];
+    [navRightButton buttonWithIcon:getImage(@"close", NO) target:self action:@selector(closeViewController:) isLeft:NO];
+    [self.navigationItem setRightBarButtonItem:navRightButton];
+    
     baseViewWidth=self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
     
@@ -50,7 +51,7 @@
     redeemLbl.textAlignment=NSTextAlignmentCenter;
     redeemLbl.numberOfLines=0;
     redeemLbl.textColor=UIColorFromRGB(0X333333);
-    redeemLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0]; 
+    redeemLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     redeemLbl.backgroundColor=[UIColor clearColor];
     [scrollView addSubview:redeemLbl];
     
@@ -63,7 +64,7 @@
     UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(14,27, detailImgView.width-28, 20)];
     merchantNameLbl.text=[APP_DELEGATE.cartModel.companyName stringWithTitleCase];
     merchantNameLbl.textAlignment=NSTextAlignmentCenter;
-    merchantNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0]; 
+    merchantNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     merchantNameLbl.textColor=UIColorFromRGB(0x333333);
     merchantNameLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:merchantNameLbl];
@@ -72,7 +73,7 @@
     merchantAddressLbl.text=APP_DELEGATE.cartModel.address;
     merchantAddressLbl.numberOfLines = 0;
     merchantAddressLbl.textAlignment=NSTextAlignmentCenter;
-    merchantAddressLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0]; 
+    merchantAddressLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     merchantAddressLbl.textColor=UIColorFromRGB(0x666666);
     merchantAddressLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:merchantAddressLbl];
@@ -87,7 +88,7 @@
     UILabel *dateTimeLbl=[[UILabel alloc] initWithFrame:CGRectMake(14,CGRectGetMaxY(merchantAddressLbl.frame)+10, detailImgView.width-28,20)];
     dateTimeLbl.text=dateString;
     dateTimeLbl.textAlignment=NSTextAlignmentCenter;
-    dateTimeLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0]; 
+    dateTimeLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     dateTimeLbl.textColor=UIColorFromRGB(0x999999);
     dateTimeLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:dateTimeLbl];
@@ -104,7 +105,7 @@
     itemsListTable.backgroundColor=[UIColor clearColor];
     itemsListTable.separatorColor=[UIColor clearColor];
     [detailImgView addSubview:itemsListTable];
-
+    
     lineImgView2=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(itemsListTable.frame),detailImgView.frame.size.width-24, 3)];
     lineImgView2.backgroundColor=[UIColor clearColor];
     lineImgView2.image=[UIImage imageNamed:@"line.png"];
@@ -141,7 +142,7 @@
     UILabel *transactionIDLbl=[[UILabel alloc] initWithFrame:CGRectMake(14,CGRectGetMaxY(transactionTitleLbl.frame)-5, detailImgView.width-28, 20)];
     transactionIDLbl.text = self.TransactionId;
     transactionIDLbl.textColor=UIColorFromRGB(0x666666);
-    transactionIDLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0]; 
+    transactionIDLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     transactionIDLbl.textAlignment=NSTextAlignmentCenter;
     transactionIDLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:transactionIDLbl];
@@ -149,10 +150,8 @@
     
     detailImgView.frame = CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, CGRectGetMaxY(transactionIDLbl.frame) + 50);
     scrollView.contentSize=CGSizeMake(contentView.width,CGRectGetMaxY(detailImgView.frame) + 50);
-
-    numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+    
+    numberFormatter = [TuplitConstants getCurrencyFormat];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -188,7 +187,7 @@
     OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
     cmtDetail.MerchantId = APP_DELEGATE.cartModel.merchantID;
     cmtDetail.CompanyName = APP_DELEGATE.cartModel.companyName;
-   
+    
     [TLUserDefaults setCommentDetails:cmtDetail];
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
@@ -233,7 +232,7 @@
     
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
-    if (cell == nil) 
+    if (cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.backgroundColor=[UIColor clearColor];
@@ -313,7 +312,7 @@
     
     double quantity = [specialProductModel.quantity intValue];
     double price = [specialProductModel.Price doubleValue];
-
+    
     discountAmountLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:(discountPrice * quantity)]];
     float discountWidth = [discountAmountLbl.text widthWithFont:discountAmountLbl.font];
     discountAmountLbl.frame = CGRectMake((tableView.frame.size.width - discountWidth) - 10, 0, discountWidth, CELL_HEIGHT);

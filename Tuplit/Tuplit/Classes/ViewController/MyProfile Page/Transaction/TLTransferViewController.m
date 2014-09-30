@@ -251,17 +251,7 @@
 -(void) sendDetailAction
 {
     DISMISS_KEYBOARD;
-    
-    //    if ([messageTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length==0)
-    //    {
-    //        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"TextField is Empty,\nEnter Your message" delegate:self cancelButtonTitle:LString(@"OK") otherButtonTitles:nil, nil];
-    //        [alert show];
-    //        return;
-    //    }
-    //    else
-    //    {
-    //
-    //    }
+
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
     NSString *string = amountTxt.text;
     NSString *transferAmount;
@@ -280,7 +270,7 @@
     }
     else
     {
-        if([TLUserDefaults getCurrentUser].Passcode)
+        if([TLUserDefaults getCurrentUser].Passcode.boolValue)
         {
             TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
             verifyPINVC.isverifyPin = YES;
@@ -357,13 +347,10 @@
     {
         NSInteger MAX_DIGITS = 9; // $999,999,999.99
         
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        NSNumberFormatter *numberFormatter = [TuplitConstants getCurrencyFormat];;
         [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
         [numberFormatter setMinimumFractionDigits:0];
         [numberFormatter setMaximumFractionDigits:0];
-        
-        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
-        [numberFormatter setLocale:english];
         
         NSString *stringMaybeChanged = [NSString stringWithString:string];
         if (stringMaybeChanged.length > 1)
@@ -536,7 +523,7 @@
         profileNameLbl.backgroundColor=[UIColor clearColor];
         [cell.contentView addSubview:profileNameLbl];
         
-        UIView *lineView=[[UIView alloc] initWithFrame:CGRectMake(75, CGRectGetMaxY(profileNameLbl.frame) + 5, baseViewWidth - 75, 1)];
+        UIView *lineView=[[UIView alloc] initWithFrame:CGRectMake(75, PROFILE_CELL_HEIGHT-1, baseViewWidth - 75, 1)];
         lineView.backgroundColor=UIColorFromRGB(0xCCCCCC);
         [cell.contentView addSubview:lineView];
     }
@@ -647,27 +634,28 @@
              
              TLTopUpViewController *topupVC = [[TLTopUpViewController alloc] init];
              topupVC.viewController = self;
-             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
-             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-             [APP_DELEGATE.slideMenuController hideMenuViewController];
+             [self.navigationController pushViewController:topupVC animated:YES];
+//             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
+//             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//             [APP_DELEGATE.slideMenuController hideMenuViewController];
          }
                                onCancel:^()
          {
              
          }];
         [[ProgressHud shared] hide];
-
+        
     }
     else
     {
         [[ProgressHud shared] hide];
         [UIAlertView alertViewWithMessage:errorMsg];
     }
-   
+    
 }
 - (void)transferManagerFailed:(TLTransferManager *)transferManager
 {
-     [[ProgressHud shared] hide];
+    [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 @end

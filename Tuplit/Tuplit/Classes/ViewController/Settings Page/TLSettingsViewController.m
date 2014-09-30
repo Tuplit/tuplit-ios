@@ -12,7 +12,7 @@
 #import "TLPinCodeViewController.h"
 #import "TuplitConstants.h"
 #import "TLStaticContentManager.h"
-
+#import "TLHelpCenterViewController.h"
 #import "TLWebViewController.h"
 #import "UserModel.h"
 
@@ -194,7 +194,7 @@
     
     //    Security Part
     
-    UIView *securityView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(notificationView.frame), baseViewWidth, 290)];
+    UIView *securityView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(notificationView.frame), baseViewWidth, 240)];
     securityView.backgroundColor = [UIColor clearColor];
     [scrollView addSubview:securityView];
     
@@ -222,23 +222,7 @@
     [passcodeSwitch addTarget:self action:@selector(passcodeSwitchAction:) forControlEvents:UIControlEventValueChanged];
     [securityView addSubview:passcodeSwitch];
     
-    UILabel *paymentPreferLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(passcodeLbl.frame)+10, 188, 35)];
-    paymentPreferLbl.text=LString(@"PAYMENT_PREFER");
-    paymentPreferLbl.textColor=UIColorFromRGB(0x000000);
-    paymentPreferLbl.textAlignment=NSTextAlignmentLeft;
-    paymentPreferLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    paymentPreferLbl.backgroundColor=[UIColor clearColor];
-    [securityView addSubview:paymentPreferLbl];
-    
-    CustomSwitch *paymentSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(paymentPreferLbl.frame), CGRectGetMaxY(passcodeLbl.frame)+10, 102, 35)];
-    paymentSwitch.onText=LString(@"ON");
-    paymentSwitch.offText=LString(@"OFF");
-    [paymentSwitch setOn:[userdetails.PaymentPreference boolValue]animated:YES];
-    paymentSwitch.isRounded=NO;
-    [paymentSwitch addTarget:self action:@selector(paymentSwitchAction:) forControlEvents:UIControlEventValueChanged];
-    [securityView addSubview:paymentSwitch];
-    
-    UILabel *rememberMeLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(paymentPreferLbl.frame)+10, 188, 35/2)];
+    UILabel *rememberMeLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(passcodeLbl.frame)+10, 188, 35/2)];
     rememberMeLbl.text=LString(@"REMEMBER_ME");
     rememberMeLbl.textColor=UIColorFromRGB(0x000000);
     rememberMeLbl.textAlignment=NSTextAlignmentLeft;
@@ -254,10 +238,10 @@
     rememberSubLbl.backgroundColor=[UIColor clearColor];
     [securityView addSubview:rememberSubLbl];
     
-    CustomSwitch *rememberSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(rememberMeLbl.frame), CGRectGetMaxY(paymentPreferLbl.frame)+10, 102, 35)];
+    CustomSwitch *rememberSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(rememberMeLbl.frame), CGRectGetMaxY(passcodeLbl.frame)+10, 102, 35)];
     rememberSwitch.onText=LString(@"ON");
     rememberSwitch.offText=LString(@"OFF");
-     [rememberSwitch setOn:[userdetails.RememberMe boolValue]animated:YES];
+    [rememberSwitch setOn:[userdetails.RememberMe boolValue]animated:YES];
     rememberSwitch.isRounded=NO;
     [rememberSwitch addTarget:self action:@selector(rememberSwitchAction:) forControlEvents:UIControlEventValueChanged];
     [securityView addSubview:rememberSwitch];
@@ -284,108 +268,32 @@
     
     //    Support Part
     
-    UIView *supportView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(securityView.frame), baseViewWidth, 400)];
+    UIView *supportView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(securityView.frame), baseViewWidth, 200)];
     supportView.backgroundColor = [UIColor clearColor];
     [scrollView addSubview:supportView];
     
-    UILabel *aboutLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, 0 + 15, 100, 20)];
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    aboutLbl.text= [NSString stringWithFormat:@"About (v%@)",version];
-    aboutLbl.textColor=UIColorFromRGB(0x999999);
-    aboutLbl.textAlignment=NSTextAlignmentLeft;
-    aboutLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
-    aboutLbl.backgroundColor=[UIColor clearColor];
-    [supportView addSubview:aboutLbl];
+    UIButton *helpCenterBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+    [helpCenterBtn setFrame:CGRectMake(15, 12, 290, 45)];
+    [helpCenterBtn setTitle:LString(@"HELP_CENTER") forState:UIControlStateNormal];
+    [helpCenterBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+    helpCenterBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    helpCenterBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+    [helpCenterBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [helpCenterBtn addTarget:self action:@selector(openHelpCenter) forControlEvents:UIControlEventTouchUpInside];
+    [supportView addSubview:helpCenterBtn];
     
-    UILabel *customerSupportLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(aboutLbl.frame) + 10, 150, 20)];
-    customerSupportLbl.text=LString(@"CUSTOMER_SUPPORT");
-    customerSupportLbl.textColor=UIColorFromRGB(0x999999);
-    customerSupportLbl.textAlignment=NSTextAlignmentLeft;
-    customerSupportLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
-    customerSupportLbl.backgroundColor=[UIColor clearColor];
-    [supportView addSubview:customerSupportLbl];
-    
-    UILabel *emailLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(customerSupportLbl.frame)+5, 50, 20)];
-    emailLbl.text=LString(@"EMAIL");
-    emailLbl.textColor=UIColorFromRGB(0x000000);
-    emailLbl.textAlignment=NSTextAlignmentLeft;
-    emailLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    emailLbl.backgroundColor=[UIColor clearColor];
-    [supportView addSubview:emailLbl];
-    
-    UILabel *emailIDLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(emailLbl.frame)+ 4, CGRectGetMaxY(customerSupportLbl.frame)+5, 200, 20)];
-    emailIDLbl.text=CUSTOMER_SUPPORT_EMAIL;
-    emailIDLbl.textColor=UIColorFromRGB(0x00b3a4);
-    emailIDLbl.textAlignment=NSTextAlignmentLeft;
-    emailIDLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-    emailIDLbl.backgroundColor=[UIColor clearColor];
-    emailIDLbl.userInteractionEnabled = YES;
-    UITapGestureRecognizer *emailtapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(supportMailAction)];
-    [emailIDLbl addGestureRecognizer:emailtapGesture];
-    [supportView addSubview:emailIDLbl];
-    
-    UILabel *phoneLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(emailLbl.frame)+5, 60, 20)];
-    phoneLbl.text=LString(@"PHONE");
-    phoneLbl.textColor=UIColorFromRGB(0x000000);
-    phoneLbl.textAlignment=NSTextAlignmentLeft;
-    phoneLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    phoneLbl.backgroundColor=[UIColor clearColor];
-    [supportView addSubview:phoneLbl];
-    
-    UILabel *phoneNumberLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(phoneLbl.frame), CGRectGetMaxY(emailLbl.frame)+5, 200, 20)];
-    phoneNumberLbl.text=CUSTOMER_SUPPORT_PNUMBER;
-    phoneNumberLbl.textColor=UIColorFromRGB(0x00b3a4);
-    phoneNumberLbl.textAlignment=NSTextAlignmentLeft;
-    phoneNumberLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-    phoneNumberLbl.backgroundColor=[UIColor clearColor];
-    phoneNumberLbl.userInteractionEnabled = YES;
-    UITapGestureRecognizer *phonetapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(phoneNumCallAction)];
-    [phoneNumberLbl addGestureRecognizer:phonetapGesture];
-    [supportView addSubview:phoneNumberLbl];
-    
-    UIButton *questionBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [questionBtn setFrame:CGRectMake(15, CGRectGetMaxY(phoneLbl.frame)+15, 290, 45)];
-    [questionBtn setTitle:LString(@"FAQ") forState:UIControlStateNormal];
-    [questionBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    questionBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    questionBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [questionBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [questionBtn addTarget:self action:@selector(frequentQuestionAction) forControlEvents:UIControlEventTouchUpInside];
-    [supportView addSubview:questionBtn];
-    
-    UIButton *tutorialBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [tutorialBtn setFrame:CGRectMake(15, CGRectGetMaxY(questionBtn.frame) +10, 290, 45)];
-    [tutorialBtn setTitle:LString(@"TUTORIALS") forState:UIControlStateNormal];
-    [tutorialBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    tutorialBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    tutorialBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [tutorialBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [tutorialBtn addTarget:self action:@selector(tutorialAction) forControlEvents:UIControlEventTouchUpInside];
-    [supportView addSubview:tutorialBtn];
-    
-    UIButton *termsLegalInfoBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [termsLegalInfoBtn setFrame:CGRectMake(15, CGRectGetMaxY(tutorialBtn.frame) +10, 290, 45)];
-    [termsLegalInfoBtn setTitle:LString(@"TERMS_LEGAL_INFO") forState:UIControlStateNormal];
-    [termsLegalInfoBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    termsLegalInfoBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    termsLegalInfoBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [termsLegalInfoBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [termsLegalInfoBtn addTarget:self action:@selector(termsAndLegalInfoAction) forControlEvents:UIControlEventTouchUpInside];
-    [supportView addSubview:termsLegalInfoBtn];
-    
-    UIButton *privacybtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [privacybtn setFrame:CGRectMake(15, CGRectGetMaxY(termsLegalInfoBtn.frame) +10, 290, 45)];
-    [privacybtn setTitle:LString(@"PRIVACY_POLICY") forState:UIControlStateNormal];
-    [privacybtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    privacybtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    privacybtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [privacybtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [privacybtn addTarget:self action:@selector(privacyPolicyAction) forControlEvents:UIControlEventTouchUpInside];
-    [supportView addSubview:privacybtn];
-    
+    UIButton *legalBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+    [legalBtn setFrame:CGRectMake(15, CGRectGetMaxY(helpCenterBtn.frame) +10, 290, 45)];
+    [legalBtn setTitle:LString(@"LEGAL") forState:UIControlStateNormal];
+    [legalBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+    legalBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    legalBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+    [legalBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [legalBtn addTarget:self action:@selector(termsAndLegalInfoAction) forControlEvents:UIControlEventTouchUpInside];
+    [supportView addSubview:legalBtn];
     
     UIButton *logOutBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [logOutBtn setFrame:CGRectMake(15, CGRectGetMaxY(privacybtn.frame) +10, 290, 45)];
+    [logOutBtn setFrame:CGRectMake(15, CGRectGetMaxY(legalBtn.frame) +10, 290, 45)];
     [logOutBtn setTitle:LString(@"LOG_OUT") forState:UIControlStateNormal];
     [logOutBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     logOutBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -393,6 +301,103 @@
     [logOutBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
     [logOutBtn addTarget:self action:@selector(logOutAction) forControlEvents:UIControlEventTouchUpInside];
     [supportView addSubview:logOutBtn];
+
+//    UILabel *aboutLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, 0 + 15, 100, 20)];
+//    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+//    aboutLbl.text= [NSString stringWithFormat:@"About (v%@)",version];
+//    aboutLbl.textColor=UIColorFromRGB(0x999999);
+//    aboutLbl.textAlignment=NSTextAlignmentLeft;
+//    aboutLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
+//    aboutLbl.backgroundColor=[UIColor clearColor];
+//    [supportView addSubview:aboutLbl];
+//    
+//    UILabel *customerSupportLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(aboutLbl.frame) + 10, 150, 20)];
+//    customerSupportLbl.text=LString(@"CUSTOMER_SUPPORT");
+//    customerSupportLbl.textColor=UIColorFromRGB(0x999999);
+//    customerSupportLbl.textAlignment=NSTextAlignmentLeft;
+//    customerSupportLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
+//    customerSupportLbl.backgroundColor=[UIColor clearColor];
+//    [supportView addSubview:customerSupportLbl];
+//    
+//    UILabel *emailLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(customerSupportLbl.frame)+5, 50, 20)];
+//    emailLbl.text=LString(@"EMAIL");
+//    emailLbl.textColor=UIColorFromRGB(0x000000);
+//    emailLbl.textAlignment=NSTextAlignmentLeft;
+//    emailLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    emailLbl.backgroundColor=[UIColor clearColor];
+//    [supportView addSubview:emailLbl];
+//    
+//    UILabel *emailIDLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(emailLbl.frame)+ 4, CGRectGetMaxY(customerSupportLbl.frame)+5, 200, 20)];
+//    emailIDLbl.text=CUSTOMER_SUPPORT_EMAIL;
+//    emailIDLbl.textColor=UIColorFromRGB(0x00b3a4);
+//    emailIDLbl.textAlignment=NSTextAlignmentLeft;
+//    emailIDLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+//    emailIDLbl.backgroundColor=[UIColor clearColor];
+//    emailIDLbl.userInteractionEnabled = YES;
+//    UITapGestureRecognizer *emailtapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(supportMailAction)];
+//    [emailIDLbl addGestureRecognizer:emailtapGesture];
+//    [supportView addSubview:emailIDLbl];
+//    
+//    UILabel *phoneLbl=[[UILabel alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(emailLbl.frame)+5, 60, 20)];
+//    phoneLbl.text=LString(@"PHONE");
+//    phoneLbl.textColor=UIColorFromRGB(0x000000);
+//    phoneLbl.textAlignment=NSTextAlignmentLeft;
+//    phoneLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    phoneLbl.backgroundColor=[UIColor clearColor];
+//    [supportView addSubview:phoneLbl];
+//    
+//    UILabel *phoneNumberLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(phoneLbl.frame), CGRectGetMaxY(emailLbl.frame)+5, 200, 20)];
+//    phoneNumberLbl.text=CUSTOMER_SUPPORT_PNUMBER;
+//    phoneNumberLbl.textColor=UIColorFromRGB(0x00b3a4);
+//    phoneNumberLbl.textAlignment=NSTextAlignmentLeft;
+//    phoneNumberLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+//    phoneNumberLbl.backgroundColor=[UIColor clearColor];
+//    phoneNumberLbl.userInteractionEnabled = YES;
+//    UITapGestureRecognizer *phonetapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(phoneNumCallAction)];
+//    [phoneNumberLbl addGestureRecognizer:phonetapGesture];
+//    [supportView addSubview:phoneNumberLbl];
+//    
+//    UIButton *questionBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+//    [questionBtn setFrame:CGRectMake(15, CGRectGetMaxY(phoneLbl.frame)+15, 290, 45)];
+//    [questionBtn setTitle:LString(@"FAQ") forState:UIControlStateNormal];
+//    [questionBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+//    questionBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    questionBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+//    [questionBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+//    [questionBtn addTarget:self action:@selector(frequentQuestionAction) forControlEvents:UIControlEventTouchUpInside];
+//    [supportView addSubview:questionBtn];
+//    
+//    UIButton *tutorialBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+//    [tutorialBtn setFrame:CGRectMake(15, CGRectGetMaxY(questionBtn.frame) +10, 290, 45)];
+//    [tutorialBtn setTitle:LString(@"TUTORIALS") forState:UIControlStateNormal];
+//    [tutorialBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+//    tutorialBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    tutorialBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+//    [tutorialBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+//    [tutorialBtn addTarget:self action:@selector(tutorialAction) forControlEvents:UIControlEventTouchUpInside];
+//    [supportView addSubview:tutorialBtn];
+//    
+//    UIButton *termsLegalInfoBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+//    [termsLegalInfoBtn setFrame:CGRectMake(15, CGRectGetMaxY(tutorialBtn.frame) +10, 290, 45)];
+//    [termsLegalInfoBtn setTitle:LString(@"TERMS_LEGAL_INFO") forState:UIControlStateNormal];
+//    [termsLegalInfoBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+//    termsLegalInfoBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    termsLegalInfoBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+//    [termsLegalInfoBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+//    [termsLegalInfoBtn addTarget:self action:@selector(termsAndLegalInfoAction) forControlEvents:UIControlEventTouchUpInside];
+//    [supportView addSubview:termsLegalInfoBtn];
+//    
+//    UIButton *privacybtn=[UIButton buttonWithType:UIButtonTypeCustom];
+//    [privacybtn setFrame:CGRectMake(15, CGRectGetMaxY(termsLegalInfoBtn.frame) +10, 290, 45)];
+//    [privacybtn setTitle:LString(@"PRIVACY_POLICY") forState:UIControlStateNormal];
+//    [privacybtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+//    privacybtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    privacybtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+//    [privacybtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+//    [privacybtn addTarget:self action:@selector(privacyPolicyAction) forControlEvents:UIControlEventTouchUpInside];
+//    [supportView addSubview:privacybtn];
+//    
+//    
     
     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(supportView.frame)+30);
     CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -412,7 +417,6 @@
         sendMoneySwitch.enabled = NO;
         dealOfferSwitch.enabled = NO;
         passcodeSwitch.enabled = NO;
-        paymentSwitch.enabled = NO;
         rememberSwitch.enabled = NO;
         changePinBtn.enabled = NO;
         addNumberBtn.enabled = NO;
@@ -441,14 +445,14 @@
 }
 
 
-#pragma mark - User Defined Methods.
+#pragma mark - User Defined Methods
 
 -(void)callService:(NSDictionary*)queryParams
 {
     NETWORK_TEST_PROCEDURE
     
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-
+    
     TLSettingsManager *settingManager = [[TLSettingsManager alloc]init];
     settingManager.delegate = self;
     [settingManager callService:queryParams];
@@ -478,7 +482,7 @@
 
 -(void) frequentQuestionAction
 {
-//    [UIAlertView alertViewWithMessage:@"FAQ is under construction. Will be available in future demos."];
+    //    [UIAlertView alertViewWithMessage:@"FAQ is under construction. Will be available in future demos."];
     TLWebViewController *webVC = [[TLWebViewController alloc] initWithNibName:@"TLWebViewController" bundle:nil];
     webVC.titleString = LString(@"FAQ");
     webVC.viewController =self;
@@ -490,6 +494,12 @@
 {
     TLTutorialViewController *tutorialViewController=[[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
     [self presentViewController:tutorialViewController animated:YES completion:nil];
+}
+
+-(void)openHelpCenter
+{
+    TLHelpCenterViewController *helpCenterViewController=[[TLHelpCenterViewController alloc]init];
+    [self.navigationController pushViewController:helpCenterViewController animated:YES];
 }
 
 -(void) privacyPolicyAction
@@ -505,7 +515,7 @@
 -(void) termsAndLegalInfoAction
 {
     TLWebViewController *webVC = [[TLWebViewController alloc] initWithNibName:@"TLWebViewController" bundle:nil];
-    webVC.titleString = LString(@"TERMS_OF_SERVICE");
+    webVC.titleString = LString(@"LEGAL");
     webVC.viewController =self;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webVC];
     [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
@@ -526,8 +536,8 @@
                                   @"Type"   : NSNonNilString(@"Sounds"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
-     [self callService:queryParams];
-   
+    [self callService:queryParams];
+    
 }
 
 -(void) notificationSwitchAction : (CustomSwitch *) sender
@@ -535,10 +545,16 @@
     _user_model = [self getcurrentUserDetails];
     if(sender.isOn)
     {
-        buySwitch.on = YES;
-        receiveSwitch.on = YES;
-        sendMoneySwitch.on = YES;
-        dealOfferSwitch.on = YES;
+//        buySwitch.on = YES;
+//        receiveSwitch.on = YES;
+//        sendMoneySwitch.on = YES;
+//        dealOfferSwitch.on = YES;
+        
+        [buySwitch showOn:YES];
+        [receiveSwitch showOn:YES];
+        [sendMoneySwitch showOn:YES];
+        [dealOfferSwitch showOn:YES];
+        
         
         _user_model.PushNotification = [NSString stringWithFormat:@"%d",1];
         _user_model.BuySomething = [NSString stringWithFormat:@"%d",1];
@@ -549,10 +565,15 @@
     }
     else
     {
-        buySwitch.on = NO;
-        receiveSwitch.on = NO;
-        sendMoneySwitch.on = NO;
-        dealOfferSwitch.on = NO;
+//        buySwitch.on = NO;
+//        receiveSwitch.on = NO;
+//        sendMoneySwitch.on = NO;
+//        dealOfferSwitch.on = NO;
+        
+        [buySwitch showOff:YES];
+        [receiveSwitch showOff:YES];
+        [sendMoneySwitch showOff:YES];
+        [dealOfferSwitch showOff:YES];
         
         _user_model.PushNotification = [NSString stringWithFormat:@"%d",0];
         _user_model.BuySomething = [NSString stringWithFormat:@"%d",0];
@@ -564,7 +585,7 @@
                                   @"Type"   : NSNonNilString(@"All"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
-      [self callService:queryParams];
+    [self callService:queryParams];
 }
 
 
@@ -572,16 +593,16 @@
 {
     _user_model = [self getcurrentUserDetails];
     _user_model.BuySomething = [NSString stringWithFormat:@"%d",sender.isOn];
-
+    
     [self checkButtons];
     
     NSDictionary *queryParams = @{
                                   @"Type"   : NSNonNilString(@"BuySomething"),
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
-
+    
     [self callService:queryParams];
-
+    
 }
 
 
@@ -597,9 +618,8 @@
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-
+    
 }
-
 
 -(void) senMoneySwitchAction : (CustomSwitch *) sender
 {
@@ -613,12 +633,13 @@
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-
+    
 }
 
 
 -(void) dealOfferSwitchAction : (CustomSwitch *) sender
 {
+
     _user_model = [self getcurrentUserDetails];
     _user_model.DealsOffers = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -629,7 +650,7 @@
                                   @"Action" : [NSString stringWithFormat:@"%d",sender.isOn],
                                   };
     [self callService:queryParams];
-
+    
 }
 
 
@@ -682,7 +703,7 @@
         [controller setSubject:@"Tuplit"];
         
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-           
+            
             [controller.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         }
         else
@@ -694,7 +715,7 @@
     }
     else
     {
-         [UIAlertView alertViewWithMessage:@"Please setup a email account"];
+        [UIAlertView alertViewWithMessage:@"Please setup a email account"];
     }
 }
 -(void)phoneNumCallAction
@@ -706,15 +727,14 @@
 }
 -(UserModel*)getcurrentUserDetails
 {
-    UserModel *user = [UserModel new];
-    user = [TLUserDefaults getCurrentUser];
+    UserModel *user = [TLUserDefaults getCurrentUser];
     return user;
 }
 -(void)checkButtons
 {
     if(buySwitch.isOn && receiveSwitch.isOn && sendMoneySwitch.isOn && dealOfferSwitch.isOn)
     {
-         notificationSwitch.on = YES;
+        notificationSwitch.on = YES;
         
         NSDictionary *queryParams = @{
                                       @"Type"   : NSNonNilString(@"All"),
@@ -725,7 +745,7 @@
     }
     else if(!buySwitch.isOn && !receiveSwitch.isOn && !sendMoneySwitch.isOn && !dealOfferSwitch.isOn)
     {
-         notificationSwitch.on = NO;
+        notificationSwitch.on = NO;
         
         NSDictionary *queryParams = @{
                                       @"Type"   : NSNonNilString(@"All"),
@@ -740,7 +760,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if(alertView.tag == 9010) {
-
+        
         if (buttonIndex == 1) {
             
             UIDevice *device = [UIDevice currentDevice];
@@ -773,6 +793,16 @@
 #pragma mark - TLSettingsManager delegate
 - (void)settingsManager:(TLSettingsManager *)settingsManager updateSuccessfullWithUserSettings:(NSString *)successmessage
 {
+    if([settingsManager.serviceType isEqualToString:@"RememberMe"])
+    {
+        if(_user_model.RememberMe.intValue==1) {
+            [TLUserDefaults setIsRememberMe:YES];
+        }
+        else
+        {
+            [TLUserDefaults setIsRememberMe:NO];
+        }
+    }
     [TLUserDefaults setCurrentUser:_user_model];
     [[ProgressHud shared] hide];
 }

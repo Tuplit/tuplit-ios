@@ -144,23 +144,23 @@
     spinner.center = scrollView.center;
     [spinner startAnimating];
     
-//    if([TLUserDefaults isGuestUser])
-//    {
-//        [TLUserDefaults setCurrentUser:nil];
-//        [TLUserDefaults setIsGuestUser:NO];
-//
-////        [self presentAMSlider];
-//    }
-//    else
-//    {
-//        if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
-////            [self presentAMSlider];
-//            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-//            userDetailsManager = [TLUserDetailsManager new];
-//            userDetailsManager.delegate = self;
-//            [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
-//        }
-//    }
+    //    if([TLUserDefaults isGuestUser])
+    //    {
+    //        [TLUserDefaults setCurrentUser:nil];
+    //        [TLUserDefaults setIsGuestUser:NO];
+    //
+    ////        [self presentAMSlider];
+    //    }
+    //    else
+    //    {
+    //        if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
+    ////            [self presentAMSlider];
+    //            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    //            userDetailsManager = [TLUserDetailsManager new];
+    //            userDetailsManager.delegate = self;
+    //            [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
+    //        }
+    //    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -190,12 +190,14 @@
     }
     else
     {
-        if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
+        if([TLUserDefaults getCurrentUser])
+        {
             [self presentAMSlider];
+            [[TLAppLocationController sharedManager]startUpdatingLocation];
             isSocialLogin = NO;
             [self performSelectorOnMainThread:@selector(callUserService) withObject:nil waitUntilDone:NO];
         }
-    }  
+    }
 }
 
 #pragma mark UIScrollViewDelegate
@@ -224,7 +226,6 @@
 - (IBAction)googlePlusSignIn:(id)sender {
     isSocialLogin = YES;
     NETWORK_TEST_PROCEDURE;
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
     signIn.shouldFetchGooglePlusUser = YES;
@@ -317,7 +318,7 @@
         [imageView setImageURL:imageUrl];
         imageView.backgroundColor = [UIColor clearColor];
         imageView.contentMode = UIViewContentModeScaleAspectFit;
-        imageView.userInteractionEnabled = YES;
+//        imageView.userInteractionEnabled = YES;
         [scrollView addSubview:imageView];
     }
     
@@ -336,17 +337,17 @@
     
     int offsetX = page * scrollView.width;
     int offsetY = 0;
-
+    
 	CGPoint offset = CGPointMake(offsetX, offsetY);
 	[scrollView setContentOffset:offset animated:YES];
 }
 -(void)callUserService
 {
-//    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    //    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     userDetailsManager = [TLUserDetailsManager new];
     userDetailsManager.delegate = self;
     [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
-
+    
 }
 
 #pragma mark - GooglePlus methods
@@ -355,10 +356,11 @@
     
     if(error) {
         
-        [[ProgressHud shared] hide];
+//        [[ProgressHud shared] hide];
         [UIAlertView alertViewWithMessage:LString(@"GOOGLE_ERROR")];
         
     } else {
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
         
         GTLServicePlus* plusService = [[GTLServicePlus alloc] init] ;
         plusService.retryEnabled = YES;
@@ -463,6 +465,8 @@
     userDetailsManager = [TLUserDetailsManager new];
     userDetailsManager.delegate = self;
     [userDetailsManager getUserDetailsWithUserID:userModel.UserId];
+    
+     [[TLAppLocationController sharedManager]startUpdatingLocation];
     
 }
 

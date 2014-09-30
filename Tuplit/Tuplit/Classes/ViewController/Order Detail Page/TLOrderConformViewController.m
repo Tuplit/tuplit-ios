@@ -33,7 +33,7 @@
     {
         adjustHeight = 44;
     }
-
+    
     UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-64)];
     baseView.backgroundColor=[UIColor colorWithPatternImage:getImage(@"bg", NO)];
     [self.view addSubview:baseView];
@@ -139,7 +139,7 @@
         OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
         cmtDetail.MerchantId = self.merchatID;
         cmtDetail.CompanyName = self.merchatName;
-      
+        
         [TLUserDefaults setCommentDetails:cmtDetail];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
@@ -152,9 +152,9 @@
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         [APP_DELEGATE.slideMenuController hideMenuViewController];
         
-//        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
-//        detailsVC.detailsMerchantID = self.merchatID;
-//        [self.navigationController pushViewController:detailsVC animated:YES];
+        //        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+        //        detailsVC.detailsMerchantID = self.merchatID;
+        //        [self.navigationController pushViewController:detailsVC animated:YES];
     }
     
 }

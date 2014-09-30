@@ -9,6 +9,8 @@
 #import "TLUserDefaults.h"
 #define UserDefaults   [NSUserDefaults standardUserDefaults]
 #define kUser @"User"
+#define kUserRemember @"UserRemember"
+#define kIsRememberMe @"IsRememberMe"
 #define kGuestUser @"GuestUser"
 #define kIsSkipped @"IsSkipped"
 #define kIsTutoriakSkipped @"IsTutoriakSkipped"
@@ -34,6 +36,31 @@
     NSData *objectToDecode = [UserDefaults valueForKey:kUser];
     UserModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
     return decodedObject;
+}
+
++ (void)setRememberMeDetails:(NSDictionary*)dict
+{
+    NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:dict];
+    [UserDefaults setObject:encodedObject forKey:kUserRemember];
+    [UserDefaults synchronize];
+}
+
++ (NSDictionary*)getRememberedDict
+{
+    NSData *objectToDecode = [UserDefaults valueForKey:kUserRemember];
+    NSDictionary *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
+    return decodedObject;
+}
+
++ (void)setIsRememberMe:(BOOL)isRememberMe {
+    
+    [UserDefaults setBool:isRememberMe forKey:kIsRememberMe];
+    [UserDefaults synchronize];
+}
+
++ (BOOL)IsRememberMe {
+    
+    return [UserDefaults boolForKey:kIsRememberMe];
 }
 
 + (void)setIsGuestUser:(BOOL)isSkipped_ {

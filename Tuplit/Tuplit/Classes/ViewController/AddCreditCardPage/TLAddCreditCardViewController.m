@@ -47,7 +47,7 @@
     }
     else
     {
-      
+        
         UIBarButtonItem *skipBtn=[[UIBarButtonItem alloc]init];
         [skipBtn buttonWithTitle:LString(@"SKIP") withTarget:self action:@selector(skipButtonClicked)];
         self.navigationItem.rightBarButtonItem=skipBtn;
@@ -175,7 +175,9 @@
     if(self.topupAmout.length>0)
     {
         dollarAmtTextField.text = self.topupAmout;
-        switchYesOrNo.on = YES;
+//        switchYesOrNo.on = YES;
+        [switchYesOrNo setOn:YES animated:YES];
+//        switchYesOrNo
     }
     
 }
@@ -243,7 +245,19 @@
         [[NSNotificationCenter defaultCenter]postNotificationName:kCreditCardAdded object:nil];
     }
     else
+    {
+        for (UIViewController *controller in self.navigationController.viewControllers) {
+            
+            //Do not forget to import AnOldViewController.h
+            if ([controller isKindOfClass:[TLCartViewController class]]||[controller isKindOfClass:[TLTransferViewController class]]) {
+                [self.navigationController popToViewController:controller
+                                                      animated:YES];
+                return;
+            }
+        }
+
         [self.navigationController popToRootViewControllerAnimated:YES];
+    }
 }
 
 -(void)scanButtonClicked
@@ -296,7 +310,7 @@
                 
                 if (topUpAmount.intValue<10)
                 {
-                    [UIAlertView alertViewWithMessage:@"Enter minimum £10.0 or above to Top up"];
+                    [UIAlertView alertViewWithMessage:@"Enter minimum £10 or above to Top up"];
                 }
                 else
                 {
@@ -491,13 +505,10 @@
         
         NSInteger MAX_DIGITS = 9; // €999,999,999.99
         
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        NSNumberFormatter *numberFormatter = [TuplitConstants getCurrencyFormat];
         [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
         [numberFormatter setMinimumFractionDigits:0];
         [numberFormatter setMaximumFractionDigits:0];
-        
-        NSLocale *english = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
-        [numberFormatter setLocale:english];
         
         NSString *stringMaybeChanged = [NSString stringWithString:string];
         if (stringMaybeChanged.length > 1)
@@ -602,8 +613,21 @@
     APP_DELEGATE.isUserProfileEdited = YES;
     [[ProgressHud shared] hide];
     
-//    [UIAlertView alertViewWithMessage:creditCardStatus];
-    [self skipButtonClicked];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
+    NSString *string = dollarAmtTextField.text;
+    NSString *topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    
+    UserModel *userModel = [TLUserDefaults getCurrentUser];
+    double balance = userModel.AvailableBalance.doubleValue;
+    userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance + topUpAmount.doubleValue)];
+    [TLUserDefaults setCurrentUser:userModel];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
+    
+    //    [UIAlertView alertViewWithMessage:creditCardStatus];
+    if(dollarAmtTextField.text.length>0||self.isSignUp)
+        [self skipButtonClicked];
+    else
+        [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)addCreditCardManager:(TLAddCreditCardManager *)addCreditCardManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {

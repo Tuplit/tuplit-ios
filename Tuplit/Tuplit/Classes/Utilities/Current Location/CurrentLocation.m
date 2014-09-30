@@ -33,6 +33,11 @@ double mylat,myLon;
         locationManager.delegate = (id)self;
         locationManager.distanceFilter = 100;
         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        
+        SEL requestSelector = NSSelectorFromString(@"requestWhenInUseAuthorization");
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined && [locationManager respondsToSelector:requestSelector]) {
+            [locationManager performSelector:requestSelector withObject:NULL];
+        }
     }
     
     [locationManager startUpdatingLocation];
@@ -86,7 +91,7 @@ double mylat,myLon;
     {
         city=[addressDict objectForKey:(NSString*) kABPersonAddressStreetKey];
     }
-    
+
     return city;
 }
 

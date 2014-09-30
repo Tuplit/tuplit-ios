@@ -31,10 +31,16 @@
     NSLog(@"Request : %@", [request.URL absoluteString]);
     NSLog(@"Method  : %@", request.HTTPMethod);
     
+    NSDate *start=[NSDate date];
+    
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"FacebookIdManagerResponsetime = %f",ellapsedSeconds);
         
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
@@ -46,7 +52,7 @@
         if(code == 200 || code == 201)
         {
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
-            NSDictionary *responseDictionarytoMap=[[responseJSON objectForKey:strPropertyName]objectForKey:@"FacebookFriends"];
+            NSDictionary *responseDictionarytoMap=[[responseJSON objectForKey:strPropertyName]objectForKey:@"GoogleFriends"];
             
             RKObjectMapping *responseMapping = [RKObjectMapping mappingForClass:[CheckUserModel class]];
             [responseMapping addAttributeMappingsFromDictionary:@ {

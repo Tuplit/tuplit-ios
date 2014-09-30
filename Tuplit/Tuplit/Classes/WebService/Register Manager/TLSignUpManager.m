@@ -54,10 +54,16 @@
     if([methodType isEqualToString:@"PUT"])
         [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    NSDate *start=[NSDate date];
+   
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
   	[operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"SignUpResponsetime = %f",ellapsedSeconds);
         
         NSLog(@"%@",operation.responseString);
         

@@ -50,13 +50,14 @@
         [containerView addSubview:merchantdetailView];
         
         /*blurView = [[FXBlurView alloc] initWithFrame:merchantdetailView.bounds];
-        blurView.blurRadius = 2;
-        blurView.tintColor = UIColorFromRGB(0x000000);
-        blurView.underlyingView = productImgView;
-        [merchantdetailView addSubview:blurView];*/
+         blurView.blurRadius = 2;
+         blurView.tintColor = UIColorFromRGB(0x000000);
+         blurView.underlyingView = productImgView;
+         [merchantdetailView addSubview:blurView];*/
         
         merchantImgView=[[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(8,-3,40,40)];
         merchantImgView.backgroundColor = [UIColor whiteColor];
+        merchantImgView.contentMode = UIViewContentModeScaleAspectFill;
         merchantImgView.layer.cornerRadius = 20;
         merchantImgView.clipsToBounds = YES;
         [merchantdetailView addSubview:merchantImgView];
@@ -95,7 +96,7 @@
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0,containerView.frame.size.height - 1,self.size.width,1)];
         lineView.backgroundColor = APP_DELEGATE.defaultColor;
         [containerView addSubview:lineView];
-
+        
     }
     return self;
 }
@@ -152,22 +153,30 @@
     }
     else
     {
-        
         CGRect descriptionFrame = descriptionLbl.frame;
         descriptionFrame.size.width = 200;
         descriptionLbl.frame = descriptionFrame;
-        
         distanceLbl.hidden = YES;
         distanceImageView.hidden = YES;
     }
-    
-    if ([merchant.IsGoldenTag intValue] == 0) {
+   
+    discountImageView.hidden = NO;
+    if ([merchant.TagType intValue] == 1) {
         [discountImageView setImage:[UIImage imageNamed:@"DiscountMap"]];
     }
-    else
+    else if([merchant.TagType intValue] == 2)
+    {
+        [discountImageView setImage:[UIImage imageNamed:@"red_tag"]];
+    }
+    else if([merchant.TagType intValue] == 3)
     {
         [discountImageView setImage:[UIImage imageNamed:@"specialIcon"]];
     }
+    else
+    {
+        discountImageView.hidden = YES;
+    }
+
 }
 
 #pragma mark - EGOImageViewDelegate

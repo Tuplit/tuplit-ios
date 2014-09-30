@@ -9,6 +9,10 @@
 #import "TLCategoryView.h"
 #import "CategoryModel.h"
 
+#define SPACE 6
+#define STARTXPOS 4
+#define STARTYPOS 3
+
 @implementation TLCategoryView
 
 - (id)initWithFrame:(CGRect)frame
@@ -22,7 +26,7 @@
 
 - (void)setUpCategoryView:(NSArray *)categories andWidth:(float)width
 {
-    int xPosition = 3, yPosition = 3;
+    int xPosition = STARTXPOS, yPosition = STARTYPOS;
     int viewHeight = 0;
     
     for (int i = 0; i < categories.count; i++)
@@ -33,14 +37,14 @@
         
         int labelWidth = [categoryModel.CategoryName widthWithFont:[UIFont fontWithName:@"HelveticaNeue" size:12]]+1;
         
-        if (xPosition + categoryImg.size.width + 3+labelWidth <= width)
+        if (xPosition + categoryImg.size.width +STARTXPOS+labelWidth <= width)
         {
-            xPosition = xPosition == 3 ? xPosition : xPosition + 2;
+            xPosition = xPosition == STARTXPOS ? xPosition : xPosition + SPACE;
         }
         else
         {
-            xPosition = 3;
-            yPosition += categoryImg.size.height+3;
+            xPosition = STARTXPOS;
+            yPosition += categoryImg.size.height+STARTYPOS;
         }
         
         EGOImageView * categoryImageView =[[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(xPosition, yPosition, categoryImg.size.width, categoryImg.size.height)];
@@ -48,7 +52,7 @@
         [categoryImageView setTag:(i+2200)];
         [self addSubview:categoryImageView];
         
-        xPosition += categoryImg.size.width + 3;
+        xPosition += categoryImg.size.width + STARTXPOS;
     
         UILabel * catagoryNameLabel=[[UILabel alloc]initWithFrame:CGRectMake(xPosition, yPosition, labelWidth, categoryImg.size.height)];
         catagoryNameLabel.text=categoryModel.CategoryName;
@@ -66,5 +70,13 @@
     self.ctgviewHeight = self.height;
 }
 
+-(void) removeCtgViews
+{
+    NSArray * allSubviews = [self subviews];
+    for(UIView *view in allSubviews)
+    {
+        [view removeFromSuperview];
+    }
+}
 
 @end

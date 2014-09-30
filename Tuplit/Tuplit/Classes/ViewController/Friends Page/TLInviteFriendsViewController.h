@@ -13,8 +13,10 @@
 #import "CheckUserModel.h"
 #import <MessageUI/MFMailComposeViewController.h>
 #import "Person.h"
+#import <GooglePlus/GooglePlus.h>
+#import <GoogleOpenSource/GoogleOpenSource.h>
 
-@interface TLInviteFriendsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,MFMailComposeViewControllerDelegate,TLFacebookIDManagerDelegate,TLFriendsInviteManagerDelegate>
+@interface TLInviteFriendsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,MFMailComposeViewControllerDelegate,TLFacebookIDManagerDelegate,TLFriendsInviteManagerDelegate,GPPSignInDelegate,GPPShareDelegate>
 {
     UIView *baseView,*menuView;
     UITableView *facebookTable;

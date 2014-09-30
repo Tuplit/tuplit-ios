@@ -18,6 +18,7 @@
 @property(nonatomic,strong) NSMutableArray *products;
 @property(nonatomic,assign) double total;
 @property(nonatomic,assign) double discountedTotal;
+@property(nonatomic,assign) int productCount;
 
 - (void) calculateTotalPrice;
 - (void) addItems:(SpecialProductsModel*) specialProductsModel;

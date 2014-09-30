@@ -94,9 +94,8 @@
         
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         
-        numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-        [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+        numberFormatter = [TuplitConstants getCurrencyFormat];
+
     }
     return self;
 }
@@ -127,7 +126,7 @@
         itemQuantityLbl.frame = CGRectMake(50,0, 0, CART_CELL_HEIGHT-2);
     }
     
-
+    
     double discountPrice = [specialProductsModel.DiscountPrice doubleValue];
     if ([specialProductsModel.DiscountPrice doubleValue] == 0.0) {
         discountPrice = [specialProductsModel.Price doubleValue];
@@ -158,6 +157,7 @@
 {
     int quantity = [specialProductsModel.quantity intValue];
     quantity = quantity - 1;
+    APP_DELEGATE.cartModel.productCount = APP_DELEGATE.cartModel.productCount-1;
     if (quantity<=0) {
         quantity = 0;
         
@@ -179,7 +179,7 @@
     }
     
     [specialProductsModel setQuantity:[NSString stringWithFormat:@"%d",quantity]];
-
+    
     [self updateRow:specialProductsModel];
     
     [APP_DELEGATE.cartModel.products setObject:specialProductsModel atIndexedSubscript:indexPath.row];
@@ -191,6 +191,7 @@
 {
     int quantity = [specialProductsModel.quantity intValue];
     quantity = quantity + 1;
+    APP_DELEGATE.cartModel.productCount = APP_DELEGATE.cartModel.productCount+1;
     
     [specialProductsModel setQuantity:[NSString stringWithFormat:@"%d",quantity]];
     

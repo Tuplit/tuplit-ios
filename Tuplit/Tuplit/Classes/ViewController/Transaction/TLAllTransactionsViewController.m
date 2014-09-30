@@ -27,6 +27,7 @@
 {
     transactionManager.delegate = nil;
     transactionManager = nil;
+    allTransactionTableView.editing = NO;
 }
 
 -(void) loadView
@@ -167,14 +168,14 @@
 {
     static NSString *cellIdentifier=@"CellID";
     
-   UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if(cell==nil)
     {
         cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.backgroundColor=UIColorFromRGB(0xF5F5F5);
-            
+        
         EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
         merchantIconImgView.tag=1000;
         merchantIconImgView.backgroundColor = [UIColor whiteColor];
@@ -245,10 +246,13 @@
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
-     RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
+    RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
     transactionDetail.userID = self.userID;
     transactionDetail.orderID = transaction.OrderId;
     transactionDetail.index = indexPath.row;
+    transactionDetail.transActionList = transactionList;
+    transactionDetail.lastFetchCount = lastFetchCount;
+    transactionDetail.totalUserListCount = totalUserListCount;
     [self.navigationController pushViewController:transactionDetail animated:YES];
 }
 
@@ -300,7 +304,7 @@
     isMerchantWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
-
+    
     
 }
 - (void)transactionListingManager:(TLTransactionListingManager *)trancactionListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg

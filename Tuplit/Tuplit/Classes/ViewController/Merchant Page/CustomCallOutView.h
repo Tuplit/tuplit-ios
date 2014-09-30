@@ -25,23 +25,25 @@
     UIImageView * nextImageView;
     UIImageView * annDistanceImgView;
     UIImageView * anncustomerShoppedImg;
+    UIImageView * anndiscountImg;
     
     UIImage *stretchableBackButtonImage;
     UIImage * callOutImage;
     
     UILabel * annDistanceLbl;
     UILabel * annMerchantNameLbl;
+    UILabel * annMerchantAddLbl;
     UILabel * annMerchantCatgLbl;
     UILabel * customershoppedLbl;
     UILabel * annDiscountLbl;
     
     NSString * logoImageUrl;
-    
     MerchantModel *merModel;
 }
 
 @property (nonatomic, retain)MerchantModel *merchant;
 @property(nonatomic, unsafe_unretained) id<CustomCallOutViewDelegate> delegate;
 -(void)loadView;
+@property (assign) int callOutHeight;
 
 @end

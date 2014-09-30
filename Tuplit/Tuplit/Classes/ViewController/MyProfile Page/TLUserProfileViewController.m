@@ -18,6 +18,12 @@
 
 #pragma mark - View Life Cycle Methods.
 
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    userProfileTable.editing = NO;
+}
+
 -(void) loadView
 {
     [super loadView];
@@ -57,7 +63,6 @@
         userProfileTable.delaysContentTouches = NO;
     userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 20)];
     [baseView addSubview:userProfileTable];
-    
 }
 - (void)viewDidLoad
 {
@@ -78,16 +83,12 @@
         APP_DELEGATE.isUserProfileEdited = NO;
         [self callService];
     }
+    [self updateUserDetails];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
--(void) dealloc {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - User Defined Methods
@@ -108,7 +109,7 @@
 //   Credit card delete service
 -(void)callCardDeleteService
 {
-   
+    
 }
 
 -(void)updateUserDetails
@@ -301,7 +302,7 @@
     [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
     [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
     [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
-
+    
     
     if(section == 1)
     {
@@ -332,14 +333,14 @@
             float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+2;
             headerBtn.width = btnWidth;
             [headerBtn positionAtX:baseViewWidth-btnWidth-15];
-
+            
         }
     }
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width,HEADER_HEIGHT)];
     headerView.backgroundColor = [UIColor whiteColor];
     [headerView addSubview:leftHeaderNameLbl];
     [headerView addSubview:headerBtn];
-     [headerView setAutoresizingMask:UIViewAutoresizingNone];
+    [headerView setAutoresizingMask:UIViewAutoresizingNone];
     [tableView addSubview:headerView];
     
     return  headerView;
@@ -370,9 +371,9 @@
         profileImgView.imageURL = [NSURL URLWithString:usermodel.Photo];
         balAmountLbl.text = [[TuplitConstants getCurrencyFormat] stringFromNumber:[NSNumber numberWithDouble:usermodel.AvailableBalance.doubleValue]];
         userIDLbl.text = usermodel.UserId;
-       
+        
         [transferBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
-       [topUpBtn addTarget:self action:@selector(topUpAction:) forControlEvents:UIControlEventTouchUpInside];
+        [topUpBtn addTarget:self action:@selector(topUpAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if (indexPath.section == 1)
     {
@@ -481,6 +482,7 @@
         TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
         RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
         transactionDetail.orderID = transaction.OrderId;
+        transactionDetail.transActionList = [transactionList mutableCopy];
         transactionDetail.userID = [TLUserDefaults getCurrentUser].UserId;
         transactionDetail.index = indexPath.row;
         [self.navigationController pushViewController:transactionDetail animated:YES];
@@ -507,7 +509,7 @@
     {
         if (editingStyle == UITableViewCellEditingStyleDelete) {
             
-//            [UIAlertView alertViewWithMessage:@"Deleting a Credit Card is under construction. Will be available in future demos."];
+            //            [UIAlertView alertViewWithMessage:@"Deleting a Credit Card is under construction. Will be available in future demos."];
             NETWORK_TEST_PROCEDURE
             
             [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];

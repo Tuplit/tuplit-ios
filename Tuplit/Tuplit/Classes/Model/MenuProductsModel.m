@@ -15,7 +15,6 @@
     [encoder encodeObject:self.CategoryId forKey:@"CategoryId"];
     [encoder encodeObject:self.CategoryName forKey:@"CategoryName"];
     [encoder encodeObject:self.Items forKey:@"Items"];
-    
 }
 
 - (id)initWithCoder:(NSCoder *)decoder

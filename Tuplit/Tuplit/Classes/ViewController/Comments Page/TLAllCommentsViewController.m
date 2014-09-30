@@ -24,6 +24,7 @@
 {
     commentsManager.delegate = nil;
     commentsManager = nil;
+    allCommentsTable.editing = NO;
 }
 
 -(void) loadView
@@ -35,11 +36,11 @@
     
     UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
     [navleftButton buttonWithIcon:getImage(@"BackArrow", NO) target:self action:@selector(backToUserProfile) isLeft:NO];
-    [self.navigationItem setLeftBarButtonItem:navleftButton];    
+    [self.navigationItem setLeftBarButtonItem:navleftButton];
     
     baseViewWidth = self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
-   
+    
     int adjustHeight = 64;
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         adjustHeight = 64;
@@ -54,7 +55,7 @@
     [self.view addSubview:baseView];
     
     allCommentsTable=[[UITableView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
-   
+    
     allCommentsTable.delegate=self;
     allCommentsTable.dataSource=self;
     allCommentsTable.backgroundColor=[UIColor clearColor];
@@ -88,6 +89,11 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
 }
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [allCommentsTable endUpdates];
+}
 
 - (void)viewDidLoad
 {
@@ -105,7 +111,7 @@
 //-(void)callWebService
 //{
 //    NETWORK_TEST_PROCEDURE
-//    
+//
 //    commentsManager = [[TLCommentsListingManager alloc]init];
 //    commentsManager.delegate = self;
 //    [commentsManager callService:[TLUserDefaults getCurrentUser].UserId withIDType:1];
@@ -121,14 +127,14 @@
     }
     
     isMerchantWebserviceRunning = YES;
-
+    
     if (showProgressIndicator) {
         [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     }
     if (commentsManager==nil) {
-         commentsManager = [[TLCommentsListingManager alloc]init];
+        commentsManager = [[TLCommentsListingManager alloc]init];
     }
-   
+    
     commentsManager.delegate = self;
     [commentsManager callService:self.userID withStartCount:start];
 }
@@ -232,6 +238,8 @@
     commentLbl.frame = newRect;
     
     totalDaysLbl.text=[TuplitConstants calculateTimeDifference:comments.CommentDate];
+    int timeLblWidth = [totalDaysLbl.text widthWithFont:totalDaysLbl.font]+1;
+    totalDaysLbl.frame =  CGRectMake(cell.frame.size.width-timeLblWidth-16,15, timeLblWidth, 20);
     
     return cell;
 }
@@ -278,7 +286,7 @@
 - (void)commentsListingManagerSuccess:(TLCommentsListingManager *)commentsListingManager withcommentsList:(NSArray*) _commentsList
 {
     if (isLoadMorePressed) {
-
+        
         [commentsArray addObjectsFromArray:_commentsList];
     }
     else
@@ -296,8 +304,8 @@
     {
         lastFetchCount = commentsArray.count;
     }
-
-       [allCommentsTable reloadData];
+    
+    [allCommentsTable reloadData];
     
     if (lastFetchCount < totalUserListCount)
         [allCommentsTable setTableFooterView:cellContainer];

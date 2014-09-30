@@ -39,10 +39,10 @@
     TLSignUpManager *signUpManager;
     TLLoginManager *loginManager;
     TLUserDetailsManager *userDetailsManager;
-
+    
     NSString *fbID, *googlePlusID;
     CLPlacemark *placeMark;
-    BOOL dontClear, isSocialButtonPressed;
+    BOOL dontClear, isSocialButtonPressed ,isAlredyRegister;
 }
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) ACAccount *facebookAccount;
@@ -74,13 +74,20 @@
     userDetailsManager.delegate = nil;
     userDetailsManager = nil;
     
-     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self.navigationItem setTitle:LString(@"SIGNUP")];
+    
+    textEmail.autocorrectionType = UITextAutocorrectionTypeNo;
+    textFirstName.autocorrectionType = UITextAutocorrectionTypeNo;
+    textLastName.autocorrectionType = UITextAutocorrectionTypeNo;
+    textPinCode.autocorrectionType = UITextAutocorrectionTypeNo;
+    
+    
     
     // Back Button
     UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
@@ -152,7 +159,7 @@
     
     userDetailsManager = [TLUserDetailsManager new];
     userDetailsManager.delegate = self;
-
+    
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(signUpsuccessAction) name:kCreditCardAdded object:nil];
 }
@@ -223,12 +230,12 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
-//    Allow only 4 char for PIN code
+    //    Allow only 4 char for PIN code
     if(textField==textPinCode)
     {
         NSString* searchString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-       if(searchString.length<5)
-           return YES;
+        if(searchString.length<5)
+            return YES;
         else
             return NO;
     }
@@ -282,8 +289,6 @@
 - (IBAction)googlePlusSignIn:(id)sender {
     
     NETWORK_TEST_PROCEDURE;
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-
     
     isSocialButtonPressed = YES;
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
@@ -308,7 +313,7 @@
     NETWORK_TEST_PROCEDURE;
     isSocialButtonPressed = YES;
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-      [APP_DELEGATE doFacebookLogin:self];
+    [APP_DELEGATE doFacebookLogin:self];
 }
 
 - (IBAction)signUpAction:(id)sender {
@@ -327,8 +332,8 @@
         [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
     else if(textLastName.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
-//    else if(textCellNumber.text.length == 0)
-//        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
+    //    else if(textCellNumber.text.length == 0)
+    //        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
     else if(textPinCode.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_PIN")];
     else if(textPinCode.text.length<4)
@@ -478,7 +483,7 @@
 }
 
 - (void)presentAMSlider {
-
+    
     [TuplitConstants loadSliderHomePageWithAnimation:YES];
 }
 
@@ -503,7 +508,7 @@
 -(void)signUpsuccessAction
 {
     [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
-   [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
 }
 #pragma mark - UIImagePickerViewController Delegate
 
@@ -546,10 +551,13 @@
     // NSLog(@"Received error %@ and auth object %@",error, auth);
     
     if(error) {
-        [[ProgressHud shared] hide];
+//        [[ProgressHud shared] hide];
         [UIAlertView alertViewWithMessage:LString(@"GOOGLE_ERROR")];
         
     } else {
+        
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+
         GTLServicePlus* plusService = [[GTLServicePlus alloc] init] ;
         plusService.retryEnabled = YES;
         [plusService setAuthorizer:[GPPSignIn sharedInstance].authentication];
@@ -656,6 +664,15 @@
 
 - (void)signUpManager:(TLSignUpManager *)signUpManager registerSuccessfullWithUser:(UserModel *)user isAlreadyRegistered:(BOOL)isAlreadyRegistered {
     
+    NSLog(@"isAlreadyRegistered = %d",isAlreadyRegistered);
+    isAlredyRegister = isAlreadyRegistered;
+    
+    APP_DELEGATE.loginDetails = @{
+                                  @"Email"            : NSNonNilString(textEmail.text),
+                                  @"Password"         : NSNonNilString(textPassword.text),
+                                  };
+    [TLUserDefaults setRememberMeDetails:APP_DELEGATE.loginDetails];
+    
     [TLUserDefaults setIsTutorialSkipped:NO];
     if(!loginManager) {
         loginManager = [TLLoginManager new];
@@ -681,17 +698,24 @@
 
 #pragma mark - TLLoginManager delegate method
 
-- (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {   
+- (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
     [[ProgressHud shared] hide];
     
-    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
-    addCrCardViewController.viewController = self;
-    addCrCardViewController.isSignUp = YES;
-    [self.navigationController pushViewController:addCrCardViewController animated:YES];
-    
+    if(!isSocialButtonPressed)
+    {
+        TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+        addCrCardViewController.viewController = self;
+        addCrCardViewController.isSignUp = YES;
+        [self.navigationController pushViewController:addCrCardViewController animated:YES];
+    }
+    else
+    {
+        [userDetailsManager getUserDetailsWithUserID:user.UserId];
+    }
+    [[TLAppLocationController sharedManager]startUpdatingLocation];
 }
 
 - (void)loginManager:(TLLoginManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -717,18 +741,26 @@
 
 - (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
     
+    if(user_.RememberMe.intValue==1) {
+        [TLUserDefaults setIsRememberMe:YES];
+    }
+    else
+    {
+        [TLUserDefaults setIsRememberMe:NO];
+    }
+    
     [TLUserDefaults setCurrentUser:user_];
     [TLUserDefaults setIsTutorialSkipped:isSocialButtonPressed];
     [[ProgressHud shared] hide];
     
-     [self presentAMSlider];
+    [self presentAMSlider];
     
 }
 
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {

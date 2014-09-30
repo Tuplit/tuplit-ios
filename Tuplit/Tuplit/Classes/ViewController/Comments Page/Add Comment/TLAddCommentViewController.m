@@ -12,6 +12,9 @@
 {
     UITextView *messageTxtView;
     UILabel *placeholderLbl;
+    UIScrollView *baseView;
+    int keyboardHeight;
+    UIButton *addCommentBtn;
 }
 
 @end
@@ -34,12 +37,12 @@
     baseViewWidth = self.view.frame.size.width;
     baseViewHeight=self.view.frame.size.height;
     
-    UIView *baseView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    baseView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
     baseView.backgroundColor=[UIColor clearColor];
-    [self.view addSubview:baseView]; 
+    [self.view addSubview:baseView];
     
     messageTxtView=[[UITextView alloc] initWithFrame:CGRectMake(15,20,290,140)];
-//    messageTxtView.text=LString(@"MESSAGE_OPTIONAL");
+    //    messageTxtView.text=LString(@"MESSAGE_OPTIONAL");
     messageTxtView.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     messageTxtView.textColor=UIColorFromRGB(0x000000);
     messageTxtView.textAlignment=NSTextAlignmentLeft;
@@ -74,8 +77,8 @@
     twitterSwitch.offColor=[UIColor colorWithPatternImage:getImage(@"twitterOff", NO)];
     twitterSwitch.backgroundColor=[UIColor clearColor];
     [baseView addSubview:twitterSwitch];
-
-    UIButton *addCommentBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+    
+    addCommentBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     addCommentBtn.frame=CGRectMake(15, CGRectGetMaxY(facebookSwitch.frame) + 20,290,45);
     [addCommentBtn setTitle:LString(@"ADD_COMMENT") forState:UIControlStateNormal];
     [addCommentBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
@@ -84,7 +87,7 @@
     addCommentBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     [addCommentBtn addTarget:self action:@selector(addCommentAction:) forControlEvents:UIControlEventTouchUpInside];
     [baseView addSubview:addCommentBtn];
-
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -100,6 +103,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -109,17 +117,31 @@
 
 #pragma mark - User Defined Methods.
 
+- (void)keyboardWasShown:(NSNotification *)notification
+{
+    
+    // Get the size of the keyboard.
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    //Given size may not account for screen rotation
+    keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
+    baseView.height = baseViewHeight - keyboardHeight;
+    baseView.contentSize = CGSizeMake(baseViewWidth, baseViewHeight-(baseViewHeight - CGRectGetMaxY(addCommentBtn.frame)-100));
+    
+    //your other code here..........
+}
+
 -(void) backToUserProfile
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)switchToFacebook:(CustomSwitch *)sender 
+- (void)switchToFacebook:(CustomSwitch *)sender
 {
     NSLog(@"Changed value to: %@", sender.on ? @"ON" : @"OFF");
 }
 
-- (void)switchToTwitter:(CustomSwitch *)sender 
+- (void)switchToTwitter:(CustomSwitch *)sender
 {
     NSLog(@"Changed value to: %@", sender.on ? @"ON" : @"OFF");
 }
@@ -131,6 +153,25 @@
         [UIAlertView alertViewWithMessage:LString(@"COMMENT_ALERT_MESSAGE")];
     else
     {
+        if(facebookSwitch.isOn)
+        {
+            if (![SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+            {
+                [UIAlertView alertViewWithMessage:LString(@"FACBOOK_ALERT")];
+                return;
+            }
+        }
+        
+        if(twitterSwitch.isOn)
+        {
+            if (![SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+            {
+                [UIAlertView alertViewWithMessage:LString(@"TWITTER_ALERT")];
+                return;
+            }
+        }
+
+        
         NSDictionary *queryParams = @{
                                       @"MerchantId": NSNonNilString([TLUserDefaults getCommentDetails].MerchantId),
                                       @"CommentText": NSNonNilString(messageTxtView.text),
@@ -148,11 +189,16 @@
     {
         SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         [fbSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
-         fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
-             [self backToUserProfile];
-             [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
-         };
+        fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+            [self backToUserProfile];
+            [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
+        };
         [self presentViewController:fbSheet animated:YES completion:nil];
+    }
+    else
+    {
+        [self backToUserProfile];
+        [UIAlertView alertViewWithMessage:LString(@"FACBOOK_ALERT")];
     }
 }
 
@@ -166,6 +212,11 @@
             [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
         };
         [self presentViewController:tweetSheet animated:YES completion:nil];
+    }
+    else
+    {
+        [self backToUserProfile];
+        [UIAlertView alertViewWithMessage:LString(@"TWITTER_ALERT")];
     }
 }
 
@@ -184,6 +235,8 @@
         placeholderLbl.hidden=NO;
     }
     [textView resignFirstResponder];
+    
+    baseView.height = baseView.height + keyboardHeight;
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
@@ -236,9 +289,19 @@
                     };
                     [self presentViewController:tweetSheet animated:YES completion:nil];
                 }
+                else
+                {
+                    [self backToUserProfile];
+                    [UIAlertView alertViewWithMessage:LString(@"TWITTER_ALERT")];
+                }
             };
             
             [self presentViewController:fbSheet animated:YES completion:nil];
+        }
+        else
+        {
+            [self backToUserProfile];
+            [UIAlertView alertViewWithMessage:LString(@"FACBOOK_ALERT")];
         }
     }
     else if(facebookSwitch.on && !twitterSwitch.on) {
@@ -253,7 +316,7 @@
     {
         [self backToUserProfile];
         [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
-       
+        
     }
 }
 - (void)commentAddManager:(TLAddCommentManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
@@ -267,6 +330,6 @@
     [self backToUserProfile];
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-   
+    
 }
 @end

@@ -71,45 +71,78 @@
     yposition = 0;
     int row = 1;
     
+//    for (int j = 1; j <= 10; j++) {
+//        
+//        float ypos = yposition;
+//        
+//        UIButton *numberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//        
+//        //        if([ [ UIScreen mainScreen ] bounds ].size.height<568)
+//        //            numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 60, 60);
+//        //        else
+//        numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 76, 76);
+//        
+//        numberBtn.tag = j + 110;
+//        [numberBtn addTarget:self action:@selector(numberPadAction:) forControlEvents:UIControlEventTouchUpInside];
+//        [numberBtn setImage:getImage([normalNumberArray objectAtIndex:j-1], NO) forState:UIControlStateNormal];
+//        [numberBtn setImage:getImage([selectedNumberArray objectAtIndex:j-1],NO) forState:UIControlStateSelected];
+//        [numberBtn setImage:getImage([selectedNumberArray objectAtIndex:j-1],NO) forState:UIControlStateHighlighted];
+//        
+//        numberBtn.backgroundColor=[UIColor clearColor];
+//        [numberPadView addSubview:numberBtn];
+//        
+//        if (j < row * 3) {
+//            xposition = CGRectGetMaxX(numberBtn.frame) + 1.5;
+//        }
+//        else{
+//            if (j == 9) xposition = 107;
+//            else xposition = 13;
+//            yposition = CGRectGetMaxY(numberBtn.frame) + 3;
+//            row++;
+//        }
+//    }
+//    
+//    UILabel *deleteLbl = [[UILabel alloc]initWithFrame:CGRectMake(210, 290, 90, 50)];
     for (int j = 1; j <= 10; j++) {
         
         float ypos = yposition;
         
         UIButton *numberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         
-//        if([ [ UIScreen mainScreen ] bounds ].size.height<568)
-//            numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 60, 60);
-//        else
-            numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 76, 76);
+        if([ [ UIScreen mainScreen ] bounds ].size.height<568)
+            numberBtn.frame = CGRectMake(xposition + 40, ypos+6, 60, 60);
+        else
+            numberBtn.frame = CGRectMake(xposition + 15, ypos + 10, 76, 76);  //8
         
         numberBtn.tag = j + 110;
         [numberBtn addTarget:self action:@selector(numberPadAction:) forControlEvents:UIControlEventTouchUpInside];
         [numberBtn setImage:getImage([normalNumberArray objectAtIndex:j-1], NO) forState:UIControlStateNormal];
         [numberBtn setImage:getImage([selectedNumberArray objectAtIndex:j-1],NO) forState:UIControlStateSelected];
         [numberBtn setImage:getImage([selectedNumberArray objectAtIndex:j-1],NO) forState:UIControlStateHighlighted];
-       
+        
         numberBtn.backgroundColor=[UIColor clearColor];
         [numberPadView addSubview:numberBtn];
         
         if (j < row * 3) {
-            xposition = CGRectGetMaxX(numberBtn.frame) + 1.5;
+            xposition =  [UI isIPhone5]?CGRectGetMaxX(numberBtn.frame)+1.5:CGRectGetMaxX(numberBtn.frame)-23;
         }
         else{
-            if (j == 9) xposition = 107;
+            if (j == 9) xposition = ([UI isIPhone5]?106:90);
             else xposition = 13;
             yposition = CGRectGetMaxY(numberBtn.frame) + 3;
             row++;
         }
     }
     
-    UILabel *deleteLbl = [[UILabel alloc]initWithFrame:CGRectMake(210, 290, 90, 50)];
+    UILabel *deleteLbl = [[UILabel alloc]initWithFrame:CGRectMake(([UI isIPhone5]?210:196), ([UI isIPhone5]?290:216), 90, 50)];
+    
     deleteLbl.backgroundColor = [UIColor clearColor];
-    deleteLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+    deleteLbl.font = ([UI isIPhone5]?[UIFont fontWithName:@"HelveticaNeue" size:14]:[UIFont fontWithName:@"HelveticaNeue" size:12]);
     deleteLbl.textColor = APP_DELEGATE.defaultColor;
     deleteLbl.textAlignment = NSTextAlignmentCenter;
     deleteLbl.numberOfLines = 2;
-//    deleteLbl.layer.borderWidth = 1.0;
-//    deleteLbl.layer.borderColor = [APP_DELEGATE.defaultColor CGColor];
+    //    deleteLbl.layer.borderWidth = 1.0;
+    //    deleteLbl.layer.borderColor = [APP_DELEGATE.defaultColor CGColor];
     deleteLbl.userInteractionEnabled = YES;
     deleteLbl.text = LString(@"Delete");
     [numberPadView addSubview:deleteLbl];
@@ -117,7 +150,7 @@
     UITapGestureRecognizer *deleteTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(deleteAction)];
     [deleteLbl addGestureRecognizer:deleteTap];
     
-    if (baseViewHeight <= 480) 
+    if (baseViewHeight <= 480)
     {
         scrollView.contentSize = CGSizeMake(baseView.frame.size.width, CGRectGetMaxY(numberPadView.frame) + 30);
     }
@@ -156,24 +189,20 @@
 
 -(void) numberPadAction : (UIButton *) button
 {
-   
-//        UIButton *clickedBtn = (UIButton *)[numberPadView viewWithTag:button.tag];
+    int value;
     
-        int value;
-        
-        if (button.tag == 120) 
-        {
-            value = button.tag - button.tag; 
-        }
-        else
-        {
-            value = button.tag - 110;
-        }
-        
-//        [clickedBtn setImage:getImage([selectedNumberArray objectAtIndex:button.tag - 111], NO) forState:UIControlStateNormal];
-        pinCode = [pinCode stringByAppendingString:[NSString stringWithFormat:@"%d", value]];
-        count++;
-        [self fillCodeCircles:count];
+    if (button.tag == 120)
+    {
+        value = button.tag - button.tag;
+    }
+    else
+    {
+        value = button.tag - 110;
+    }
+    
+    pinCode = [pinCode stringByAppendingString:[NSString stringWithFormat:@"%d", value]];
+    count++;
+    [self fillCodeCircles:count];
     
     if (pinCode.length == 4)
     {
@@ -226,7 +255,7 @@
 
 -(void)unfillCodeCircles
 {
-    for (int i =1; i <= 4; i++) 
+    for (int i =1; i <= 4; i++)
     {
         UIImageView *selectorImage = (UIImageView *)[codeSelectorView viewWithTag:i];
         [selectorImage setImage:getImage(@"dot", NO)];
@@ -270,7 +299,7 @@
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
-     [self closeAction:nil];
+    [self closeAction:nil];
 }
 - (void)setPinManagerFailed:(TLSetPinManager *)pinManager
 {

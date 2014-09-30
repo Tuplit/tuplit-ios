@@ -1,4 +1,4 @@
-//
+    //
 //  TLInviteFriendsViewController.m
 //  Tuplit
 //
@@ -7,10 +7,11 @@
 //
 
 #import "TLInviteFriendsViewController.h"
+#import "NSArray+BlocksKit.h"
 
 @interface TLInviteFriendsViewController ()
 {
-     NSString *fbUserId;
+    NSString *fbUserId;
     NSMutableArray *fbFriendArray,*fbFriendsIDArray,*contactArray;
     BOOL isFacebook;
     int selectedIndex;
@@ -19,6 +20,10 @@
     UIView *errorView;
     
     ABAddressBookRef addressBook;
+    
+    NSArray *_peopleList;
+    NSMutableArray *_selectedPeopleList;
+    NSMutableArray *_peopleImageList;
 }
 
 @end
@@ -54,7 +59,7 @@
     UIButton *facebookBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     facebookBtn.tag = 201;
     [facebookBtn addTarget:self action:@selector(menuButtonAction:) forControlEvents:UIControlEventTouchDown];
-    [facebookBtn setTitle:@"Facebook" forState:UIControlStateNormal];
+    [facebookBtn setTitle:@"Google+" forState:UIControlStateNormal];
     facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     facebookBtn.frame=CGRectMake(0, 0, menuView.frame.size.width/2, 34);
     facebookBtn.backgroundColor = UIColorFromRGB(0X01b3a5);
@@ -81,7 +86,6 @@
     {
         adjustHeight = 44;
     }
-
     
     facebookTable=[[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(menuView.frame)+10,baseViewWidth,baseViewHeight-CGRectGetMaxY(menuView.frame)-10-adjustHeight) style:UITableViewStylePlain];
     facebookTable.delegate=self;
@@ -92,10 +96,10 @@
         facebookTable.delaysContentTouches = NO;
     [baseView addSubview:facebookTable];
     
-    [self menuButtonAction:contactsBtn];
+    [self menuButtonAction:facebookBtn];
     
     errorView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(menuView.frame)+10, baseViewWidth, CGRectGetHeight(facebookTable.frame))];
-    errorView.hidden = YES;
+//    errorView.hidden = YES;
     [errorView setBackgroundColor:[UIColor whiteColor]];
     [baseView addSubview:errorView];
     
@@ -108,7 +112,7 @@
     fbFriendArray = [[NSMutableArray alloc] init];
     fbFriendsIDArray = [[NSMutableArray alloc] init];
     contactArray = [[NSMutableArray alloc] init];
-    
+        
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -124,9 +128,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    [self facebookFriendAction];  
-//     [self promptUserWithAccountNameForStatusUpdate];
-    
+    [self googleSignin];
 }
 
 - (void)didReceiveMemoryWarning
@@ -140,9 +142,9 @@
 {
     if(fbFriendArray.count>0)
     {
-    NSDictionary *queryParams = @{
-                                   @"FacebookFriends"            : fbFriendsIDArray,
-                                  };
+        NSDictionary *queryParams = @{
+                                      @"GoogleFriends"            : fbFriendsIDArray,
+                                      };
         
         TLFacebookIDManager *checkfb = [[TLFacebookIDManager alloc]init];
         checkfb.delegate = self;
@@ -160,12 +162,31 @@
 }
 - (void) menuButtonAction :(UIButton*) button
 {
+    
     UIButton *facebookBtn = (UIButton*)[baseView viewWithTag:201];
     UIButton *contactsBtn = (UIButton*)[baseView viewWithTag:202];
     
     if (button.tag == 201)
     {
-        [UIAlertView alertViewWithMessage:@"Facebook is not supported to invite friends."];
+        isFacebook = YES;
+        
+        [facebookBtn setBackgroundImage:Nil forState:UIControlStateNormal];
+        [facebookBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+        
+        [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
+        [contactsBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+        contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
+        if(fbFriendArray.count>0)
+        {
+            errorView.hidden = YES;
+        }
+        else
+        {
+            errorView.hidden = NO;
+            errorLbl.text = LString(@"NO_FB_FRIEND_FOUND");
+            return;
+        }
         
     }
     else
@@ -178,9 +199,6 @@
         [facebookBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
         [facebookBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
         facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
-        
-        [facebookBtn setUserInteractionEnabled:YES];
-        [contactsBtn setUserInteractionEnabled:NO];
         
         __block BOOL userDidGrantAddressBookAccess;
         CFErrorRef addressBookError = NULL;
@@ -197,7 +215,7 @@
                 
                 if(userDidGrantAddressBookAccess)
                 {
-                     addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+                    addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
                     if (addressBook!=nil)
                     {
                         NSArray *allContacts = (__bridge_transfer NSArray*)ABAddressBookCopyArrayOfAllPeople(addressBook);
@@ -211,7 +229,7 @@
                             NSString *lastName = (__bridge_transfer NSString*)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty);
                             ABMultiValueRef multi = ABRecordCopyValue(contactPerson, kABPersonEmailProperty);
                             NSString *email = (__bridge NSString *)ABMultiValueCopyValueAtIndex(multi, 0);
-                        
+                            
                             
                             if (ABPersonHasImageData(contactPerson)) {
                                 NSData *imgData = (__bridge NSData*)ABPersonCopyImageDataWithFormat(contactPerson, kABPersonImageFormatOriginalSize);
@@ -229,7 +247,7 @@
                             person.email = [NSString stringWithFormat:@"%@",email];
                             
                             if(email)
-                              [contactArray addObject:person];
+                                [contactArray addObject:person];
                             
                         }
                         CFRelease(addressBook);
@@ -254,10 +272,11 @@
                 // Display an error.
                 errorView.hidden = NO;
                 errorLbl.text = LString(@"ACCESS_DENIED");
+                return;
             }
         }
     }
-     [facebookTable reloadData];
+    [facebookTable reloadData];
 }
 
 -(void)reloadTable
@@ -275,186 +294,75 @@
 
 -(void) callInviteFriendsService : (UIButton*) sender
 {
-    NSLog(@"invite friends");
-    CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:facebookTable];
-    NSIndexPath *indexPath = [facebookTable indexPathForRowAtPoint:buttonPosition];
-    if (indexPath != nil)
+    if(isFacebook)
     {
-         Person *contactuser = [contactArray objectAtIndex:indexPath.row];
+        CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:facebookTable];
+        NSIndexPath *indexPath = [facebookTable indexPathForRowAtPoint:buttonPosition];
+        CheckUserModel *gplusUser = [fbFriendArray objectAtIndex:indexPath.row];
+        selectedIndex = indexPath.row;
+        fbUserId = gplusUser.Id;
+        NSLog(@"gplusUserID = %@",gplusUser.Id);
+        id<GPPNativeShareBuilder> shareBuilder = [[GPPShare sharedInstance] nativeShareDialog];
+        [GPPShare sharedInstance].delegate = self;
         
-        if([MFMailComposeViewController canSendMail])
+        // Set any prefilled text that you might want to suggest
+        [shareBuilder setPrefillText:@"Check out this cool app, Tuplit"];
+        
+        [shareBuilder setURLToShare:[NSURL URLWithString:@"https://play.google.com/store/apps/details?id=com.google.android.apps.plus"]];
+        
+        [shareBuilder setPreselectedPeopleIDs:[NSArray arrayWithObject:gplusUser.Id]];
+        
+        [shareBuilder open];
+        
+    }
+    else
+    {
+        NSLog(@"invite friends");
+        CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:facebookTable];
+        NSIndexPath *indexPath = [facebookTable indexPathForRowAtPoint:buttonPosition];
+        if (indexPath != nil)
         {
-            MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-            controller.mailComposeDelegate = self;
-            controller.navigationBar.barStyle = UIBarStyleDefault;
-            [[controller navigationBar] setTintColor:UIColorFromRGB(0XFFFFFF)];
+            Person *contactuser = [contactArray objectAtIndex:indexPath.row];
             
-            [controller setSubject:@"Check out Tuplit app"];
-            [controller setToRecipients:[NSArray arrayWithObject:contactuser.email]];
-            
-            UIImage *image = [UIImage imageNamed:@"Icon"];
-            //include your app icon here
-            [controller addAttachmentData:UIImageJPEGRepresentation(image, 1) mimeType:@"image/jpg" fileName:@"icon.jpg"];
-            // your message and link
-            NSString *defaultBody =@"check out this cool app, Tuplit";
-            [controller setMessageBody:defaultBody isHTML:YES];
-            
-            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+            if([MFMailComposeViewController canSendMail])
+            {
+                MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
+                controller.mailComposeDelegate = self;
+                controller.navigationBar.barStyle = UIBarStyleDefault;
+                [[controller navigationBar] setTintColor:UIColorFromRGB(0XFFFFFF)];
                 
-                [controller.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+                [controller setSubject:@"Check out Tuplit app"];
+                [controller setToRecipients:[NSArray arrayWithObject:contactuser.email]];
+                
+                UIImage *image = [UIImage imageNamed:@"Icon"];
+                //include your app icon here
+                [controller addAttachmentData:UIImageJPEGRepresentation(image, 1) mimeType:@"image/jpg" fileName:@"icon.jpg"];
+                // your message and link
+                NSString *defaultBody =@"check out this cool app, Tuplit";
+                [controller setMessageBody:defaultBody isHTML:YES];
+                
+                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+                    
+                    [controller.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+                }
+                else
+                {
+                    [controller.navigationBar setTintColor:[UIColor blackColor]];
+                }
+                
+                [self presentViewController:controller animated:YES completion:nil];
             }
             else
             {
-                [controller.navigationBar setTintColor:[UIColor blackColor]];
+                [UIAlertView alertViewWithMessage:@"Please setup a email account"];
             }
             
-            [self presentViewController:controller animated:YES completion:nil];
-        }
-        else
-        {
-            [UIAlertView alertViewWithMessage:@"Please setup a email account"];
-        }
-        
-        
-//        if(isFacebook)
-//        {
-//            selectedIndex = indexPath.row;
-//            CheckUserModel *friend = [fbFriendArray objectAtIndex:indexPath.row];
-//            NSDictionary *queryParams = @{
-//                                          @"FBId"            :  NSNonNilString(friend.Id),
-//                                          };
-//            
-//            NETWORK_TEST_PROCEDURE
-//            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-//            
-//            TLFriendsInviteManager *inviteFriend = [[TLFriendsInviteManager alloc]init];
-//            inviteFriend.delegate = self;
-//            [inviteFriend callService:queryParams];
-//        }
-        
+
     }
+}
 }
 
 //   facebook
-
--(void)facebookFriendAction{
-
-    
-   
-    //    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    
-    if (FBSession.activeSession.isOpen) {
-        
-        [[FBRequest requestForMe] startWithCompletionHandler:
-         ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
-             if (!error) {
-                 fbUserId = user.objectID;
-                 [self promptUserWithAccountNameForStatusUpdate];
-             }
-             else
-             {
-                 [[ProgressHud shared] hide];
-                 UIAlertView *tmp = [[UIAlertView alloc]
-                                     initWithTitle:LString(@"FAILURE")
-                                     message:LString(@"CANNOT_CONNECT")
-                                     delegate:nil
-                                     cancelButtonTitle:nil
-                                     otherButtonTitles:LString(@"OK"), nil];
-                 [tmp show];
-             }
-         }];
-        
-    } else {
-        
-          NSArray *permissions = [NSArray arrayWithObjects:@"publish_stream",@"read_friendlists",@"user_birthday",nil];
-        [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES  completionHandler:^(FBSession *session, FBSessionState state, NSError *error){
-            
-            if (error) {
-                [[ProgressHud shared] hide];
-                UIAlertView *tmp = [[UIAlertView alloc]
-                                    initWithTitle:LString(@"FAILURE")
-                                    message:LString(@"CANNOT_CONNECT")
-                                    delegate:nil
-                                    cancelButtonTitle:nil
-                                    otherButtonTitles:LString(@"OK"), nil];
-                [tmp show];
-                
-            } else if (FB_ISSESSIONOPENWITHSTATE(state)) {
-                
-                [[FBRequest requestForMe] startWithCompletionHandler:
-                 ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
-                     if (!error) {
-                         fbUserId = user.objectID;
-                         [self promptUserWithAccountNameForStatusUpdate];
-                     }
-                     else
-                     {
-                         [[ProgressHud shared] hide];
-                         UIAlertView *tmp = [[UIAlertView alloc]
-                                             initWithTitle:LString(@"FAILURE")
-                                             message:LString(@"CANNOT_CONNECT")
-                                             delegate:nil
-                                             cancelButtonTitle:nil
-                                             otherButtonTitles:LString(@"OK"), nil];
-                         [tmp show];
-                     }
-                 }];
-            }
-        }];
-    }
-}
-
--(void)promptUserWithAccountNameForStatusUpdate {
-    
-    [FBWebDialogs
-     presentRequestsDialogModallyWithSession:[FBSession activeSession]
-     message:@"FBinviteMessage"
-     title:nil
-     parameters:nil
-     handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-         NSLog(@"result = %u",result);
-         
-         NSLog(@"error = %@",error);
-         
-         NSLog(@"resultURL = %@",resultURL);
-         
-     }
-     ];
-//    
-//    [fbFriendArray removeAllObjects];
-//    [fbFriendsIDArray removeAllObjects];
-//    
-//    [FBRequestConnection startWithGraphPath:@"/me/friends"
-//                                 parameters:nil
-//                                 HTTPMethod:@"GET"
-//                          completionHandler:^(
-//                                              FBRequestConnection *connection,
-//                                              id result,
-//                                              NSError *error
-//                                              ) {
-//                              /* handle the result */
-//                              NSLog(@"result%@",result);
-//                              NSArray* friends = [result objectForKey:@"data"];
-//                              
-//                              for (NSDictionary<FBGraphUser>* friend in friends) {
-//                                  [fbFriendsIDArray addObject:friend.id];
-//
-//                                  CheckUserModel *usermodel = [[CheckUserModel alloc]init];
-//                                  usermodel.Id = friend.id;
-//                                  usermodel.name = friend.name;
-//                                  usermodel.picture = [[[friend objectForKey:@"picture"]objectForKey:@"data"]objectForKey:@"url"];
-//                                  [fbFriendArray addObject:usermodel];
-//                              }
-//                              if(fbFriendsIDArray.count>0)
-//                                  [self performSelectorOnMainThread:@selector(callSendFriendsWebservice) withObject:nil waitUntilDone:NO];
-//                              else
-//                              {
-//                                  errorView.hidden = NO;
-//                                  errorLbl.text =LString(@"NO_FB_FRIEND_FOUND");
-//                              }
-//                          }];
-    
-}
 
 #pragma mark - Table View Delegates.
 
@@ -480,81 +388,78 @@
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-        static NSString *cellIdentifier=@"CellFacebook";
+    static NSString *cellIdentifier=@"CellFacebook";
+    
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if (cell == nil)
+    {
+        cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16,(INVITE_CELL_HEIGHT-40)/2, 40, 40 )];
+        profileImgView.backgroundColor = [UIColor whiteColor];
+        profileImgView.layer.cornerRadius=40/2;
+        profileImgView.clipsToBounds=YES;
+        profileImgView.tag=1000;
+        [cell.contentView addSubview:profileImgView];
         
-        UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        UILabel *profileNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 70 ,8, 180,INVITE_CELL_HEIGHT/2 - 5)];
+        profileNameLbl.textColor=UIColorFromRGB(0x333333);
+        profileNameLbl.tag=1001;
+        profileNameLbl.textAlignment=NSTextAlignmentLeft;
+        profileNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
+        profileNameLbl.backgroundColor=[UIColor clearColor];
+        [cell.contentView addSubview:profileNameLbl];
         
-        if (cell == nil)
+        UILabel *mailIDLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 70 ,CGRectGetMaxY(profileNameLbl.frame), 180,INVITE_CELL_HEIGHT/2 - 7)];
+        mailIDLbl.textColor=UIColorFromRGB(0x333333);
+        mailIDLbl.tag=1002;
+        mailIDLbl.textAlignment=NSTextAlignmentLeft;
+        mailIDLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
+        mailIDLbl.backgroundColor=[UIColor clearColor];
+        [cell.contentView addSubview:mailIDLbl];
+        
+        UIButton *inviteBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+        inviteBtn.frame=CGRectMake(CGRectGetMaxX(profileNameLbl.frame),10,60, 30);
+        inviteBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+        [inviteBtn setTitle:@"Invite" forState:UIControlStateNormal];
+        inviteBtn.tag = 1003;
+        inviteBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+        inviteBtn.titleLabel.textColor=UIColorFromRGB(0xffffff);
+        [inviteBtn setBackgroundImage:getImage(@"invite", NO) forState:UIControlStateNormal];
+        [inviteBtn addTarget:self action:@selector(callInviteFriendsService:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:inviteBtn];
+        
+        UIView *lineView=[[UIView alloc] initWithFrame:CGRectMake(70, INVITE_CELL_HEIGHT-1, baseViewWidth - 70, 1)];
+        lineView.backgroundColor=UIColorFromRGB(0xCCCCCC);
+        [cell.contentView addSubview:lineView];
+        
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         {
-            cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-            EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16,(INVITE_CELL_HEIGHT-40)/2, 40, 40 )];
-            profileImgView.backgroundColor = [UIColor whiteColor];
-            profileImgView.layer.cornerRadius=40/2;
-//            profileImgView.userInteractionEnabled=YES;
-            profileImgView.clipsToBounds=YES;
-            profileImgView.tag=1000;
-            [cell.contentView addSubview:profileImgView];
-            
-            UILabel *profileNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 70 ,8, 180,INVITE_CELL_HEIGHT/2 - 5)];
-            profileNameLbl.textColor=UIColorFromRGB(0x333333);
-            //            profileNameLbl.numberOfLines=0;
-            profileNameLbl.tag=1001;
-            profileNameLbl.textAlignment=NSTextAlignmentLeft;
-            profileNameLbl.font=[UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
-            profileNameLbl.backgroundColor=[UIColor clearColor];
-            [cell.contentView addSubview:profileNameLbl];
-            
-            UILabel *mailIDLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 70 ,CGRectGetMaxY(profileNameLbl.frame), 180,INVITE_CELL_HEIGHT/2 - 7)];
-            mailIDLbl.textColor=UIColorFromRGB(0x333333);
-            //            mailIDLbl.numberOfLines=0;
-            mailIDLbl.tag=1002;
-            mailIDLbl.textAlignment=NSTextAlignmentLeft;
-            mailIDLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
-            mailIDLbl.backgroundColor=[UIColor clearColor];
-            [cell.contentView addSubview:mailIDLbl];
-            
-            UIButton *inviteBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-            inviteBtn.frame=CGRectMake(CGRectGetMaxX(profileNameLbl.frame),10,60, 30);
-            inviteBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-            [inviteBtn setTitle:@"Invite" forState:UIControlStateNormal];
-            inviteBtn.tag = 1003;
-            inviteBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-            inviteBtn.titleLabel.textColor=UIColorFromRGB(0xffffff);
-            [inviteBtn setBackgroundImage:getImage(@"invite", NO) forState:UIControlStateNormal];
-            [inviteBtn addTarget:self action:@selector(callInviteFriendsService:) forControlEvents:UIControlEventTouchUpInside];
-            [cell.contentView addSubview:inviteBtn];
-            
-            UIView *lineView=[[UIView alloc] initWithFrame:CGRectMake(70, cell.frame.size.height + 6, baseViewWidth - 70, 1)];
-            lineView.backgroundColor=UIColorFromRGB(0xCCCCCC);
-            [cell.contentView addSubview:lineView];
-            
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            
-            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            for (id obj in cell.subviews)
             {
-                for (id obj in cell.subviews)
+                if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
                 {
-                    if ([NSStringFromClass([obj class]) isEqualToString:@"UITableViewCellScrollView"])
-                    {
-                        UIScrollView *scroll = (UIScrollView *) obj;
-                        scroll.delaysContentTouches = NO;
-                        break;
-                    }
+                    UIScrollView *scroll = (UIScrollView *) obj;
+                    scroll.delaysContentTouches = NO;
+                    break;
                 }
             }
         }
+    }
     if(isFacebook)
     {
-        CheckUserModel *fbuser = [fbFriendArray objectAtIndex:indexPath.row];
+        CheckUserModel *gplusUser = [fbFriendArray objectAtIndex:indexPath.row];
         
         EGOImageView *profileImgView=(EGOImageView *)[cell.contentView viewWithTag:1000];
         UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
         UILabel *mailIDLbl=(UILabel *)[cell.contentView viewWithTag:1002];
+        profileNameLbl.height = INVITE_CELL_HEIGHT-16;
         
-//        NSLog(@"picture url = %@",fbuser.picture);
-        profileImgView.imageURL = [NSURL URLWithString:fbuser.picture];
-        profileNameLbl.text=fbuser.name;
-        mailIDLbl.text=@"sample@mail.com";
+         profileNameLbl.text = gplusUser.name;
+         profileImgView.imageURL = [NSURL URLWithString:gplusUser.picture];
+         mailIDLbl.text=@"";
     }
     else
     {
@@ -563,8 +468,8 @@
         EGOImageView *profileImgView=(EGOImageView *)[cell.contentView viewWithTag:1000];
         UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
         UILabel *mailIDLbl=(UILabel *)[cell.contentView viewWithTag:1002];
-        
-//        NSLog(@"%@ %@",contactuser.name,contactuser.email);
+        profileNameLbl.height = INVITE_CELL_HEIGHT/2 - 5;
+        //        NSLog(@"%@ %@",contactuser.name,contactuser.email);
         if(contactuser.contactImage)
             profileImgView.image = contactuser.contactImage;
         else
@@ -573,8 +478,8 @@
         mailIDLbl.text=contactuser.email;
     }
     
-        return cell;
-   
+    return cell;
+    
 }
 
 #pragma mark - mail compose delegate
@@ -589,6 +494,137 @@
     [self.navigationController  dismissViewControllerAnimated:YES completion:NULL];
 }
 
+#pragma mark - Helper methods
+
+-(void)googleSignin
+{
+    NETWORK_TEST_PROCEDURE;
+    
+    
+    GPPSignIn *signIn = [GPPSignIn sharedInstance];
+
+//        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+        signIn.shouldFetchGooglePlusUser = YES;
+        signIn.shouldFetchGoogleUserEmail = YES;  // Uncomment to get the user's email
+        signIn.clientID = GOOGLE_CLIENT_ID;
+        
+        // Uncomment one of these two statements for the scope you chose in the previous step
+        signIn.scopes = @[ kGTLAuthScopePlusLogin ];  // "https://www.googleapis.com/auth/plus.login" scope
+        // signIn.scopes = @[ @"profile" ];            // "profile" scope
+        
+        // Optional: declare signIn.actions, see "app activities"
+        signIn.delegate = self;
+        [GPPDeepLink readDeepLinkAfterInstall];
+        if(![signIn trySilentAuthentication])
+            [signIn authenticate];
+}
+
+- (void)listPeople:(NSString *)collection {
+    
+    _peopleList = nil;
+    _peopleImageList = nil;
+
+    
+    // 1. Create a |GTLQuery| object to list people that are visible to this
+    // sample app.
+    GTLQueryPlus *query =
+    [GTLQueryPlus queryForPeopleListWithUserId:@"me"
+                                    collection:collection];
+    
+    // 2. Execute the query.
+    [[[GPPSignIn sharedInstance] plusService] executeQuery:query
+                                         completionHandler:^(GTLServiceTicket *ticket,
+                                                             GTLPlusPeopleFeed *peopleFeed,
+                                                             NSError *error)
+     {
+         if (error)
+         {
+             GTMLoggerError(@"Error: %@", error);
+             errorLbl.text = [NSString stringWithFormat:@"Error: %@", error];
+             [facebookTable reloadData];
+         }
+         else
+         {
+             // Get an array of people from |GTLPlusPeopleFeed| and reload
+             // the table view.
+             
+             [fbFriendsIDArray removeAllObjects];
+             [fbFriendArray removeAllObjects];
+             
+             for (GTLPlusPerson *person in peopleFeed.items) {
+                 
+                 [fbFriendsIDArray addObject:person.identifier];
+                 
+                 CheckUserModel *usermodel = [[CheckUserModel alloc]init];
+                 usermodel.Id =person.identifier;
+                 usermodel.name = person.displayName;
+                 usermodel.picture = person.image.url;
+                 
+                 [fbFriendArray addObject:usermodel];
+             }
+             
+             if(fbFriendsIDArray.count>0)
+             {
+                 errorView.hidden = NO;
+                 [self performSelectorOnMainThread:@selector(callSendFriendsWebservice) withObject:nil waitUntilDone:NO];
+             }
+             else
+             {
+                 errorView.hidden = NO;
+                 errorLbl.text =LString(@"NO_FB_FRIEND_FOUND");
+                 [[ProgressHud shared] hide];
+             }
+             
+         }
+     }];
+}
+
+#pragma mark - GooglePlus methods
+
+- (void)finishedWithAuth: (GTMOAuth2Authentication *)auth error: (NSError *) error {
+    
+    // NSLog(@"Received error %@ and auth object %@",error, auth);
+    
+    if(error) {
+//        [[ProgressHud shared] hide];
+        [UIAlertView alertViewWithMessage:LString(@"GOOGLE_ERROR")];
+        
+    } else {
+        
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+
+        GTLServicePlus* plusService = [[GTLServicePlus alloc] init] ;
+        plusService.retryEnabled = YES;
+        [plusService setAuthorizer:[GPPSignIn sharedInstance].authentication];
+        
+        [self listPeople:kGTLPlusCollectionVisible];
+        
+    }
+}
+
+- (void)finishedSharingWithError:(NSError *)error
+{
+    if(!error)
+    {
+        NETWORK_TEST_PROCEDURE
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+        
+        NSDictionary *queryParams = @{
+                                      @"GoogleId"            :  NSNonNilString(fbUserId),
+                                      };
+        
+        TLFriendsInviteManager *inviteFriend = [[TLFriendsInviteManager alloc]init];
+        inviteFriend.delegate = self;
+        [inviteFriend callService:queryParams];
+    }
+    else
+        if(error.code!=-401)
+            [UIAlertView alertViewWithMessage:[NSString stringWithFormat:@"%@", [error localizedDescription]]];
+}
+- (void)finishedSharing:(BOOL)shared
+{
+    
+}
 
 #pragma  mark - TLFacebookIDManager Delegate Methods
 
@@ -596,29 +632,35 @@
 {
     
     [[ProgressHud shared] hide];
-    NSLog(@"_fbfriendsList = %@",_fbfriendsList);
     
-    NSMutableArray *invitableFriends = [[NSMutableArray alloc]init];
-    int i = 0;
-    for(CheckUserModel *checkfriend in _fbfriendsList)
-    {
-        CheckUserModel *invitableFriend = [fbFriendArray objectAtIndex:i];
-        invitableFriend.AlreadyInvited = checkfriend.AlreadyInvited;
-        [invitableFriends addObject:invitableFriend];
-        i++;
-    }
-    [fbFriendArray removeAllObjects];
-    i = 0;
-    NSLog(@"[fbFriendArray count] = %d",[fbFriendArray count]);
-    for(int j =0;j<[invitableFriends count];j++)
-    {
-        CheckUserModel *checkfriend = [invitableFriends objectAtIndex:j];
-        NSLog(@"AlreadyInvited = %d",checkfriend.AlreadyInvited.intValue);
-        if(!checkfriend.AlreadyInvited.intValue)
-        {
-            [fbFriendArray addObject:checkfriend];
-        }
-    }
+    NSArray *serverTrackResult = [_fbfriendsList bk_select:^BOOL(id obj) {
+        
+        CheckUserModel *checkfriend = obj;
+        if(checkfriend.AlreadyInvited.intValue==0)
+            return YES;
+        else
+            return NO;
+    }];
+    
+    NSMutableArray *invitableFriends = [fbFriendArray mutableCopy];
+     [fbFriendArray removeAllObjects];
+    
+    fbFriendArray = [[invitableFriends bk_select:^BOOL(id obj) {
+        
+         CheckUserModel *checkfriend1 = obj;
+        
+       return [serverTrackResult bk_any:^BOOL(id obj1) {
+            
+            CheckUserModel *checkfriend = obj1;
+
+            if([checkfriend.Id isEqualToString:checkfriend1.Id])
+                return YES;
+            else
+                return NO;
+        }];
+        
+    }]mutableCopy];
+    
     if(fbFriendArray.count==0)
     {
         errorView.hidden = NO;
@@ -628,9 +670,10 @@
     {
         errorView.hidden = YES;
     }
-   
+    
     [facebookTable reloadData];
 }
+
 - (void)fbIDManager:(TLFacebookIDManager *)fbIDManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     errorView.hidden = NO;
@@ -639,51 +682,37 @@
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
 }
+
 - (void)fbIDManagerFailed:(TLFacebookIDManager *)fbIDManager
 {
     errorView.hidden = NO;
-    errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");  
+    errorLbl.text = LString(@"SERVER_CONNECTION_ERROR");
     
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
-
 #pragma  mark - TLFriendsInviteManager Delegate Methods
 
 - (void)inviteManagerSuccess:(TLFriendsInviteManager *)inviteManager withinviteStatus:(NSString*)invitemessage
 {
-   // FriendsListModel *friend = [fbFriendArray objectAtIndex:selectedIndex];
-//    
-//    NSMutableDictionary *parmaDic = [NSMutableDictionary dictionaryWithCapacity:4];
-//    [parmaDic setObject:[NSString stringWithFormat:@"hello world"] forKey:@"message"]; // if you want send message
-//    [parmaDic setObject:@"http://icon.png" forKey:@"picture"];  // if you want send picture
-//    [parmaDic setObject:@"Create post" forKey:@"name"];         // if you want send name
-//    [parmaDic setObject:@"Write description." forKey:@"description"]; // if you want  description
-//    
-//    [FBRequestConnection requestWithGraphPath:[NSString stringWithFormat:@"/%@/feed",friend.Id]
-//                          andParams:parmaDic
-//                      andHttpMethod:@"POST"
-//                        andDelegate:self];
-    
     
     [fbFriendArray removeObjectAtIndex:selectedIndex];
     [facebookTable reloadData];
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:invitemessage];
-    
+    [UIAlertView alertViewWithMessage:@"Invitation has been sent successfully"];
     
 }
 - (void)inviteManager:(TLFriendsInviteManager *)inviteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
-
+    
 }
 - (void)inviteManagerFailed:(TLFriendsInviteManager *)inviteManager
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-
+    
 }
 @end

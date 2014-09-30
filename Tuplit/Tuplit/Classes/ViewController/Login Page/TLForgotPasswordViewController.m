@@ -40,6 +40,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    textEmail.autocorrectionType = UITextAutocorrectionTypeNo;
+    
     [self.navigationItem setTitle:LString(@"FORGOT_PASSWORD")];
     
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -137,7 +139,7 @@
 - (void)forgotPasswordManager:(TLForgotPasswordManager *)forgotPasswordManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)forgotPasswordManagerFailed:(TLForgotPasswordManager *)forgotPasswordManager {

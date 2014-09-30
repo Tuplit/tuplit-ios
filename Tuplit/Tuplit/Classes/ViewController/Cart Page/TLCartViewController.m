@@ -38,7 +38,7 @@
         [navleftButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(presentLeftMenuViewController:) isLeft:NO];
         [self.navigationItem setLeftBarButtonItem:navleftButton];
     }
-   
+    
     self.view.backgroundColor=[UIColor whiteColor];
     
     baseViewWidth=self.view.frame.size.width;
@@ -163,9 +163,7 @@
     [errorLbl setText:@"No items in cart."];
     [errorView addSubview:errorLbl];
     
-    numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+    numberFormatter = [TuplitConstants getCurrencyFormat];
     
     if (numberOfCell != 0 )
     {
@@ -193,13 +191,12 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
+    [self updateCart];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self updateCart];
     
 }
 - (void)didReceiveMemoryWarning
@@ -388,7 +385,7 @@
 
 -(void) performAction
 {
-    if([TLUserDefaults getCurrentUser].Passcode)
+    if([TLUserDefaults getCurrentUser].Passcode.boolValue)
     {
         TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
         verifyPINVC.isverifyPin = YES;
@@ -451,30 +448,32 @@
              
              TLTopUpViewController *topupVC = [[TLTopUpViewController alloc] init];
              topupVC.viewController = self;
-             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
-             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-             [APP_DELEGATE.slideMenuController hideMenuViewController];
+             [self.navigationController pushViewController:topupVC animated:YES];
+             
+//             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
+//             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//             [APP_DELEGATE.slideMenuController hideMenuViewController];
          }
                                onCancel:^()
          {
              
          }];
+        
+        //        [UIAlertView alertViewWithMessage:paymentModel.Message];
+        [[ProgressHud shared] hide];
+    }
+    else
+    {
+        [self callWebserviceForOrderItems];
+        
+    }
     
-    //        [UIAlertView alertViewWithMessage:paymentModel.Message];
-    [[ProgressHud shared] hide];
-}
-else
-{
-    [self callWebserviceForOrderItems];
-    
-}
-
 }
 
 - (void)checkBalanceManager:(TLCheckBalanceManager *)checkBalanceManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)checkBalanceManagerFailed:(TLCheckBalanceManager *)checkBalanceManager {
@@ -504,7 +503,7 @@ else
 - (void)createOrdersManager:(TLCreateOrdersManager *)createOrdersManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
     [[ProgressHud shared] hide];
-     [UIAlertView alertViewWithMessage:errorMsg];
+    [UIAlertView alertViewWithMessage:errorMsg];
 }
 
 - (void)createOrdersManagerFailed:(TLCreateOrdersManager *)createOrdersManager {

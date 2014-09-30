@@ -7,6 +7,8 @@
 //
 
 #import "TLFriendsViewController.h"
+#import "NSArray+BlocksKit.h"
+#define INVITEBTN_Y_POS 20
 
 @interface TLFriendsViewController ()
 {
@@ -18,7 +20,7 @@
     UILabel *errorLbl;
     UIView *errorView;
     
-     TLFriendsListingManager *friendsManager;
+    TLFriendsListingManager *friendsManager;
 }
 
 @end
@@ -58,17 +60,12 @@
     baseView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:baseView];
     
-//    UIView *lineView1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, searchbarView.frame.size.width, 0.5)];
-//    [lineView1 setBackgroundColor:[UIColor grayColor]];
-//    [contentView addSubview:lineView1];
-
-    
     //SearchBar View
     searchbarView = [[UIView alloc] initWithFrame:CGRectMake(0,0,baseView.frame.size.width,40)];
     searchbarView.backgroundColor = [UIColor whiteColor];
     searchbarView.hidden = YES;
     [baseView addSubview:searchbarView];
-
+    
     searchTxt = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, searchbarView.frame.size.width - 10, searchbarView.frame.size.height)];
     searchTxt.delegate = self;
     searchTxt.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
@@ -77,6 +74,8 @@
     searchTxt.placeholder = @"Search";
     [searchTxt addTarget:self action:@selector(searchTxtAction) forControlEvents:UIControlEventEditingChanged];
     searchTxt.textAlignment = NSTextAlignmentLeft;
+    searchTxt.clearButtonMode = UITextFieldViewModeUnlessEditing;
+    [searchTxt setReturnKeyType:UIReturnKeySearch];
     
     UIView *lineView2 = [[UIView alloc] initWithFrame:CGRectMake(0, searchbarView.frame.size.height, searchbarView.frame.size.width, 1)];
     [lineView2 setBackgroundColor:[UIColor lightGrayColor]];
@@ -99,15 +98,15 @@
     [searchTxt setLeftViewMode:UITextFieldViewModeAlways];
     
     inviteFriendsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    inviteFriendsBtn.frame=CGRectMake(15, 20,290,45);
+    inviteFriendsBtn.frame=CGRectMake(15, INVITEBTN_Y_POS,290,45);
     [inviteFriendsBtn setTitle:LString(@"INVITE_FRIENDS") forState:UIControlStateNormal];
     inviteFriendsBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
     [inviteFriendsBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     inviteFriendsBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     [inviteFriendsBtn addTarget:self action:@selector(inviteFriendsAction:) forControlEvents:UIControlEventTouchUpInside];
     [inviteFriendsBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
-    [baseView addSubview:inviteFriendsBtn];   
-
+    [baseView addSubview:inviteFriendsBtn];
+    
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         adjustHeight = 64;
@@ -116,7 +115,7 @@
     {
         adjustHeight = 44;
     }
-
+    
     friendsTable=[[UITableView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18) style:UITableViewStylePlain];
     friendsTable.delegate=self;
     friendsTable.dataSource=self;
@@ -148,7 +147,7 @@
     [errorView addSubview:errorLbl];
     
     isSearchShown = NO;
-
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -185,32 +184,37 @@
     
     NETWORK_TEST_PROCEDURE
     
-    if (isFriendsWebserviceRunning) {
-        return;
-    }
+    //    if (isFriendsWebserviceRunning) {
+    //        return;
+    //    }
+//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+//    
+//    dispatch_async(queue, ^{
     
-    isFriendsWebserviceRunning = YES;
-    
-    if (showProgressIndicator) {
-        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    }
-    if (friendsManager==nil) {
-        friendsManager = [[TLFriendsListingManager alloc]init];
-    }
-    
-    NSString *searchText;
-    if(searchbarView.hidden)
-        searchText = @"";
-    else
-        searchText = searchTxt.text;
-    
-    NSDictionary *queryParams = @{
-                                  @"Search"            :  NSNonNilString(searchText),
-                                  @"Start"             :  NSNonNilString([NSString stringWithFormat:@"%ld",start]),
-                                  };
-
-    friendsManager.delegate = self;
-    [friendsManager callService:queryParams];
+        isFriendsWebserviceRunning = YES;
+        
+        if (showProgressIndicator) {
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+        }
+        if (friendsManager==nil) {
+            friendsManager = [[TLFriendsListingManager alloc]init];
+        }
+        
+        NSString *searchText;
+        if(searchbarView.hidden)
+            searchText = @"";
+        else
+            searchText = searchTxt.text;
+        
+        NSDictionary *queryParams = @{
+                                      @"Search"            :  NSNonNilString(searchText),
+                                      @"Start"             :  NSNonNilString([NSString stringWithFormat:@"%ld",start]),
+                                      };
+        
+        friendsManager.delegate = self;
+        [friendsManager cancelRequest];
+        [friendsManager callService:queryParams];
+//    });
 }
 -(void) refreshTableView:(id) sender {
     
@@ -243,26 +247,32 @@
         {
             isSearchShown = YES;
             
-            inviteFriendsBtn.hidden = YES;
+//            inviteFriendsBtn.hidden = YES;
             searchbarView.hidden = NO;
-
-            friendsTable.frame = CGRectMake(0,CGRectGetMaxY(searchbarView.frame)+1,baseViewWidth, baseViewHeight-CGRectGetMaxY(searchbarView.frame) - adjustHeight - 1);
-            errorView.frame = CGRectMake(0,CGRectGetMaxY(searchbarView.frame)+1,baseViewWidth, baseViewHeight-CGRectGetMaxY(searchbarView.frame) - adjustHeight - 1);
+            [inviteFriendsBtn positionAtY:CGRectGetMaxY(searchbarView.frame)+10];
+            
+            friendsTable.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame)+1,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 11);
+            errorView.frame = friendsTable.frame;
             errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
         }
         else
         {
-             [searchTxt resignFirstResponder];
-            isSearchShown = NO;
+            if(searchTxt.isFirstResponder)
+                [searchTxt resignFirstResponder];
+            else
+            {
+                isSearchShown = NO;
+                //            inviteFriendsBtn.hidden = NO;
+                searchbarView.hidden = YES;
+                
+                [inviteFriendsBtn positionAtY:INVITEBTN_Y_POS];
+                
+                friendsTable.frame =  CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
+                errorView.frame = friendsTable.frame;
+                errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+            }
             
-            inviteFriendsBtn.hidden = NO;
-            searchbarView.hidden = YES;
-            
-            friendsTable.frame =  CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
-            errorView.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
-            errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
-            [self callFriendslistWebserviceWithstartCount:0 showProgress:YES];
-
+             searchTxt.text = @"";
         }
         
     }];
@@ -272,26 +282,44 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    friendsTable.frame = CGRectMake(0,searchbarView.frame.size.height+1,baseViewWidth, baseViewHeight-adjustHeight-searchbarView.frame.size.height-216) ;
-    errorView.frame = CGRectMake(0,searchbarView.frame.size.height+1,baseViewWidth, baseViewHeight-adjustHeight-searchbarView.frame.size.height-216) ;
-    errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+    [UIView animateWithDuration:0.35 animations:^{
+        friendsTable.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame)+1,baseViewWidth, baseViewHeight-adjustHeight-CGRectGetMaxY(inviteFriendsBtn.frame)-216) ;
+        errorView.frame = friendsTable.frame;
+        errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+    }];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-     friendsTable.frame = CGRectMake(0,searchbarView.frame.size.height+1,baseViewWidth, baseViewHeight-searchbarView.frame.size.height - adjustHeight) ;
-    errorView.frame = CGRectMake(0,searchbarView.frame.size.height+1,baseViewWidth, baseViewHeight-searchbarView.frame.size.height - adjustHeight) ;
-    errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+    [UIView animateWithDuration:0.35 animations:^{
+        if(isSearchShown)
+        {
+            friendsTable.frame =  CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
+            errorView.frame = friendsTable.frame;
+            errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+        }
+        
+    }];
+    [self searchTxtAction] ;
+}
+
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    
+    [searchTxt resignFirstResponder];
+//    isSearchShown = NO;
+    
+    return YES;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
 {
-    if (textField.text.length >= 3)
+    NSString* searchString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    searchTxt.text = searchString;
+    if (searchString.length >= 3)
         [self callFriendslistWebserviceWithstartCount:0 showProgress:NO];
-//    else if (textField.text.length == 0)
-//        [self callFriendslistWebserviceWithstartCount:0 showProgress:YES];
     
-    return YES;
+    return NO;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -334,8 +362,8 @@
     FriendsListModel *friend = [friendsArray objectAtIndex:indexPath.row];
     
     NSString *cellIdentifier=@"CellWithComName";
-      if(friend.CompanyName.length==0)
-           cellIdentifier=@"CellWithoutComName";
+    if(friend.CompanyName.length==0)
+        cellIdentifier=@"CellWithoutComName";
     
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
@@ -347,7 +375,7 @@
         EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16, 2, 45, FRIENDS_CEL_HEIGHT -1 -5 )];
         profileImgView.backgroundColor = [UIColor whiteColor];
         profileImgView.layer.cornerRadius=45/2;
-//        profileImgView.userInteractionEnabled=YES;
+        //        profileImgView.userInteractionEnabled=YES;
         profileImgView.clipsToBounds=YES;
         profileImgView.tag=1000;
         [cell.contentView addSubview:profileImgView];
@@ -379,19 +407,19 @@
         lineView.backgroundColor=UIColorFromRGB(0xCCCCCC);
         [cell.contentView addSubview:lineView];
         
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        
     }
     
     EGOImageView *profileImgView=(EGOImageView *)[cell.contentView viewWithTag:1000];
     UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
     UILabel *companyNameLbl=(UILabel *)[cell.contentView viewWithTag:1002];
-
+    
     profileImgView.imageURL = [NSURL URLWithString:friend.Photo];
     profileNameLbl.text=[[NSString stringWithFormat:@"%@ %@",friend.FirstName,friend.LastName]stringWithTitleCase];
     
     if([cellIdentifier isEqualToString:@"CellWithoutComName"])
-        profileNameLbl.height = cell.contentView.frame.size.height-1;
+        profileNameLbl.height = cell.contentView.frame.size.height-10;
     else
         companyNameLbl.text=friend.CompanyName;
     
@@ -400,6 +428,9 @@
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DISMISS_KEYBOARD;
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     FriendsListModel *friend  = [friendsArray objectAtIndex:indexPath.row];
     TLOtherUserProfileViewController *otherUserProfile = [[TLOtherUserProfileViewController alloc]init];
     otherUserProfile.userID = friend.Id;
@@ -468,7 +499,7 @@
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
     
-     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

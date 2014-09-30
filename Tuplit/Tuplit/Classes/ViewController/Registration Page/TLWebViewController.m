@@ -35,7 +35,7 @@
     if([viewController isKindOfClass:[TLSettingsViewController class]])
     {
         if([self.titleString isEqualToString:LString(@"TERMS_OF_SERVICE")])
-        [self.navigationItem setTitle:@"Terms of Use"];
+            [self.navigationItem setTitle:@"Terms of Use"];
     }
     
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -50,10 +50,10 @@
         
         [self.webView loadHTMLString:[Global instance].privacyContent baseURL:nil];
     } else if([self.titleString isEqualToString:LString(@"FAQ")]) {
-//        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[Global instance].faqUrl]]];
+        //        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[Global instance].faqUrl]]];
         [self.webView loadHTMLString:[Global instance].faqUrl baseURL:nil];
     }
-//    [self.webView loadHTMLString:[Global instance].termsContent baseURL:nil];
+    //    [self.webView loadHTMLString:[Global instance].termsContent baseURL:nil];
     
     UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
     [back backButtonWithTarget:self action:@selector(backButtonAction:)];

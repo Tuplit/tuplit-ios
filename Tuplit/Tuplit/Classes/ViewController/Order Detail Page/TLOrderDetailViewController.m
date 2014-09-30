@@ -241,7 +241,7 @@
 }
 -(void)acceptOrderAction
 {
-    if([TLUserDefaults getCurrentUser].Passcode)
+    if([TLUserDefaults getCurrentUser].Passcode.boolValue)
     {
         TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
         verifyPINVC.isverifyPin = YES;

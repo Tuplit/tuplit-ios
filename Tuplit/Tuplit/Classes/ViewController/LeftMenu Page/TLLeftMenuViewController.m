@@ -59,10 +59,10 @@
     [menuModel4 setTitle:LString(@"FRIENDS")];
     [menuArray addObject:menuModel4];
     
-   for(FriendsModel *order in APP_DELEGATE.friendsRecentOrders)
-   {
-       [menuArray addObject:order];
-   }
+    for(FriendsModel *order in APP_DELEGATE.friendsRecentOrders)
+    {
+        [menuArray addObject:order];
+    }
     
     MenuModel *menuModel5 = [[MenuModel alloc] init];
     [menuModel5 setImage:@"MenuSettings"];
@@ -106,9 +106,7 @@
     [tableHeader setFrame:CGRectMake(0, 0, tableHeaderWidth, CGRectGetMaxY(creditBalanceLbl.frame) + 20)];
     self.tableView.tableHeaderView = tableHeader;
     
-    numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
+    numberFormatter = [TuplitConstants getCurrencyFormat];
     
     [self.view setBackgroundColor:[UIColor clearColor]];
     
@@ -182,7 +180,7 @@
 {
     CGPoint buttonPosition = [(EGOImageView*)gesture.view convertPoint:CGPointZero toView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonPosition];
-
+    
     FriendsModel *order = [menuArray objectAtIndex:indexPath.row];
     
     TLOtherUserProfileViewController *friendProfileVC = [[TLOtherUserProfileViewController alloc] init];
@@ -315,7 +313,7 @@
         UILabel *labelName = (UILabel*)[cell.contentView viewWithTag:2001];
         
         [iconView setImageURL:[NSURL URLWithString:friendModel.Photo]];
-    
+        
         NSString *userName = [[NSString stringWithFormat:@"%@",friendModel.FriendName]stringWithTitleCase];
         NSString *staticText = @"shopped at";
         
@@ -324,7 +322,7 @@
         [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xFFFFFF) range:NSMakeRange(0, userName.length)];
         [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xb8e5e2) range:NSMakeRange(userName.length + 1, staticText.length)];
         [aString addAttribute:NSForegroundColorAttributeName value:UIColorFromRGB(0xFFFFFF) range:NSMakeRange(userName.length + staticText.length + 2, friendModel.MerchantName.length)];
-    
+        
         labelName.attributedText = aString;
     }
     
@@ -338,7 +336,7 @@
 {
     
     if (indexPath.row == 0) {
-     
+        
         TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];

@@ -103,7 +103,7 @@
     
     NSArray *recentActivityArray = [[NSArray alloc] init];
     NSArray *commentsArray = [[NSArray alloc] init];
-
+    
     if(userdeatilmodel.Orders.count>0)
     {
         recentActivityArray = userdeatilmodel.Orders;
@@ -140,7 +140,7 @@
 -(void) allTransaction
 {
     TLAllTransactionsViewController *allTransViewControl=[[TLAllTransactionsViewController alloc] init];
-     allTransViewControl.userID = userModel.UserId;
+    allTransViewControl.userID = userModel.UserId;
     [self.navigationController pushViewController:allTransViewControl animated:YES];
 }
 
@@ -182,7 +182,7 @@
     {
         UserCommentsModel *comments = [[mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]]objectAtIndex:indexPath.row];
         float cmtLblHeight = [comments.CommentsText heigthWithWidth:self.view.frame.size.width-120 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12.0]];
-        return cmtLblHeight + 35;
+        return cmtLblHeight + 25;
     }
     return PROFILE_CELL_HEIGHT;
 }
@@ -217,7 +217,7 @@
     rightHeaderNameLbl.userInteractionEnabled=YES;
     rightHeaderNameLbl.backgroundColor=[UIColor clearColor];
     
-   if(section == 1)
+    if(section == 1)
     {
         if(totalOrders>3)
         {
@@ -268,16 +268,16 @@
         userIDLbl.text = userModel.UserId;
         [sendCreditBtn setTitle:[NSString stringWithFormat:@"Send credit to %@",[userModel.FirstName stringWithTitleCase]] forState:UIControlStateNormal];
         [sendCreditBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
-
+        
         
     }
     else if (indexPath.section == 1)
     {
         EGOImageView *merchantIconImgView=(EGOImageView *)[cell.contentView viewWithTag:2000];
         UILabel *merchantNameLbl=(UILabel*) [cell.contentView viewWithTag:2001];
-//        UILabel *numberofItemLbl=(UILabel*) [cell.contentView viewWithTag:2002];
+        //        UILabel *numberofItemLbl=(UILabel*) [cell.contentView viewWithTag:2002];
         UILabel *transactionDateLbl=(UILabel*) [cell.contentView viewWithTag:2003];
-//        UILabel *totalAmountLbl=(UILabel*) [cell.contentView viewWithTag:2004];
+        //        UILabel *totalAmountLbl=(UILabel*) [cell.contentView viewWithTag:2004];
         
         RecentActivityModel *recentActivity = [[mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]]objectAtIndex:indexPath.row];
         

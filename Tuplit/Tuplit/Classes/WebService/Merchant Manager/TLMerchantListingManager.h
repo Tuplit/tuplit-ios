@@ -19,8 +19,6 @@
 
 @interface TLMerchantListingManager : NSObject
 
--(void) callService:(TLMerchantListingModel*) merchantListingModel;
-
 @property(nonatomic, unsafe_unretained) id <TLMerchantListingManagerDelegate> delegate;
 @property(nonatomic, copy) TLMerchantListingModel* merchantListModel;
 @property(nonatomic, copy) NSArray *merchantArray;
@@ -28,5 +26,6 @@
 @property(nonatomic, assign) long totalCount;
 
 -(void) cancelRequest;
+-(void) callService:(TLMerchantListingModel*) merchantListingModel;
 
 @end

@@ -38,10 +38,17 @@ AFHTTPRequestOperation *operation;
     NSLog(@"Method  : %@", request.HTTPMethod);
     NSLog(@"QueryParams : %@",queryParams);
     
+    NSDate *start=[NSDate date];
+    
 	operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
   	[operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"FavListingResponsetime = %f",ellapsedSeconds);
+        
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
@@ -75,6 +82,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"IsGoldenTag" : @"IsGoldenTag",
                                                                   @"Category" : @"Category",
                                                                   @"TotalUsersShopped" : @"TotalUsersShopped",
+                                                                  @"TagType" : @"TagType",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };

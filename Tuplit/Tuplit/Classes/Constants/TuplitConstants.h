@@ -100,6 +100,7 @@
 #define CHECK_FRIENDS_URL           RESOURCE_URL @"/v1/users/checkfriends"
 #define INVITE_FRIENDS_URL          RESOURCE_URL @"/v1/invites/"
 #define SETTINGS_URL                RESOURCE_URL @"/v1/users/settings"
+#define CURRENT_LOCATION_URL        RESOURCE_URL @"/v1/users/currentLocation"
 
 /****** Notifications **************/
 

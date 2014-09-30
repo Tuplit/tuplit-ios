@@ -16,6 +16,12 @@
 + (void)setCurrentUser:(UserModel*)user_;
 + (UserModel*)getCurrentUser;
 
++ (void)setRememberMeDetails:(NSDictionary*)dict;
++ (NSDictionary*)getRememberedDict;
+
++ (void)setIsRememberMe:(BOOL)isRememberMe;
++ (BOOL)IsRememberMe;
+
 + (void)setIsGuestUser:(BOOL)isSkipped_;
 + (BOOL)isGuestUser;
 
@@ -42,5 +48,6 @@
 
 + (void)setIsPINCodeEnabled:(BOOL)isEnabled;
 + (BOOL)isPINCodeEnabled;
+
 
 @end

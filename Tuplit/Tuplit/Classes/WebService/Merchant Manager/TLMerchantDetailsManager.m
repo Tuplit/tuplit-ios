@@ -33,10 +33,17 @@ AFHTTPRequestOperation *operation;
                                   };
     
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
+    
+    NSDate *start=[NSDate date];
+  
 	operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"MerchantDetailResponsetime = %f",ellapsedSeconds);
         
         NSData *data = [operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         
@@ -159,6 +166,8 @@ AFHTTPRequestOperation *operation;
                                                                   @"OrderedFriendsCount" : @"OrderedFriendsCount",
                                                                   @"CustomersCount" : @"CustomersCount",
                                                                   @"IsGoldenTag"  : @"IsGoldenTag",
+                                                                  @"slideshow" : @"slideshow",
+                                                                  @"TagType" : @"TagType",
                                                                   
                                                                   }];
             

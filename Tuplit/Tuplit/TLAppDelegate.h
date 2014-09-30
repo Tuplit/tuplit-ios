@@ -38,6 +38,7 @@
 @property (strong, nonatomic) NSString *merchantID;
 @property (assign, nonatomic) BOOL isUserProfileEdited,isFavoriteChanged;
 @property (strong, nonatomic) NSMutableDictionary *catgDict;
+@property (strong, nonatomic) NSDictionary *loginDetails;
 
 - (void)showNoConnectivityAlertAndQuit:(BOOL)shouldQuit;
 

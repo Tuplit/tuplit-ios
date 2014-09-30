@@ -25,10 +25,16 @@
     
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:nil];
     
+    NSDate *start=[NSDate date];
+
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDate *end=[NSDate date];
+        double ellapsedSeconds= [end timeIntervalSinceDate:start];
+        NSLog(@"StaticContentResponsetime = %f",ellapsedSeconds);
         
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
@@ -57,6 +63,12 @@
                     obj.termsContent = dict[@"Content"];
                 else if([[dict valueForKey:@"PageName"] isEqualToString:@"FAQ"])
                     obj.faqUrl = dict[@"Content"];
+                else if([[dict valueForKey:@"PageName"] isEqualToString:@"Legal"])
+                {
+                    NSString *legalContent = [NSString stringWithFormat:@"%@", dict[@"Content"]];
+                    if(legalContent.length>0)
+                        obj.termsContent = legalContent;
+                }
             }
             
             array = [[responseJSON objectForKey:strPropertyName] valueForKey:@"HomeSlider"];

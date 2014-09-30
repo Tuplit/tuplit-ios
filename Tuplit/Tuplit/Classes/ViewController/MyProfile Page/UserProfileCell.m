@@ -15,7 +15,7 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) 
+    if (self)
     {
         if ([reuseIdentifier isEqualToString:@"UserDetails"])
         {
@@ -51,7 +51,7 @@
             balanceLabel.textAlignment = NSTextAlignmentLeft;
             [topView addSubview:balanceLabel];
             
-             UILabel * priceLabel = [[UILabel alloc ]initWithFrame:CGRectMake(CGRectGetMinX(balanceLabel.frame),CGRectGetMaxY(balanceLabel.frame)+7,100,16)];
+            UILabel * priceLabel = [[UILabel alloc ]initWithFrame:CGRectMake(CGRectGetMinX(balanceLabel.frame),CGRectGetMaxY(balanceLabel.frame)+7,100,16)];
             priceLabel.tag =4001;
             priceLabel.textColor = UIColorFromRGB(0x00b3a4);
             priceLabel.backgroundColor = [UIColor clearColor];
@@ -139,7 +139,7 @@
             profileImageView.tag = 5000;
             profileImageView.backgroundColor = [UIColor whiteColor];
             profileImageView.layer.cornerRadius = 100/2;
-//            profileImageView.userInteractionEnabled = YES;
+            //            profileImageView.userInteractionEnabled = YES;
             profileImageView.clipsToBounds = YES;
             [topView addSubview:profileImageView];
             
@@ -210,7 +210,7 @@
             expiryDateLbl.textColor=UIColorFromRGB(0x333333);
             expiryDateLbl.tag=1002;
             expiryDateLbl.textAlignment=NSTextAlignmentRight;
-            expiryDateLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0]; 
+            expiryDateLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
             expiryDateLbl.backgroundColor=[UIColor clearColor];
             [cellBaseview addSubview:expiryDateLbl];
             
@@ -228,7 +228,7 @@
             [cellBaseview addSubview:noCardLbl];
         }
         else if ([reuseIdentifier isEqualToString:@"RecentActivity"])
-        {               
+        {
             self.contentView.backgroundColor=UIColorFromRGB(0xF5F5F5);
             
             EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
@@ -296,7 +296,7 @@
             transactionDateLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:10.0];
             transactionDateLbl.backgroundColor=[UIColor clearColor];
             [self.contentView addSubview:transactionDateLbl];
-
+            
             UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, PROFILE_CELL_HEIGHT-2,self.frame.size.width,2)];
             lineView.backgroundColor = [UIColor whiteColor];
             [self.contentView addSubview:lineView];
@@ -308,16 +308,16 @@
             UIView *cellBaseview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)];
             cellBaseview.backgroundColor = [UIColor clearColor];
             [self.contentView addSubview:cellBaseview];
-
+            
             EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake(15, 10,30,30)];
             merchantIconImgView.tag=3000;
             merchantIconImgView.layer.cornerRadius =15;
             [merchantIconImgView setContentMode:UIViewContentModeScaleAspectFit];
-             merchantIconImgView.clipsToBounds = YES;
-//            merchantIconImgView.userInteractionEnabled = YES;
+            merchantIconImgView.clipsToBounds = YES;
+            //            merchantIconImgView.userInteractionEnabled = YES;
             [cellBaseview addSubview:merchantIconImgView];
             
-            UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(merchantIconImgView.frame)+8, 8,200, 17)];
+            UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(merchantIconImgView.frame)+5, 8,200, 17)];
             merchantNameLbl.textColor=UIColorFromRGB(0x333333);
             merchantNameLbl.tag=3001;
             merchantNameLbl.textAlignment=NSTextAlignmentLeft;
@@ -334,7 +334,7 @@
             commentLbl.backgroundColor=[UIColor clearColor];
             [cellBaseview addSubview:commentLbl];
             
-           UILabel * totalDaysLbl=[[UILabel alloc] initWithFrame:CGRectMake(cellBaseview.frame.size.width-46,15, 30, 20)];
+            UILabel * totalDaysLbl=[[UILabel alloc] initWithFrame:CGRectMake(cellBaseview.frame.size.width-46,15, 30, 20)];
             totalDaysLbl.textColor=UIColorFromRGB(0x808080);
             totalDaysLbl.tag=3003;
             totalDaysLbl.textAlignment=NSTextAlignmentRight;
@@ -344,7 +344,7 @@
             
         }
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-
+        
     }
     return self;
 }
@@ -352,7 +352,7 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-
+    
 }
 
 #pragma mark - UserDefined methods
@@ -392,11 +392,11 @@
 }
 -(void) removeItem : (id) sender
 {
-
+    
 }
 -(void) addItem : (id) sender
 {
-
+    
 }
 
 -(void)didSwipeRightInCell:(id)sender

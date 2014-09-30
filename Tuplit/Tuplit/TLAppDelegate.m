@@ -9,8 +9,9 @@
 #import "TLAppDelegate.h"
 #import "TLOrderDetailViewController.h"
 #import "TLSignUpViewController.h"
-
+#import "Flurry.h"
 #import <GooglePlus/GooglePlus.h>
+#import <SystemConfiguration/CaptiveNetwork.h>
 
 #define kAlertQuit      100
 #define kAlertDontQuit  101
@@ -21,11 +22,23 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    [Flurry startSession:@"6TGJF7C6WTFFNBYDSQ4Z"];
+     
     self.catgDict = [NSMutableDictionary new];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     //Register Push Notification
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
+    if([application respondsToSelector:@selector(registerUserNotificationSettings:)])
+    {
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+    else
+    {
+       [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    }
     
     if(launchOptions!=nil){
         NSLog(@"Push notification on Launch : %@",[NSString stringWithFormat:@"%@", launchOptions]);
@@ -251,7 +264,6 @@
 }
 
 - (void)staticContentManager:(TLStaticContentManager *)staticContentManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
-    
     
 }
 
