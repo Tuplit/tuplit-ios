@@ -20,6 +20,7 @@
 {
     merchantListingManager.delegate = nil;
     merchantListingManager = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView {
@@ -82,6 +83,7 @@
     }
     searchTxt.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     searchTxt.clearButtonMode = UITextFieldViewModeUnlessEditing;
+    searchTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     searchTxt.userInteractionEnabled = YES;
     [searchTxt setReturnKeyType:UIReturnKeySearch];
     [searchbarView addSubview:searchTxt];
@@ -159,6 +161,12 @@
     transperantView.backgroundColor = [UIColor blackColor];
     //    discountView.opaque = 0.5;
     transperantView.alpha = .5;
+    
+    UITapGestureRecognizer *discountViewTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                      action:@selector(onDiscountPressed)];
+//    discountViewTap.delegate = self;
+    [transperantView addGestureRecognizer:discountViewTap];
+    
     [discountView addSubview:transperantView];
     
     discountTable =[[UITableView alloc]initWithFrame:CGRectMake(baseViewWidth-120, 0, 120, CGRectGetHeight(baseView.frame))];
@@ -243,6 +251,13 @@
         [nothankBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
         nothankBtn.layer.borderColor = [UIColorFromRGB(0xffffff) CGColor];
         nothankBtn.layer.borderWidth = 1.0;
+        
+        UIImage * lightImage = getImage(@"ButtonLightBg", NO);
+        UIImage * stretchableLightImage = [lightImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+        [nothankBtn setBackgroundImage:nil forState:UIControlStateNormal];
+        [nothankBtn setBackgroundImage:stretchableLightImage forState:UIControlStateHighlighted];
+        [nothankBtn setBackgroundImage:stretchableLightImage forState:UIControlStateSelected];
+        
         [btnsView addSubview:nothankBtn];
         
         UIButton *cmtBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -252,12 +267,20 @@
         [cmtBtn setTitle:@"Leave a comment" forState:UIControlStateNormal];
         cmtBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
         [cmtBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+        
+        UIImage * topUpImage = getImage(@"btn_img", NO);
+        UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+        [cmtBtn setBackgroundImage:nil forState:UIControlStateNormal];
+        [cmtBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
+        [cmtBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
+        
         [btnsView addSubview:cmtBtn];
     }
     
     merchantsArray = [[NSMutableArray alloc] init];
     searchArray = [[NSMutableArray alloc] init];
     categoryArray = [[NSMutableArray alloc] init];
+    tempMerchantsArray = [[NSMutableArray alloc]init];
     merchantListingModel = [[TLMerchantListingModel alloc] init];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -267,6 +290,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    disCountDict = [Global instance].discoutTiers;
+    [discountTable reloadData];
     
     [self buttonNearbyPopularAction:buttonNearby];
     [self callCategoryWebservice];
@@ -285,18 +311,16 @@
     if([TLUserDefaults isCommentPromptOpen])
         cmtPromptView.hidden = NO;
     
-    disCountDict = [Global instance].discoutTiers;
-    
-//    if(isDetailFrmSearch)
-//    {
-//        isDetailFrmSearch = NO;
-//        [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
-//    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
     
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self hideSearch];
 //    searchTxt.text =@"";
 }
@@ -316,6 +340,17 @@
 }
 
 #pragma mark - UserDefined methods
+
+- (void)keyboardWasShown:(NSNotification *)notification
+{
+    // Get the size of the keyboard.
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    keyboardHeight = keyboardSize.height;
+
+    searchTable.height = contentView.frame.size.height - searchbarView.frame.size.height - keyboardHeight;
+    searchErrorLabel.height =searchTable.frame.size.height;
+  
+}
 
 - (void)presentTutorial {
     
@@ -361,6 +396,7 @@
             merchantListingModel.Type = @"";
             merchantListingModel.Start = @"";
             merchantListingModel.SearchKey = searchTxt.text;
+            isMerchantWebserviceRunning = NO;
             [merchantListingManager cancelRequest];
             break;
         }
@@ -427,8 +463,16 @@
         }
         else
         {
+            if([disCountDict allKeys].count==0)
+            {
+                disCountDict = [Global instance].discoutTiers;
+                [discountTable reloadData];
+                NSIndexPath* selectedCellIndexPath= [NSIndexPath indexPathForRow:0 inSection:0];
+                [discountTable selectRowAtIndexPath:selectedCellIndexPath animated:false scrollPosition:UITableViewScrollPositionNone];
+            }
             discountView.hidden = NO;
-            discountTable.frame = CGRectMake(baseViewWidth-120, 0, 120,baseViewHeight-adjustHeight);
+            discountTable.height = ([disCountDict allKeys].count+1)*DISCOUNT_CELL_HEIGHT;
+//            discountTable.frame = CGRectMake(baseViewWidth-120, 0, 120,baseViewHeight-adjustHeight);
         }
         
     }completion:^(BOOL finished) {
@@ -621,7 +665,6 @@
     [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [searchArray addObject:[categoryArray objectAtIndex:idx]];
     }];
-    
 }
 -(void)hideSearch
 {
@@ -639,6 +682,28 @@
     }
 }
 
+-(void)loadMainContent
+{
+    merchantsArray = [NSMutableArray arrayWithArray:tempMerchantsArray];
+    totalUserListCount = tempTotalUserListCount;
+    [merchantTable reloadData];
+    lastFetchCount = merchantsArray.count;
+    [merchantTable setTableFooterView:cellContainer];
+    
+    if (mapView.annotations.count > 0) {
+        [mapView removeAnnotations:mapView.annotations];
+    }
+    
+    if(merchantsArray.count>0)
+    {
+        [searchErrorLabel setHidden:YES];
+        [merchantErrorLabel setHidden:YES];
+        [self addMapAnnotations];
+        [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    
+}
+
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
     //UIGraphicsBeginImageContext(newSize);
     // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
@@ -648,6 +713,15 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+//check gesture
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isKindOfClass:[UIView class]]) {
+        // we touched a button, slider, or other UIControl
+        return YES; // ignore the touch
+    }
+    return NO; // handle the touch
 }
 
 # pragma mark - MKMapView Delegate Methods
@@ -948,6 +1022,7 @@
             if([[searchArray objectAtIndex:indexPath.row] isKindOfClass:[MerchantModel class]])
             {
                 [self.view endEditing:YES];
+              
                 MerchantModel *merchantModel = [searchArray objectAtIndex:indexPath.row];
                 TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
                 detailsVC.merchantModel = merchantModel;
@@ -955,26 +1030,31 @@
             }
             else
             {
-                [self hideSearch];
-//                searchTxt.text = @"";
-                CategoryModel *categoryModel = [searchArray objectAtIndex:indexPath.row];
-                categoryId = categoryModel.CategoryId;
-                [self callMerchantWebserviceWithActionType:MCCategory startCount:0 showProgressIndicator:YES];
-//                    searchTxt.text = categoryModel.CategoryName;
+//                [self hideSearch];
                 [self.view endEditing:YES];
+                CategoryModel *categoryModel = [searchArray objectAtIndex:indexPath.row];
+                TLCategoryViewController *categoryVC = [[TLCategoryViewController alloc]init];
+                categoryVC.categoryId = categoryModel.CategoryId;
+                categoryVC.navTitle = categoryModel.CategoryName;
+                [self.navigationController pushViewController:categoryVC animated:YES];
             }
             
         }
         else
         {
-            [self hideSearch];
-//            searchTxt.text = @"";
+//            [self hideSearch];
+           
             [self.view endEditing:YES];
             CategoryModel *categoryModel = [categoryArray objectAtIndex:indexPath.row];
             categoryId = categoryModel.CategoryId;
-//            searchTxt.text = categoryModel.CategoryName;
-            [self callMerchantWebserviceWithActionType:MCCategory startCount:0 showProgressIndicator:YES];
+            TLCategoryViewController *categoryVC = [[TLCategoryViewController alloc]init];
+            categoryVC.categoryId = categoryModel.CategoryId;
+            categoryVC.navTitle = categoryModel.CategoryName;
+            [self.navigationController pushViewController:categoryVC animated:YES];
         }
+        
+        searchTxt.text = @"";
+        [self loadMainContent];
         
     }
     else if (tableView.tag == 1004) {
@@ -1038,12 +1118,6 @@
     //    UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
     //    mapIconImgView.image = img;
     
-    CGRect searchTableFrame = searchTable.frame;
-    
-    searchTableFrame.size.height = contentView.frame.size.height - searchbarView.frame.size.height - 216;
-    [searchTable setFrame:searchTableFrame];
-    searchErrorLabel.height =searchTable.frame.size.height;
-    
     if (textField.text.length >= 3) {
         [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:NO];
     }
@@ -1057,8 +1131,6 @@
     searchTable.height = contentView.frame.size.height - CGRectGetMaxY(searchbarView.frame);
     searchErrorLabel.height = searchTable.frame.size.height;
     [self hideSearch];
-    [merchantTable reloadData];
-    
 }
 
 - (void) textFieldDidChange:(NSNotification*) notification {
@@ -1071,7 +1143,6 @@
         else if(searchTxt.text.length == 0) {
             
             [searchErrorLabel setHidden:YES];
-            
             [searchArray removeAllObjects];
             [searchTable reloadData];
         }
@@ -1088,7 +1159,7 @@
     isTextFieldClearPressed = YES;
     [searchArray removeAllObjects];
     [searchTable reloadData];
-    
+    [self loadMainContent];
     return YES;
 }
 
@@ -1104,85 +1175,6 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager withMerchantList:(NSArray*) _merchantsArray {
     
-//    switch (_merchantListingManager.merchantListModel.actionType) {
-//        case MCSearch:
-//        case MCCategory:
-//        case MCNearBy:
-//        case MCPopular:
-//        {
-            if([searchTxt isFirstResponder])
-            {
-                [searchArray removeAllObjects];
-               
-                //            searchArray = [NSMutableArray arrayWithArray:_merchantsArray];
-                [searchArray addObjectsFromArray:_merchantsArray];
-                [self performSearchCategory];
-                [searchTable reloadData];
-            }
-            else
-            {
-                if (isLoadMorePressed) {
-                    
-                    [merchantsArray addObjectsFromArray:_merchantsArray];
-                }
-                else
-                {
-                    merchantsArray = [NSMutableArray arrayWithArray:_merchantsArray];
-                    lastFetchCount = 0;
-                }
-                
-                totalUserListCount = _merchantListingManager.totalCount;
-                
-                if ((_merchantListingManager.listedCount % 10) == 0) {
-                    lastFetchCount = lastFetchCount + _merchantListingManager.listedCount;
-                }
-                else
-                {
-                    lastFetchCount = merchantsArray.count;
-                }
-                
-                if (lastFetchCount < totalUserListCount)
-                    [merchantTable setTableFooterView:cellContainer];
-                else
-                    [merchantTable setTableFooterView:nil];
-                
-                //   Leave comment option
-                if([TLUserDefaults isCommentPromptOpen])
-                    cmtPromptView.hidden = NO;
-                
-                [merchantTable reloadData];
-                
-                if (mapView.annotations.count > 0) {
-                    [mapView removeAnnotations:mapView.annotations];
-                }
-                
-                [self addMapAnnotations];
-                
-                if ([_merchantListingManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
-                    [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                }
-                
-            }
-            
-//            break;
-//        }
-//        default:
-//        {
-//            break;
-//        }
-//    }
-//    
-    [searchErrorLabel setHidden:YES];
-    [merchantErrorLabel setHidden:YES];
-    isPullRefreshPressed = NO;
-    isLoadMorePressed = NO;
-    isMerchantWebserviceRunning = NO;
-    [[ProgressHud shared] hide];
-    [refreshControl endRefreshing];
-}
-
-- (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
-    
     //    switch (_merchantListingManager.merchantListModel.actionType) {
     //        case MCSearch:
     //        case MCCategory:
@@ -1192,7 +1184,92 @@
     if([searchTxt isFirstResponder])
     {
         [searchArray removeAllObjects];
-        [merchantsArray removeAllObjects];
+        
+        //            searchArray = [NSMutableArray arrayWithArray:_merchantsArray];
+        [searchArray addObjectsFromArray:_merchantsArray];
+        [self performSearchCategory];
+        [searchTable reloadData];
+    }
+    else
+    {
+        if (isLoadMorePressed) {
+            
+            [merchantsArray addObjectsFromArray:_merchantsArray];
+            
+        }
+        else
+        {
+            merchantsArray = [NSMutableArray arrayWithArray:_merchantsArray];
+            if([tempMerchantsArray count]==0)
+            {
+               tempMerchantsArray = [NSMutableArray arrayWithArray:_merchantsArray];
+                tempTotalUserListCount = merchantListingManager.totalCount;
+            }
+            lastFetchCount = 0;
+        }
+        
+        totalUserListCount = _merchantListingManager.totalCount;
+        
+        if ((_merchantListingManager.listedCount % 10) == 0) {
+            lastFetchCount = lastFetchCount + _merchantListingManager.listedCount;
+        }
+        else
+        {
+            lastFetchCount = merchantsArray.count;
+        }
+        
+        if (lastFetchCount < totalUserListCount)
+            [merchantTable setTableFooterView:cellContainer];
+        else
+            [merchantTable setTableFooterView:nil];
+        
+        //   Leave comment option
+        if([TLUserDefaults isCommentPromptOpen])
+            cmtPromptView.hidden = NO;
+        
+        [merchantTable reloadData];
+        
+        if (mapView.annotations.count > 0) {
+            [mapView removeAnnotations:mapView.annotations];
+        }
+        
+        [self addMapAnnotations];
+        
+        if ([_merchantListingManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
+            [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        }
+        
+    }
+    
+    //            break;
+    //        }
+    //        default:
+    //        {
+    //            break;
+    //        }
+    //    }
+    //
+    [searchErrorLabel setHidden:YES];
+    [merchantErrorLabel setHidden:YES];
+    isPullRefreshPressed = NO;
+    isLoadMorePressed = NO;
+    isMerchantWebserviceRunning = NO;
+    [[ProgressHud shared] hide];
+    [refreshControl endRefreshing];
+}
+
+
+- (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+//    switch (_merchantListingManager.merchantListModel.actionType) {
+    //        case MCSearch:
+    //        case MCCategory:
+    //        case MCNearBy:
+    //        case MCPopular:
+    //        {
+    if([searchTxt isFirstResponder])
+    {
+        [searchArray removeAllObjects];
         [merchantTable reloadData];
         
         
@@ -1217,8 +1294,6 @@
     else
     {
         
-        
-        
         [merchantErrorLabel setText:errorMsg];
         [merchantErrorLabel setHidden:NO];
         
@@ -1227,6 +1302,7 @@
         [merchantErrorLabel setFrame:frame];
         
         [merchantsArray removeAllObjects];
+//        [tempMerchantsArray removeAllObjects];
         [merchantTable reloadData];
         
     }

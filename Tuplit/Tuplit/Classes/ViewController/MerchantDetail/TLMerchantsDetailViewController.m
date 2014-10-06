@@ -271,6 +271,13 @@
     checkoutBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
     [checkoutBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
     [checkoutBtn addTarget:self action:@selector(openCartPage) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImage * topUpImage = getImage(@"btn_img", NO);
+    UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+    [checkoutBtn setBackgroundImage:nil forState:UIControlStateNormal];
+    [checkoutBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
+    [checkoutBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
+    
     [cartBarView addSubview:checkoutBtn];
     
     totItemPrizeLbl = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMinX(checkoutBtn.frame)-25-5, (CGRectGetHeight(cartBarView.frame)-25)/2, 40, 25)];

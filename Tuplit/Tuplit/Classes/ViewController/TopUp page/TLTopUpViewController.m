@@ -105,6 +105,7 @@
     topUpAmountTxt.delegate=self;
     topUpAmountTxt.tag = 103;
     topUpAmountTxt.keyboardType=UIKeyboardTypeNumberPad;
+    topUpAmountTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     topUpAmountTxt.textAlignment=NSTextAlignmentRight;
     topUpAmountTxt.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     topUpAmountTxt.backgroundColor=[UIColor clearColor];
@@ -293,7 +294,7 @@
             NSDictionary *queryParams = @{
                                           @"CardId": NSNonNilString(creditCard.Id),
                                           @"Amount": NSNonNilString(topUpAmount),
-                                          @"Currency": @"USD",
+//                                          @"Currency": @"USD",
                                           };
             
             TLTopupManager *topUpManager = [[TLTopupManager alloc]init];

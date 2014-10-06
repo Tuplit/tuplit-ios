@@ -725,6 +725,8 @@
 }
 
 #pragma  mark - TLCreditCardDeleteManager Delegate Methods
+
+
 - (void)creditCardDeleteManagerSuccess:(TLCreditCardDeleteManager *)creditCardDeleteManager
 {
     APP_DELEGATE.isUserProfileEdited = YES;

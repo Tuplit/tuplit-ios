@@ -1,8 +1,8 @@
 //
-//  TLMerchantsViewController.h
+//  TLCategoryViewController.h
 //  Tuplit
 //
-//  Created by ev_mac6 on 25/04/14.
+//  Created by ev_mac11 on 22/09/14.
 //  Copyright (c) 2014 alttab. All rights reserved.
 //
 
@@ -13,22 +13,10 @@
 #import "CustomCallOutView.h"
 #import "TLMerchantsDetailViewController.h"
 #import "TLMerchantListingManager.h"
-#import "TLCategoryListingManager.h"
-#import "ChoiceButton.h"
-#import "TLCategoryViewController.h"
 #import "TLAddCommentViewController.h"
 #define MERCHANT_CELL_HEIGHT 130
-#define SEARCH_CELL_HEIGHT    50
-#define DISCOUNT_CELL_HEIGHT   35
 
-typedef NS_ENUM(NSInteger, ActionRequestType) {
-    MCSearch = 0,
-    MCCategory = 1,
-    MCNearBy = 2,
-    MCPopular = 3,
-};
-
-@interface TLMerchantsViewController : UIViewController <UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,UIGestureRecognizerDelegate,TLMerchantListingManagerDelegate,TLCategoryListingManagerDelegate,CustomCallOutViewDelegate>
+@interface TLCategoryViewController : UIViewController <UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,UIGestureRecognizerDelegate,TLMerchantListingManagerDelegate,TLCategoryListingManagerDelegate,CustomCallOutViewDelegate>
 {
     UIBarButtonItem *rightExpandButton;
     UIView *contentView,*menuView,*searchbarView;
@@ -46,7 +34,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     UILabel *merchantNameLabel;
     
     UILabel *merchantErrorLabel,*searchErrorLabel;
-    NSMutableArray *merchantsArray, *tempMerchantsArray, *searchArray, *categoryArray;
+    NSMutableArray *merchantsArray,*searchArray,*categoryArray;
     NSDictionary *disCountDict;
     
     UITableView * discountTable;
@@ -60,15 +48,17 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     CGFloat baseViewWidth, baseViewHeight;
     int adjustHeight;
     int menuSelected,discountTierValue;
-    int totalUserListCount,lastFetchCount,tempTotalUserListCount;
+    int totalUserListCount,lastFetchCount;
     BOOL isLoadMorePressed,isPullRefreshPressed,isTextFieldClearPressed,isMerchantWebserviceRunning,isKeyBoardOpen,isnearBy;
     
     int adjustViewForIOS7,keyboardHeight;
-    NSString *categoryId;
     
     MerchantModel *callOutmerchant;
     
     NSMutableDictionary *catgDict;
-
+    
 }
+@property (nonatomic,strong)NSString *categoryId;
+@property (nonatomic,strong)NSString *navTitle;
 @end
+

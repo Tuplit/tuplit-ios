@@ -25,14 +25,17 @@
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"" parameters:queryParams];
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
-    
-    NSDate *start=[NSDate date];
-    
+        
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
-  	[operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSDate *start=[NSDate date];
+    NSLog(@"startTime = %@",start);
+    
+    [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
         NSDate *end=[NSDate date];
+        NSLog(@"endTime = %@",end);
         double ellapsedSeconds= [end timeIntervalSinceDate:start];
         NSLog(@"CreateOrderResponsetime = %f",ellapsedSeconds);
         

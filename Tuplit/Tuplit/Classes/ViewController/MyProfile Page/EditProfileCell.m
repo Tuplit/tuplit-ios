@@ -39,6 +39,7 @@
             firstNameTxt.textColor=UIColorFromRGB(0x333333);
             firstNameTxt.textAlignment=NSTextAlignmentLeft;
             firstNameTxt.autocapitalizationType = UITextAutocapitalizationTypeWords;
+            firstNameTxt.autocorrectionType = UITextAutocorrectionTypeNo;
             firstNameTxt.background=[UIImage imageNamed:@"textFieldBg.png"];
             [firstNameTxt setupForTuplitStyle];
             [userNameView addSubview:firstNameTxt];
@@ -49,6 +50,7 @@
             lastNameTxt.textColor=UIColorFromRGB(0x333333);
             lastNameTxt.textAlignment=NSTextAlignmentLeft;
             lastNameTxt.autocapitalizationType = UITextAutocapitalizationTypeWords;
+            lastNameTxt.autocorrectionType = UITextAutocorrectionTypeNo;
             lastNameTxt.background=[UIImage imageNamed:@"textFieldBg.png"];
             [lastNameTxt setupForTuplitStyle];
             [userNameView addSubview:lastNameTxt];

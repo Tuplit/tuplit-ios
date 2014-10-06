@@ -229,7 +229,7 @@
                                   @"CardNumber"            : NSNonNilString(cardno),
                                   @"CardExpirationDate"    : NSNonNilString(date),
                                   @"CVV"                   : NSNonNilString(cvvTextField.text),
-                                  @"Currency"              : @"USD",
+//                                  @"Currency"              : @"USD",
                                   @"Amount"                : NSNonNilString(topupAmount),
                                   };
     TLAddCreditCardManager *creditcardManager = [[TLAddCreditCardManager alloc]init];

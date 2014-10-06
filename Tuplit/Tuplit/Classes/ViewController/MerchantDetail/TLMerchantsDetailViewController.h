@@ -37,7 +37,6 @@
     EGOImageView *friendsImgView3;
     
     UITableView * merchantDetailTable;
-    
     UIButton * detailsButton;
     UIButton * orderButton;
     UIButton *buttonDiscount;

@@ -25,14 +25,16 @@
     
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:nil];
     
-    NSDate *start=[NSDate date];
-
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
+    
+    NSDate *start=[NSDate date];
+    NSLog(@"startTime = %@",start);
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
         
         NSDate *end=[NSDate date];
+        NSLog(@"endTime = %@",end);
         double ellapsedSeconds= [end timeIntervalSinceDate:start];
         NSLog(@"StaticContentResponsetime = %f",ellapsedSeconds);
         
@@ -55,6 +57,8 @@
             NSLog(@"%@",array);
             for (NSDictionary *dict in array) {
                 
+                 NSLog(@"%@",[dict valueForKey:@"PageName"]);
+                
                 if([[dict valueForKey:@"PageName"] isEqualToString:@"About"])
                     obj.aboutContent = dict[@"Content"];
                 else if([[dict valueForKey:@"PageName"] isEqualToString:@"Privacy Policy"])
@@ -68,6 +72,10 @@
                     NSString *legalContent = [NSString stringWithFormat:@"%@", dict[@"Content"]];
                     if(legalContent.length>0)
                         obj.termsContent = legalContent;
+                }
+                else
+                {
+                    
                 }
             }
             

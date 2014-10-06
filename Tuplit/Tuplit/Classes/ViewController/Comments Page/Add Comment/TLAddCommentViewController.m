@@ -127,8 +127,6 @@
     keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
     baseView.height = baseViewHeight - keyboardHeight;
     baseView.contentSize = CGSizeMake(baseViewWidth, baseViewHeight-(baseViewHeight - CGRectGetMaxY(addCommentBtn.frame)-100));
-    
-    //your other code here..........
 }
 
 -(void) backToUserProfile

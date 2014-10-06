@@ -25,7 +25,7 @@
     
     UIRefreshControl *refreshControl;
     UIView *cellContainer;
-    int totalUserListCount,lastFetchCount;
+    int totalUserListCount,lastFetchCount,keyboardHeight;
     BOOL isLoadMorePressed,isPullRefreshPressed,isFriendsWebserviceRunning;
 }
 

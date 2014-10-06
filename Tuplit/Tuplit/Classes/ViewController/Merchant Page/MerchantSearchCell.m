@@ -138,7 +138,6 @@
     }
     else
     {
-        
         if ([merchant.TagType intValue] == 1) {
             [discountImageView setImage:[UIImage imageNamed:@"DiscountMap"]];
         }

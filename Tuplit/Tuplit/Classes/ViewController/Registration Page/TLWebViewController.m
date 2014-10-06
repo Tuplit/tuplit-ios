@@ -43,7 +43,7 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
     
-    if([self.titleString isEqualToString:LString(@"TERMS_OF_SERVICE")]) {
+    if([self.titleString isEqualToString:LString(@"TERMS_OF_SERVICE")] || [self.titleString isEqualToString:LString(@"LEGAL")]) {
         
         [self.webView loadHTMLString:[Global instance].termsContent baseURL:nil];
     } else if([self.titleString isEqualToString:LString(@"PRIVACY_POLICY")]) {

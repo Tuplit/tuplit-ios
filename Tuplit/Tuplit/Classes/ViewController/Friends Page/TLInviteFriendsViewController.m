@@ -207,6 +207,7 @@
         if ( ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined ||
             ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized )
         {
+            
             addressBook = ABAddressBookCreateWithOptions(NULL, &addressBookError);
             dispatch_semaphore_t sema = dispatch_semaphore_create(0);
             ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error){
@@ -215,6 +216,7 @@
                 
                 if(userDidGrantAddressBookAccess)
                 {
+                    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
                     addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
                     if (addressBook!=nil)
                     {
@@ -243,15 +245,38 @@
                             if(!lastName)
                                 lastName = @"";
                             NSLog(@"email = %@",email);
-                            person.name = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
+                            
+                            
+                            if ([firstName stringByTrimmingLeadingWhitespace].length == 0)
+                            {
+                                firstName = @"";
+                            }
+                            if ([lastName stringByTrimmingLeadingWhitespace].length == 0 )
+                            {
+                                lastName = @"";
+                            }
+                            if ([firstName stringByTrimmingLeadingWhitespace].length == 0 && [lastName stringByTrimmingLeadingWhitespace].length == 0 )
+                            {
+                                person.name = @"";
+                            }
+                            else
+                            {
+                                person.name = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
+                            }
                             person.email = [NSString stringWithFormat:@"%@",email];
                             
-                            if(email)
+                            if(email && ![email isEqualToString:[TLUserDefaults getCurrentUser].Email])
                                 [contactArray addObject:person];
                             
                         }
                         CFRelease(addressBook);
+                        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                        NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+                        NSArray *sortedArray = [contactArray sortedArrayUsingDescriptors:sortDescriptors];
+                        contactArray =[NSMutableArray arrayWithArray:sortedArray];
+                        
                         [self performSelectorOnMainThread:@selector(reloadTable) withObject:self waitUntilDone:YES];
+                        [[ProgressHud shared] hide];
                         
                     }
                     else
@@ -259,10 +284,12 @@
                         NSLog(@"Error");
                         errorView.hidden = NO;
                         errorLbl.text = LString(@"NO_CONTACT_FOUND");
+                        [[ProgressHud shared] hide];
                     }
                 }
             });
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        
         }
         else
         {
@@ -323,7 +350,7 @@
         if (indexPath != nil)
         {
             Person *contactuser = [contactArray objectAtIndex:indexPath.row];
-            
+                        
             if([MFMailComposeViewController canSendMail])
             {
                 MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
@@ -331,12 +358,12 @@
                 controller.navigationBar.barStyle = UIBarStyleDefault;
                 [[controller navigationBar] setTintColor:UIColorFromRGB(0XFFFFFF)];
                 
-                [controller setSubject:@"Check out Tuplit app"];
+                [controller setSubject:@"Tuplit invitation"];
                 [controller setToRecipients:[NSArray arrayWithObject:contactuser.email]];
                 
-                UIImage *image = [UIImage imageNamed:@"Icon"];
-                //include your app icon here
-                [controller addAttachmentData:UIImageJPEGRepresentation(image, 1) mimeType:@"image/jpg" fileName:@"icon.jpg"];
+//                UIImage *image = [UIImage imageNamed:@"Icon"];
+//                //include your app icon here
+//                [controller addAttachmentData:UIImageJPEGRepresentation(image, 1) mimeType:@"image/jpg" fileName:@"icon.jpg"];
                 // your message and link
                 NSString *defaultBody =@"check out this cool app, Tuplit";
                 [controller setMessageBody:defaultBody isHTML:YES];
@@ -474,7 +501,18 @@
             profileImgView.image = contactuser.contactImage;
         else
             profileImgView.image = getImage(@"UserPlaceHolder", NO);
-        profileNameLbl.text=[contactuser.name stringWithTitleCase];
+        
+        if ([contactuser.name stringByTrimmingLeadingWhitespace] == (id)[NSNull null] || [contactuser.name stringByTrimmingLeadingWhitespace].length == 0 )
+        {
+            profileNameLbl.text=@"";
+            [mailIDLbl positionAtY:15];
+        }
+        else
+        {
+            profileNameLbl.text=[contactuser.name stringWithTitleCase];
+            [mailIDLbl positionAtY:CGRectGetMaxY(profileNameLbl.frame)];
+        }
+        
         mailIDLbl.text=contactuser.email;
     }
     
@@ -696,7 +734,6 @@
 
 - (void)inviteManagerSuccess:(TLFriendsInviteManager *)inviteManager withinviteStatus:(NSString*)invitemessage
 {
-    
     [fbFriendArray removeObjectAtIndex:selectedIndex];
     [facebookTable reloadData];
     [[ProgressHud shared] hide];

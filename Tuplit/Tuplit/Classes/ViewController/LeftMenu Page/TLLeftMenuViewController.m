@@ -58,10 +58,14 @@
     [menuModel4 setImage:@"MenuFriends"];
     [menuModel4 setTitle:LString(@"FRIENDS")];
     [menuArray addObject:menuModel4];
-    
+    int i =0;
     for(FriendsModel *order in APP_DELEGATE.friendsRecentOrders)
     {
+        if(i==3)
+            break;
         [menuArray addObject:order];
+        i++;
+        
     }
     
     MenuModel *menuModel5 = [[MenuModel alloc] init];

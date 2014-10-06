@@ -30,15 +30,17 @@
     
     NSLog(@"Request : %@", [request.URL absoluteString]);
     NSLog(@"Method  : %@", request.HTTPMethod);
-    
-    NSDate *startTime=[NSDate date];
- 
+     
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
+    
+    NSDate *startTime=[NSDate date];
+    NSLog(@"startTime = %@",startTime);
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
         
         NSDate *end=[NSDate date];
+        NSLog(@"endTime = %@",end);
         double ellapsedSeconds= [end timeIntervalSinceDate:startTime];
         NSLog(@"TransActioListingResponsetime = %f",ellapsedSeconds);
         

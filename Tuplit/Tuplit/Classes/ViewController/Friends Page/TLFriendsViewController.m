@@ -34,6 +34,7 @@
 {
     friendsManager.delegate = nil;
     friendsManager = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void) loadView
@@ -74,6 +75,7 @@
     searchTxt.placeholder = @"Search";
     [searchTxt addTarget:self action:@selector(searchTxtAction) forControlEvents:UIControlEventEditingChanged];
     searchTxt.textAlignment = NSTextAlignmentLeft;
+    searchTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     searchTxt.clearButtonMode = UITextFieldViewModeUnlessEditing;
     [searchTxt setReturnKeyType:UIReturnKeySearch];
     
@@ -157,13 +159,26 @@
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
+        
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self callFriendslistWebserviceWithstartCount:0 showProgress:YES];
+    
 }
 - (void)didReceiveMemoryWarning
 {
@@ -172,6 +187,22 @@
 
 
 #pragma mark - User Defined Methods
+
+- (void)keyboardWasShown:(NSNotification *)notification
+{
+    
+    // Get the size of the keyboard.
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    //Given size may not account for screen rotation
+    keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
+    [UIView animateWithDuration:0.35 animations:^{
+        friendsTable.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame)+1,baseViewWidth, baseViewHeight-adjustHeight-CGRectGetMaxY(inviteFriendsBtn.frame)-keyboardHeight) ;
+        errorView.frame = friendsTable.frame;
+        errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+    }];
+    
+}
 
 -(void) inviteFriendsAction :(UIButton *) sender
 {
@@ -282,11 +313,7 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    [UIView animateWithDuration:0.35 animations:^{
-        friendsTable.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame)+1,baseViewWidth, baseViewHeight-adjustHeight-CGRectGetMaxY(inviteFriendsBtn.frame)-216) ;
-        errorView.frame = friendsTable.frame;
-        errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
-    }];
+    
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField

@@ -104,7 +104,7 @@ NSString *LString(NSString* key) {
     if (components.year > 0) {
         return [NSString stringWithFormat:@"%ld yr", (long)components.year];
     } else if (components.month > 0) {
-        return [NSString stringWithFormat:@"%ld mon", (long)components.month];
+        return [NSString stringWithFormat:@"%ld mo", (long)components.month];
     } else if (components.weekOfYear > 0) {
         return [NSString stringWithFormat:@"%ld wk", (long)components.weekOfYear];
     } else if (components.day > 0) {
@@ -284,6 +284,8 @@ NSString *LString(NSString* key) {
     [TLUserDefaults setIsGuestUser:NO];
     [TLUserDefaults setIsCommentPromptOpen:NO];
     [TLUserDefaults setCommentDetails:nil];
+    APP_DELEGATE.friendsRecentOrders = nil;
+    
     [[TLAppLocationController sharedManager]stopUpdatingLocation];
     
     GPPSignIn *signIn = [GPPSignIn sharedInstance];

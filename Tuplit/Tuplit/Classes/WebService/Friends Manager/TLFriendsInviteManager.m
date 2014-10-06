@@ -23,15 +23,17 @@
     
     NSLog(@"Request : %@", [request.URL absoluteString]);
     NSLog(@"Method  : %@", request.HTTPMethod);
-    
-    NSDate *start=[NSDate date];
-    
+        
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
+    
+    NSDate *start=[NSDate date];
+    NSLog(@"startTime = %@",start);
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
         
         NSDate *end=[NSDate date];
+        NSLog(@"endTime = %@",end);
         double ellapsedSeconds= [end timeIntervalSinceDate:start];
         NSLog(@"FriendsInviteResponsetime = %f",ellapsedSeconds);
         

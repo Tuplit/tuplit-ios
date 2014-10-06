@@ -44,7 +44,6 @@
         swipeLbl.text = labelText;
         [self addSubview:swipeLbl];
         [self addSubview:swipeSlider];
-
         
     }
     return self;
@@ -98,7 +97,7 @@
     value=sender.value;
     
     [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.1 animations:^{
             [swipeSlider setFrame:CGRectMake(0, 0, 221, 40)];
         }];
 }

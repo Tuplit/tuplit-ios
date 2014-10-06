@@ -63,6 +63,7 @@
     [toTxt addTarget:self action:@selector(searchSendTo:) forControlEvents:UIControlEventEditingChanged];
     toTxt.textAlignment=NSTextAlignmentLeft;
     toTxt.clearButtonMode=UITextFieldViewModeWhileEditing;
+    toTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     toTxt.delegate=self;
     toTxt.tag=100;
     if(self.UserName.length!=0)
@@ -76,6 +77,7 @@
     amountTxt.textColor=UIColorFromRGB(0x000000);
     amountTxt.textAlignment=NSTextAlignmentLeft;
     amountTxt.keyboardType=UIKeyboardTypeNumberPad;
+    amountTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     [amountTxt setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"graybg.png"]]];
     amountTxt.delegate=self;
     amountTxt.tag = 101;
@@ -85,6 +87,7 @@
     messageTxtView=[[UITextView alloc] initWithFrame:CGRectMake(CGRectGetMinX(toTxt.frame), CGRectGetMaxY(amountTxt.frame) + 5, CGRectGetWidth(toTxt.frame), 65)];
     messageTxtView.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     messageTxtView.textAlignment=NSTextAlignmentLeft;
+    messageTxtView.autocorrectionType = UITextAutocorrectionTypeNo;
     messageTxtView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"commentsBg.png"]];
     messageTxtView.delegate=self;
     [baseView addSubview:messageTxtView];
@@ -620,9 +623,19 @@
 
 - (void)transferManagerSuccessfull:(TLTransferManager *)transferManager withStatus:(NSString*)transferStatus
 {
-    APP_DELEGATE.isUserProfileEdited = YES;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
+    NSString *string = amountTxt.text;
+    NSString *topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    
+    UserModel *userModel = [TLUserDefaults getCurrentUser];
+    double balance = userModel.AvailableBalance.doubleValue;
+    userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance - topUpAmount.doubleValue)];
+    [TLUserDefaults setCurrentUser:userModel];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
+    
+     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:transferStatus];
-    [[ProgressHud shared] hide];
     [self backToUserProfile];
 }
 - (void)transferManager:(TLTransferManager *)transferManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
