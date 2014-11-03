@@ -88,20 +88,20 @@
     itemsListTable.backgroundColor=[UIColor clearColor];
     [contentView addSubview:itemsListTable];
     
-    debitCreditView=[[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,100)];
+    debitCreditView=[[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,150)];
     debitCreditView.backgroundColor=[UIColor clearColor];
     debitCreditView.clipsToBounds = YES;
     [contentView addSubview:debitCreditView];
     
-    UILabel *totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,5, 108, 28)];
-    totalTitleLbl.text=@"Total";
-    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
-    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
-    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-    totalTitleLbl.backgroundColor=[UIColor clearColor];
-    [debitCreditView addSubview:totalTitleLbl];
+    UILabel *subtotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,5, 108, 28)];
+    subtotalTitleLbl.text=@"Sub total";
+    subtotalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    subtotalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    subtotalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    subtotalTitleLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:subtotalTitleLbl];
     
-    fixedAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(totalTitleLbl.frame) + 85,5, 25, 28)];
+    fixedAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame) + 85,5, 25, 28)];
     fixedAmtTotalLbl.text=@"£13";
     fixedAmtTotalLbl.textColor=[UIColor grayColor];
     fixedAmtTotalLbl.textAlignment=NSTextAlignmentCenter;
@@ -117,6 +117,38 @@
     discountAmtTotalLbl.backgroundColor=[UIColor clearColor];
     [debitCreditView addSubview:discountAmtTotalLbl];
     
+    UILabel *vattotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,CGRectGetMaxY(subtotalTitleLbl.frame), 108, 28)];
+    vattotalTitleLbl.text=@"VAT";
+    vattotalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    vattotalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    vattotalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    vattotalTitleLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:vattotalTitleLbl];
+    
+    vatAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame)+100,CGRectGetMinY(vattotalTitleLbl.frame), 30, 28)];
+    vatAmtTotalLbl.text=@"£10";
+    vatAmtTotalLbl.textColor=UIColorFromRGB(0x00b3a4);
+    vatAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    vatAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    vatAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:vatAmtTotalLbl];
+    
+    UILabel *totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,CGRectGetMaxY(vattotalTitleLbl.frame), 108, 28)];
+    totalTitleLbl.text=@"Total";
+    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    totalTitleLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:totalTitleLbl];
+    
+    totalAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(vattotalTitleLbl.frame)+100,CGRectGetMinY(totalTitleLbl.frame), 30, 28)];
+    totalAmtTotalLbl.text=@"£10";
+    totalAmtTotalLbl.textColor=UIColorFromRGB(0x00b3a4);
+    totalAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    totalAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    totalAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [debitCreditView addSubview:totalAmtTotalLbl];
+    
     UILabel *creditTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57, CGRectGetMaxY(totalTitleLbl.frame) + 2, 110, 28)];
     creditTitleLbl.text=@"Available credit";
     creditTitleLbl.textColor=UIColorFromRGB(0x999999);
@@ -125,7 +157,7 @@
     creditTitleLbl.backgroundColor=[UIColor clearColor];
     [debitCreditView addSubview:creditTitleLbl];
     
-    creditBalanceLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(creditTitleLbl.frame),CGRectGetMaxY(totalTitleLbl.frame), creditTitleLbl.frame.size.width +28 , 28)];
+    creditBalanceLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(creditTitleLbl.frame),CGRectGetMinY(creditTitleLbl.frame), creditTitleLbl.frame.size.width +28 , 28)];
     creditBalanceLbl.textColor=UIColorFromRGB(0x999999);
     creditBalanceLbl.textAlignment=NSTextAlignmentRight;
     creditBalanceLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
@@ -285,10 +317,12 @@
     
     [itemsListTable reloadData];
     
+    [APP_DELEGATE.cartModel calculateSubtotalPrice];
+    [APP_DELEGATE.cartModel calculateVatPrice];
     [APP_DELEGATE.cartModel calculateTotalPrice];
     
     itemsListTable.frame = CGRectMake(0,0, contentView.frame.size.width, tableHeight);
-    debitCreditView.frame = CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,100);
+    debitCreditView.frame = CGRectMake(0,CGRectGetMaxY(itemsListTable.frame), contentView.frame.size.width,150);
     checkoutView.frame = CGRectMake(0, CGRectGetMaxY(debitCreditView.frame), contentView.frame.size.width, 70);
     alertView.frame = CGRectMake(0, CGRectGetMaxY(checkoutView.frame), contentView.frame.size.width, 132);
     
@@ -296,13 +330,22 @@
     float discountWidth = [discountAmtTotalLbl.text widthWithFont:discountAmtTotalLbl.font];
     discountAmtTotalLbl.frame = CGRectMake((baseViewWidth - discountWidth) - 5, 5, discountWidth, 28);
     
-    fixedAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.total]];
+    fixedAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.subtotal]];
     float fixedAmttotalWidth = [fixedAmtTotalLbl.text widthWithFont:fixedAmtTotalLbl.font];
     fixedAmtTotalLbl.frame = CGRectMake((discountAmtTotalLbl.frame.origin.x - fixedAmttotalWidth) - 5, 5, fixedAmttotalWidth, 28);
     
+    vatAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.vat]];
+    float vatAmtTWidth = [vatAmtTotalLbl.text widthWithFont:vatAmtTotalLbl.font];
+    vatAmtTotalLbl.frame = CGRectMake((baseViewWidth- vatAmtTWidth) - 5, vatAmtTotalLbl.yPosition, vatAmtTWidth, 28);
+    
+    totalAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.total]];
+    float totalAmtTWidth = [totalAmtTotalLbl.text widthWithFont:totalAmtTotalLbl.font];
+    totalAmtTotalLbl.frame = CGRectMake((baseViewWidth - totalAmtTWidth) - 5, totalAmtTotalLbl.yPosition, totalAmtTWidth, 28);
+    
+    
     creditBalanceLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:[[TLUserDefaults getCurrentUser].AvailableBalance doubleValue]]];
     float creditBalanceWidth = [creditBalanceLbl.text widthWithFont:creditBalanceLbl.font];
-    creditBalanceLbl.frame = CGRectMake((baseViewWidth - creditBalanceWidth) - 5, CGRectGetMaxY(discountAmtTotalLbl.frame) + 2, creditBalanceWidth, 28);
+    creditBalanceLbl.frame = CGRectMake((baseViewWidth - creditBalanceWidth) - 5, creditBalanceLbl.yPosition, creditBalanceWidth, 28);
     
     [self checkingItemAvailable];
     
@@ -488,7 +531,7 @@
     
     UserModel *userModel = [TLUserDefaults getCurrentUser];
     double balance = userModel.AvailableBalance.doubleValue;
-    userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance - APP_DELEGATE.cartModel.discountedTotal)];
+    userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance - APP_DELEGATE.cartModel.total)];
     [TLUserDefaults setCurrentUser:userModel];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];

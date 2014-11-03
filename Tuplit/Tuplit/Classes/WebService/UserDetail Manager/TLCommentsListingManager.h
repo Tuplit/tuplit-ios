@@ -18,7 +18,7 @@
 
 @interface TLCommentsListingManager : NSObject
 
--(void) callService:(NSString*)userId withStartCount:(int)start;
+-(void) callService:(NSString*)userId withStartCount:(int)start andisUserId:(BOOL)isUserID;
 @property(nonatomic, unsafe_unretained) id <TLCommentsListingManagerDelegate> delegate;
 @property(nonatomic, strong)NSArray *commentslist;
 @property(nonatomic, assign) long listedCount;

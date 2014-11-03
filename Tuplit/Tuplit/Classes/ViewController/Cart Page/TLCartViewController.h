@@ -22,6 +22,8 @@
     UIView *checkoutView,*actionView;
     UITableView *itemsListTable;
     UILabel *discountAmtTotalLbl,*creditBalanceLbl;
+    UILabel *vatAmtTotalLbl;
+    UILabel *totalAmtTotalLbl;
     UILabel *alertLbl, *fixedAmtTotalLbl;
     UIScrollView *scrollView;
     UILabel	*swipeLbl ;

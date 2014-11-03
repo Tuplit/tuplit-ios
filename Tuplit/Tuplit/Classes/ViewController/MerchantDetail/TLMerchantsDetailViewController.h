@@ -23,6 +23,7 @@
 #import "TLOtherUserProfileViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "TLFavouriteListViewController.h"
+#import "TLAllCommentsViewController.h"
 
 
 @interface TLMerchantsDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate, MKMapViewDelegate,UIAlertViewDelegate,MFMailComposeViewControllerDelegate,TLMerchantDetailsManagerDelegate,TLAddFavouriteManagerDelegate>
@@ -69,6 +70,8 @@
     UIButton *selectedCartButton;
     
     UIView *blurView;
+    
+    int totalComments;
 
 }
 

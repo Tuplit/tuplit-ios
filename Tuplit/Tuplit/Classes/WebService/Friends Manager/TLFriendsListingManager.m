@@ -64,6 +64,7 @@ AFHTTPRequestOperation *operation;
                 @"Email"         :   @"Email",
                 @"FBId"          :   @"FBId",
                 @"CompanyName"   :   @"CompanyName",
+                @"GooglePlusId"  :   @"GooglePlusId",
                 
             }];
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };

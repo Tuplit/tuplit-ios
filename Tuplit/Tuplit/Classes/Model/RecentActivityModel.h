@@ -19,5 +19,6 @@
 @property (nonatomic, copy)NSString *TotalPrice;
 @property (nonatomic, copy)NSString *OrderDate;
 @property (nonatomic, copy)NSString *MerchantIcon;
+@property (nonatomic, copy)NSString *SubTotal;
 
 @end

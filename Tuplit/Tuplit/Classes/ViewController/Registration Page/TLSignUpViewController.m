@@ -21,20 +21,25 @@
 #import <GoogleOpenSource/GoogleOpenSource.h>
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
-
-@interface TLSignUpViewController ()<UITextFieldDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PhotoMoveAndScaleControllerDelegate, TLSignUpManagerDelegate, GPPSignInDelegate, TLLoginManagerDelegate, TLUserDetailsManagerDelegate>
+#import "TLActionSheet.h"
+@interface TLSignUpViewController ()<UITextFieldDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PhotoMoveAndScaleControllerDelegate, TLSignUpManagerDelegate, GPPSignInDelegate, TLLoginManagerDelegate, TLUserDetailsManagerDelegate,TLActionSheetDelegate>
 {
     IBOutlet UIScrollView *scrollView;
     IBOutlet UIButton *buttonFaceBook, *buttonGoogle, *buttonSignUp, *buttonTerms, *buttonPrivacy, *buttonHighLight;
     IBOutlet UITextField *textEmail, *textPassword, *textFirstName, *textLastName, *textPinCode, *textCellNumber;
     IBOutlet UIImageView *userImageView;
     IBOutlet UIToolbar *inputAccessoryView;
+    IBOutlet UISegmentedControl *segment;
+    IBOutlet UILabel *dobLabel;
+    
     CGFloat scrollContentHeight;
     
     UITextField *currentTextField;
     UIActionSheet *actionSheet;
     UIImagePickerController *imagePicker;
-    BOOL isPictureUpdated, isPush;
+    TLActionSheet *datePickerBase;
+    UIDatePicker *datepicker;
+    BOOL isPictureUpdated, isPush , isActionSheetOpen;
     
     TLSignUpManager *signUpManager;
     TLLoginManager *loginManager;
@@ -43,6 +48,8 @@
     NSString *fbID, *googlePlusID;
     CLPlacemark *placeMark;
     BOOL dontClear, isSocialButtonPressed ,isAlredyRegister;
+    
+    NSDate *previousSelectiondate;
 }
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) ACAccount *facebookAccount;
@@ -86,9 +93,7 @@
     textFirstName.autocorrectionType = UITextAutocorrectionTypeNo;
     textLastName.autocorrectionType = UITextAutocorrectionTypeNo;
     textPinCode.autocorrectionType = UITextAutocorrectionTypeNo;
-    
-    
-    
+        
     // Back Button
     UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
     [back backButtonWithTarget:self action:@selector(backButtonAction:)];
@@ -107,6 +112,15 @@
     userImageView.contentMode = UIViewContentModeScaleAspectFit;
     [buttonTerms positionAtY:buttonTerms.yPosition-1];
     [buttonPrivacy positionAtY:buttonTerms.yPosition];
+    
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:16];
+    NSDictionary *attributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
+    [segment setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    
+    dobLabel.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"textFieldBg"]];
+    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openPicker)];
+    [dobLabel setUserInteractionEnabled:YES];
+    [dobLabel addGestureRecognizer:tap];
     
     // TextField
     [textEmail setupForTuplitStyle];
@@ -209,6 +223,91 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - User defined methods
+
+-(void)setupdatePicker
+{
+    datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, 200.0)];
+    datePickerBase.delegate = self;
+}
+
+-(void)openPicker
+{
+    [self.view endEditing:YES];
+    [self setupdatePicker];
+    if([dobLabel.text isEqualToString:@"  Date of Birth"])
+    {
+        
+    }
+    else
+    {
+//        NSString *str =[dobLabel.text stringByTrimmingLeadingWhitespace];
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+//        [formatter setDateFormat:@"MM/dd/YYYY"];
+//        NSDate *date = [formatter dateFromString:str];
+        if(previousSelectiondate)
+            datePickerBase.datepicker.date = previousSelectiondate;
+    }
+    if(!isActionSheetOpen)
+    {
+        [self.view addSubview:datePickerBase];
+        [UIView animateWithDuration:0.1
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
+                             CGRect frm = datePickerBase.frame;
+                             frm.origin.y = frm.origin.y - 200.0;
+                             datePickerBase.frame = frm;
+                         }
+                         completion:nil];
+        isActionSheetOpen = YES;
+    }
+}
+#pragma mark - Actionsheet delegate methods
+-(void)doneAction
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM/dd/YYYY"];
+    
+    NSDate *pickedDOB = [datePickerBase.datepicker date];
+    previousSelectiondate = [datePickerBase.datepicker date];
+    
+    NSString *DOB = [NSString stringWithFormat:@"  %@",[dateFormatter stringFromDate:pickedDOB]];
+    dobLabel.text = DOB;
+    dobLabel.textColor = [UIColor blackColor];
+    NSLog (@"This is DOB %@", DOB);
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         CGRect frm = datePickerBase.frame;
+                         frm.origin.y = self.view.frame.size.height;
+                         datePickerBase.frame = frm;
+                     }
+                     completion:^(BOOL finished){
+                         [datePickerBase removeFromSuperview];
+                         datePickerBase = nil;
+                     }];
+    isActionSheetOpen = NO;
+}
+
+-(void)cancelAction
+{
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         CGRect frm = datePickerBase.frame;
+                         frm.origin.y = self.view.frame.size.height;
+                         datePickerBase.frame = frm;
+                     }
+                     completion:^(BOOL finished){
+                         [datePickerBase removeFromSuperview];
+                         datePickerBase = nil;
+                     }];
+    isActionSheetOpen = NO;
 }
 
 #pragma mark - TextField delegate methods
@@ -332,6 +431,8 @@
         [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
     else if(textLastName.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
+    else if([dobLabel.text isEqualToString:@"  Date of Birth"])
+        [self showAlertWithMessage:LString(@"PLEASE_SELECT_DOB")];
     //    else if(textCellNumber.text.length == 0)
     //        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
     else if(textPinCode.text.length == 0)
@@ -353,6 +454,19 @@
         self.user.Location = NSNonNilString([placeMark locality]);
         self.user.FBId = @"";
         self.user.GooglePlusId = @"";
+        
+        if([segment selectedSegmentIndex]==0)
+             self.user.Gender = @"1";
+        else if([segment selectedSegmentIndex]==1)
+            self.user.Gender = @"2";
+        else
+            self.user.Gender = @"0";
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"YYYY-MM-dd"];
+        
+        NSString *resultString = [formatter stringFromDate:previousSelectiondate];
+        self.user.DOB = resultString;
         
         if(!signUpManager) {
             signUpManager = [TLSignUpManager new];
@@ -577,6 +691,9 @@
                 self.user.FBId = @"";
                 self.user.FirstName = person.name.givenName;
                 self.user.LastName = person.name.familyName;
+                self.user.Gender = person.gender;
+              
+                self.user.DOB = person.birthday;
                 
                 @try {
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
@@ -642,12 +759,13 @@
         NSDictionary *dict = (NSDictionary *)[notif object];
         NSLog(@"facebook dictionary = %@",dict);
         
-        
         self.user.FBId = [dict valueForKey:@"id"];
         self.user.GooglePlusId = @"";
         self.user.Email = [dict valueForKey:@"email"];
         self.user.FirstName = [dict valueForKey:@"first_name"];
         self.user.LastName = [dict valueForKey:@"last_name"];
+        self.user.Gender = [dict valueForKey:@"gender"];
+        self.user.Gender = [dict valueForKey:@"birthday"];
         self.user.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[[[dict valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"]]]];
         [self callLoginWebService];
         
@@ -708,7 +826,6 @@
     {
         TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
         addCrCardViewController.viewController = self;
-        addCrCardViewController.isSignUp = YES;
         [self.navigationController pushViewController:addCrCardViewController animated:YES];
     }
     else

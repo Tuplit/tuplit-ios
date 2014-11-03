@@ -60,6 +60,7 @@
     [encoder encodeObject:self.DiscountProducts forKey:@"DiscountProducts"];
     [encoder encodeObject:self.MenuProducts forKey:@"MenuProducts"];
     [encoder encodeObject:self.CategoryList forKey:@"CategoryList"];
+    [encoder encodeObject:self.ProductVAT forKey:@"ProductVAT"];
     
 
 }
@@ -115,6 +116,7 @@
         self.DiscountProducts = [decoder decodeObjectForKey:@"DiscountProducts"];
 		self.MenuProducts = [decoder decodeObjectForKey:@"MenuProducts"];
         self.CategoryList = [decoder decodeObjectForKey:@"CategoryList"];
+        self.ProductVAT = [decoder decodeObjectForKey:@"ProductVAT"];
 }
     return self;
 }

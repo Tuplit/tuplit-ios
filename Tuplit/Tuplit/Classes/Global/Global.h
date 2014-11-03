@@ -13,6 +13,7 @@
 @property (nonatomic, retain)NSString *aboutContent;
 @property (nonatomic, retain)NSString *privacyContent;
 @property (nonatomic, retain)NSString *termsContent;
+@property (nonatomic, retain)NSString *legalContent;
 @property (nonatomic, retain)NSString *faqUrl;
 @property (nonatomic, retain)NSArray *welcomeScreenImages;
 @property (nonatomic, retain)NSArray *tutorialScreenImages;

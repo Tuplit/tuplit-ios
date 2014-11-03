@@ -183,10 +183,12 @@
         for (NSString *key in priceComponent)
         {
             CategoryModel *catgModel = [APP_DELEGATE.catgDict valueForKey:key];
-            if(i==0)
-                [categorynames appendString:[NSString stringWithFormat:@"%@",catgModel.CategoryName]];
-            else
-                [categorynames appendString:[NSString stringWithFormat:@", %@",catgModel.CategoryName]];
+//            if(i==0)
+//                [categorynames appendString:NSNonNilString([NSString stringWithFormat:@"%@",catgModel.CategoryName])];
+//            else
+            if(categorynames.length>0)
+                [categorynames appendString:@", "];
+            [categorynames appendString:NSNonNilString([NSString stringWithFormat:@"%@",catgModel.CategoryName])];
             i++;
         }
         

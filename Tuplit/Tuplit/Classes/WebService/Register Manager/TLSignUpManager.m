@@ -31,10 +31,14 @@
                                   @"FBId"           : NSNonNilString(self.user.FBId),
                                   @"GooglePlusId"   : NSNonNilString(self.user.GooglePlusId),
                                   @"Platform"       : @"ios",
-                                  @"Location"       : NSNonNilString(self.user.Location)
+                                  @"Location"       : NSNonNilString(self.user.Location),
+                                  @"Gender"         : NSNonNilString(self.user.Gender),
+                                  @"DOB"            : NSNonNilString([self.user.DOB stringByTrimmingLeadingWhitespace])
                                   };
     
     NSMutableURLRequest *request;
+    
+     NSLog(@"%@",queryParams);
     
     if(self.user.userImage != nil) {
         
@@ -100,6 +104,8 @@
                                                                   @"RecieveCredit":@"RecieveCredit",
                                                                   @"BuySomething":@"BuySomething",
                                                                   @"Photo":@"Photo",
+                                                                  @"Gender":@"Gender",
+                                                                  @"DOB":@"DOB",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };

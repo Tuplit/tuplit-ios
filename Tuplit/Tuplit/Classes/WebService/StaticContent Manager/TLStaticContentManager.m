@@ -67,18 +67,16 @@
                     obj.termsContent = dict[@"Content"];
                 else if([[dict valueForKey:@"PageName"] isEqualToString:@"FAQ"])
                     obj.faqUrl = dict[@"Content"];
-                else if([[dict valueForKey:@"PageName"] isEqualToString:@"Legal"])
-                {
-                    NSString *legalContent = [NSString stringWithFormat:@"%@", dict[@"Content"]];
-                    if(legalContent.length>0)
-                        obj.termsContent = legalContent;
-                }
                 else
                 {
                     
                 }
             }
             
+            NSString *legalContent = [[responseJSON objectForKey:strPropertyName] valueForKey:@"Legal"];
+            if(legalContent.length>0)
+                obj.legalContent = legalContent;
+
             array = [[responseJSON objectForKey:strPropertyName] valueForKey:@"HomeSlider"];
             obj.welcomeScreenImages = [array valueForKey:@"ImageUrl"];
             
@@ -89,6 +87,14 @@
             
             if([_delegate respondsToSelector:@selector(staticContentManagerSuccess:)])
                 [_delegate staticContentManagerSuccess:self];
+            
+            
+            NSString *inviteMsg = [[responseJSON objectForKey:strPropertyName] valueForKey:@"FriendInviteMessage"];
+            [TLUserDefaults setInviteMsg:inviteMsg];
+            
+            NSString *iTunesurl = [[responseJSON objectForKey:strPropertyName] valueForKey:@"ItunesURL"];
+            [TLUserDefaults setItunesURL:iTunesurl];
+            
         }
         else
         {

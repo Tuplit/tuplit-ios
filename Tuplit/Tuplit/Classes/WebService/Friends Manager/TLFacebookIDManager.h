@@ -23,5 +23,7 @@
 @property(nonatomic, unsafe_unretained) id <TLFacebookIDManagerDelegate> delegate;
 @property(nonatomic, assign) long listedCount;
 @property(nonatomic, assign) long totalCount;
+@property BOOL isGoolge;
+
 
 @end

@@ -54,7 +54,15 @@
         if(code == 200 || code == 201)
         {
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
-            NSDictionary *responseDictionarytoMap=[[responseJSON objectForKey:strPropertyName]objectForKey:@"GoogleFriends"];
+            NSDictionary *responseDictionarytoMap;
+            if(self.isGoolge)
+            {
+                responseDictionarytoMap=[[responseJSON objectForKey:strPropertyName]objectForKey:@"GoogleFriends"];
+            }
+            else
+            {
+                responseDictionarytoMap=[[responseJSON objectForKey:strPropertyName]objectForKey:@"ContactFriends"];
+            }
             
             RKObjectMapping *responseMapping = [RKObjectMapping mappingForClass:[CheckUserModel class]];
             [responseMapping addAttributeMappingsFromDictionary:@ {

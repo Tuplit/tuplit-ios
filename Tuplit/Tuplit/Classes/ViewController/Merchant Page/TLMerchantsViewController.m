@@ -190,7 +190,7 @@
     [merchantErrorLabel setBackgroundColor:[UIColor whiteColor]];
     [merchantErrorLabel setTextAlignment:NSTextAlignmentCenter];
     [merchantErrorLabel setTextColor:[UIColor lightGrayColor]];
-    [merchantErrorLabel setText:@"No merchants found."];
+    [merchantErrorLabel setText:LString(@"NO_MERCHANTS_FOUND")];
     [merchantErrorLabel setHidden:YES];
     [contentView addSubview:merchantErrorLabel];
     
@@ -840,7 +840,6 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [mapView removeAnnotation:oldAnnotation]; //removing the annotation a bit later
             });
-            
         }
     }
 }

@@ -10,7 +10,7 @@
 
 @implementation CartModel
 
-@synthesize merchantID,companyName,address,latitude,longitude,products,total,discountedTotal,productCount;
+@synthesize merchantID,companyName,address,latitude,longitude,products,total,discountedTotal,productCount,subtotal,vat;
 
 -(id) init {
     
@@ -32,6 +32,11 @@
 
 -(void) calculateTotalPrice {
     
+    APP_DELEGATE.cartModel.total = APP_DELEGATE.cartModel.discountedTotal + APP_DELEGATE.cartModel.vat;
+}
+
+-(void)calculateSubtotalPrice
+{
     double totalPrice = 0;
     double totalDiscountPrice = 0;
     
@@ -46,9 +51,15 @@
     }
     
     APP_DELEGATE.cartModel.discountedTotal = totalDiscountPrice;
-    APP_DELEGATE.cartModel.total = totalPrice;
+    APP_DELEGATE.cartModel.subtotal = totalPrice;
 }
 
+-(void)calculateVatPrice
+{
+    double vatPercent = (APP_DELEGATE.cartModel.discountedTotal / 100) * APP_DELEGATE.vatPercent.doubleValue;
+    APP_DELEGATE.cartModel.vat =  vatPercent;
+    
+}
 -(void) addItems:(SpecialProductsModel*) specialProductsModel {
     
     NSArray *tempArray = APP_DELEGATE.cartModel.products;

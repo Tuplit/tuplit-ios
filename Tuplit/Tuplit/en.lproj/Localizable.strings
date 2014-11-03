@@ -35,6 +35,7 @@
 "NO_ITEM_FOUND"                 = "No item found";
 "SEND"                          = "Send";
 "GUEST_RESTRICT_ALERT"          = "You need to register in the app to do the purchase. Would you like to register?";
+"LOCATION_NOT_ENABLED"          = "Location service is not enabled";
 
 
 /* Welcome Screen */
@@ -64,6 +65,7 @@
 "ENTER_FITST_NAME"              = "Please enter your first name";
 "ENTER_LAST_NAME"               = "Please enter your last name";
 "ENTER_CELL_NUMBER"             = "Please enter your cell number";
+"PLEASE_SELECT_DOB"             = "Please select your date of birth";
 "ENTER_PIN"                     = "Please enter a PIN code";
 "PIN_ALERT"                     = "PIN code must be in 4 digits";
 "REGISTERING"                   = "Registering";
@@ -80,6 +82,7 @@
 
 /* Merchants Screen */
 "MERCHANTS"                     = "Merchants";
+"NO_MERCHANTS_FOUND"            = "No merchants found.";
 
 /* Favourite Screen */
 "NO_FAVORITES_FOUND"            = "No Favorites found";
@@ -99,6 +102,8 @@
 "ADD_TO_FAVOURITE"              = "Add to Favorites";
 "REMOVE_FROM_FAVOURITE"         = "Remove from Favorites";
 "SETUP_EMAIL"                   = "Please setup an email account on this device to continue.";
+
+"LOCATION_FAR"                  = "Your location is too far to order this item.";
 
 /* Left Menu Screen */
 "HOME"                          = "Home";
@@ -206,20 +211,10 @@
 "SAVE_TOP_UP"                   = "Save & Top Up";
 "CARD_NO_IS_NOT_VALID"          = "The Credit Card number you entered isn't valid";
 "CREDITED_CARD_ADDED"           = "Credit Card added successfully";
-
-/*Add Credit Card*/
-"ADD_CREDIT_CARD"               = "Add Credit Card";
-"SKIP"                          = "Skip";
-"SCANNING_TEXT"                 = "Just one last thing... Add your credit card,\nadd funds and check out smoothly in the future.";
-"SCAN_IO"                       = "Scan using Scan.io";
-"MANUALLY"                      = "Or add manually";
-"CARD_NUMBER"                   = "Card Number";
-"EXPIRATION"                    = "Expiration";
-"CCV"                           = "CCV";
-"TOP_UP_ACCOUNT"                = "Do you want to top up\nyour Tuplit account?";
-"SAVE"                          = "Save";
-"TOP_UPACCOUNT"                 = "Do you want to top up your Tuplit account now?";
-"SAVE_TOP_UP"                   = "Save & Top Up";
+"ENTER_CARD_NUMBER"             = "Please enter the card number";
+"ENTER_EXPIRATION"              = "Please enter the expiration date";
+"ENTER_CVV"                     = "Please enter the CCV number";
+"ENTER_MINIMUM_AMT"             = "Enter minimum £10 or above to Top up";
 
 /* Friends Screen */
 "INVITE_FRIENDS"                = "Invite Friends";
@@ -227,6 +222,11 @@
 "NO_FB_FRIEND_FOUND"            = "No Google+ Friends Found";
 "NO_FRIEND_FOUND"               = "No friends found";
 "ACCESS_DENIED"                 = "Access is Denied";
+"INVITE_MESSAGE"                = "check out this cool app, Tuplit";
+"EMAIL_ACCOUNT_SETUP"           = "Please setup a email account";
+"INVITATION_SUCESS"             = "Invitation has been sent successfully";
+"INVITE_SUBJECT"                = "Tuplit invitation";
+"INVITE_MESSAGE"                = "%@ <br> iTunes link: %@";
 
 //Facebook
 "PUBLISH_STREAM"                = "publish_stream";

@@ -24,10 +24,11 @@
     
     UIRefreshControl *refreshControl;
     UIView *cellContainer;
+//    UIViewController *parentViewController;
     int totalUserListCount,lastFetchCount;
     BOOL isLoadMorePressed,isPullRefreshPressed,isMerchantWebserviceRunning;
 
 }
 @property (nonatomic,strong)NSString *userID;
-@property BOOL isOtherUser;
+@property (nonatomic,strong)UIViewController *viewController;
 @end

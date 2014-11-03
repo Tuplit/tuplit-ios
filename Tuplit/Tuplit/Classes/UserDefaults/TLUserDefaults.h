@@ -49,5 +49,7 @@
 + (void)setIsPINCodeEnabled:(BOOL)isEnabled;
 + (BOOL)isPINCodeEnabled;
 
++ (void)setInviteMsg:(NSString*)inviteMsg;
++ (NSString *)inviteMsg;
 
 @end

@@ -17,10 +17,14 @@
 @property(nonatomic,assign) double longitude;
 @property(nonatomic,strong) NSMutableArray *products;
 @property(nonatomic,assign) double total;
+@property(nonatomic,assign) double vat;
+@property(nonatomic,assign) double subtotal;
 @property(nonatomic,assign) double discountedTotal;
 @property(nonatomic,assign) int productCount;
 
 - (void) calculateTotalPrice;
+-(void)calculateSubtotalPrice;
+-(void)calculateVatPrice;
 - (void) addItems:(SpecialProductsModel*) specialProductsModel;
 
 @end

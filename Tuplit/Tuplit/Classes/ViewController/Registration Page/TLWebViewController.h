@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TLWebViewController : UIViewController
+@interface TLWebViewController : UIViewController<UIWebViewDelegate>
 @property (nonatomic, retain) IBOutlet UIWebView *webView;
 @property (nonatomic, retain) NSURL *resourceUrl;
 @property (nonatomic, retain) NSString *titleString;

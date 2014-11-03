@@ -22,6 +22,8 @@
     NSNumberFormatter *numberFormatter;
     NSMutableArray *itemArray;
     UILabel *totalAmtLbl;
+    UILabel *vatAmtTotalLbl;
+    UILabel * totalAmtTotalLbl;
 }
 
 @property(nonatomic,strong) NSString *TransactionId;

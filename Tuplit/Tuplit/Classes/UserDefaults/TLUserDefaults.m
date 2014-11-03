@@ -21,6 +21,7 @@
 #define kCommentDetails @"kCommentDetails"
 #define kItunesURL @"kItunesURL"
 #define kISPINCodeDisabled @"kISPINCodeDisabled"
+#define kInviteMsg @"kInviteMsg"
 
 
 @implementation TLUserDefaults
@@ -33,9 +34,14 @@
 }
 
 + (UserModel*)getCurrentUser {
-    NSData *objectToDecode = [UserDefaults valueForKey:kUser];
-    UserModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
-    return decodedObject;
+    
+    if ([[[NSUserDefaults standardUserDefaults] dictionaryRepresentation].allKeys containsObject:kUser]) {
+        NSData *objectToDecode = [UserDefaults valueForKey:kUser];
+        UserModel *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
+        return decodedObject;
+    }
+    else
+        return nil;
 }
 
 + (void)setRememberMeDetails:(NSDictionary*)dict
@@ -59,7 +65,7 @@
 }
 
 + (BOOL)IsRememberMe {
-    
+
     return [UserDefaults boolForKey:kIsRememberMe];
 }
 
@@ -163,4 +169,16 @@
 {
     return [UserDefaults boolForKey:kISPINCodeDisabled];
 }
+
++ (void)setInviteMsg:(NSString*)inviteMsg
+{
+    [UserDefaults setValue:inviteMsg forKey:kInviteMsg];
+    [UserDefaults synchronize];
+}
++ (NSString *)inviteMsg
+{
+    NSString * msg = [UserDefaults valueForKey:kInviteMsg];
+    return msg;
+}
+
 @end

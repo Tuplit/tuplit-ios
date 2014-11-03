@@ -35,7 +35,7 @@
     
     [operation setCompletionBlockWithSuccess: ^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        NSDate *end=[NSDate date];
+        NSDate *end = [NSDate date];
         NSLog(@"endTime = %@",end);
         double ellapsedSeconds= [end timeIntervalSinceDate:start];
         NSLog(@"UserDetailResponsetime = %f",ellapsedSeconds);
@@ -62,6 +62,8 @@
                 @"FBId": @"FBId",
                 @"FirstName": @"FirstName",
                 @"LastName": @"LastName",
+                @"Gender"  : @"Gender",
+                @"DOB"  : @"DOB",
                 @"Photo": @"Photo",
                 @"Platform": @"Platform",
                 @"PushNotification": @"PushNotification",
@@ -144,7 +146,13 @@
                 
                 userModel = mapper1.mappingResult.firstObject;
                 userdetailModel = mapper2.mappingResult.firstObject;
-                APP_DELEGATE.friendsRecentOrders = userdetailModel.FriendsOrders;
+                
+                if([[TLUserDefaults getCurrentUser].UserId isEqualToString:userID]||![TLUserDefaults getCurrentUser].UserId)
+                {
+                    APP_DELEGATE.friendsRecentOrders = userdetailModel.FriendsOrders;
+                }
+                
+                [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateRecentOrders object:nil];
                 
                 if([_delegate respondsToSelector:@selector(userDetailManagerSuccess:withUser:withUserDetail:)])
                     [_delegate userDetailManagerSuccess:self withUser:userModel withUserDetail:userdetailModel];

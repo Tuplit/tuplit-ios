@@ -148,7 +148,7 @@
 {
     TLAllCommentsViewController *allCommentsVC=[[TLAllCommentsViewController alloc] init];
     allCommentsVC.userID = userModel.UserId;
-    allCommentsVC.isOtherUser = YES;
+    allCommentsVC.viewController = self;
     [self.navigationController pushViewController:allCommentsVC animated:YES];
 }
 

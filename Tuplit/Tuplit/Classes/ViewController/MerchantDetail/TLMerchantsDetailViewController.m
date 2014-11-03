@@ -22,6 +22,8 @@
     TLCategoryView *categoryView;
     SlideShowView *slideshow;
     UIView *friendsListView;
+    
+    BOOL isMerchantClosed;
 }
 
 @end
@@ -51,6 +53,7 @@
     
     UIBarButtonItem *backBtn = [[UIBarButtonItem alloc] init];
     [backBtn buttonWithIcon:getImage(@"back_arrow", NO) target:self action:@selector(backButtonAction) isLeft:YES];
+//    [backBtn backButtonWithTarget:self action:@selector(backButtonAction)];
     [self.navigationItem setLeftBarButtonItem:backBtn];
     
     UIBarButtonItem * upLoadBtn = [[UIBarButtonItem alloc] init];
@@ -409,6 +412,8 @@
 {
     if(APP_DELEGATE.cartModel.products.count>0)
     {
+        [APP_DELEGATE.cartModel calculateSubtotalPrice];
+        [APP_DELEGATE.cartModel calculateVatPrice];
         [APP_DELEGATE.cartModel calculateTotalPrice];
         
         cartItemCountLbl.text = [NSString stringWithFormat:@"%d item(s) in cart",APP_DELEGATE.cartModel.productCount];
@@ -472,6 +477,11 @@
 -(void)updateMerchantDetails
 {
     NSLog(@"slideshow = %@",merchantdetailmodel.slideshow);
+    
+    OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
+    isMerchantClosed = [self isMerchantClosed:openingHrsModel.Open];
+    
+    APP_DELEGATE.vatPercent = merchantdetailmodel.ProductVAT;
     
     if(merchantdetailmodel.slideshow.count>0)
     {
@@ -702,7 +712,7 @@
     
     if (!isAllowCartEnabled) {
         
-        [UIAlertView alertViewWithMessage:@"Your location is too far to order this item."];
+        [UIAlertView alertViewWithMessage:LString(@"LOCATION_FAR")];
         
         return;
     }
@@ -802,6 +812,90 @@
     textLabel.layer.shadowOffset = CGSizeMake(0.0, -1.0);
 }
 
+-(void)allcomments
+{
+    TLAllCommentsViewController* cmtVC = [[TLAllCommentsViewController alloc] init];
+    cmtVC.userID = merchantdetailmodel.MerchantId;
+    cmtVC.viewController = self;
+    [self.navigationController pushViewController:cmtVC animated:YES];
+}
+
+-(BOOL) isMerchantClosed:(NSArray*) openHrsArray {
+    
+    NSMutableDictionary *openHoursDict = [[NSMutableDictionary alloc] init];
+    
+    for (NSString *openHours in openHrsArray) {
+        
+        NSArray *daysOpenhoursArray = [openHours componentsSeparatedByString:@":"];
+        
+        if (daysOpenhoursArray.count > 1) {
+            
+            NSString *splitUsing = @",";
+            if ([[daysOpenhoursArray objectAtIndex:0] containsString:@"to"]) {
+                splitUsing = @"to";
+            }
+            
+            NSArray *opdays = [[daysOpenhoursArray objectAtIndex:0] componentsSeparatedByString:splitUsing];
+            NSMutableArray *openDays = [[NSMutableArray alloc] initWithArray:opdays];
+            if ([splitUsing isEqualToString:@"to"]) {
+                
+                [openDays addObject:@"tue"];
+                [openDays addObject:@"wed"];
+                [openDays addObject:@"thu"];
+                [openDays addObject:@"fri"];
+                [openDays addObject:@"sat"];
+                
+            }
+            
+            for (NSString *day in openDays) {
+                
+                NSArray *minHour = [[daysOpenhoursArray objectAtIndex:2] componentsSeparatedByString:@"-"];
+                
+                NSString *openTime = [[NSString stringWithFormat:@"%@.%@",[daysOpenhoursArray objectAtIndex:1],[minHour objectAtIndex:0]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSString *closeTime = [[NSString stringWithFormat:@"%@.%@",[minHour objectAtIndex:1],[daysOpenhoursArray objectAtIndex:3]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                
+                [openHoursDict setObject:[NSArray arrayWithObjects:openTime,closeTime,nil] forKey:[[day stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString]];
+            }
+        }
+    }
+    
+    NSLog(@"openHoursDict : %@",openHoursDict);
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH.mm"];
+    NSString *time = [formatter stringFromDate:[NSDate date]];
+    [formatter setDateFormat:@"EEE"];
+    NSString *day = [formatter stringFromDate:[NSDate date]];
+    
+    NSArray *openCloseHours = [openHoursDict objectForKey:[day lowercaseString]];
+    
+    NSLog(@"day : %@",day);
+    NSLog(@"openCloseHours : %@",openCloseHours);
+    
+    if (openCloseHours) {
+        
+        float openHours = [[openCloseHours objectAtIndex:0] floatValue];
+        float closeHours = [[openCloseHours objectAtIndex:1] floatValue];
+        
+        float currentHour = [time floatValue];
+        
+        if ((openHours <= currentHour) && (currentHour <= closeHours)) {
+            
+            NSLog(@"Merchant Opened");
+            return NO;
+        }
+        else
+        {
+            NSLog(@"Merchant Closed");
+            return YES;
+        }
+    }
+    else
+    {
+        NSLog(@"Merchant Closed");
+        return YES;
+    }
+}
 #pragma mark - Table View Data Source Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -847,7 +941,7 @@
             else
             {
                 
-                categoryView = [[TLCategoryView alloc]initWithFrame:CGRectMake(0, 0, tableView.frame.size.width/2,1)];
+                categoryView = [[TLCategoryView alloc]initWithFrame:CGRectMake(0, 5, tableView.frame.size.width/2,1)];
                 [categoryView setUpCategoryView:merchantdetailmodel.CategoryList andWidth:tableView.width/2];
                 categoryView.height = categoryView.ctgviewHeight;
                 return categoryView.ctgviewHeight+stringHeight+25;
@@ -876,7 +970,7 @@
             OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
             
             if(openingHrsModel.Open.count == 0)
-                return 60;
+                return isMerchantClosed ? 90 : 60;
             else {
                 float height;
                 if(openingHrsModel.Closed.length>0)
@@ -887,10 +981,10 @@
                 else
                     height = 30 + (openingHrsModel.Open.count * 15);
                 if (height > 50) {
-                    return height+15;
+                    return isMerchantClosed ? height+15+30: height+15;
                 }
                 else{
-                    return 60 ;
+                    return isMerchantClosed ? 90 : 60 ;
                 }
             }
         }
@@ -946,6 +1040,38 @@
     [label setTextColor:UIColorFromRGB(0x00b3a4)];
     [label setBackgroundColor:[UIColor clearColor]];
     
+    if(section == 4)
+    {
+//        if(totalComments >3)
+//        {
+            UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];//[[UIButton alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
+            headerBtn.frame = CGRectMake(CGRectGetMaxX(label.frame),3,140,view.height);
+            headerBtn.backgroundColor = [UIColor clearColor];
+            headerBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
+            headerBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+            headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+            UIImage * topUpImage = getImage(@"btn_img", NO);
+            UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+            
+            [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
+            [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
+            [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
+            
+            [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+            [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+            [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+            
+            [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
+            [headerBtn addTarget:self action:@selector(allcomments) forControlEvents:UIControlEventTouchUpInside];
+            
+            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+25;
+            headerBtn.width = btnWidth;
+            [headerBtn positionAtX:baseViewWidth-btnWidth-5];
+            [view addSubview:headerBtn];
+            
+//        }
+    }
+    
     NSString *headerTitle;
     if(isDetailButton)
         headerTitle = [detailSectionNamesArray objectAtIndex:section];
@@ -980,8 +1106,17 @@
             if (indexPath.section == 0)
             {
                 cell.contentView.backgroundColor = [UIColor whiteColor];
+                UIView *ctgBaseView;
                 
-                UIView *ctgBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, categoryView.height)];
+                if(categoryView.height>30)
+                {
+                    ctgBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, categoryView.height)];
+                }
+                else
+                {
+                    ctgBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
+                }
+                
                 [ctgBaseView setBackgroundColor:[UIColor clearColor]];
                 ctgBaseView.tag = 1005;
                 [cell.contentView addSubview:ctgBaseView];
@@ -1009,6 +1144,9 @@
                 [ctgBaseView addSubview:favoriteImageView];
                 
                 UILabel * descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(13,CGRectGetMaxY(ctgBaseView.frame)+10,285,60)];
+                NSLog(@"categoryView.height = %f",categoryView.height);
+                if(categoryView.height == 0)
+                    [descriptionLabel positionAtY:CGRectGetMaxY(favoriteLabel.frame)];
                 descriptionLabel.tag = 1004;
                 descriptionLabel.backgroundColor = [UIColor clearColor];
                 descriptionLabel.numberOfLines = 0;
@@ -1182,6 +1320,13 @@
                 closedayLabel.backgroundColor = [UIColor clearColor];
                 [closedayView addSubview:closedayLabel];
                 
+                UILabel *merchantStatusLbl = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(closedayView.frame)-30, baseViewWidth-20, 30)];
+                merchantStatusLbl.tag = 4010;
+                merchantStatusLbl.backgroundColor = [UIColor clearColor];
+                merchantStatusLbl.textColor = [UIColor redColor];
+                merchantStatusLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+                [cell.contentView addSubview:merchantStatusLbl];
+                
             }
             else if (indexPath.section == 4)
             {
@@ -1276,13 +1421,15 @@
             priceLbl.text = [NSString stringWithFormat:@"%@",[numberFormatter stringFromNumber:[NSNumber numberWithDouble:specialProduct.Price.doubleValue]]];
             discountPriceLbl.text = [NSString stringWithFormat:@"%@",[numberFormatter stringFromNumber:[NSNumber numberWithDouble:specialProduct.DiscountPrice.doubleValue]]];
             
-            UIButton * addToCartBtn = (UIButton *) [cell.contentView viewWithTag:2004];
-            if (!isAllowCartEnabled) {
-                [addToCartBtn setImage:getImage(@"add_bag_grey",NO) forState:UIControlStateNormal];
+
+            if (!isAllowCartEnabled || isMerchantClosed) {
+                [addCartBtn setImage:getImage(@"add_bag_grey",NO) forState:UIControlStateNormal];
+                addCartBtn.enabled = NO;
             }
             else
             {
-                [addToCartBtn setImage:getImage(@"add_bag",NO) forState:UIControlStateNormal];
+                [addCartBtn setImage:getImage(@"add_bag",NO) forState:UIControlStateNormal];
+                addCartBtn.enabled = YES;
             }
         }
         
@@ -1323,6 +1470,7 @@
             UILabel *openHeaderLbl = (UILabel *)[cell.contentView viewWithTag:4000];
             UILabel *priceHeaderLbl = (UILabel *)[cell.contentView viewWithTag:4004];
             UILabel *closeHeaderLbl = (UILabel *)[cell.contentView viewWithTag:4008];
+            UILabel * merchantStausLabel = (UILabel *)[cell.contentView viewWithTag:4010];
             
             openHeaderLbl.text = LString(@"OPENING_HOUR");
             priceHeaderLbl.text = LString(@"PRICE_RANGE");
@@ -1405,6 +1553,11 @@
                 if(openingHrsModel.Closed.length==0)
                 {
                     closeHeaderLbl.hidden = YES;
+                    [merchantStausLabel positionAtY:CGRectGetMaxY(openHrsView.frame)];
+                }
+                else
+                {
+                    [merchantStausLabel positionAtY:CGRectGetMaxY(closedayView.frame)];
                 }
             }
             
@@ -1417,6 +1570,16 @@
             else
             {
                 priceRangeLabel1.hidden = YES;
+            }
+            
+           
+            if(isMerchantClosed)
+            {
+                merchantStausLabel.text = @"Merchant closed";
+            }
+            else
+            {
+                 merchantStausLabel.text = @"";
             }
             
         }
@@ -1555,12 +1718,14 @@
         discountPriceLbl.text = [NSString stringWithFormat:@"%@",priceValue];
         
         UIButton * addToCartBtn = (UIButton *) [cell.contentView viewWithTag:2004];
-        if (!isAllowCartEnabled) {
+        if (!isAllowCartEnabled || isMerchantClosed) {
             [addToCartBtn setImage:getImage(@"add_bag_grey",NO) forState:UIControlStateNormal];
+            addCartBtn.enabled = NO;
         }
         else
         {
             [addToCartBtn setImage:getImage(@"add_bag",NO) forState:UIControlStateNormal];
+            addCartBtn.enabled = YES;
         }
         
         return cell;
@@ -1637,6 +1802,8 @@
 {
     merchantdetailmodel = _merchantDetailModel;
     isAllowCartEnabled = merchantDetailsManager.isAllowCartEnabled;
+    
+     totalComments = merchantDetailsManager.totalComments.intValue;
     
     NSArray *specialProductArray = [[NSArray alloc] init];
     NSArray *discountProductArray = [[NSArray alloc] init];

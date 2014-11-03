@@ -143,7 +143,7 @@
 {
     NSLog(@"Changed value to: %@", sender.on ? @"ON" : @"OFF");
 }
--(void) addCommentAction :(id) sender
+-(void) addCommentAction:(id) sender
 {
     NSLog(@"message = %@",messageTxtView.text);
     
@@ -285,6 +285,7 @@
                         [self backToUserProfile];
                         [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
                     };
+                    [self dismissViewControllerAnimated:YES completion:nil];
                     [self presentViewController:tweetSheet animated:YES completion:nil];
                 }
                 else

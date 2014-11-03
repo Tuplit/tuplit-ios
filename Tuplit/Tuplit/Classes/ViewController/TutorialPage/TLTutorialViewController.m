@@ -61,7 +61,10 @@
     scrollView.slideShowImages = [Global instance].tutorialScreenImages;
     [scrollView loadData];
 
-    [buttonSkip setTitleColor:APP_DELEGATE.defaultColor forState:UIControlStateNormal];
+    scrollView.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor clearColor];
+    imageView.backgroundColor = [UIColor clearColor];
+//    [buttonSkip setTitleColor:APP_DELEGATE.defaultColor forState:UIControlStateNormal];
 }
 
 
@@ -70,6 +73,7 @@
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];

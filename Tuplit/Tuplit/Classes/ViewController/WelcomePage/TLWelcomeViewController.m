@@ -381,6 +381,8 @@
                 user.FBId = @"";
                 user.FirstName = person.name.givenName;
                 user.LastName = person.name.familyName;
+                user.Gender = person.gender;
+                user.DOB = person.birthday;
                 
                 @try {
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
@@ -445,6 +447,9 @@
         user.Email = [dict valueForKey:@"email"];
         user.FirstName = [dict valueForKey:@"first_name"];
         user.LastName = [dict valueForKey:@"last_name"];
+        user.Gender = [dict valueForKey:@"gender"];
+        user.DOB = [dict valueForKey:@"birthday"];
+        
         user.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[[[dict valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"]]]];
         [self callLoginWebService];
     }

@@ -26,5 +26,7 @@
 @property (nonatomic, copy)NSString *OrderDate;
 @property (nonatomic, copy)NSString *OrderDoneBy;
 @property (nonatomic, copy)NSString *UniqueId;
+@property (nonatomic, copy)NSString *SubTotal;
+@property (nonatomic, copy)NSString *VAT;
 @property (nonatomic, copy)NSArray *Products;
 @end

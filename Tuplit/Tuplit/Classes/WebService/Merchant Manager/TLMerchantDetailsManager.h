@@ -31,6 +31,7 @@
 
 @property(nonatomic, unsafe_unretained) id <TLMerchantDetailsManagerDelegate> delegate;
 @property(nonatomic, strong) MerchantsDetailsModel * merchantDetailsModel;
+@property(nonatomic,strong)NSString* totalComments;
 @property(nonatomic, assign) BOOL isAllowCartEnabled;
 
 @end

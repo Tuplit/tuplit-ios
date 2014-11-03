@@ -13,6 +13,7 @@
 - (NSString*)stringByTrimmingLeadingWhitespace;
 - (NSString*)capitaliseFirstLetter;
 - (NSString *)stringWithTitleCase;
+-(NSString *) stringByStrippingHTML;
 
 NSString *NSNonNilString(NSString *str);
 

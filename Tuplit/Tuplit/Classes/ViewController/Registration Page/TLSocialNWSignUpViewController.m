@@ -431,7 +431,6 @@
     
     TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
     addCrCardViewController.viewController = self;
-    addCrCardViewController.isSignUp = YES;
     [self.navigationController pushViewController:addCrCardViewController animated:YES];
     
     [[TLAppLocationController sharedManager]startUpdatingLocation];

@@ -16,6 +16,7 @@
 @property (nonatomic, copy) NSString * Photo;
 @property (nonatomic, copy) NSString * Email;
 @property (nonatomic, copy) NSString * FBId;
+@property (nonatomic, copy) NSString * GooglePlusId;
 @property (nonatomic, copy) NSString * CompanyName;
 
 

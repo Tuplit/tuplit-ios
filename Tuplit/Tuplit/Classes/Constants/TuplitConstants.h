@@ -50,15 +50,15 @@
 
 ///********* LOG HANDLING ***************/
 
-#ifdef DEBUG
-#   define NSLog(...) NSLog(__VA_ARGS__)
-#else
-#if TARGET_IPHONE_SIMULATOR
-#   define NSLog(...) NSLog(__VA_ARGS__)
-#else
-#   define NSLog(...)
-#endif   
-#endif
+//#ifdef DEBUG
+//#   define NSLog(...) NSLog(__VA_ARGS__)
+//#else
+//#if TARGET_IPHONE_SIMULATOR
+//#   define NSLog(...) NSLog(__VA_ARGS__)
+//#else
+//#   define NSLog(...)
+//#endif   
+//#endif
 
 /******** WEB SERVICE END-POINTS ********/
 
@@ -110,6 +110,7 @@
 #define kFBWelcomeScreen        @"kFBWelcomeScreen"
 #define kWelcomeScreenSlideShowStarter @"kWelcomeScreenSlideShowStarter"
 #define kFBSignupScreen         @"kFBSignupScreen"
+#define kUpdateRecentOrders     @"kUpdateRecentOrders"
 
 
 /****** Format Filters **************/
@@ -141,5 +142,6 @@ NSString *LString(NSString* key);
 + (NSString*)getOrderDateTime:(NSString*)date;
 + (NSMutableString*)filteredPhoneStringFromString:(NSString*)string withFilter:(NSString*)filter;
 + (void) userLogout;
++(NSString*)dobFormattedDate:(NSString*)datefromServer;
 
 @end

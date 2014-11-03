@@ -715,7 +715,7 @@
     }
     else
     {
-        [UIAlertView alertViewWithMessage:@"Please setup a email account"];
+        [UIAlertView alertViewWithMessage:LString(@"EMAIL_ACCOUNT_SETUP")];
     }
 }
 -(void)phoneNumCallAction
@@ -732,9 +732,10 @@
 }
 -(void)checkButtons
 {
-    if(buySwitch.isOn && receiveSwitch.isOn && sendMoneySwitch.isOn && dealOfferSwitch.isOn)
+    if((buySwitch.isOn || receiveSwitch.isOn || sendMoneySwitch.isOn || dealOfferSwitch.isOn) && !notificationSwitch.isOn)
     {
-        notificationSwitch.on = YES;
+//        notificationSwitch.on = YES;
+        [notificationSwitch showOn:YES];
         
         NSDictionary *queryParams = @{
                                       @"Type"   : NSNonNilString(@"All"),

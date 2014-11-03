@@ -15,15 +15,27 @@
 	
 	delegate = nil;
 }
--(void) callService:(NSString*)userId withStartCount:(int)start
+-(void) callService:(NSString*)userId withStartCount:(int)start andisUserId:(BOOL)isUserID
 {
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:COMMENT_LISTING_URL]];
-    
-    NSDictionary *queryParams = @{
-                                  @"UserId": NSNonNilString(userId),
-                                  @"Type": NSNonNilString(@"1"),
-                                  @"Start":NSNonNilString([NSString stringWithFormat:@"%d",start]),
-                                  };
+    NSDictionary *queryParams;
+    if(isUserID)
+    {
+        queryParams = @{
+                        @"UserId": NSNonNilString(userId),
+                        @"Type": NSNonNilString(@"1"),
+                        @"Start":NSNonNilString([NSString stringWithFormat:@"%d",start]),
+                        };
+    }
+    else
+    {
+        queryParams = @{
+                        @"MerchantId": NSNonNilString(userId),
+                        @"Type": NSNonNilString(@"2   "),
+                        @"Start":NSNonNilString([NSString stringWithFormat:@"%d",start]),
+                        };
+    }
+   
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     

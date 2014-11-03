@@ -7,11 +7,16 @@
 //
 
 #import "TLEditProfileViewController.h"
+#import "TLActionSheet.h"
 
-@interface TLEditProfileViewController ()
+@interface TLEditProfileViewController ()<TLActionSheetDelegate>
 {
-    BOOL isUserInfoEdited,isPictureUpdated;
+    BOOL isUserInfoEdited,isPictureUpdated,isActionSheetOpen;
     UIImagePickerController *imagePicker;
+    NSString *birthdate,*genderStr;
+    TLActionSheet *datePickerBase;
+    NSDate *previousSelectiondate;
+    
 }
 
 @end
@@ -61,9 +66,16 @@
         editProfileTable.delaysContentTouches = NO;
     editProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, editProfileTable.frame.size.width, 20)];
     [baseView addSubview:editProfileTable];
-    
+        
     user = [[UserModel alloc]init];
     nameDict = [[NSMutableDictionary alloc]init];
+    
+    if([TLUserDefaults getCurrentUser].DOB.length>0&&![[TLUserDefaults getCurrentUser].DOB isEqualToString:@"0000-00-00"])
+        birthdate = [TuplitConstants  dobFormattedDate:[TLUserDefaults getCurrentUser].DOB];
+        
+    else
+        birthdate = @"  Date of Birth";
+    genderStr = [TLUserDefaults getCurrentUser].Gender;
 }
 
 - (void)viewDidLoad
@@ -172,7 +184,8 @@
         NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
         [nc postNotificationName:@"UPDATE_EDITED_DETAILS" object:self userInfo:userInfo];
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+//    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)didSwipeRightInCellWithIndexPath:(NSIndexPath *)indexPath
@@ -191,6 +204,8 @@
     UITextField *firstNameTxt=(UITextField *) [cell.contentView viewWithTag:3000];
     UITextField *lastNameTxt=(UITextField *) [cell.contentView viewWithTag:3001];
     EGOImageView *profileImgView=(EGOImageView *) [cell.contentView viewWithTag:3002];
+    UISegmentedControl *segment=(UISegmentedControl *) [cell.contentView viewWithTag:3004];
+    UILabel *dobLabel=(UILabel *) [cell.contentView viewWithTag:3005];
     
     if([[[nameDict valueForKey:kFirstName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]==0)
         [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
@@ -201,6 +216,30 @@
         self.user.FirstName = firstNameTxt.text;
         self.user.LastName =  lastNameTxt.text;
         self.user.Email = [TLUserDefaults getCurrentUser].Email;
+        
+        if(![dobLabel.text isEqualToString:@"  Date of Birth"])
+        {
+//            NSString *dateString = dobLabel.text;
+//            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//            // this is imporant - we set our input date format to match our input string
+//            // if format doesn't match you'll get nil from your string, so be careful
+//            [dateFormatter setDateFormat:@"MM/dd/YYYY"];
+//            NSDate *dateFromString = [[NSDate alloc] init];
+//            // voila!
+//            dateFromString = [dateFormatter dateFromString:dateString];
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"YYYY-MM-dd"];
+            
+            NSString *resultString = [formatter stringFromDate:previousSelectiondate];
+            self.user.DOB = resultString;
+        }
+        if([segment selectedSegmentIndex]==0)
+            self.user.Gender = @"1";
+        else if([segment selectedSegmentIndex]==1)
+            self.user.Gender = @"2";
+        else
+            self.user.Gender = @"0";
         
         if(isPictureUpdated)
             self.user.userImage = profileImgView.image;
@@ -295,6 +334,93 @@
     [UIAlertView alertViewWithMessage:message];
 }
 
+-(void)setupdatePicker
+{
+    datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, 200.0)];
+    datePickerBase.delegate = self;
+    
+    if([birthdate isEqualToString:@"  Date of Birth"])
+    {
+        
+    }
+    else
+    {
+        if(previousSelectiondate)
+            datePickerBase.datepicker.date = previousSelectiondate;
+    }
+}
+
+
+
+-(void)openPicker
+{
+    [self.view endEditing:YES];
+    [self setupdatePicker];
+    
+    if(!isActionSheetOpen)
+    {
+        [self.view addSubview:datePickerBase];
+        [UIView animateWithDuration:0.1
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
+                             CGRect frm = datePickerBase.frame;
+                             frm.origin.y = frm.origin.y - 200.0;
+                             datePickerBase.frame = frm;
+                         }
+                         completion:nil];
+        isActionSheetOpen = YES;
+    }
+}
+ 
+-(void)doneAction
+{
+    isActionSheetOpen = NO;
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         CGRect frm = datePickerBase.frame;
+                         frm.origin.y = self.view.frame.size.height;
+                         datePickerBase.frame = frm;
+                     }
+                     completion:^(BOOL finished){
+                         [datePickerBase removeFromSuperview];
+                                datePickerBase = nil;
+                     }];
+    previousSelectiondate = [datePickerBase.datepicker date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    
+    NSDate *pickedDOB = [datePickerBase.datepicker date];
+    NSString *DOB = [NSString stringWithFormat:@"  %@",[dateFormatter stringFromDate:pickedDOB]];
+    
+    UITableViewCell *cell = [editProfileTable cellForRowAtIndexPath:
+                             [NSIndexPath indexPathForRow:0 inSection:0]];
+    UILabel *dobLabel = (UILabel *)[cell.contentView viewWithTag:3005];
+    dobLabel.text = DOB;
+    birthdate = DOB;
+    NSLog (@"This is DOB %@", DOB);
+}
+
+-(void)cancelAction
+{
+    isActionSheetOpen = NO;
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         CGRect frm = datePickerBase.frame;
+                         frm.origin.y = self.view.frame.size.height;
+                         datePickerBase.frame = frm;
+                     }
+                     completion:^(BOOL finished){
+                         [datePickerBase removeFromSuperview];
+                                    datePickerBase = nil;
+                     }];
+}
+
+
 #pragma mark - Table View Data Source Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -331,7 +457,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section==0) {
-        return 212;
+        return 320;
     }
     else if(indexPath.section==2)
     {
@@ -437,6 +563,12 @@
         UITextField *lastNameTxt=(UITextField *) [cell.contentView viewWithTag:3001];
         EGOImageView *profileImgView=(EGOImageView *) [cell.contentView viewWithTag:3002];
         UIButton *newPincodeBtn=(UIButton *) [cell.contentView viewWithTag:3003];
+        UISegmentedControl *gendersegment=(UISegmentedControl *) [cell.contentView viewWithTag:3004];
+        UILabel *dobLabel=(UILabel *) [cell.contentView viewWithTag:3005];
+        
+        UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openPicker)];
+        [dobLabel setUserInteractionEnabled:YES];
+        [dobLabel addGestureRecognizer:tap];
         
         UITapGestureRecognizer *takePhotoGesture =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePhoto)];
         [profileImgView addGestureRecognizer:takePhotoGesture];
@@ -454,6 +586,20 @@
             profileImgView.imageURL = [NSURL URLWithString:[nameDict valueForKey:kPhoto]];
         
         [newPincodeBtn addTarget:self action:@selector(pinCodeAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        if([genderStr isEqualToString:@"1"])
+        {
+            [gendersegment setSelectedSegmentIndex:0];
+        }
+        else if([genderStr isEqualToString:@"2"])
+        {
+            [gendersegment setSelectedSegmentIndex:1];
+        }
+        else
+        {
+            [gendersegment setSelectedSegmentIndex:2];
+        }
+        dobLabel.text = [NSString stringWithFormat:@"  %@",birthdate];
         
     }
     else if (indexPath.section == 1)

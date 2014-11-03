@@ -82,6 +82,8 @@
                 @"OrderDate"      :   @"OrderDate",
                 @"OrderDoneBy"    :   @"OrderDoneBy",
                 @"UniqueId"       :   @"UniqueId",
+                @"SubTotal"       :   @"SubTotal",
+                @"VAT"            :   @"VAT",
                 
             }];
             

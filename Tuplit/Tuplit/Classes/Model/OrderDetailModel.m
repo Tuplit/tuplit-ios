@@ -28,6 +28,8 @@
     [encoder encodeObject:self.OrderDate forKey:@"OrderDate"];
     [encoder encodeObject:self.OrderDoneBy forKey:@"OrderDoneBy"];
     [encoder encodeObject:self.UniqueId forKey:@"UniqueId"];
+    [encoder encodeObject:self.SubTotal forKey:@"SubTotal"];
+    [encoder encodeObject:self.VAT forKey:@"VAT"];
     [encoder encodeObject:self.Products forKey:@"Products"];
 }
 
@@ -51,6 +53,8 @@
         self.OrderDate = [decoder decodeObjectForKey:@"OrderDate"];
         self.OrderDoneBy = [decoder decodeObjectForKey:@"OrderDoneBy"];
         self.UniqueId = [decoder decodeObjectForKey:@"UniqueId"];
+        self.SubTotal = [decoder decodeObjectForKey:@"SubTotal"];
+        self.VAT = [decoder decodeObjectForKey:@"VAT"];
         self.Products = [decoder decodeObjectForKey:@"Products"];
     }
     return self;

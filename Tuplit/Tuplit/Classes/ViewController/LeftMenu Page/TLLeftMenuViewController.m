@@ -116,6 +116,7 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserData) name:kUpdateUserData object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFriendsOrder) name:kUpdateRecentOrders object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -147,6 +148,48 @@
     
 }
 #pragma mark - UserDefined methods
+
+-(void)updateFriendsOrder
+{
+    [menuArray removeAllObjects];
+    
+    MenuModel *menuModel1 = [[MenuModel alloc] init];
+    [menuModel1 setImage:@"MenuHome"];
+    [menuModel1 setTitle:LString(@"HOME")];
+    [menuArray addObject:menuModel1];
+    
+    MenuModel *menuModel2 = [[MenuModel alloc] init];
+    [menuModel2 setImage:@"MenuCart"];
+    [menuModel2 setTitle:LString(@"CART")];
+    [menuArray addObject:menuModel2];
+    
+    MenuModel *menuModel3 = [[MenuModel alloc] init];
+    [menuModel3 setImage:@"MenuFavourites"];
+    [menuModel3 setTitle:LString(@"FAVORITES")];
+    [menuArray addObject:menuModel3];
+    
+    MenuModel *menuModel4 = [[MenuModel alloc] init];
+    [menuModel4 setImage:@"MenuFriends"];
+    [menuModel4 setTitle:LString(@"FRIENDS")];
+    [menuArray addObject:menuModel4];
+    int i =0;
+    for(FriendsModel *order in APP_DELEGATE.friendsRecentOrders)
+    {
+        if(i==3)
+            break;
+        [menuArray addObject:order];
+        i++;
+        
+    }
+    
+    MenuModel *menuModel5 = [[MenuModel alloc] init];
+    [menuModel5 setImage:@"MenuSettings"];
+    [menuModel5 setTitle:LString(@"SETTINGS")];
+    [menuArray addObject:menuModel5];
+    
+    [mTableView reloadData];
+}
+
 -(void) updateUserData {
     
     if ([TLUserDefaults isGuestUser]) {

@@ -144,7 +144,7 @@ double mylat,myLon;
     
     if (error.code == kCLErrorDenied) {
 		
-        [UIAlertView alertViewWithMessage:@"Location service is not enabled"];
+        [UIAlertView alertViewWithMessage:LString(@"LOCATION_NOT_ENABLED")];
         
     } else {
         [manager startUpdatingLocation];

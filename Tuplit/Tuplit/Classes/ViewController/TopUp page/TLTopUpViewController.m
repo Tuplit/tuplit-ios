@@ -204,6 +204,7 @@
 -(void) topUpUsingCreditCard
 {
     TLAddCreditCardViewController *addCreditCard=[[TLAddCreditCardViewController alloc] init];
+    addCreditCard.viewController = self;
     addCreditCard.topupAmout = topUpAmountTxt.text;
     [self.navigationController pushViewController:addCreditCard animated:YES];
 }
@@ -279,7 +280,7 @@
     
     if (topUpAmount.intValue<10)
     {
-        [UIAlertView alertViewWithMessage:@"Enter minimum £10 or above to Top up"];
+        [UIAlertView alertViewWithMessage:LString(@"ENTER_MINIMUM_AMT")];
     }
     else
     {

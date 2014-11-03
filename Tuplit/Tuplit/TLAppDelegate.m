@@ -18,10 +18,17 @@
 
 @implementation TLAppDelegate
 
-@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict;
+@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict,vatPercent;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    NSDate *now = [NSDate date];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekCalendarUnit | NSWeekdayCalendarUnit fromDate:now];
+    
+    NSUInteger weekdayToday = [components weekday];
+    NSLog(@"weekday = %lu",(unsigned long)weekdayToday);
     
     [Flurry startSession:@"6TGJF7C6WTFFNBYDSQ4Z"];
      
@@ -85,6 +92,11 @@
     [self performSelectorInBackground:@selector(callStaticContentWebService) withObject:nil];
     [FBSession.activeSession handleDidBecomeActive];
     
+//    if([TLUserDefaults getCurrentUser])
+//    {
+//        [self callUserService];
+//    }
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -121,7 +133,9 @@
     
     NSDictionary *dict = [userInfo objectForKey:@"aps"];
     
-    if ([[dict objectForKey:@"type"] intValue] == 2) {
+    NSLog(@"push dict = %@", dict);
+    
+    if ([[dict objectForKey:@"type"] intValue] == 2) { //create Order
         
         NSString *processId = [dict objectForKey:@"processId"];
         
@@ -133,12 +147,45 @@
         [APP_DELEGATE.slideMenuController hideMenuViewController];
         
     }
-    else if ([[dict objectForKey:@"type"] intValue] == 1)
+    else if ([[dict objectForKey:@"type"] intValue] == 1)  // transfer or topup
     {
+        
         TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
         
+        NSString *msgStr = [dict objectForKey:@"notes"];
+        NSString *msgTitle = [dict objectForKey:@"alert"];
+        NSString *senderName = msgTitle;
+        [UIAlertView alertViewWithTitle:senderName message:msgStr];
+    }
+    else if ([[dict objectForKey:@"type"] intValue] == 3)  // Approve order
+    {
+        NSString *processId = [dict objectForKey:@"processId"];
+         NSString *merchantId = [dict objectForKey:@"merchantId"];
+         NSString *merchantName = [dict objectForKey:@"merchantName"];
+        
+        TLOrderConformViewController *orderConfromView = [[TLOrderConformViewController alloc]init];
+        orderConfromView.orderStatus = @"1";
+        orderConfromView.orderID = processId;
+        orderConfromView.merchatID = merchantId;
+        orderConfromView.merchatName = merchantName;
+        
+         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:orderConfromView];
+        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+    }
+    else if ([[dict objectForKey:@"type"] intValue] == 4) // Reject order
+    {
+        NSString *processId = [dict objectForKey:@"processId"];
+        
+        TLOrderConformViewController *orderConfromView = [[TLOrderConformViewController alloc]init];
+        orderConfromView.orderStatus = @"0";
+        orderConfromView.orderID = processId;
+        
+        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:orderConfromView];
+        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         [APP_DELEGATE.slideMenuController hideMenuViewController];
     }
 }
@@ -149,6 +196,8 @@
     staticContentManager = nil;
 }
 
+#pragma mark - User defined methods
+
 -(void) callStaticContentWebService {
     
     if(!staticContentManager) {
@@ -156,6 +205,15 @@
         staticContentManager.delegate = self;
     }
     [staticContentManager getStaticContents];
+}
+
+-(void)callUserService
+{
+    //    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    TLUserDetailsManager *userDetailsManager = [TLUserDetailsManager new];
+    userDetailsManager.delegate = self;
+    [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
+    
 }
 
 #pragma mark - Perform facebook login
@@ -270,5 +328,26 @@
 - (void)staticContentManagerFailed:(TLStaticContentManager *)staticContentManager {
     
 }
+
+#pragma mark - TLUserDetailsManagerDelegate methods
+
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
+    
+    [TLUserDefaults setCurrentUser:user_];
+    [[ProgressHud shared] hide];
+}
+
+- (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+    [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
+}
+
+- (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {
+    
+    [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+}
+
 
 @end

@@ -21,6 +21,7 @@
     [encoder encodeObject:self.TotalPrice forKey:@"TotalPrice"];
     [encoder encodeObject:self.OrderDate forKey:@"OrderDate"];
     [encoder encodeObject:self.MerchantIcon forKey:@"MerchantIcon"];
+
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -36,6 +37,7 @@
         self.TotalPrice = [decoder decodeObjectForKey:@"TotalPrice"];
         self.OrderDate = [decoder decodeObjectForKey:@"OrderDate"];
         self.MerchantIcon = [decoder decodeObjectForKey:@"MerchantIcon"];
+
     }
     return self;
 }

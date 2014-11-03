@@ -65,6 +65,7 @@ AFHTTPRequestOperation *operation;
             NSDictionary *responseDictionarytoMap=[responseJSON objectForKey:strPropertyName];
             
             self.isAllowCartEnabled = [[[responseJSON objectForKey:@"meta"] objectForKey:@"AllowCart"] intValue];
+            self.totalComments = [[responseJSON objectForKey:@"meta"] objectForKey:@"TotalComments"];
             
             RKObjectMapping* openingHoursMapping = [RKObjectMapping mappingForClass:[OpeningHoursModel class]];
             [openingHoursMapping addAttributeMappingsFromDictionary:@ {
@@ -170,6 +171,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"IsGoldenTag"  : @"IsGoldenTag",
                                                                   @"slideshow" : @"slideshow",
                                                                   @"TagType" : @"TagType",
+                                                                  @"ProductVAT" : @"ProductVAT",
                                                                   
                                                                   }];
             

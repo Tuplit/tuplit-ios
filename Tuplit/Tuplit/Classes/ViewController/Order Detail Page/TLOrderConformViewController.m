@@ -136,14 +136,18 @@
         TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
         [TLUserDefaults setIsCommentPromptOpen:YES];
         
-        OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
-        cmtDetail.MerchantId = self.merchatID;
-        cmtDetail.CompanyName = self.merchatName;
-        
-        [TLUserDefaults setCommentDetails:cmtDetail];
+        if(NSNonNilString(self.merchatID).length>0 && NSNonNilString(self.merchatName).length>0)
+        {
+            OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
+            cmtDetail.MerchantId = self.merchatID;
+            cmtDetail.CompanyName = self.merchatName;
+            
+            [TLUserDefaults setCommentDetails:cmtDetail];
+        }
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
         [APP_DELEGATE.slideMenuController hideMenuViewController];
+        
     }
     else
     {

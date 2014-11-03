@@ -58,11 +58,25 @@
         distanceImageView.image = distanceImage;
         [containerView addSubview:distanceImageView];
         
-        UIImage *discountImage = [UIImage imageNamed:@"specialIcon"];
-        discountImageView = [[UIImageView alloc] initWithFrame:CGRectMake((containerView.frame.size.width - discountImage.size.width - 10),8,discountImage.size.width, discountImage.size.height)];
+        //Discount Label
+        discountLbl = [[UILabel alloc ] initWithFrame:CGRectMake(containerView.frame.size.width - 30, 5,30,20)];
+        discountLbl.textColor = [UIColor lightGrayColor];
+        discountLbl.backgroundColor = [UIColor clearColor];
+        discountLbl.textAlignment = NSTextAlignmentLeft;
+        discountLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
+        [containerView addSubview:discountLbl];
+        
+        UIImage *discountImage = [UIImage imageNamed:@"DiscountMap"];
+        discountImageView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(discountLbl.frame) - discountLbl.frame.size.width, 8,discountImage.size.width, discountImage.size.height)];
         discountImageView.backgroundColor = [UIColor clearColor];
         discountImageView.image = discountImage;
         [containerView addSubview:discountImageView];
+        
+//        UIImage *discountImage = [UIImage imageNamed:@"specialIcon"];
+//        discountImageView = [[UIImageView alloc] initWithFrame:CGRectMake((containerView.frame.size.width - discountImage.size.width - 10),8,discountImage.size.width, discountImage.size.height)];
+//        discountImageView.backgroundColor = [UIColor clearColor];
+//        discountImageView.image = discountImage;
+//        [containerView addSubview:discountImageView];
         
         int yPosition;
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
@@ -94,6 +108,17 @@
     [merchantNameLbl setText:[merchant.CompanyName stringWithTitleCase]];
     [descriptionLbl setText:merchant.ShortDescription];
     [distanceLbl setText:[TuplitConstants getDistance:[merchant.distance doubleValue]]];
+    
+    [discountLbl setText:merchant.DiscountTier];
+    
+    CGRect discountFrame = discountLbl.frame;
+    discountFrame.size.width = [discountLbl.text widthWithFont:discountLbl.font];
+    discountFrame.origin.x = self.contentView.frame.size.width - discountFrame.size.width - 10;
+    [discountLbl setFrame:discountFrame];
+    
+    CGRect discountImageViewFrame = discountImageView.frame;
+    discountImageViewFrame.origin.x = CGRectGetMinX(discountLbl.frame) - discountImageView.frame.size.width - 3;
+    [discountImageView setFrame:discountImageViewFrame];
     
     if (distanceLbl.text.length > 0) {
         
@@ -159,6 +184,8 @@
 {
     [merchantImgView setImageURL:[NSURL URLWithString:categoryModel.CategoryIcon]];
     [merchantNameLbl setText:[categoryModel.CategoryName stringWithTitleCase]];
+    distanceLbl.text = @"";
+    discountLbl.text = @"";
     
     NSString *merchantCount;
     if ([categoryModel.MerchantCount intValue] == 1) {

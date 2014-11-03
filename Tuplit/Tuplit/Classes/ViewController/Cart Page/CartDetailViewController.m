@@ -111,20 +111,52 @@
     lineImgView2.image=[UIImage imageNamed:@"line.png"];
     [detailImgView addSubview:lineImgView2];
     
-    UILabel *totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(58,CGRectGetMaxY(lineImgView2.frame),detailImgView.width-150, 47)];
-    totalTitleLbl.text=@"Total";
-    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
-    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
-    totalTitleLbl.backgroundColor=[UIColor clearColor];
-    [detailImgView addSubview:totalTitleLbl];
+    UILabel *subtotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(58,CGRectGetMaxY(lineImgView2.frame),detailImgView.width-150, 28)];
+    subtotalTitleLbl.text=@"Sub total";
+    subtotalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    subtotalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    subtotalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    subtotalTitleLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:subtotalTitleLbl];
     
-    totalAmtLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(totalTitleLbl.frame) +2, CGRectGetMaxY(lineImgView2.frame)+7, 66, 47)];
+    totalAmtLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame) +2, CGRectGetMinY(subtotalTitleLbl.frame), 66, 28)];
     totalAmtLbl.textAlignment=NSTextAlignmentRight;
     totalAmtLbl.textColor=UIColorFromRGB(0x333333);
     totalAmtLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     totalAmtLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:totalAmtLbl];
+    
+    UILabel *vattotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,CGRectGetMaxY(subtotalTitleLbl.frame), 108, 28)];
+    vattotalTitleLbl.text=@"VAT";
+    vattotalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    vattotalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    vattotalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    vattotalTitleLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:vattotalTitleLbl];
+    
+    vatAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame)+100,CGRectGetMinY(vattotalTitleLbl.frame), 30, 28)];
+    vatAmtTotalLbl.text=@"£10";
+    vatAmtTotalLbl.textColor=UIColorFromRGB(0x333333);
+    vatAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    vatAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    vatAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:vatAmtTotalLbl];
+    
+    UILabel *totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,CGRectGetMaxY(vattotalTitleLbl.frame), 108, 28)];
+    totalTitleLbl.text=@"Total";
+    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    totalTitleLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:totalTitleLbl];
+    
+    totalAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(vattotalTitleLbl.frame)+100,CGRectGetMinY(totalTitleLbl.frame), 30, 28)];
+    totalAmtTotalLbl.text=@"£10";
+    totalAmtTotalLbl.textColor=UIColorFromRGB(0x333333);
+    totalAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    totalAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    totalAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:totalAmtTotalLbl];
     
     UIImageView *lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
     lineImgView3.backgroundColor=[UIColor clearColor];
@@ -204,7 +236,15 @@
     
     totalAmtLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.discountedTotal]];
     float totalAmountWidth = [totalAmtLbl.text widthWithFont:totalAmtLbl.font];
-    totalAmtLbl.frame = CGRectMake((itemsListTable.frame.size.width - totalAmountWidth) + 2, CGRectGetMaxY(lineImgView2.frame) + 8, totalAmountWidth, CELL_HEIGHT);
+    totalAmtLbl.frame = CGRectMake((itemsListTable.frame.size.width - totalAmountWidth) + 2, totalAmtLbl.yPosition, totalAmountWidth, 28);
+    
+    vatAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.vat]];
+    float vatAmtTWidth = [vatAmtTotalLbl.text widthWithFont:vatAmtTotalLbl.font];
+    vatAmtTotalLbl.frame = CGRectMake((itemsListTable.frame.size.width - vatAmtTWidth) + 2 , vatAmtTotalLbl.yPosition, vatAmtTWidth, 28);
+    
+    totalAmtTotalLbl.text = [numberFormatter stringFromNumber:[NSNumber numberWithDouble:APP_DELEGATE.cartModel.total]];
+    float totalAmtTWidth = [totalAmtTotalLbl.text widthWithFont:totalAmtTotalLbl.font];
+    totalAmtTotalLbl.frame = CGRectMake((itemsListTable.frame.size.width - totalAmtTWidth) + 2, totalAmtTotalLbl.yPosition, totalAmtTWidth, 28);
     
     [itemsListTable reloadData];
 }

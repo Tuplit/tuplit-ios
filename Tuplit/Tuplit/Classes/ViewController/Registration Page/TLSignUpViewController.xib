@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5053" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TLSignUpViewController">
@@ -13,8 +12,10 @@
                 <outlet property="buttonPrivacy" destination="9B0-nb-197" id="Hru-tp-sEb"/>
                 <outlet property="buttonSignUp" destination="9na-UR-Pli" id="XMU-Lu-07N"/>
                 <outlet property="buttonTerms" destination="Ovn-0d-bPG" id="Pn8-bE-g3y"/>
+                <outlet property="dobLabel" destination="hYt-bF-VvD" id="BDm-bT-gac"/>
                 <outlet property="inputAccessoryView" destination="SZ6-Ng-YfR" id="P7W-yc-oeU"/>
                 <outlet property="scrollView" destination="ozO-0o-svJ" id="hM6-kB-Equ"/>
+                <outlet property="segment" destination="h4c-aj-PXh" id="rZQ-JO-Mig"/>
                 <outlet property="textEmail" destination="lP3-7a-Jev" id="cjM-Qg-BwL"/>
                 <outlet property="textFirstName" destination="Fdc-sf-xre" id="YRI-o9-4Y0"/>
                 <outlet property="textLastName" destination="T0P-0T-cwM" id="fuQ-ci-qeV"/>
@@ -29,8 +30,8 @@
             <rect key="frame" x="0.0" y="64" width="320" height="504"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ozO-0o-svJ">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="505"/>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" id="ozO-0o-svJ">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="509"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="pbv-WY-tMu">
@@ -114,13 +115,13 @@
                             <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="PIN Code" minimumFontSize="17" background="textFieldBg.png" id="3Gb-mh-ufN">
-                            <rect key="frame" x="20" y="392" width="280" height="45"/>
+                            <rect key="frame" x="20" y="494" width="280" height="45"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="numberPad"/>
                         </textField>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9na-UR-Pli">
-                            <rect key="frame" x="20" y="452" width="280" height="45"/>
+                            <rect key="frame" x="20" y="554" width="280" height="45"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="16"/>
                             <state key="normal" title="Sign up">
@@ -131,21 +132,21 @@
                             </connections>
                         </button>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By signing up you agree" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eP3-eb-7zb">
-                            <rect key="frame" x="0.0" y="520" width="320" height="21"/>
+                            <rect key="frame" x="0.0" y="622" width="320" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="12"/>
                             <color key="textColor" red="0.60392159223556519" green="0.60392159223556519" blue="0.60392159223556519" alpha="1" colorSpace="deviceRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="to the" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LQO-XE-QXa">
-                            <rect key="frame" x="49" y="538" width="37" height="20"/>
+                            <rect key="frame" x="49" y="640" width="37" height="20"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="12"/>
                             <color key="textColor" red="0.60392159223556519" green="0.60392159223556519" blue="0.60392159223556519" alpha="1" colorSpace="deviceRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" id="Ovn-0d-bPG">
-                            <rect key="frame" x="83" y="537" width="96" height="20"/>
+                            <rect key="frame" x="83" y="639" width="96" height="20"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="12"/>
                             <state key="normal" title="Terms of Service">
@@ -157,14 +158,14 @@
                             </connections>
                         </button>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&amp;" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mKW-KF-JuW">
-                            <rect key="frame" x="179" y="538" width="11" height="20"/>
+                            <rect key="frame" x="179" y="640" width="11" height="20"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="12"/>
                             <color key="textColor" red="0.60392159223556519" green="0.60392159223556519" blue="0.60392159223556519" alpha="1" colorSpace="deviceRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" id="9B0-nb-197">
-                            <rect key="frame" x="182" y="537" width="95" height="20"/>
+                            <rect key="frame" x="182" y="639" width="95" height="20"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="12"/>
                             <state key="normal" title="Privacy Policy">
@@ -175,13 +176,31 @@
                                 <action selector="privacyAction:" destination="-1" eventType="touchUpInside" id="7BZ-Wz-wj3"/>
                             </connections>
                         </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Date of Birth" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hYt-bF-VvD">
+                            <rect key="frame" x="20" y="444" width="280" height="45"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.93600526147959184" green="0.93600526147959184" blue="0.93600526147959184" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                            <color key="textColor" red="0.76098134566326525" green="0.76098134566326525" blue="0.76098134566326525" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" id="h4c-aj-PXh">
+                            <rect key="frame" x="20" y="393" width="280" height="45"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.9504743303571429" green="0.9504743303571429" blue="0.9504743303571429" alpha="1" colorSpace="calibratedRGB"/>
+                            <segments>
+                                <segment title="Male"/>
+                                <segment title="Female"/>
+                                <segment title="Rather not say"/>
+                            </segments>
+                            <color key="tintColor" red="0.69579081632653061" green="0.69579081632653061" blue="0.69579081632653061" alpha="1" colorSpace="calibratedRGB"/>
+                        </segmentedControl>
                     </subviews>
                 </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <point key="canvasLocation" x="-453" y="-102"/>
         </view>
         <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackTranslucent" translucent="NO" id="SZ6-Ng-YfR">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -216,4 +235,9 @@
         <image name="UserPlaceHolder.png" width="61" height="61"/>
         <image name="textFieldBg.png" width="45" height="45"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

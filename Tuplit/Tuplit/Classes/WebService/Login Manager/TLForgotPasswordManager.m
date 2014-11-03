@@ -44,7 +44,6 @@
         double ellapsedSeconds= [end timeIntervalSinceDate:start];
         NSLog(@"ForgotPasswordResponsetime = %f",ellapsedSeconds);
         
-        
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];

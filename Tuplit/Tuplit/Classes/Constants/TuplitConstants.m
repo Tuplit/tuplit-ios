@@ -104,7 +104,7 @@ NSString *LString(NSString* key) {
     if (components.year > 0) {
         return [NSString stringWithFormat:@"%ld yr", (long)components.year];
     } else if (components.month > 0) {
-        return [NSString stringWithFormat:@"%ld mo", (long)components.month];
+        return [NSString stringWithFormat:@"%ld mnt", (long)components.month];
     } else if (components.weekOfYear > 0) {
         return [NSString stringWithFormat:@"%ld wk", (long)components.weekOfYear];
     } else if (components.day > 0) {
@@ -278,6 +278,25 @@ NSString *LString(NSString* key) {
     return mobileNumber;
 }
 
++(NSString*)dobFormattedDate:(NSString*)datefromServer
+{
+    NSString *dateString = datefromServer;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    // this is imporant - we set our input date format to match our input string
+    // if format doesn't match you'll get nil from your string, so be careful
+    
+    [dateFormatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *dateFromString = [[NSDate alloc] init];
+    // voila!
+    dateFromString = [dateFormatter dateFromString:dateString];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MM/dd/YYYY"];
+    
+    NSString *resultString = [formatter stringFromDate:dateFromString];
+    return resultString;
+}
+
 +(void) userLogout {
     
     [TLUserDefaults setCurrentUser:nil];
@@ -296,12 +315,14 @@ NSString *LString(NSString* key) {
 }
 +(NSNumberFormatter*) getCurrencyFormat
 {
-    if(!numberFormatter)
-    {
+//    if(!numberFormatter)
+//    {
         numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setMaximumFractionDigits:2];
+        [numberFormatter setRoundingMode: NSNumberFormatterRoundUp];
         [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
         [numberFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"]];
-    }
+//    }
     return numberFormatter;
 }
 

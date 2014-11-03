@@ -16,6 +16,8 @@
     [encoder encodeObject:self.UserName forKey:@"UserName"];
     [encoder encodeObject:self.FirstName forKey:@"FirstName"];
     [encoder encodeObject:self.LastName forKey:@"LastName"];
+    [encoder encodeObject:self.Gender forKey:@"Gender"];
+    [encoder encodeObject:self.DOB forKey:@"DOB"];
 	[encoder encodeObject:self.Email forKey:@"Email"];
 	[encoder encodeObject:self.Photo forKey:@"userImageUrl"];
     [encoder encodeObject:self.FBId forKey:@"FBId"];
@@ -49,6 +51,8 @@
         self.UserName = [decoder decodeObjectForKey:@"UserName"];
         self.FirstName = [decoder decodeObjectForKey:@"FirstName"];
         self.LastName = [decoder decodeObjectForKey:@"LastName"];
+        self.Gender = [decoder decodeObjectForKey:@"Gender"];
+        self.DOB = [decoder decodeObjectForKey:@"DOB"];
 		self.Email = [decoder decodeObjectForKey:@"Email"];
         self.Photo = [decoder decodeObjectForKey:@"userImageUrl"];
 		self.FBId = [decoder decodeObjectForKey:@"FBId"];

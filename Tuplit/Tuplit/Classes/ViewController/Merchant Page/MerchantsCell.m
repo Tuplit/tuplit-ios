@@ -161,14 +161,16 @@
     }
    
     discountImageView.hidden = NO;
-    if ([merchant.TagType intValue] == 1) {
+    
+    if ([merchant.TagType intValue] == 1)                               // 1/3
+    {
         [discountImageView setImage:[UIImage imageNamed:@"DiscountMap"]];
     }
-    else if([merchant.TagType intValue] == 2)
+    else if([merchant.TagType intValue] == 2)                           // 2/3
     {
         [discountImageView setImage:[UIImage imageNamed:@"red_tag"]];
     }
-    else if([merchant.TagType intValue] == 3)
+    else if([merchant.TagType intValue] == 3)                           // 3/3
     {
         [discountImageView setImage:[UIImage imageNamed:@"specialIcon"]];
     }

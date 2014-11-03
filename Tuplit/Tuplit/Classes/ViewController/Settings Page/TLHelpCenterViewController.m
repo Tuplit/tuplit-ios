@@ -38,7 +38,7 @@
     [self.navigationItem setTitle:LString(@"HELP_CENTER")];
     
     UIBarButtonItem *navleftButton = [[UIBarButtonItem alloc] init];
-    [navleftButton buttonWithIcon:getImage(@"back", NO) target:self action:@selector(backToSettings) isLeft:NO];
+    [navleftButton backButtonWithTarget:self action:@selector(backToSettings)];
     [self.navigationItem setLeftBarButtonItem:navleftButton];
     
     baseViewWidth= self.view.frame.size.width;
@@ -168,7 +168,7 @@
     }
     else
     {
-        [UIAlertView alertViewWithMessage:@"Please setup a email account"];
+        [UIAlertView alertViewWithMessage:LString(@"EMAIL_ACCOUNT_SETUP")];
     }
 }
 -(void)phoneNumCallAction

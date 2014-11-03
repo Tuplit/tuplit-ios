@@ -18,6 +18,7 @@
     [encoder encodeObject:self.Photo forKey:@"Photo"];
     [encoder encodeObject:self.Email forKey:@"Email"];
     [encoder encodeObject:self.FBId forKey:@"FBId"];
+    [encoder encodeObject:self.GooglePlusId forKey:@"GooglePlusId"];
     [encoder encodeObject:self.CompanyName forKey:@"CompanyName"];
     
 }
@@ -32,6 +33,7 @@
         self.Photo = [decoder decodeObjectForKey:@"Photo"];
         self.Email = [decoder decodeObjectForKey:@"Email"];
         self.FBId = [decoder decodeObjectForKey:@"FBId"];
+         self.GooglePlusId = [decoder decodeObjectForKey:@"GooglePlusId"];
         self.CompanyName = [decoder decodeObjectForKey:@"CompanyName"];
 		      
     }

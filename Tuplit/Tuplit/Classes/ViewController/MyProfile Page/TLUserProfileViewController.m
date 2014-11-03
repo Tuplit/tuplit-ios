@@ -9,8 +9,9 @@
 #import "TLUserProfileViewController.h"
 
 @interface TLUserProfileViewController ()
+
 {
-    
+     NSIndexPath *deletedCmtIndex;
 }
 @end
 
@@ -99,7 +100,7 @@
     NETWORK_TEST_PROCEDURE
     
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    
+
     TLUserDetailsManager *usermanager = [[TLUserDetailsManager alloc]init];
     usermanager.delegate = self;
     [usermanager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
@@ -181,9 +182,10 @@
     
     TLEditProfileViewController * editProfileVC = [[TLEditProfileViewController alloc] init];
     editProfileVC.userDetail = userdeatilmodel;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editProfileVC];
-    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-    [self presentViewController:nav animated:YES completion:nil];
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editProfileVC];
+//    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+//    [self presentViewController:nav animated:YES completion:nil];
+    [self.navigationController pushViewController:editProfileVC animated:YES];
 }
 
 - (void) topUpAction:(id) sender
@@ -210,6 +212,7 @@
 {
     TLAllCommentsViewController *allCommentsVC=[[TLAllCommentsViewController alloc] init];
     allCommentsVC.userID = [TLUserDefaults getCurrentUser].UserId;
+    allCommentsVC.viewController = self;
     [self.navigationController pushViewController:allCommentsVC animated:YES];
 }
 
@@ -290,8 +293,8 @@
     headerBtn.frame = CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT);
     headerBtn.backgroundColor = [UIColor clearColor];
     headerBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
-    headerBtn.titleLabel.textAlignment = NSTextAlignmentRight;
-    headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    headerBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+    headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     UIImage * topUpImage = getImage(@"btn_img", NO);
     UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
     
@@ -318,9 +321,9 @@
         {
             [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
             [headerBtn addTarget:self action:@selector(allTransaction) forControlEvents:UIControlEventTouchUpInside];
-            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+2;
+            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+25;
             headerBtn.width = btnWidth;
-            [headerBtn positionAtX:baseViewWidth-btnWidth-15];
+            [headerBtn positionAtX:baseViewWidth-btnWidth-5];
         }
     }
     else if(section == 3)
@@ -330,9 +333,9 @@
             [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
             [headerBtn addTarget:self action:@selector(allcomments) forControlEvents:UIControlEventTouchUpInside];
             
-            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+2;
+            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+25;
             headerBtn.width = btnWidth;
-            [headerBtn positionAtX:baseViewWidth-btnWidth-15];
+            [headerBtn positionAtX:baseViewWidth-btnWidth-5];
             
         }
     }
@@ -370,6 +373,7 @@
         UserModel *usermodel = [TLUserDefaults getCurrentUser];
         profileImgView.imageURL = [NSURL URLWithString:usermodel.Photo];
         balAmountLbl.text = [[TuplitConstants getCurrencyFormat] stringFromNumber:[NSNumber numberWithDouble:usermodel.AvailableBalance.doubleValue]];
+      
         userIDLbl.text = usermodel.UserId;
         
         [transferBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -515,7 +519,7 @@
             [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
             
             NSArray *creditCardArray = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
-            
+            deletedCmtIndex = indexPath;
             if (creditCardArray.count > 0) {
                 
                 CreditCardModel *creditCard = [creditCardArray objectAtIndex:indexPath.row];
@@ -566,6 +570,23 @@
 
 - (void)creditCardDeleteManagerSuccess:(TLCreditCardDeleteManager *)creditCardDeleteManager
 {
+//     [[ProgressHud shared] hide];
+//    userProfileTable.editing = YES;
+//     NSMutableArray *creditCardArray = [[mainDict valueForKey:[sectionHeader objectAtIndex:deletedCmtIndex.section]]mutableCopy];
+//    [creditCardArray removeObjectAtIndex:deletedCmtIndex.row];
+////    [userProfileTable beginUpdates];
+//    if ([creditCardArray count] > 0)
+//    {
+//       [userProfileTable deleteRowsAtIndexPaths:@[deletedCmtIndex] withRowAnimation:NO];
+//    }
+//    else
+//    {
+//        // Section is now completely empty, so delete the entire section.
+//        [userProfileTable deleteSections:[NSIndexSet indexSetWithIndex:deletedCmtIndex.section]
+//                 withRowAnimation:NO];
+//    }
+//    [userProfileTable reloadData];
+//    [mainDict setValue:creditCardArray forKey:@"Credit Cards"];
     [self callService];
 }
 - (void)creditCardDeleteManager:(TLCreditCardDeleteManager *)creditCardDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg

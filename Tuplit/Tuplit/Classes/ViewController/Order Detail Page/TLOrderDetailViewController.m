@@ -21,9 +21,13 @@
     UILabel *transactionIDLbl;
     UIImageView *lineImgView1;
     UIImageView *lineImgView2;
-    UILabel *totalTitleLbl;
+    UILabel *subtotalTitleLbl;
     UIImageView *lineImgView3;
     UILabel *transactionTitleLbl;
+    UILabel *vatAmtTotalLbl;
+    UILabel *totalAmtTotalLbl;
+    UILabel *vattotalTitleLbl;
+    UILabel *totalTitleLbl;
     
     UILabel *informativeLbl;
     
@@ -130,21 +134,52 @@
     lineImgView2.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:lineImgView2];
     
-    totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(58,CGRectGetMaxY(lineImgView2.frame)+2,detailImgView.width-150, 47)];
-    totalTitleLbl.text=@"Total";
-    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
-    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
-    totalTitleLbl.backgroundColor=[UIColor clearColor];
-    [detailImgView addSubview:totalTitleLbl];
+    subtotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(58,CGRectGetMaxY(lineImgView2.frame)+2,detailImgView.width-150, 28)];
+    subtotalTitleLbl.text=@"Sub total";
+    subtotalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    subtotalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    subtotalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    subtotalTitleLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:subtotalTitleLbl];
     
-    totalAmtLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(totalTitleLbl.frame), CGRectGetMaxY(lineImgView2.frame)+2, 62, 47)];
+    totalAmtLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame) +2, CGRectGetMinY(subtotalTitleLbl.frame), 66, 28)];
     totalAmtLbl.textAlignment=NSTextAlignmentRight;
     totalAmtLbl.textColor=UIColorFromRGB(0x333333);
     totalAmtLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    totalAmtLbl.adjustsFontSizeToFitWidth=YES;
     totalAmtLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:totalAmtLbl];
+    
+    vattotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,CGRectGetMaxY(subtotalTitleLbl.frame), 108, 28)];
+    vattotalTitleLbl.text=@"VAT";
+    vattotalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    vattotalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    vattotalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    vattotalTitleLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:vattotalTitleLbl];
+    
+    vatAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame)+100,CGRectGetMinY(vattotalTitleLbl.frame), 30, 28)];
+    vatAmtTotalLbl.text=@"£10";
+    vatAmtTotalLbl.textColor=UIColorFromRGB(0x333333);
+    vatAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    vatAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    vatAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:vatAmtTotalLbl];
+    
+    totalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(57,CGRectGetMaxY(vattotalTitleLbl.frame), 108, 28)];
+    totalTitleLbl.text=@"Total";
+    totalTitleLbl.textColor=UIColorFromRGB(0x333333);
+    totalTitleLbl.textAlignment=NSTextAlignmentLeft;
+    totalTitleLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+    totalTitleLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:totalTitleLbl];
+    
+    totalAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(vattotalTitleLbl.frame)+100,CGRectGetMinY(totalTitleLbl.frame), 30, 28)];
+    totalAmtTotalLbl.text=@"£10";
+    totalAmtTotalLbl.textColor=UIColorFromRGB(0x333333);
+    totalAmtTotalLbl.textAlignment=NSTextAlignmentRight;
+    totalAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+    totalAmtTotalLbl.backgroundColor=[UIColor clearColor];
+    [detailImgView addSubview:totalAmtTotalLbl];
     
     //    lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
     //    lineImgView3.image=[UIImage imageNamed:@"line.png"];
@@ -152,7 +187,7 @@
     //    [detailImgView addSubview:lineImgView3];
     
     acceptBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    acceptBtn.frame=CGRectMake(14, CGRectGetMaxY(totalAmtLbl.frame)+25, detailImgView.width-28, 45);
+    acceptBtn.frame=CGRectMake(14, CGRectGetMaxY(totalAmtTotalLbl.frame)+25, detailImgView.width-28, 45);
     [acceptBtn setTitle:LString(@"ACCEPT_ORDER") forState:UIControlStateNormal];
     acceptBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
     acceptBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -212,7 +247,7 @@
 -(void)updateOrderDetails
 {
     tableHeight=orderdetail.Products.count * CELL_HEIGHT;
-    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, 270 + tableHeight);
+//    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, 270 + tableHeight);
     merchantNameLbl.text = orderdetail.CompanyName;
     
     merchantAddressLbl.text = orderdetail.Address;
@@ -228,14 +263,28 @@
     
     lineImgView2.frame = CGRectMake(12, CGRectGetMaxY(itemsListTable.frame),detailImgView.width-24, 3);
     
-    totalTitleLbl.frame=CGRectMake(58,CGRectGetMaxY(lineImgView2.frame)+2,detailImgView.width-150, 47);
-    totalAmtLbl.text = [[TuplitConstants getCurrencyFormat]stringFromNumber:[NSNumber numberWithDouble:orderdetail.TotalPrice.doubleValue]];
+    subtotalTitleLbl.frame=CGRectMake(58,CGRectGetMaxY(lineImgView2.frame)+8,detailImgView.width-150, 28);
+    totalAmtLbl.text = [[TuplitConstants getCurrencyFormat]stringFromNumber:[NSNumber numberWithDouble:orderdetail.SubTotal.doubleValue]];
     float titLblWidth = [totalAmtLbl.text widthWithFont:totalAmtLbl.font];
-    totalAmtLbl.frame = CGRectMake((itemsListTable.frame.size.width - titLblWidth) + 2, CGRectGetMaxY(lineImgView2.frame) + 8, titLblWidth, CELL_HEIGHT);
+    totalAmtLbl.frame = CGRectMake((itemsListTable.frame.size.width - titLblWidth) + 2, subtotalTitleLbl.yPosition, titLblWidth, CELL_HEIGHT);
     
-    acceptBtn.frame = CGRectMake(20, CGRectGetMaxY(totalAmtLbl.frame)+25, 270, 45);
+    vattotalTitleLbl.frame=CGRectMake(58,CGRectGetMaxY(subtotalTitleLbl.frame),detailImgView.width-150, 28);
+    vatAmtTotalLbl.text = [[TuplitConstants getCurrencyFormat] stringFromNumber:[NSNumber numberWithDouble:orderdetail.VAT.doubleValue]];
+    float vatAmtTWidth = [vatAmtTotalLbl.text widthWithFont:vatAmtTotalLbl.font];
+    vatAmtTotalLbl.frame = CGRectMake((itemsListTable.frame.size.width - vatAmtTWidth) + 2 , vattotalTitleLbl.yPosition, vatAmtTWidth, 28);
+    
+    totalTitleLbl.frame=CGRectMake(58,CGRectGetMaxY(vattotalTitleLbl.frame),detailImgView.width-150, 28);
+    totalAmtTotalLbl.text = [[TuplitConstants getCurrencyFormat] stringFromNumber:[NSNumber numberWithDouble:orderdetail.TotalPrice.doubleValue]];
+    float totalAmtTWidth = [totalAmtTotalLbl.text widthWithFont:totalAmtTotalLbl.font];
+    totalAmtTotalLbl.frame = CGRectMake((itemsListTable.frame.size.width - totalAmtTWidth) + 2, totalTitleLbl.yPosition, totalAmtTWidth, 28);
+    
+    acceptBtn.frame = CGRectMake(20, CGRectGetMaxY(totalAmtTotalLbl.frame)+25, 270, 45);
+    
+    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, CGRectGetMaxY(acceptBtn.frame) + 50);
+    
     rejectBtn.frame = CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+15, detailImgView.width-28, 45);
     [itemsListTable reloadData];
+    
     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(rejectBtn.frame) + 40);
     
 }

@@ -14,6 +14,8 @@
 @property (nonatomic, copy) NSString *UserId;
 @property (nonatomic, copy) NSString *FirstName;
 @property (nonatomic, copy) NSString *LastName;
+@property (nonatomic, copy) NSString *Gender;
+@property (nonatomic, copy) NSString *DOB;
 @property (nonatomic, copy) NSString *Email;
 @property (nonatomic, copy) NSString *FBId;
 @property (nonatomic, copy) NSString *Photo;

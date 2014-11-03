@@ -8,6 +8,8 @@
 
 #import "TLAddCreditCardViewController.h"
 #import "CreditCard.h"
+#import "TLSignUpViewController.h"
+#import "TLSocialNWSignUpViewController.h"
 
 #define ACCEPTABLE_CHARECTERS @"0123456789"
 
@@ -240,7 +242,7 @@
 
 -(void)skipButtonClicked
 {
-    if(self.isSignUp)
+    if([self.viewController isKindOfClass:[TLSignUpViewController class]]||[self.viewController isKindOfClass:[TLSocialNWSignUpViewController class]])
     {
         [[NSNotificationCenter defaultCenter]postNotificationName:kCreditCardAdded object:nil];
     }
@@ -265,7 +267,7 @@
     [self dismissButtonClicked:nil];
     
     CardIOPaymentViewController *scanViewController = [[CardIOPaymentViewController alloc] initWithPaymentDelegate:self];
-    scanViewController.appToken = CardIOAppToken;
+//    scanViewController.appToken = CardIOAppToken;
     [scanViewController.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
     [scanViewController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     [self.navigationController presentViewController:scanViewController animated:YES completion:nil];
@@ -280,15 +282,15 @@
     
     if (cardNumberTextField.text.length == 0) {
         
-        [UIAlertView alertViewWithMessage:@"Please enter the card number"];
+        [UIAlertView alertViewWithMessage:LString(@"ENTER_CARD_NUMBER")];
     }
     else if(dateExpirationTextField.text.length == 0) {
         
-        [UIAlertView alertViewWithMessage:@"Please enter the expiration date"];
+        [UIAlertView alertViewWithMessage:LString(@"ENTER_EXPIRATION")];
     }
     else if (cvvTextField.text.length == 0) {
         
-        [UIAlertView alertViewWithMessage:@"Please enter the CCV number"];
+        [UIAlertView alertViewWithMessage:LString(@"ENTER_CVV")];
     }
     else
     {
@@ -310,7 +312,7 @@
                 
                 if (topUpAmount.intValue<10)
                 {
-                    [UIAlertView alertViewWithMessage:@"Enter minimum £10 or above to Top up"];
+                    [UIAlertView alertViewWithMessage:LString(@"ENTER_MINIMUM_AMT")];
                 }
                 else
                 {
@@ -615,7 +617,11 @@
     
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
     NSString *string = dollarAmtTextField.text;
-    NSString *topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    NSString *topUpAmount;
+    if(string.length>0)
+    {
+        topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    }
     
     UserModel *userModel = [TLUserDefaults getCurrentUser];
     double balance = userModel.AvailableBalance.doubleValue;
@@ -624,7 +630,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
     
     //    [UIAlertView alertViewWithMessage:creditCardStatus];
-    if(dollarAmtTextField.text.length>0||self.isSignUp)
+    if(dollarAmtTextField.text.length>0||[self.viewController isKindOfClass:[TLSignUpViewController class]]||[self.viewController isKindOfClass:[TLSocialNWSignUpViewController class]])
         [self skipButtonClicked];
     else
         [self.navigationController popViewControllerAnimated:YES];

@@ -63,6 +63,14 @@
     return [self substringFromIndex:i];
 }
 
+-(NSString *) stringByStrippingHTML {
+    NSRange r;
+    NSString *s = [self copy];
+    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+        s = [s stringByReplacingCharactersInRange:r withString:@""];
+    return s;
+}
+
 - (NSString*)capitaliseFirstLetter {
     
     if (self && [self length]>0) {
@@ -73,8 +81,10 @@
 }
 
 NSString *NSNonNilString(NSString *str) {
+    
+    NSLog(@"%@",str);
 	
-    if ([str isKindOfClass:[NSNull class]]) {
+    if (!str || [str isKindOfClass:[NSNull class]] || [str isEqualToString:@"(null)"]) {
         return @"";
     } else if ([str isKindOfClass:[NSString class]] == NO) {
         return @"";

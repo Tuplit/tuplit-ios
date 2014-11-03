@@ -386,11 +386,9 @@
 }
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FriendsListModel *friend = [friendsArray objectAtIndex:indexPath.row];
-    
     NSString *cellIdentifier=@"CellWithComName";
-    if(friend.CompanyName.length==0)
-        cellIdentifier=@"CellWithoutComName";
+//    if(friend.CompanyName.length==0)
+//        cellIdentifier=@"CellWithoutComName";
     
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
@@ -399,7 +397,7 @@
         cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.backgroundColor=[UIColor whiteColor];
         
-        EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(16, 2, 45, FRIENDS_CEL_HEIGHT -1 -5 )];
+        EGOImageView *profileImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@"DefaultUser"] imageViewFrame:CGRectMake(16, 2, 45, FRIENDS_CEL_HEIGHT -1 -5 )];
         profileImgView.backgroundColor = [UIColor whiteColor];
         profileImgView.layer.cornerRadius=45/2;
         //        profileImgView.userInteractionEnabled=YES;
@@ -407,12 +405,14 @@
         profileImgView.tag=1000;
         [cell.contentView addSubview:profileImgView];
         
-        UIImageView *fbImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetWidth(profileImgView.frame)-10, CGRectGetHeight(profileImgView.frame)-10, 10, 10)];
-        fbImageView.backgroundColor = [UIColor redColor];
-        fbImageView.layer.cornerRadius=10/2;
-        [profileImgView addSubview:fbImageView];
+        UIImageView *fbImageView = [[UIImageView alloc]initWithFrame:CGRectMake(43, 29, 18, 18)];
+        fbImageView.backgroundColor = [UIColor clearColor];
+        fbImageView.image =[UIImage imageNamed:@"g+"];
+        fbImageView.layer.cornerRadius=18/2;
+        fbImageView.tag=1003;
+        [cell.contentView addSubview:fbImageView];
         
-        UILabel *profileNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) +75 ,5, baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CEL_HEIGHT-1)/2)];
+        UILabel *profileNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(75 ,5, baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CEL_HEIGHT-1)/2)];
         profileNameLbl.textColor=UIColorFromRGB(0x333333);
         profileNameLbl.numberOfLines=0;
         profileNameLbl.tag=1001;
@@ -421,7 +421,7 @@
         profileNameLbl.backgroundColor=[UIColor clearColor];
         [cell.contentView addSubview:profileNameLbl];
         
-        UILabel *companyNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(profileImgView.frame) + 75 ,CGRectGetMaxY(profileNameLbl.frame), baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CEL_HEIGHT-1)/2 -10)];
+        UILabel *companyNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(75 ,CGRectGetMaxY(profileNameLbl.frame), baseViewWidth-CGRectGetMaxX(profileImgView.frame)-75-10,(FRIENDS_CEL_HEIGHT-1)/2 -10)];
         companyNameLbl.textColor=UIColorFromRGB(0x333333);
         companyNameLbl.numberOfLines=0;
         companyNameLbl.tag=1002;
@@ -438,18 +438,41 @@
         
     }
     
+     FriendsListModel *friend = [friendsArray objectAtIndex:indexPath.row];
+    
     EGOImageView *profileImgView=(EGOImageView *)[cell.contentView viewWithTag:1000];
     UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
     UILabel *companyNameLbl=(UILabel *)[cell.contentView viewWithTag:1002];
+    UIImageView *fbImageView = (UIImageView*)[cell.contentView viewWithTag:1003];
     
     profileImgView.imageURL = [NSURL URLWithString:friend.Photo];
     profileNameLbl.text=[[NSString stringWithFormat:@"%@ %@",friend.FirstName,friend.LastName]stringWithTitleCase];
     
-    if([cellIdentifier isEqualToString:@"CellWithoutComName"])
+    if(friend.CompanyName.length==0)
+    {
         profileNameLbl.height = cell.contentView.frame.size.height-10;
+        companyNameLbl.text=@"";
+    }
     else
+    {
         companyNameLbl.text=friend.CompanyName;
+         profileNameLbl.height = (FRIENDS_CEL_HEIGHT-1)/2;
+    }
     
+    if(friend.GooglePlusId.length>0)
+    {
+//        fbImageView.backgroundColor = [UIColor blackColor];
+        fbImageView.image =[UIImage imageNamed:@"g+"];
+    }
+    else if (friend.FBId.length>0)
+    {
+        fbImageView.image =[UIImage imageNamed:@"fb_icon"];
+    }
+    else
+    {
+        fbImageView.backgroundColor = [UIColor clearColor];
+        fbImageView.image =nil;
+    }
     return cell;
 }
 

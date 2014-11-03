@@ -18,6 +18,7 @@
     UILabel *descriptionLbl;
     UIImageView * discountImageView;
     UILabel *distanceLbl;
+    UILabel *discountLbl;
     UIImageView *distanceImageView;
 }
 

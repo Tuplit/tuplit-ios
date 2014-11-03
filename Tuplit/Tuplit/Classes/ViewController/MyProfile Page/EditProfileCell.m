@@ -25,11 +25,11 @@
             
             CGFloat baseViewWidth = 320;
             
-            UIView *userDetailView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, 212)];
+            UIView *userDetailView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, 320)];
             userDetailView.backgroundColor = [UIColor clearColor];
             [self.contentView addSubview:userDetailView];
             
-            UIView *userNameView = [[UIView alloc]initWithFrame:CGRectMake(0, 20, baseViewWidth, 45)];
+            UIView *userNameView = [[UIView alloc]initWithFrame:CGRectMake(0, 20, baseViewWidth, 150)];
             userNameView.backgroundColor = [UIColor clearColor];
             [userDetailView addSubview:userNameView];
             
@@ -55,8 +55,27 @@
             [lastNameTxt setupForTuplitStyle];
             [userNameView addSubview:lastNameTxt];
             
+            UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:16];
+            NSDictionary *attributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
             
-            EGOImageView *profileImgView=[[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake(CGRectGetMinX(firstNameTxt.frame),CGRectGetMaxY(userNameView.frame) + 20, 60, 60)];
+            UISegmentedControl *myControl = [[UISegmentedControl alloc] initWithFrame:CGRectMake(firstNameTxt.xPosition, CGRectGetMaxY(firstNameTxt.frame)+5, baseViewWidth-30, 45)];
+            myControl.tag = 3004;
+            [myControl insertSegmentWithTitle: @"Male" atIndex: 0 animated: NO ];
+            [myControl insertSegmentWithTitle: @"Female" atIndex: 1 animated: NO ];
+            [myControl insertSegmentWithTitle: @"Rather not say" atIndex: 2 animated: NO];
+            myControl.apportionsSegmentWidthsByContent = YES;
+            [myControl setTintColor:[UIColor colorWithRed:0.695791 green:0.695791 blue:0.695791 alpha:1]];
+            [myControl setTitleTextAttributes:attributes forState:UIControlStateNormal];
+            [userNameView addSubview:myControl];
+            
+            UILabel *dobLabel = [[UILabel alloc]initWithFrame:CGRectMake(myControl.xPosition, CGRectGetMaxY(myControl.frame)+5, myControl.width, myControl.height)];
+            dobLabel.tag = 3005;
+            dobLabel.font = font;
+            dobLabel.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"textFieldBg"]];
+            dobLabel.text = @" Birthday";
+            [userNameView addSubview:dobLabel];
+            
+            EGOImageView *profileImgView=[[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake(CGRectGetMinX(firstNameTxt.frame),CGRectGetMaxY(userNameView.frame)+20, 60, 60)];
             profileImgView.tag = 3002;
             profileImgView.backgroundColor=[UIColor clearColor];
             profileImgView.layer.cornerRadius= profileImgView.frame.size.width/2;

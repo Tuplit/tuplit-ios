@@ -18,7 +18,7 @@
 #import "TLStaticContentManager.h"
 #import "TLWelcomeViewController.h"
 
-@interface TLAppDelegate : UIResponder <UIApplicationDelegate,TLStaticContentManagerDelegate>
+@interface TLAppDelegate : UIResponder <UIApplicationDelegate,TLStaticContentManagerDelegate,TLUserDetailsManagerDelegate>
 {
      FBSession *fbSession;
      TLStaticContentManager *staticContentManager;
@@ -34,6 +34,7 @@
 @property (strong, nonatomic) NSString *postalCode;
 @property (strong, nonatomic) RESideMenu *slideMenuController;
 @property (strong, nonatomic) CartModel *cartModel;
+@property (strong, nonatomic) NSString *vatPercent;
 @property (strong, nonatomic) NSArray *friendsRecentOrders;
 @property (strong, nonatomic) NSString *merchantID;
 @property (assign, nonatomic) BOOL isUserProfileEdited,isFavoriteChanged;

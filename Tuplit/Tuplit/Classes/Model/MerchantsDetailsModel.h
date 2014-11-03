@@ -38,6 +38,7 @@
 @property (nonatomic, copy) NSString * ItemsSold;
 @property (nonatomic, copy) NSArray * OpeningHours;
 @property (nonatomic, copy) NSString * PriceRange;
+@property (nonatomic, copy) NSString * ProductVAT;
 @property (nonatomic, copy) NSString * SpecialsSold;
 @property (nonatomic, copy) NSString * CustomersCount;
 @property (nonatomic, copy) NSString * TagType;

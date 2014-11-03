@@ -17,6 +17,5 @@
 @interface TLAddCreditCardViewController : UIViewController<TLAddCreditCardManagerDelegate>
 
 @property(nonatomic,retain)UIViewController*viewController;
-@property BOOL isSignUp;
 @property(nonatomic,strong) NSString *topupAmout;
 @end

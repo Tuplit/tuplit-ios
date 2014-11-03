@@ -37,6 +37,8 @@
                                   @"LastName"       : NSNonNilString(self.user.LastName),
                                   @"Email"          : NSNonNilString(self.user.Email),
                                   @"Photo"          : (profilePicture!=nil)?[@"" base64EncodedStringFromData:profilePicture]:@"",
+                                  @"Gender"         : NSNonNilString(self.user.Gender),
+                                  @"DOB"            : NSNonNilString(self.user.DOB),
                                   };
     
     NSMutableURLRequest *request = [client requestWithMethod:@"PUT" path:@"" parameters:queryParams];

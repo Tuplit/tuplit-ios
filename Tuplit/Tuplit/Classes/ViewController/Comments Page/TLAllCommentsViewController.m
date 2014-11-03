@@ -7,16 +7,19 @@
 //
 
 #import "TLAllCommentsViewController.h"
+#import "TLUserProfileViewController.h"
+#import "TLMerchantsDetailViewController.h"
 
 @interface TLAllCommentsViewController ()
 {
     TLCommentsListingManager *commentsManager;
-    int deletedCmtIndex;
+    NSIndexPath *deletedCmtIndex;
 }
 
 @end
 
 @implementation TLAllCommentsViewController
+@synthesize viewController;
 
 #pragma mark - View Life Cycle Methods.
 
@@ -136,7 +139,10 @@
     }
     
     commentsManager.delegate = self;
-    [commentsManager callService:self.userID withStartCount:start];
+    if([viewController isKindOfClass:[TLMerchantsDetailViewController class]])
+        [commentsManager callService:self.userID withStartCount:start andisUserId:NO];
+    else
+        [commentsManager callService:self.userID withStartCount:start andisUserId:YES];
 }
 -(void)backToUserProfile
 {
@@ -154,6 +160,39 @@
     if (lastFetchCount < totalUserListCount) {
         isLoadMorePressed = YES;
         [self callCommentWebserviceWithstartCount:lastFetchCount showProgress:NO];
+    }
+}
+
+-(void)openOtherUserDetails:(UITapGestureRecognizer *)gesture
+{
+    if([viewController isKindOfClass:[TLMerchantsDetailViewController class]])
+    {
+        if ([TLUserDefaults isGuestUser]) {
+            return;
+        }
+        
+        EGOImageView *imgView = (EGOImageView*)gesture.view;
+        
+        NSString *userID;
+        
+        CGPoint buttonPosition = [imgView convertPoint:CGPointZero toView:allCommentsTable];
+        NSIndexPath *indexPath = [allCommentsTable indexPathForRowAtPoint:buttonPosition];
+        
+        UserCommentsModel *comments = [commentsArray objectAtIndex:indexPath.row];
+        NSLog(@"%@",comments.UserId);
+        userID = comments.UserId;
+        
+        if([userID isEqualToString:[TLUserDefaults getCurrentUser].UserId])
+        {
+            TLUserProfileViewController *userProfile = [[TLUserProfileViewController alloc]init];
+            [self.navigationController pushViewController:userProfile animated:YES];
+        }
+        else
+        {
+            TLOtherUserProfileViewController *otherUserProfile = [[TLOtherUserProfileViewController alloc]init];
+            otherUserProfile.userID = userID;
+            [self.navigationController pushViewController:otherUserProfile animated:YES];
+        }
     }
 }
 
@@ -191,9 +230,14 @@
         cellBaseview.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:cellBaseview];
         
-        EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(15, 10,30,30)];
+        EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@"DefaultUser"] imageViewFrame:CGRectMake(15, 10,30,30)];
         merchantIconImgView.tag=1000;
         merchantIconImgView.layer.cornerRadius =15;
+        merchantIconImgView.backgroundColor = [UIColor clearColor];
+        merchantIconImgView.userInteractionEnabled = YES;
+        merchantIconImgView.clipsToBounds = YES;
+        UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
+        [merchantIconImgView addGestureRecognizer:friendsImgGesture1];
         [cellBaseview addSubview:merchantIconImgView];
         
         UILabel *merchantNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(55,4,cellBaseview.frame.size.width-120, 20)];
@@ -228,8 +272,17 @@
     UILabel *totalDaysLbl=(UILabel *) [cell.contentView viewWithTag:1003];
     
     UserCommentsModel *comments = [commentsArray objectAtIndex:indexPath.row];
-    merchantIconImgView.imageURL = [NSURL URLWithString:comments.MerchantIcon];
-    merchantNameLbl.text=comments.MerchantName;
+    
+    if([viewController isKindOfClass:[TLMerchantsDetailViewController class]])
+    {
+        merchantIconImgView.imageURL = [NSURL URLWithString:comments.UserPhoto];
+        merchantNameLbl.text=[comments.UserName stringWithTitleCase];
+    }
+    else
+    {
+        merchantIconImgView.imageURL = [NSURL URLWithString:comments.MerchantIcon];
+        merchantNameLbl.text=[comments.MerchantName stringWithTitleCase];
+    }
     
     commentLbl.text = comments.CommentsText;
     float cmtLblHeight = [commentLbl.text heigthWithWidth:commentLbl.frame.size.width andFont:commentLbl.font];
@@ -245,7 +298,7 @@
 }
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(!self.isOtherUser)
+    if([self.viewController isKindOfClass:[TLUserProfileViewController class]])
         return YES;
     else
         return NO;
@@ -253,14 +306,14 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(!self.isOtherUser)
+    if([self.viewController isKindOfClass:[TLUserProfileViewController class]])
     {
         if (editingStyle == UITableViewCellEditingStyleDelete) {
             
             NETWORK_TEST_PROCEDURE
             [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-            deletedCmtIndex =indexPath.row;
-            UserCommentsModel *comments = [commentsArray objectAtIndex:deletedCmtIndex];
+            deletedCmtIndex =indexPath;
+            UserCommentsModel *comments = [commentsArray objectAtIndex:indexPath.row];
             TLCommentDeleteManager *commentManager = [[TLCommentDeleteManager alloc]init];
             [commentManager setDelegate:self];
             [commentManager deleteComment:comments.CommentId];
@@ -341,8 +394,8 @@
 - (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
 {
     APP_DELEGATE.isUserProfileEdited = YES;
-    [commentsArray removeObjectAtIndex:deletedCmtIndex];
-    [allCommentsTable reloadData];
+    [commentsArray removeObjectAtIndex:deletedCmtIndex.row];
+    [allCommentsTable deleteRowsAtIndexPaths:@[deletedCmtIndex] withRowAnimation:UITableViewRowAnimationFade];
     [[ProgressHud shared] hide];
 }
 - (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
