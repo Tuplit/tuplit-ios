@@ -192,7 +192,9 @@
 -(void) tutorialAction
 {
     TLTutorialViewController *tutorialViewController=[[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
-    [self presentViewController:tutorialViewController animated:YES completion:nil];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tutorialViewController];
+    [nav.navigationController setNavigationBarHidden:YES];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 

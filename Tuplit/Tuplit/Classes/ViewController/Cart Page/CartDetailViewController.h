@@ -27,5 +27,6 @@
 }
 
 @property(nonatomic,strong) NSString *TransactionId;
+@property(nonatomic,strong) NSString *OrderId;
 
 @end

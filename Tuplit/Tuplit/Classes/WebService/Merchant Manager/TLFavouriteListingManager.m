@@ -85,6 +85,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"Category" : @"Category",
                                                                   @"TotalUsersShopped" : @"TotalUsersShopped",
                                                                   @"TagType" : @"TagType",
+                                                                  @"NewTag" : @"NewTag",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };

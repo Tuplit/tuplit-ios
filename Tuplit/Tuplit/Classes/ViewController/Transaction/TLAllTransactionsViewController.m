@@ -173,7 +173,7 @@
     if(cell==nil)
     {
         cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
         cell.backgroundColor=UIColorFromRGB(0xF5F5F5);
         
         EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
@@ -216,6 +216,7 @@
         UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(0, TRANS_CELL_HEIGHT-2,baseViewWidth,2)];
         lineView.backgroundColor = [UIColor whiteColor];
         [cell.contentView addSubview:lineView];
+    
     }
     
     RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
@@ -253,6 +254,7 @@
     transactionDetail.transActionList = transactionList;
     transactionDetail.lastFetchCount = lastFetchCount;
     transactionDetail.totalUserListCount = totalUserListCount;
+    [allTransactionTableView deselectRowAtIndexPath:indexPath animated:YES];
     [self.navigationController pushViewController:transactionDetail animated:YES];
 }
 
@@ -297,7 +299,7 @@
     if (lastFetchCount < totalUserListCount)
         [allTransactionTableView setTableFooterView:cellContainer];
     else
-        [allTransactionTableView setTableFooterView:nil];
+        [allTransactionTableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, allTransactionTableView.frame.size.width, 50)]];
     
     isPullRefreshPressed = NO;
     isLoadMorePressed = NO;

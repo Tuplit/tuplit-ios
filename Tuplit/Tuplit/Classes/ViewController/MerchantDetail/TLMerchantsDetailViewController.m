@@ -703,7 +703,7 @@
     
     if ([TLUserDefaults getCurrentUser] == nil) {
         
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to do the purchases. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:LString(@"YES"), nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to register in the app to do the purchase. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:LString(@"YES"), nil];
         alertView.tag = 9001;
         [alertView show];
         
@@ -831,8 +831,23 @@
         if (daysOpenhoursArray.count > 1) {
             
             NSString *splitUsing = @",";
-            if ([[daysOpenhoursArray objectAtIndex:0] containsString:@"to"]) {
-                splitUsing = @"to";
+            
+            if ([[daysOpenhoursArray objectAtIndex:0] respondsToSelector:@selector(containsString:)]) {
+               
+                if ([[daysOpenhoursArray objectAtIndex:0] containsString:@"to"]) {
+                    splitUsing = @"to";
+                }
+            }
+            else
+            {
+                if ([[daysOpenhoursArray objectAtIndex:0] rangeOfString:@"to"].location == NSNotFound)
+                {
+                    
+                }
+                else
+                {
+                    splitUsing = @"to";
+                }
             }
             
             NSArray *opdays = [[daysOpenhoursArray objectAtIndex:0] componentsSeparatedByString:splitUsing];
@@ -1042,8 +1057,8 @@
     
     if(section == 4)
     {
-//        if(totalComments >3)
-//        {
+        if(totalComments >3)
+        {
             UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];//[[UIButton alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
             headerBtn.frame = CGRectMake(CGRectGetMaxX(label.frame),3,140,view.height);
             headerBtn.backgroundColor = [UIColor clearColor];
@@ -1069,7 +1084,7 @@
             [headerBtn positionAtX:baseViewWidth-btnWidth-5];
             [view addSubview:headerBtn];
             
-//        }
+        }
     }
     
     NSString *headerTitle;

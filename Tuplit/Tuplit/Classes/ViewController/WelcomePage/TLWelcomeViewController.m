@@ -25,13 +25,18 @@
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
 #import "UserModel.h"
+#import "SlideShowView.h"
+
+
+//#define UIColorFromRGBAlpha(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface TLWelcomeViewController ()<GPPSignInDelegate, UIScrollViewDelegate, TLLoginManagerDelegate, TLUserDetailsManagerDelegate>
 {
     IBOutlet UIButton *buttonFB, *buttonGoogle, *buttonEmail, *buttonLogin, *buttonSkip;
     IBOutlet PageControl *pageControl;
-    IBOutlet UIScrollView *scrollView;
-    IBOutlet UIImageView *welcomeBgView;
+    IBOutlet UIScrollView *_scrollView;
+    SlideShowView *scrollView;
+    IBOutlet UIImageView *welcomeBgPlaceholderView;
     IBOutlet UIView *footerBgView;
     UserModel *user;
     UIImage *userImage;
@@ -80,6 +85,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    scrollView = [[SlideShowView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+    [scrollView loadData];
+    [_scrollView addSubview:scrollView];
+    
     [self.navigationItem setTitle:LString(@"TUPLIT")];
     
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -87,9 +96,17 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
     
-    [buttonFB setUpButtonForTuplit];
-    [buttonGoogle setUpButtonForTuplit];
-    [buttonEmail setUpButtonForTuplit];
+    buttonFB.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+    buttonGoogle.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+    buttonEmail.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+    
+    [buttonFB setBackgroundColor:UIColorFromRGB(0x61c1dc)];
+    [buttonGoogle setBackgroundColor:UIColorFromRGB(0xff8388)];
+    [buttonEmail setBackgroundColor:UIColorFromRGB(0x00b3a4)];
+    
+    [buttonFB setAlpha:0.7];
+    [buttonGoogle setAlpha:0.7];
+    [buttonEmail setAlpha:0.7];
     
     [buttonLogin setTitleColor:[UIColor darkGrayColor] forState:UIControlStateHighlighted];
     [buttonSkip setTitleColor:[UIColor darkGrayColor] forState:UIControlStateHighlighted];
@@ -98,23 +115,24 @@
     
     scrollView.backgroundColor = [UIColor clearColor];
     
-    if(![UI isIPhone5]) {
-        
-        scrollView.height = 220;
-        pageControl.height = 20;
-        scrollView.clipsToBounds = YES;
-        [pageControl positionAtY:245];
-        [footerBgView positionAtY:CGRectGetMaxY(scrollView.frame)];
-        footerBgView.height = footerBgView.height+50;
-        
-        [welcomeBgView positionAtY:CGRectGetMinY(welcomeBgView.frame)];
-        welcomeBgView.clipsToBounds = YES;
-        [buttonFB positionAtY:CGRectGetMinY(buttonFB.frame)-5];
-        [buttonGoogle positionAtY:CGRectGetMaxY(buttonFB.frame)+ 5];
-        [buttonEmail positionAtY:CGRectGetMaxY(buttonGoogle.frame)+ 5];
-        [buttonLogin positionAtY:CGRectGetMaxY(buttonEmail.frame)+ 10];
-        [buttonSkip positionAtY:CGRectGetMaxY(buttonEmail.frame)+ 10];
-    }
+    
+//    if(![UI isIPhone5]) {
+//        
+//        scrollView.height = 220;
+//        pageControl.height = 20;
+//        scrollView.clipsToBounds = YES;
+//        [pageControl positionAtY:245];
+//        [footerBgView positionAtY:CGRectGetMaxY(scrollView.frame)];
+//        footerBgView.height = footerBgView.height+50;
+//        
+//        [welcomeBgView positionAtY:CGRectGetMinY(welcomeBgView.frame)];
+//        welcomeBgView.clipsToBounds = YES;
+//        [buttonFB positionAtY:CGRectGetMinY(buttonFB.frame)-5];
+//        [buttonGoogle positionAtY:CGRectGetMaxY(buttonFB.frame)+ 5];
+//        [buttonEmail positionAtY:CGRectGetMaxY(buttonGoogle.frame)+ 5];
+//        [buttonLogin positionAtY:CGRectGetMaxY(buttonEmail.frame)+ 10];
+//        [buttonSkip positionAtY:CGRectGetMaxY(buttonEmail.frame)+ 10];
+//    }
     
     user = [UserModel new];
     user.Country  = [CurrentLocation Country];
@@ -139,10 +157,10 @@
          }
      }];
     
-    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    [scrollView addSubview:spinner];
-    spinner.center = scrollView.center;
-    [spinner startAnimating];
+//    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//    [scrollView addSubview:spinner];
+//    spinner.center = scrollView.center;
+//    [spinner startAnimating];
     
     //    if([TLUserDefaults isGuestUser])
     //    {
@@ -173,6 +191,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kWelcomeScreenSlideShowStarter object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSlider) name:kWelcomeScreenSlideShowStarter object:nil];
     
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[self navigationController] setNavigationBarHidden:YES animated:YES];
     [self startTimer];
 }
 
@@ -180,6 +200,9 @@
     
     [super viewWillDisappear:animated];
     [timer invalidate];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[self navigationController] setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -199,21 +222,25 @@
         }
     }
 }
+- (void)viewDidDisappear:(BOOL)animated
+{
+    
+}
 
 #pragma mark UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView_ {
 	
-	int page = scrollView.contentOffset.x / scrollView.frame.size.width;
-	pageControl.currentPage = page;
+//	int page = scrollView.contentOffset.x / scrollView.frame.size.width;
+//	pageControl.currentPage = page;
 }
 
 
 #pragma mark - Action Methods
 
 - (void)startTimer {
-    timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
-    [timer performSelector:@selector(fire) withObject:nil afterDelay:3];
+//    timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
+//    [timer performSelector:@selector(fire) withObject:nil afterDelay:3];
 }
 
 - (IBAction)faceBookSignin:(id)sender {
@@ -299,31 +326,11 @@
 }
 
 -(void) loadSlider {
-    
-    [spinner stopAnimating];
-    
-    // To manage the number of slides
-    for (int i=0; i<[Global instance].welcomeScreenImages.count; i++) {
-        EGOImageView *egoIV = (EGOImageView*)[scrollView viewWithTag:100+i];
-        [egoIV removeFromSuperview];
-    }
-    
-    int numberOfSlides = [Global instance].welcomeScreenImages.count;
-    pageControl.numberOfPages = numberOfSlides;
-    for(int i = 0; i<numberOfSlides ; i++) {
-        EGOImageView *imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(i*320, 0, 320, scrollView.height)];
-        imageView.tag = 100+i;
-        imageView.clipsToBounds = YES;
-        NSURL *imageUrl = [NSURL URLWithString:[Global instance].welcomeScreenImages[i]];
-        [imageView setImageURL:imageUrl];
-        imageView.backgroundColor = [UIColor clearColor];
-        imageView.contentMode = UIViewContentModeScaleAspectFit;
-//        imageView.userInteractionEnabled = YES;
-        [scrollView addSubview:imageView];
-    }
-    
-    scrollView.delegate = self;
-    [scrollView setContentSize:CGSizeMake(320 * numberOfSlides, scrollView.height)];
+    welcomeBgPlaceholderView.hidden = YES;
+    scrollView.slideShowInterval = 5;
+    scrollView.slideShowImages = [Global instance].welcomeScreenImages;
+    scrollView.isWelcome =YES;
+    [scrollView loadData];
 }
 
 - (void)timerMethod {
@@ -375,14 +382,28 @@
                 [[ProgressHud shared] hide];
                 
             } else {
+                NSLog(@"%@", person.birthday);
                 googlePlusID = person.identifier;
                 user.Email = [GPPSignIn sharedInstance].authentication.userEmail;
                 user.GooglePlusId = person.identifier;
                 user.FBId = @"";
                 user.FirstName = person.name.givenName;
                 user.LastName = person.name.familyName;
-                user.Gender = person.gender;
                 user.DOB = person.birthday;
+                
+                //gender
+                if([person.gender isEqualToString:@"male"])
+                {
+                    user.Gender = @"1";
+                }
+                else if([person.gender isEqualToString:@"female"])
+                {
+                    user.Gender = @"2";
+                }
+                else
+                {
+                    user.Gender = @"0";
+                }
                 
                 @try {
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
@@ -447,9 +468,25 @@
         user.Email = [dict valueForKey:@"email"];
         user.FirstName = [dict valueForKey:@"first_name"];
         user.LastName = [dict valueForKey:@"last_name"];
-        user.Gender = [dict valueForKey:@"gender"];
-        user.DOB = [dict valueForKey:@"birthday"];
         
+        //gender
+        if([[dict valueForKey:@"gender"]isEqualToString:@"male"])
+        {
+            user.Gender = @"1";
+        }
+        else if([[dict valueForKey:@"gender"]isEqualToString:@"female"])
+        {
+            user.Gender = @"2";
+        }
+        else
+        {
+            user.Gender = @"0";
+        }
+        
+        // dob
+        if([dict valueForKey:@"birthday"])
+            user.DOB = [TuplitConstants facebookFormattedDate:[dict valueForKey:@"birthday"]];
+
         user.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[[[dict valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"]]]];
         [self callLoginWebService];
     }

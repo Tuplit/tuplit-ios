@@ -11,13 +11,16 @@
 
 @interface TLTutorialViewController ()<UIScrollViewDelegate>
 {
-    IBOutlet SlideShowView *scrollView;
+    IBOutlet UIScrollView *_scrollView;
+    SlideShowView *scrollView;
     IBOutlet UILabel *labelHeader, *labelDesc;
     IBOutlet UIButton *buttonNext, *buttonPrev, *buttonSkip;
     IBOutlet UIView *viewFooterBase;
     EGOImageView *imageView;
+    UIView *codeSelectorView;
     int numberOfSlides;
     NSTimer *timer;
+    float xposition;
     int leftPos,rightPos,pos;
     BOOL isTimer;
 }
@@ -56,14 +59,22 @@
     
     buttonNext.tag=101;
     buttonNext.tag=100;
+    
+    scrollView = [[SlideShowView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, [[UIScreen mainScreen] bounds].size.height)];
+    [scrollView loadData];
+    [_scrollView addSubview:scrollView];
 
     scrollView.slideShowInterval = 5;
+    scrollView.isShowPageControl = YES;
     scrollView.slideShowImages = [Global instance].tutorialScreenImages;
     [scrollView loadData];
 
     scrollView.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor clearColor];
     imageView.backgroundColor = [UIColor clearColor];
+    
+     xposition = 72;
+
 //    [buttonSkip setTitleColor:APP_DELEGATE.defaultColor forState:UIControlStateNormal];
 }
 
@@ -72,12 +83,14 @@
 {
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
 }
 
 - (void)didReceiveMemoryWarning

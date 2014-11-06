@@ -285,15 +285,27 @@ NSString *LString(NSString* key) {
     // this is imporant - we set our input date format to match our input string
     // if format doesn't match you'll get nil from your string, so be careful
     
-    [dateFormatter setDateFormat:@"YYYY-MM-dd"];
-    NSDate *dateFromString = [[NSDate alloc] init];
-    // voila!
-    dateFromString = [dateFormatter dateFromString:dateString];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSDate *dateFromString = [dateFormatter dateFromString:dateString];
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"MM/dd/YYYY"];
+    [formatter setDateFormat:@"MM/dd/yyyy"];
     
     NSString *resultString = [formatter stringFromDate:dateFromString];
+    return resultString;
+}
+
++(NSString*)facebookFormattedDate:(NSString*)datefromServer
+{
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"MM/dd/yyyy"];
+    NSDate *date = [dateFormat dateFromString:datefromServer];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    
+    NSString *resultString = [formatter stringFromDate:date];
+    
     return resultString;
 }
 
@@ -390,4 +402,33 @@ NSString *LString(NSString* key) {
     return [NSMutableString stringWithUTF8String:outputString];
 }
 
++ (void)zoomToFitMapAnnotations:(MKMapView *)mapView {
+    if ([mapView.annotations count] == 0) return;
+    
+    CLLocationCoordinate2D topLeftCoord;
+    topLeftCoord.latitude = -80;
+    topLeftCoord.longitude = 180;
+    
+    CLLocationCoordinate2D bottomRightCoord;
+    bottomRightCoord.latitude = 80;
+    bottomRightCoord.longitude = -180;
+    
+    for(id<MKAnnotation> annotation in mapView.annotations) {
+        topLeftCoord.longitude = fmin(topLeftCoord.longitude, annotation.coordinate.longitude);
+        topLeftCoord.latitude = fmax(topLeftCoord.latitude, annotation.coordinate.latitude);
+        bottomRightCoord.longitude = fmax(bottomRightCoord.longitude, annotation.coordinate.longitude);
+        bottomRightCoord.latitude = fmin(bottomRightCoord.latitude, annotation.coordinate.latitude);
+    }
+    
+    MKCoordinateRegion region;
+    region.center.latitude = topLeftCoord.latitude - (topLeftCoord.latitude - bottomRightCoord.latitude) * 0.5;
+    region.center.longitude = topLeftCoord.longitude + (bottomRightCoord.longitude - topLeftCoord.longitude) * 0.5;
+    
+    // Add a little extra space on the sides
+    region.span.latitudeDelta = fabs(topLeftCoord.latitude - bottomRightCoord.latitude) * 1.1;
+    region.span.longitudeDelta = fabs(bottomRightCoord.longitude - topLeftCoord.longitude) * 1.1;
+    
+    region = [mapView regionThatFits:region];
+    [mapView setRegion:region animated:YES];
+}
 @end

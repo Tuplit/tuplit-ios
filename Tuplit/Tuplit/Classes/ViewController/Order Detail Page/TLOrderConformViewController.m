@@ -134,15 +134,16 @@
     if(orderStatus.integerValue==1)
     {
         TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-        [TLUserDefaults setIsCommentPromptOpen:YES];
         
         if(NSNonNilString(self.merchatID).length>0 && NSNonNilString(self.merchatName).length>0)
         {
             OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
             cmtDetail.MerchantId = self.merchatID;
             cmtDetail.CompanyName = self.merchatName;
+            cmtDetail.OrderId = self.orderID;
             
             [TLUserDefaults setCommentDetails:cmtDetail];
+            [TLUserDefaults setIsCommentPromptOpen:YES];
         }
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];

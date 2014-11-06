@@ -11,4 +11,5 @@
 #import "TLSettingsManager.h"
 @interface TLSettingsViewController : UIViewController<MFMailComposeViewControllerDelegate,TLSettingsManagerDelegate>
 @property(strong,nonatomic)UserModel *user_model;
+- (void)showWithCompletion:(void(^)(UIAlertView *alertView, NSInteger buttonIndex))completion;
 @end

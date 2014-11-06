@@ -264,3 +264,4 @@
 "TERMS_LEGAL_INFO"              = "Terms Of Use & More Legal Info";
 "CUSTOMER_SUPPORT"              = "Customer Support";
 "LOG_OUT"                       = "Log Out";
+"LOG_OUT_ALERT"                 = "Are you sure you want to logout?";

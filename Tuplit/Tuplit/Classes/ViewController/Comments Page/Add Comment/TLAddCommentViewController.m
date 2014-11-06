@@ -173,6 +173,7 @@
         NSDictionary *queryParams = @{
                                       @"MerchantId": NSNonNilString([TLUserDefaults getCommentDetails].MerchantId),
                                       @"CommentText": NSNonNilString(messageTxtView.text),
+                                      @"OrderId" : NSNonNilString([NSString stringWithFormat:@"%@",[TLUserDefaults getCommentDetails].OrderId]),
                                       };
         NETWORK_TEST_PROCEDURE
         [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
@@ -265,6 +266,7 @@
 - (void)commentAddManagerSuccess:(TLAddCommentManager *)loginManager
 {
     [TLUserDefaults setIsCommentPromptOpen:NO];
+    [TLUserDefaults setCommentDetails:nil];
     [[ProgressHud shared] hide];
     
     if (facebookSwitch.on && twitterSwitch.on)

@@ -538,6 +538,7 @@
     
     CartDetailViewController *cartDetail=[[CartDetailViewController alloc]init];
     cartDetail.TransactionId = transID;
+    cartDetail.OrderId = orderID;
     [self.navigationController pushViewController:cartDetail animated:YES];
     
     [[ProgressHud shared] hide];

@@ -231,27 +231,26 @@
 {
     datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, 200.0)];
     datePickerBase.delegate = self;
-}
-
--(void)openPicker
-{
-    [self.view endEditing:YES];
-    [self setupdatePicker];
+    
     if([dobLabel.text isEqualToString:@"  Date of Birth"])
     {
         
     }
     else
     {
-//        NSString *str =[dobLabel.text stringByTrimmingLeadingWhitespace];
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
-//        [formatter setDateFormat:@"MM/dd/YYYY"];
-//        NSDate *date = [formatter dateFromString:str];
         if(previousSelectiondate)
             datePickerBase.datepicker.date = previousSelectiondate;
     }
+}
+
+-(void)openPicker
+{
+    [self.view endEditing:YES];
+    
     if(!isActionSheetOpen)
     {
+        [self setupdatePicker];
+
         [self.view addSubview:datePickerBase];
         [UIView animateWithDuration:0.1
                               delay:0
@@ -313,6 +312,9 @@
 #pragma mark - TextField delegate methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    if(isActionSheetOpen)
+        [self cancelAction];
     
     CGPoint pt;
 	CGRect rc = [textField bounds];
@@ -691,9 +693,21 @@
                 self.user.FBId = @"";
                 self.user.FirstName = person.name.givenName;
                 self.user.LastName = person.name.familyName;
-                self.user.Gender = person.gender;
-              
                 self.user.DOB = person.birthday;
+                
+                //gender
+                if([person.gender isEqualToString:@"male"])
+                {
+                    self.user.Gender = @"1";
+                }
+                else if([person.gender isEqualToString:@"female"])
+                {
+                    self.user.Gender = @"2";
+                }
+                else
+                {
+                    self.user.Gender = @"0";
+                }
                 
                 @try {
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
@@ -764,9 +778,25 @@
         self.user.Email = [dict valueForKey:@"email"];
         self.user.FirstName = [dict valueForKey:@"first_name"];
         self.user.LastName = [dict valueForKey:@"last_name"];
-        self.user.Gender = [dict valueForKey:@"gender"];
-        self.user.Gender = [dict valueForKey:@"birthday"];
         self.user.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[[[dict valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"]]]];
+     //gender
+        if([[dict valueForKey:@"gender"]isEqualToString:@"male"])
+        {
+            self.user.Gender = @"1";
+        }
+        else if([[dict valueForKey:@"gender"]isEqualToString:@"female"])
+        {
+            self.user.Gender = @"2";
+        }
+        else
+        {
+            self.user.Gender = @"0";
+        }
+        
+    // dob
+        if([dict valueForKey:@"birthday"])
+            self.user.DOB = [TuplitConstants facebookFormattedDate:[dict valueForKey:@"birthday"]];
+        
         [self callLoginWebService];
         
     }

@@ -15,10 +15,16 @@
     int leftPos,rightPos,pos;
     BOOL isTimer;
     double width,height;
+    UIView *codeSelectorView;
+    float xposition;
 }
 
+@property (nonatomic, assign) CGFloat lastContentOffset;
+@property (nonatomic, assign) CGRect scrollFrame;
 @property (strong,nonatomic)NSArray *slideShowImages;
 @property (assign,nonatomic)int slideShowInterval;
+@property BOOL isShowPageControl;
+@property BOOL isWelcome;
 -(void)loadData;
 - (IBAction)previousAction:(id)sender;
 - (IBAction)nextAction:(id)sender;

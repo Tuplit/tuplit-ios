@@ -110,6 +110,7 @@
     menuView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(searchbarView.frame), contentView.frame.size.width, 34)];
     [menuView setBackgroundColor:[UIColor clearColor]];
     [menuView setUserInteractionEnabled:YES];
+    [mapView setShowsUserLocation:YES];
     [contentView addSubview:menuView];
     
     buttonNearby = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -520,7 +521,7 @@
     {
         [mapView removeAnnotations:mapView.annotations];
         
-        PinAnnotation *pinAnnotation;
+       
         for(MerchantModel *merchantModel in merchantsArray)
         {
             if (merchantModel.Latitude.doubleValue == 0.0 || merchantModel.Longitude.doubleValue == 0.0) {
@@ -529,10 +530,10 @@
             CLLocationCoordinate2D location;
             location.latitude = merchantModel.Latitude.doubleValue;
             location.longitude = merchantModel.Longitude.doubleValue;
-            pinAnnotation = [[PinAnnotation alloc] init];
+            PinAnnotation *pinAnnotation = [[PinAnnotation alloc] init];
             pinAnnotation.coordinate = location;
             pinAnnotation.title = merchantModel.MerchantID;
-            pinAnnotation.subtitle = merchantModel.IsSpecial;
+            pinAnnotation.subtitle = merchantModel.TagType;
             [mapView addAnnotation:pinAnnotation];
         }
         
@@ -551,14 +552,15 @@
         }
         else
         {
-            MKMapRect zoomRect = MKMapRectNull;
-            for (id <MKAnnotation> annotation in mapView.annotations)
-            {
-                MKMapPoint annotationPoint = MKMapPointForCoordinate(annotation.coordinate);
-                MKMapRect pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.5, 0.5);
-                zoomRect = MKMapRectUnion(zoomRect, pointRect);
-            }
-            [mapView setVisibleMapRect:zoomRect animated:YES];
+//            MKMapRect zoomRect = MKMapRectNull;
+//            for (id <MKAnnotation> annotation in mapView.annotations)
+//            {
+//                MKMapPoint annotationPoint = MKMapPointForCoordinate(annotation.coordinate);
+//                MKMapRect pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.5, 0.5);
+//                zoomRect = MKMapRectUnion(zoomRect, pointRect);
+//            }
+//            [mapView setVisibleMapRect:zoomRect animated:YES];
+            [TuplitConstants zoomToFitMapAnnotations:mapView];
         }
     }
 }
@@ -636,6 +638,7 @@
 -(void)nothankBtnAction
 {
     [TLUserDefaults setIsCommentPromptOpen:NO];
+    [TLUserDefaults setCommentDetails:nil];
     cmtPromptView.hidden = YES;
 }
 
@@ -754,10 +757,11 @@
         //            annImg = [self  imageWithImage:annImg scaledToSize:CGSizeMake(40, 40)];
         //            annotationView.image = annImg;
         //        }
-        if([annotation subtitle].intValue == 0)
-            annotationView.image = getImage(@"MapPinBlack", NO);
-        else
+        if([annotation subtitle].intValue == 3)
             annotationView.image = getImage(@"MapPinBlackWithStar", NO);
+        else
+            annotationView.image = getImage(@"MapPinBlack", NO);
+           
     }
     
     //   Callout annotation.

@@ -254,6 +254,8 @@
     if (cell == nil)
     {
         cell = [[UserProfileCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifire[indexPath.section]];
+        if(indexPath.section == 1)
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
     cell.indexPaths=indexPath;
     cell.delegate=self;
@@ -312,6 +314,23 @@
     }
     return cell;
 }
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1) {
+        
+        NSArray *transactionList = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
+        TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
+        RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
+        transactionDetail.orderID = transaction.OrderId;
+        transactionDetail.transActionList = [transactionList mutableCopy];
+        transactionDetail.userID = [TLUserDefaults getCurrentUser].UserId;
+        transactionDetail.index = indexPath.row;
+        [userProfileTable deselectRowAtIndexPath:indexPath animated:YES];
+        [self.navigationController pushViewController:transactionDetail animated:YES];
+    }
+}
+
 
 #pragma mark - Scroll View Delegate Methods
 

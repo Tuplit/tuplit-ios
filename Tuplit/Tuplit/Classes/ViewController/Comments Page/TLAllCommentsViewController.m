@@ -363,7 +363,7 @@
     if (lastFetchCount < totalUserListCount)
         [allCommentsTable setTableFooterView:cellContainer];
     else
-        [allCommentsTable setTableFooterView:nil];
+        [allCommentsTable setTableFooterView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, allCommentsTable.frame.size.width, 50)]];
     
     isPullRefreshPressed = NO;
     isLoadMorePressed = NO;
@@ -393,7 +393,9 @@
 
 - (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
 {
-    APP_DELEGATE.isUserProfileEdited = YES;
+    if(deletedCmtIndex.row<3)
+        APP_DELEGATE.isUserProfileEdited = YES;
+    
     [commentsArray removeObjectAtIndex:deletedCmtIndex.row];
     [allCommentsTable deleteRowsAtIndexPaths:@[deletedCmtIndex] withRowAnimation:UITableViewRowAnimationFade];
     [[ProgressHud shared] hide];

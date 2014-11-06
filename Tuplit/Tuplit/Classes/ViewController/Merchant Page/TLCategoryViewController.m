@@ -200,7 +200,7 @@
             pinAnnotation = [[PinAnnotation alloc] init];
             pinAnnotation.coordinate = location;
             pinAnnotation.title = merchantModel.MerchantID;
-            pinAnnotation.subtitle = merchantModel.IsSpecial;
+            pinAnnotation.subtitle = merchantModel.TagType;
             [mapView addAnnotation:pinAnnotation];
         }
         
@@ -289,10 +289,10 @@
         //            annImg = [self  imageWithImage:annImg scaledToSize:CGSizeMake(40, 40)];
         //            annotationView.image = annImg;
         //        }
-        if([annotation subtitle].intValue == 0)
-            annotationView.image = getImage(@"MapPinBlack", NO);
-        else
+        if([annotation subtitle].intValue == 3)
             annotationView.image = getImage(@"MapPinBlackWithStar", NO);
+        else
+            annotationView.image = getImage(@"MapPinBlack", NO);
     }
     
     //   Callout annotation.
@@ -518,5 +518,20 @@
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
 }
+
+#pragma mark - CalloutAnnotationViewDelegate
+
+- (void)calloutButtonClicked:(NSString *)title
+{
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"MerchantID Matches[cd] %@",title];
+    NSArray *result = [merchantsArray filteredArrayUsingPredicate:pred];
+    if(result.count > 0){
+        MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
+        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+        detailsVC.merchantModel = merchant;
+        [self.navigationController pushViewController:detailsVC animated:YES];
+    }
+}
+
 
 @end

@@ -65,7 +65,7 @@ AFHTTPRequestOperation *operation;
             NSDictionary *responseDictionarytoMap=[responseJSON objectForKey:strPropertyName];
             
             self.isAllowCartEnabled = [[[responseJSON objectForKey:@"meta"] objectForKey:@"AllowCart"] intValue];
-            self.totalComments = [[responseJSON objectForKey:@"meta"] objectForKey:@"TotalComments"];
+            self.totalComments = [[responseJSON objectForKey:strPropertyName]objectForKey:@"TotalComments"];
             
             RKObjectMapping* openingHoursMapping = [RKObjectMapping mappingForClass:[OpeningHoursModel class]];
             [openingHoursMapping addAttributeMappingsFromDictionary:@ {

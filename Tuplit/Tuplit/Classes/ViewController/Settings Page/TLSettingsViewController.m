@@ -460,7 +460,19 @@
 
 -(void) logOutAction
 {
-    [TuplitConstants userLogout];
+     [UIAlertView alertViewWithTitle:@"Tuplit" message:LString(@"LOG_OUT_ALERT") cancelButtonTitle:LString(@"NO") otherButtonTitles:[NSArray arrayWithObject:LString(@"YES")]
+                                               onDismiss:^(int buttonIndex)
+                          {
+                              if(buttonIndex == 0)
+                              {
+                                  [TuplitConstants userLogout];
+                              }
+                          }
+                                                onCancel:^()
+                          {
+                              NSLog(@"Cancelled");
+                          }];
+    
 }
 
 -(void) changePinCodeAction

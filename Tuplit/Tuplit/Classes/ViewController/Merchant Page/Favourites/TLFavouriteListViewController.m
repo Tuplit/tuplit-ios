@@ -83,6 +83,7 @@
     }
     searchTxt.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     searchTxt.clearButtonMode = UITextFieldViewModeUnlessEditing;
+    searchTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     searchTxt.userInteractionEnabled = YES;
     [searchbarView addSubview:searchTxt];
     
@@ -180,11 +181,11 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
     contentView.hidden = NO;
-//    if(APP_DELEGATE.isFavoriteChanged||isDetailFrmSearch)
-//    {
-//        isDetailFrmSearch = NO;
-//        [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
-//    }
+    if(APP_DELEGATE.isFavoriteChanged)
+    {
+        APP_DELEGATE.isFavoriteChanged = NO;
+        [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -199,11 +200,20 @@
 
 #pragma mark - UserDefined methods
 
+- (void)keyboardWasShown:(NSNotification *)notification
+{
+    // Get the size of the keyboard.
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    keyboardHeight = keyboardSize.height;
+    
+    searchTable.height = contentView.frame.size.height - searchbarView.frame.size.height - keyboardHeight;
+    searchErrorLabel.height =searchTable.frame.size.height;
+}
+
+
 -(void) callMerchantWebserviceWithActionType:(int) actionType startCount:(long) start showProgressIndicator:(BOOL) showProgressIndicator {
     
     NETWORK_TEST_PROCEDURE
-    
-    APP_DELEGATE.isFavoriteChanged = NO;
     
     if (isMerchantWebserviceRunning) {
         return;
@@ -293,18 +303,11 @@
         pinAnnotation = [[PinAnnotation alloc] init];
         pinAnnotation.coordinate = location;
         pinAnnotation.title = merchantModel.MerchantID;
-        pinAnnotation.subtitle = merchantModel.IsSpecial;
+        pinAnnotation.subtitle = merchantModel.TagType;
         [mapView addAnnotation:pinAnnotation];
     }
-    
-    MKMapRect zoomRect = MKMapRectNull;
-    for (id <MKAnnotation> annotation in mapView.annotations)
-    {
-        MKMapPoint annotationPoint = MKMapPointForCoordinate(annotation.coordinate);
-        MKMapRect pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.9, 0.9);
-        zoomRect = MKMapRectUnion(zoomRect, pointRect);
-    }
-    [mapView setVisibleMapRect:zoomRect animated:YES];
+
+    [TuplitConstants zoomToFitMapAnnotations:mapView];
 }
 
 -(void) refreshTableView:(id) sender {
@@ -361,10 +364,11 @@
         
         annotationView.canShowCallout = NO;
         
-        if([annotation subtitle].intValue == 0)
-            annotationView.image = getImage(@"MapPinBlack", NO);
-        else
+        if([annotation subtitle].intValue == 3)
             annotationView.image = getImage(@"MapPinBlackWithStar", NO);
+        else
+            annotationView.image = getImage(@"MapPinBlack", NO);
+            
     }
     
     //   Callout annotation.
@@ -597,7 +601,7 @@
     searchErrorLabel.height = searchTable.frame.size.height;
 //    isMerchantWebserviceRunning = NO;
     [self hideSearch];
-   [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
+//   [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
 }
 
 - (void) textFieldDidChange:(NSNotification*) notification {
@@ -633,7 +637,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
-    [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
+    [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
     
     return YES;
 }
@@ -758,6 +762,8 @@
             isMerchantWebserviceRunning =NO;
             [[ProgressHud shared] hide];
             [refreshControl endRefreshing];
+            [merchantErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
+            [merchantErrorLabel setHidden:NO];
             
             break;
         }
@@ -766,8 +772,7 @@
             break;
         }
     }
-    [merchantErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
-    [merchantErrorLabel setHidden:NO];
+    
     [[ProgressHud shared] hide];
 }
 - (void)favouriteManagerFailed:(TLFavouriteListingManager *) favouriteListManager

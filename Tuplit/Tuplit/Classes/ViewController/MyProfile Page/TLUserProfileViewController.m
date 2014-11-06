@@ -62,7 +62,7 @@
     userProfileTable.tag = 1003;
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         userProfileTable.delaysContentTouches = NO;
-    userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 20)];
+    userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 50)];
     [baseView addSubview:userProfileTable];
 }
 - (void)viewDidLoad
@@ -182,10 +182,10 @@
     
     TLEditProfileViewController * editProfileVC = [[TLEditProfileViewController alloc] init];
     editProfileVC.userDetail = userdeatilmodel;
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editProfileVC];
-//    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-//    [self presentViewController:nav animated:YES completion:nil];
-    [self.navigationController pushViewController:editProfileVC animated:YES];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editProfileVC];
+    [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:nav animated:YES completion:nil];
+//    [self.navigationController pushViewController:editProfileVC animated:YES];
 }
 
 - (void) topUpAction:(id) sender
@@ -358,6 +358,8 @@
     if (cell == nil)
     {
         cell = [[UserProfileCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifire[indexPath.section]];
+        if(indexPath.section == 2)
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
     cell.indexPaths=indexPath;
     cell.delegate=self;
@@ -489,6 +491,7 @@
         transactionDetail.transActionList = [transactionList mutableCopy];
         transactionDetail.userID = [TLUserDefaults getCurrentUser].UserId;
         transactionDetail.index = indexPath.row;
+        [userProfileTable deselectRowAtIndexPath:indexPath animated:YES];
         [self.navigationController pushViewController:transactionDetail animated:YES];
     }
 }

@@ -61,6 +61,7 @@
     
     welcomeViewController = [[TLWelcomeViewController alloc] initWithNibName:@"TLWelcomeViewController" bundle:nil];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:welcomeViewController];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     self.window.rootViewController = self.navigationController;
     self.window.backgroundColor = UIColorFromRGB(0x00998c);
     [self.window makeKeyAndVisible];
@@ -224,7 +225,7 @@
     [FBSession.activeSession closeAndClearTokenInformation];
     
     // premissions
-    NSArray *permissions = [NSArray arrayWithObjects:@"read_friendlists",@"user_birthday",@"email",nil];
+    NSArray *permissions = [NSArray arrayWithObjects:@"email",@"user_birthday",nil];
 //public_profile",@"read_friendlists",@"user_friends
     
     [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES  completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
@@ -238,6 +239,7 @@
                 NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:@"id,name,first_name,last_name,email,birthday,gender,picture.type(large),link,locale,updated_time,verified" forKey:@"fields"];
                 [[FBRequest requestWithGraphPath:@"me" parameters:dict HTTPMethod:nil] startWithCompletionHandler:^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
                     
+                    NSLog(@"user  :%@",user);
                     if ([viewController isKindOfClass:[TLWelcomeViewController class]]) {
                         
                         if (!error) {

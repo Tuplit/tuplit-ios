@@ -64,7 +64,7 @@
     editProfileTable.separatorStyle=UITableViewCellSeparatorStyleNone;
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         editProfileTable.delaysContentTouches = NO;
-    editProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, editProfileTable.frame.size.width, 20)];
+    editProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, editProfileTable.frame.size.width, 50)];
     [baseView addSubview:editProfileTable];
         
     user = [[UserModel alloc]init];
@@ -184,8 +184,8 @@
         NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
         [nc postNotificationName:@"UPDATE_EDITED_DETAILS" object:self userInfo:userInfo];
     }
-    [self.navigationController popViewControllerAnimated:YES];
-//    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)didSwipeRightInCellWithIndexPath:(NSIndexPath *)indexPath
@@ -227,12 +227,17 @@
 //            NSDate *dateFromString = [[NSDate alloc] init];
 //            // voila!
 //            dateFromString = [dateFormatter dateFromString:dateString];
-            
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"YYYY-MM-dd"];
-            
-            NSString *resultString = [formatter stringFromDate:previousSelectiondate];
-            self.user.DOB = resultString;
+            if(previousSelectiondate)
+            {
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"YYYY-MM-dd"];
+                NSString *resultString = [formatter stringFromDate:previousSelectiondate];
+                self.user.DOB = resultString;
+            }
+            else
+            {
+                self.user.DOB = [TLUserDefaults getCurrentUser].DOB;
+            }
         }
         if([segment selectedSegmentIndex]==0)
             self.user.Gender = @"1";
@@ -355,10 +360,12 @@
 -(void)openPicker
 {
     [self.view endEditing:YES];
-    [self setupdatePicker];
+    
     
     if(!isActionSheetOpen)
     {
+        [self setupdatePicker];
+        
         [self.view addSubview:datePickerBase];
         [UIView animateWithDuration:0.1
                               delay:0

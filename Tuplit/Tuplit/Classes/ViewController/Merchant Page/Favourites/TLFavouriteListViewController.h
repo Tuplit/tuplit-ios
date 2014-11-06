@@ -45,7 +45,7 @@
     int totalUserListCount,lastFetchCount;
     BOOL isLoadMorePressed,isPullRefreshPressed,isTextFieldClearPressed,isMerchantWebserviceRunning,isKeyBoardOpen;
     
-    int adjustViewForIOS7;
+    int adjustViewForIOS7,keyboardHeight;
     NSString *categoryId;
 }
 

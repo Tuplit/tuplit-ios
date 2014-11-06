@@ -82,7 +82,7 @@
     merchantAddressLbl.frame = CGRectMake(14,CGRectGetMaxY(merchantNameLbl.frame), detailImgView.width-28, height);
     
     NSDateFormatter *dateFormtter = [[NSDateFormatter alloc] init];
-    [dateFormtter setDateFormat:@"d/M/yyyy, h:mm a"];
+    [dateFormtter setDateFormat:@"MM/dd/yyyy, h:mm a"];
     NSString *dateString = [dateFormtter stringFromDate:[NSDate date]];
     
     UILabel *dateTimeLbl=[[UILabel alloc] initWithFrame:CGRectMake(14,CGRectGetMaxY(merchantAddressLbl.frame)+10, detailImgView.width-28,20)];
@@ -213,14 +213,15 @@
 -(void) closeViewController:(id) sender
 {
     
-    TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-    [TLUserDefaults setIsCommentPromptOpen:YES];
-    
     OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
     cmtDetail.MerchantId = APP_DELEGATE.cartModel.merchantID;
     cmtDetail.CompanyName = APP_DELEGATE.cartModel.companyName;
+    cmtDetail.OrderId = self.OrderId;
     
     [TLUserDefaults setCommentDetails:cmtDetail];
+    [TLUserDefaults setIsCommentPromptOpen:YES];
+    
+    TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
     
