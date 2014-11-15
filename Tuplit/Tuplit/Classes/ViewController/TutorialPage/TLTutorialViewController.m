@@ -61,12 +61,14 @@
     buttonNext.tag=100;
     
     scrollView = [[SlideShowView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, [[UIScreen mainScreen] bounds].size.height)];
-    [scrollView loadData];
+//    [scrollView loadData];
     [_scrollView addSubview:scrollView];
-
+    NSArray *placeholderimages = [NSArray arrayWithObjects:@"Tut1",@"Tut2",@"Tut3",@"Tut4", nil];
     scrollView.slideShowInterval = 5;
-    scrollView.isShowPageControl = YES;
+    scrollView.isWelcome = YES;
     scrollView.slideShowImages = [Global instance].tutorialScreenImages;
+    scrollView.placeholderImages = placeholderimages;
+    scrollView.isShowPageControl = YES;
     [scrollView loadData];
 
     scrollView.backgroundColor = [UIColor clearColor];
@@ -98,6 +100,11 @@
     [super didReceiveMemoryWarning];
 }
 
+-(void)loaddata
+{
+    scrollView.slideShowImages = [Global instance].tutorialScreenImages;
+    [scrollView loadData];
+}
 - (IBAction)skipAction:(id)sender {
     
     [TLUserDefaults setIsTutorialSkipped:YES];

@@ -306,7 +306,7 @@
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
             ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0,0.0,250,70);
-            annotationView.centerOffset      = CGPointMake(-2,-50);
+            annotationView.centerOffset      = CALL_OUT_POS;
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;
         }
@@ -449,14 +449,14 @@
         lastFetchCount = 0;
     }
     
-        totalUserListCount = _merchantListingManager.totalCount;
+        totalUserListCount = (int)_merchantListingManager.totalCount;
         
         if ((_merchantListingManager.listedCount % 10) == 0) {
-            lastFetchCount = lastFetchCount + _merchantListingManager.listedCount;
+            lastFetchCount = lastFetchCount + (int)_merchantListingManager.listedCount;
         }
         else
         {
-            lastFetchCount = merchantsArray.count;
+            lastFetchCount = (int)merchantsArray.count;
         }
         
         if (lastFetchCount < totalUserListCount)

@@ -264,7 +264,7 @@ static void AFSwizzleClassMethodWithClassAndSelectorUsingBlock(Class klass, SEL 
 #pragma clang diagnostic ignored "-Wgnu"
     self.completionBlock = ^{
         
-//        NSLog(@"Response : %@",self.responseString);
+        NSLog(@"Response : %@",self.responseString);
         
         if (self.error) {
             if (failure) {

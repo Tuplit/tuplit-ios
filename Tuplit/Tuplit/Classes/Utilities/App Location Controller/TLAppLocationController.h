@@ -15,7 +15,7 @@
     NSTimer *timer;
 }
 
-+ (id)sharedManager;
++(id)sharedManager;
 -(void)startUpdatingLocation;
 -(void)stopUpdatingLocation;
 @end

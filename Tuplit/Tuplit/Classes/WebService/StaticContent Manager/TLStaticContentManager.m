@@ -41,8 +41,6 @@
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-		
-        NSLog(@"Response : %@" ,operation.responseString);
         
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
@@ -54,10 +52,7 @@
             
             NSArray *array = [[responseJSON objectForKey:strPropertyName] valueForKey:@"cms"];
             
-            NSLog(@"%@",array);
             for (NSDictionary *dict in array) {
-                
-                 NSLog(@"%@",[dict valueForKey:@"PageName"]);
                 
                 if([[dict valueForKey:@"PageName"] isEqualToString:@"About"])
                     obj.aboutContent = dict[@"Content"];
@@ -95,6 +90,8 @@
             NSString *iTunesurl = [[responseJSON objectForKey:strPropertyName] valueForKey:@"ItunesURL"];
             [TLUserDefaults setItunesURL:iTunesurl];
             
+            [[NSNotificationCenter defaultCenter]postNotificationName:kStaticContentRetrived object:nil];
+            
         }
         else
         {
@@ -106,7 +103,6 @@
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
         [[ProgressHud shared] hide];
-		NSLog(@"Failure: %@", error);
         [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
         if([_delegate respondsToSelector:@selector(staticContentManagerFailed:)])
             [_delegate staticContentManagerFailed:self];

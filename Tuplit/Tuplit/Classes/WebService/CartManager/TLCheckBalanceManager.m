@@ -20,7 +20,7 @@
     
     NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:CHECK_BALANCE_URL]];
     
-    NSDictionary *queryParams=[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",paymentAmount.intValue],@"PaymentAmount",[TLUserDefaults getCurrentUser].UserId,@"UserId",nil];
+    NSDictionary *queryParams=[NSDictionary dictionaryWithObjectsAndKeys:paymentAmount,@"PaymentAmount",[TLUserDefaults getCurrentUser].UserId,@"UserId",nil];
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
     
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"" parameters:queryParams];
@@ -42,9 +42,7 @@
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        
-        NSLog(@"Response : %@",responseJSON);
-        
+                
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code==200 || code==201)

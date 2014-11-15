@@ -82,8 +82,6 @@
     [UIImage releaseImageCache];
 }
 
-
-
 - (void)loadView {
     
     [super loadView];
@@ -93,7 +91,7 @@
     
     CGFloat viewHeight = [[UIScreen mainScreen] bounds].size.height;
     
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:NO];
+//    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:NO];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [self.view setBackgroundColor:[UIColor blackColor]];
@@ -107,7 +105,7 @@
 	scrollViewBase = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, viewHeight)];
 	[scrollViewBase setBackgroundColor:[UIColor blackColor]];
 	[baseView addSubview:scrollViewBase];
-	
+    
 	self.originalImage = myBaby_scaleAndRotateImage(self.originalImage);
 	
 	scrollView = [[PhotoCropperScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, viewHeight) image:self.originalImage];
@@ -210,30 +208,44 @@
     rightBorder.userInteractionEnabled = NO;
     [baseView addSubview:rightBorder];
     
-	UIToolbar *toolbar = [[UIToolbar alloc] init];
-	[toolbar setBarStyle:UIBarStyleDefault];
-	toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
-    toolbar.backgroundColor =[UIColor blackColor];
-	
-	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
-	
-	UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(saveEdit)];
-	
-	UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0 , 11.0f, 150, 21.0f)];
-    [titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+//    UIImage *img;
+//    if(SYSTEM_VERSION_LESS_THAN(@"7.0"))
+//        img = getImage(@"nav", NO);
+//    else
+//        img = getImage(@"nav_64", NO);
+    
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    [toolbar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    toolbar.frame = CGRectMake(0, 0, 320, SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 64 : 44);
+    
+//    UIBarButtonItem *leftBarBtnItem=[UIBarButtonItem SSCrossButtonItemWithTarget:self action:@selector(cancelEdit)];
+//    
+//    UIBarButtonItem *rightBarBtnItem=[UIBarButtonItem SSTickButtonItemWithImage:getImage(@"select",NO) Target:self action:@selector(saveEdit)];
+    
+    UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelEdit)];
+    if([cancelBtn respondsToSelector:@selector(tintColor)])
+        cancelBtn.tintColor = [UIColor whiteColor];
+    
+    UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(saveEdit)];
+    if([doneBtn respondsToSelector:@selector(tintColor)])
+        doneBtn.tintColor = [UIColor whiteColor];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0 , SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 31.0f : 11.0f, 150, 21.0f)];
+    [titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:20]];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setTextColor:[UIColor whiteColor]];
     [titleLabel setText:@"Move and Scale"];
     [titleLabel setTextAlignment:NSTextAlignmentCenter];
+    [toolbar addSubview:titleLabel];
     
-    UIBarButtonItem *title = [[UIBarButtonItem alloc] initWithCustomView:titleLabel];
-	
-	UIBarButtonItem *flexibleSpace1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	UIBarButtonItem *flexibleSpace2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	
-	NSArray *items = [[NSArray alloc] initWithObjects:cancelBtn,flexibleSpace1,title,flexibleSpace2,doneBtn, nil];
-	[toolbar setItems:items animated:NO];
-	[self.view addSubview:toolbar];
+    [titleLabel centerHorizontally];
+    
+    UIBarButtonItem *flexibleSpace1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *flexibleSpace2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    NSArray *items = [[NSArray alloc] initWithObjects:cancelBtn,flexibleSpace1,flexibleSpace2,doneBtn,nil];
+    [toolbar setItems:items animated:NO];
+    [self.view addSubview:toolbar];
     
     [self recalculation];
 }
@@ -292,7 +304,6 @@
 	 */
 	
 	float zoomScale = (scrollSize.width/imageSize.width);
-	NSLog(@"%f", zoomScale);
 	zoomScaleToFit = zoomScale;
 	[scrollView setZoomScale:zoomScale];
 	[scrollView setMinimumZoomScale:(scrollSize.width/imageSize.width)/2];

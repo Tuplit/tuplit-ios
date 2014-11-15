@@ -49,6 +49,7 @@
         
         EGOImageView * categoryImageView =[[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(xPosition, yPosition, categoryImg.size.width, categoryImg.size.height)];
         categoryImageView.imageURL = [NSURL URLWithString:categoryModel.CategoryIcon];
+        categoryImageView.contentMode = UIViewContentModeScaleAspectFill;
         [categoryImageView setTag:(i+2200)];
         [self addSubview:categoryImageView];
         

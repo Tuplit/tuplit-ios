@@ -70,6 +70,7 @@
     UIButton *selectedCartButton;
     
     UIView *blurView;
+    UILabel *merchantErrorLabel;
     
     int totalComments;
 
@@ -77,6 +78,7 @@
 
 @property (nonatomic,retain) NSString * detailsMerchantID;
 @property (nonatomic,retain)  MerchantModel * merchantModel;
+@property (nonatomic,strong) UIViewController *viewController;
 
 
 @end

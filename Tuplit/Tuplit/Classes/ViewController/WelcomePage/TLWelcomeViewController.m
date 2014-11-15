@@ -26,6 +26,8 @@
 #import <Accounts/Accounts.h>
 #import "UserModel.h"
 #import "SlideShowView.h"
+#import "TLTutorialViewController.h"
+
 
 
 //#define UIColorFromRGBAlpha(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
@@ -45,7 +47,7 @@
     CLPlacemark *placeMark;
     UIActivityIndicatorView *spinner;
     NSTimer *timer;
-    
+    TLTutorialViewController *tutorVC;
     TLUserDetailsManager *userDetailsManager;
     BOOL isSocialLogin;
 }
@@ -115,25 +117,6 @@
     
     scrollView.backgroundColor = [UIColor clearColor];
     
-    
-//    if(![UI isIPhone5]) {
-//        
-//        scrollView.height = 220;
-//        pageControl.height = 20;
-//        scrollView.clipsToBounds = YES;
-//        [pageControl positionAtY:245];
-//        [footerBgView positionAtY:CGRectGetMaxY(scrollView.frame)];
-//        footerBgView.height = footerBgView.height+50;
-//        
-//        [welcomeBgView positionAtY:CGRectGetMinY(welcomeBgView.frame)];
-//        welcomeBgView.clipsToBounds = YES;
-//        [buttonFB positionAtY:CGRectGetMinY(buttonFB.frame)-5];
-//        [buttonGoogle positionAtY:CGRectGetMaxY(buttonFB.frame)+ 5];
-//        [buttonEmail positionAtY:CGRectGetMaxY(buttonGoogle.frame)+ 5];
-//        [buttonLogin positionAtY:CGRectGetMaxY(buttonEmail.frame)+ 10];
-//        [buttonSkip positionAtY:CGRectGetMaxY(buttonEmail.frame)+ 10];
-//    }
-    
     user = [UserModel new];
     user.Country  = [CurrentLocation Country];
     user.ZipCode  = [CurrentLocation Zip];
@@ -156,29 +139,6 @@
              NSLog(@"%@", placemarks);
          }
      }];
-    
-//    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-//    [scrollView addSubview:spinner];
-//    spinner.center = scrollView.center;
-//    [spinner startAnimating];
-    
-    //    if([TLUserDefaults isGuestUser])
-    //    {
-    //        [TLUserDefaults setCurrentUser:nil];
-    //        [TLUserDefaults setIsGuestUser:NO];
-    //
-    ////        [self presentAMSlider];
-    //    }
-    //    else
-    //    {
-    //        if ([TLUserDefaults getCurrentUser].RememberMe.intValue==1) {
-    ////            [self presentAMSlider];
-    //            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-    //            userDetailsManager = [TLUserDetailsManager new];
-    //            userDetailsManager.delegate = self;
-    //            [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
-    //        }
-    //    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -190,6 +150,9 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kWelcomeScreenSlideShowStarter object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSlider) name:kWelcomeScreenSlideShowStarter object:nil];
+    
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kStaticContentRetrived object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadTutorial) name:kStaticContentRetrived object:nil];
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
@@ -221,6 +184,7 @@
             [self performSelectorOnMainThread:@selector(callUserService) withObject:nil waitUntilDone:NO];
         }
     }
+    [self performSelector:@selector(presentTutorial) withObject:self afterDelay:0.1];
 }
 - (void)viewDidDisappear:(BOOL)animated
 {
@@ -244,15 +208,22 @@
 }
 
 - (IBAction)faceBookSignin:(id)sender {
-    isSocialLogin = YES;
+   
     NETWORK_TEST_PROCEDURE;
+    
+    isSocialLogin = YES;
+    APP_DELEGATE.isSocialhandeled = YES;
+    
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     [APP_DELEGATE doFacebookLogin:self];
 }
 
 - (IBAction)googlePlusSignIn:(id)sender {
-    isSocialLogin = YES;
+    
     NETWORK_TEST_PROCEDURE;
+    
+    isSocialLogin = YES;
+     APP_DELEGATE.isSocialhandeled = YES;
     
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
     signIn.shouldFetchGooglePlusUser = YES;
@@ -324,6 +295,20 @@
     
     [TuplitConstants loadSliderHomePageWithAnimation:YES];
 }
+- (void)presentTutorial {
+    
+    if(![TLUserDefaults isTutorialSkipped])
+    {
+         tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
+        [self.navigationController presentViewController:tutorVC animated:YES completion:nil];
+    }
+}
+
+-(void)loadTutorial
+{
+    if(tutorVC)
+        [tutorVC loaddata];
+}
 
 -(void) loadSlider {
     welcomeBgPlaceholderView.hidden = YES;
@@ -340,7 +325,7 @@
     if(pageControl.currentPage == pageControl.numberOfPages - 1)
         page = 0;
     else
-        page = pageControl.currentPage+1;
+        page = (int)pageControl.currentPage+1;
     
     int offsetX = page * scrollView.width;
     int offsetY = 0;
@@ -382,7 +367,6 @@
                 [[ProgressHud shared] hide];
                 
             } else {
-                NSLog(@"%@", person.birthday);
                 googlePlusID = person.identifier;
                 user.Email = [GPPSignIn sharedInstance].authentication.userEmail;
                 user.GooglePlusId = person.identifier;
@@ -538,6 +522,10 @@
     
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
+    if([errorCode isEqualToString:@"1011"])
+    {
+        [TuplitConstants userLogout];
+    }
 }
 
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {

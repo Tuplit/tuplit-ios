@@ -50,5 +50,5 @@
 #import "EGOCache.h"
 #import "UIButton+Tuplit.h"
 #import "CurrentLocation.h"
-#import <RestKit/RestKit.h>
+#import <RestKit.h>
 #import "NSString+StringFunctions.h"

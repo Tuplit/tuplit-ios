@@ -170,9 +170,7 @@ static ProgressHud *_shared = nil;
 }
 
 - (void)updateLabelAndProgress:(NSString *)percentage {
-    
-    NSLog(@"%f",(float)[percentage intValue]/(float)100);
-    
+        
     progressView.progress = (float)[percentage intValue]/(float)100;
     
     progressLabel.text = [[NSString stringWithFormat:@"%.0f",[percentage doubleValue]] stringByAppendingString:@"\%"];

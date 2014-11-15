@@ -24,6 +24,7 @@
         
         merchantImgView=[[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(10,(SEARCH_CELL_HEIGHT - 40)/2,40,40)];
         merchantImgView.backgroundColor = [UIColor brownColor];
+        merchantImgView.contentMode = UIViewContentModeScaleAspectFill;
         merchantImgView.layer.cornerRadius = 20;
         merchantImgView.clipsToBounds = YES;
         [containerView addSubview:merchantImgView];

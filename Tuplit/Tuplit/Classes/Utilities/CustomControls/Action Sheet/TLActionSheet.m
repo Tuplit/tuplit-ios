@@ -52,6 +52,7 @@
     loanTitleLbl.frame=CGRectMake(50.0, 0.0, self.frame.size.width-100.0, 44.0);
     loanTitleLbl.backgroundColor=[UIColor clearColor];
     loanTitleLbl.textColor = [UIColor whiteColor];
+    loanTitleLbl.text = @"Select Birthday";
     loanTitleLbl.textAlignment = NSTextAlignmentCenter;
     loanTitleLbl.font=[UIFont fontWithName:@"Helvetica" size:18.0];
     

@@ -98,11 +98,20 @@
     imagePicker.allowsEditing = NO;
     
     isPictureUpdated = NO;
-    
-    actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:LString(@"CANCEL") destructiveButtonTitle:nil otherButtonTitles:
-                   LString(@"TAKE_PHOTO"),
-                   LString(@"EXISTING_PHOTO"),
-                   nil];
+        
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:LString(@"CANCEL") destructiveButtonTitle:nil otherButtonTitles:
+                       LString(@"TAKE_PHOTO"),
+                       LString(@"EXISTING_PHOTO"),
+                       nil];
+    }
+    else
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:LString(@"CANCEL") destructiveButtonTitle:nil otherButtonTitles:
+                       LString(@"EXISTING_PHOTO"),
+                       nil];
+    }
     
     for (UIView *subview in actionSheet.subviews) {
         if ([subview isKindOfClass:[UIButton class]]) {
@@ -214,10 +223,18 @@
     
     [self dismiss:nil];
     
-    if(buttonIndex == 0)
-        [self takePictureAction];
-    else if(buttonIndex == 1)
-        [self takePhotoLibraryAction];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        if(buttonIndex == 0)
+            [self takePictureAction];
+        else if(buttonIndex == 1)
+            [self takePhotoLibraryAction];
+    }
+    else
+    {
+        if(buttonIndex == 0)
+            [self takePhotoLibraryAction];
+    }
 }
 
 
@@ -365,8 +382,11 @@
 
 -(void)signUpsuccessAction
 {
-    [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
-    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+//    [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
+//    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+    
+    [[ProgressHud shared] hide];
+    [self presentAMSlider];
     
 }
 
@@ -399,12 +419,17 @@
     }];
 }
 
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+}
+
 
 #pragma mark - TLSignUpManager delegate methods
 
 - (void)signUpManager:(TLSignUpManager *)signUpManager registerSuccessfullWithUser:(UserModel *)user isAlreadyRegistered:(BOOL)isAlreadyRegistered {
     
-    [[ProgressHud shared] hide];
+//    [[ProgressHud shared] hide];
     [self callLoginWebService];
     
 }
@@ -424,14 +449,15 @@
 
 - (void)loginManager:(TLLoginManager *)loginManager loginSuccessfullWithUser:(UserModel *)user {
     
-    [TLUserDefaults setIsTutorialSkipped:NO];
+//    [TLUserDefaults setIsTutorialSkipped:NO];
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
-    [[ProgressHud shared] hide];
+//    [[ProgressHud shared] hide];
     
-    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
-    addCrCardViewController.viewController = self;
-    [self.navigationController pushViewController:addCrCardViewController animated:YES];
+//    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+//    addCrCardViewController.viewController = self;
+//    [self.navigationController pushViewController:addCrCardViewController animated:YES];
+    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
     
     [[TLAppLocationController sharedManager]startUpdatingLocation];
     
@@ -454,7 +480,10 @@
     [TLUserDefaults setCurrentUser:user_];
     [[ProgressHud shared] hide];
     
-    [self presentAMSlider];
+    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+    addCrCardViewController.viewController = self;
+    [self.navigationController pushViewController:addCrCardViewController animated:YES];
+    
 }
 
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {

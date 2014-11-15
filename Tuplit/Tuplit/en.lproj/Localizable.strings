@@ -25,11 +25,12 @@
 "CANCEL"                        = "Cancel";
 "YES"                           = "Yes";
 "NO"                            = "No";
+"DONE"                          = "Done";
 "NO_CONNECTIVITY"               = "Internet is not reachable. Please check your network connection.";
 "SERVER_CONNECTION_ERROR"       = "Unable to connect to Tuplit server. Please check your internet connection.";
 "NO_FB_ACCOUNT"                 = "Please setup your Facebook account in the iOS settings app.";
 "ACCESS_DENIED"                 = "Account access denied.";
-"UNABLE_CONNECT"                = "Unable to connect.";
+"UNABLE_CONNECT"                = "Unable to connect facebook.";
 "IOS"                           = "ios";
 "SEARCH"                        = "Search";
 "NO_ITEM_FOUND"                 = "No item found";
@@ -57,8 +58,8 @@
 
 /* Sign Up Screen       And     Sign Up Social Screen */
 "SIGNUP"                        = "Sign up";
-"TAKE_PHOTO"                    = "Take Photo";
-"EXISTING_PHOTO"                = "Existing Photo";
+"TAKE_PHOTO"                    = "Take New Photo";
+"EXISTING_PHOTO"                = "Choose Existing Photo";
 "ENTER_VALID_EMAIL"             = "Please enter a valid email address";
 "ENTER_PASSWORD"                = "Please enter a password";
 "ENTER_ATLEAST_PASSWORD"        = "Password must be atleast 6 characters";
@@ -163,6 +164,7 @@
 "BACK_TO_MERCHANT"              = "Back to Merchant Screen";
 "ORDER_REJECTED_INFO"           = "You rejected the order. Now you can go back to Merchant or Home Screen";
 "ORDER_INFO_TXT"                = "Please accept or reject your order initiated by the merchant";
+"RECEIPT"                      = "Receipt";
 
 /* All Transaction */
 
@@ -195,6 +197,7 @@
 /*Cart View Controller */
 
 "SWIPE_TO_CHECKOUT"            = "   Swipe to checkout";
+"MERCHANT_CLOSED"              = "%@ is closed";
 
 /*Add Credit Card*/
 "ADD_CREDIT_CARD"               = "Add Credit Card";

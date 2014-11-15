@@ -21,6 +21,8 @@
 @property(nonatomic,assign) double subtotal;
 @property(nonatomic,assign) double discountedTotal;
 @property(nonatomic,assign) int productCount;
+@property(nonatomic,strong) NSArray* openHrsArray;
+//@property(nonatomic,assign) BOOL isMerchantClosed;
 
 - (void) calculateTotalPrice;
 -(void)calculateSubtotalPrice;

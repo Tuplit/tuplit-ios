@@ -17,11 +17,13 @@
     double width,height;
     UIView *codeSelectorView;
     float xposition;
+    UIImageView *bgimageView;
 }
 
 @property (nonatomic, assign) CGFloat lastContentOffset;
 @property (nonatomic, assign) CGRect scrollFrame;
 @property (strong,nonatomic)NSArray *slideShowImages;
+@property (strong,nonatomic)NSArray *placeholderImages;
 @property (assign,nonatomic)int slideShowInterval;
 @property BOOL isShowPageControl;
 @property BOOL isWelcome;

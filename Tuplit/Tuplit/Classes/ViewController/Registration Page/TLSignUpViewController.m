@@ -116,7 +116,7 @@
     UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:16];
     NSDictionary *attributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
     [segment setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    
+        
     dobLabel.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"textFieldBg"]];
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openPicker)];
     [dobLabel setUserInteractionEnabled:YES];
@@ -148,11 +148,21 @@
     imagePicker.allowsEditing = NO;
     
     isPictureUpdated = NO;
+        
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:LString(@"CANCEL") destructiveButtonTitle:nil otherButtonTitles:
+                       LString(@"TAKE_PHOTO"),
+                       LString(@"EXISTING_PHOTO"),
+                       nil];
+    }
+    else
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:LString(@"CANCEL") destructiveButtonTitle:nil otherButtonTitles:
+                       LString(@"EXISTING_PHOTO"),
+                       nil];
+    }
     
-    actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:LString(@"CANCEL") destructiveButtonTitle:nil otherButtonTitles:
-                   LString(@"TAKE_PHOTO"),
-                   LString(@"EXISTING_PHOTO"),
-                   nil];
     for (UIView *subview in actionSheet.subviews) {
         if ([subview isKindOfClass:[UIButton class]]) {
             UIButton *button = (UIButton *)subview;
@@ -181,8 +191,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    NSLog(@"%f", [CurrentLocation latitude]);
-    NSLog(@"%f", [CurrentLocation longitude]);
+    
+    NSLog(@"Latitude : %f", [CurrentLocation latitude]);
+    NSLog(@"Longitude %f", [CurrentLocation longitude]);
+    
     CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:[CurrentLocation latitude] longitude:[CurrentLocation longitude]];
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:tempLocation completionHandler:
@@ -240,6 +252,7 @@
     {
         if(previousSelectiondate)
             datePickerBase.datepicker.date = previousSelectiondate;
+        
     }
 }
 
@@ -367,10 +380,18 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if(buttonIndex == 0)
-        [self takePictureAction];
-    else if(buttonIndex == 1)
-        [self takePhotoLibraryAction];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        if(buttonIndex == 0)
+            [self takePictureAction];
+        else if(buttonIndex == 1)
+            [self takePhotoLibraryAction];
+    }
+    else
+    {
+        if(buttonIndex == 0)
+            [self takePhotoLibraryAction];
+    }
 }
 
 
@@ -391,6 +412,7 @@
     
     NETWORK_TEST_PROCEDURE;
     
+    APP_DELEGATE.isSocialhandeled = YES;
     isSocialButtonPressed = YES;
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
     signIn.shouldFetchGooglePlusUser = YES;
@@ -412,6 +434,8 @@
 - (IBAction)faceBookSignin:(id)sender {
     
     NETWORK_TEST_PROCEDURE;
+    
+    APP_DELEGATE.isSocialhandeled = YES;
     isSocialButtonPressed = YES;
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     [APP_DELEGATE doFacebookLogin:self];
@@ -623,8 +647,10 @@
 
 -(void)signUpsuccessAction
 {
-    [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
-    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+//    [[ProgressHud shared] showWithMessage:LString(@"REGISTERING") inTarget:self.navigationController.view];
+//    [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
+    [[ProgressHud shared] hide];
+    [self presentAMSlider];
 }
 #pragma mark - UIImagePickerViewController Delegate
 
@@ -657,6 +683,10 @@
     [self dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }];
+}
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 
@@ -821,7 +851,7 @@
                                   };
     [TLUserDefaults setRememberMeDetails:APP_DELEGATE.loginDetails];
     
-    [TLUserDefaults setIsTutorialSkipped:NO];
+//    [TLUserDefaults setIsTutorialSkipped:NO];
     if(!loginManager) {
         loginManager = [TLLoginManager new];
         loginManager.delegate = self;
@@ -850,13 +880,11 @@
     
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
-    [[ProgressHud shared] hide];
+//    [[ProgressHud shared] hide];
     
     if(!isSocialButtonPressed)
     {
-        TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
-        addCrCardViewController.viewController = self;
-        [self.navigationController pushViewController:addCrCardViewController animated:YES];
+        [userDetailsManager getUserDetailsWithUserID:[Global instance].user.UserId];
     }
     else
     {
@@ -897,10 +925,13 @@
     }
     
     [TLUserDefaults setCurrentUser:user_];
-    [TLUserDefaults setIsTutorialSkipped:isSocialButtonPressed];
-    [[ProgressHud shared] hide];
+//    [TLUserDefaults setIsTutorialSkipped:isSocialButtonPressed];
     
-    [self presentAMSlider];
+    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
+    addCrCardViewController.viewController = self;
+    [self.navigationController pushViewController:addCrCardViewController animated:YES];
+    
+     [[ProgressHud shared] hide];
     
 }
 

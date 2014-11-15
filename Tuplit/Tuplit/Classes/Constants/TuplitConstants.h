@@ -66,7 +66,7 @@
 
 #if DEBUG
 
-    #define RESOURCE_URL                @"http://172.21.4.104/tuplit"
+   #define RESOURCE_URL                @"http://172.21.4.104/tuplit"
 
 #else
 
@@ -113,7 +113,8 @@
 #define kWelcomeScreenSlideShowStarter @"kWelcomeScreenSlideShowStarter"
 #define kFBSignupScreen         @"kFBSignupScreen"
 #define kUpdateRecentOrders     @"kUpdateRecentOrders"
-
+#define kUpdateFriendsActivity  @"kUpdateFriendsActivity"
+#define kStaticContentRetrived  @"kStaticContentRetrived"
 
 /****** Format Filters **************/
 #define CARDAMEX            @"#### ###### #####"
@@ -130,13 +131,16 @@
 #define CUSTOMER_SUPPORT_EMAIL @"help@tuplit.com"
 #define CUSTOMER_SUPPORT_PNUMBER @"+1 234 567 8"
 
+#define CALL_OUT_POS CGPointMake(-2,-69)
+
 
 @interface TuplitConstants : NSObject
 NSString *LString(NSString* key);
 + (void)loadSliderHomePageWithAnimation:(BOOL)animated;
 + (NSString*) getDistance:(double) locationDistance;
 + (NSString*)calculateTimeDifference:(NSString *)timeStamp;
-+ (NSMutableAttributedString*)getOpeningHrs:(NSString*)datestring isTimeFormat:(BOOL)isTime;
++(NSArray*)getOpeningHrs:(NSArray*)openHrsArray;
+//+(NSMutableAttributedString*)getOpeningHrs:(NSString*)datestring isTimeFormat:(BOOL)isTime;
 + (NSMutableAttributedString*)getPriceRange:(NSString *)_priceString;
 + (NSString*)formatPhoneNumber:(NSString*)mobileNumber;
 + (NSNumberFormatter*) getCurrencyFormat;
@@ -147,5 +151,6 @@ NSString *LString(NSString* key);
 +(NSString*)dobFormattedDate:(NSString*)datefromServer;
 +(NSString*)facebookFormattedDate:(NSString*)datefromServer;
 + (void)zoomToFitMapAnnotations:(MKMapView *)mapView;
++(BOOL) isMerchantClosed:(NSArray*) openHrsArray;
 
 @end

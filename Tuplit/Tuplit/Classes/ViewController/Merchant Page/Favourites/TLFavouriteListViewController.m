@@ -11,6 +11,8 @@
 #import "TLTutorialViewController.h"
 #import "PinAnnotation.h"
 #import "CustomCallOutView.h"
+#import "NSArray+BlocksKit.h"
+
 @interface TLFavouriteListViewController ()<CustomCallOutViewDelegate>
 
 @end
@@ -259,6 +261,54 @@
     [favouriteListingManager callService:merchantListingModel];
 }
 
+-(void)mapviewLoadmore
+{
+    if (isMerchantWebserviceRunning) {
+        return;
+    }
+    
+    isMerchantWebserviceRunning = YES;
+    
+    merchantListingModel.actionType = MCNearBy;
+    merchantListingModel.Latitude = [NSString stringWithFormat:@"%lf",mapView.centerCoordinate.latitude];
+    merchantListingModel.Longitude = [NSString stringWithFormat:@"%lf",mapView.centerCoordinate.longitude];
+    
+    merchantListingModel.Category = @"";
+    merchantListingModel.Type = @"1";
+    merchantListingModel.Start = [NSString stringWithFormat:@"%d",0];
+    merchantListingModel.DiscountTier = (discountTierValue==0)?@"":[NSString stringWithFormat:@"%d",discountTierValue];
+    
+    if (favouriteListingManager==nil) {
+        favouriteListingManager = [[TLFavouriteListingManager alloc] init];
+    }
+    else
+    {
+        
+    }
+    
+    favouriteListingManager.delegate = self;
+    [favouriteListingManager callService:merchantListingModel];
+}
+-(void)loadMoreAnnotation:(NSArray*)moreAnnotations
+{
+    //    [mapView removeAnnotations:mapView.annotations];
+    
+    for(MerchantModel *merchantModel in moreAnnotations)
+    {
+        if (merchantModel.Latitude.doubleValue == 0.0 || merchantModel.Longitude.doubleValue == 0.0) {
+            continue;
+        }
+        CLLocationCoordinate2D location;
+        location.latitude = merchantModel.Latitude.doubleValue;
+        location.longitude = merchantModel.Longitude.doubleValue;
+        PinAnnotation *pinAnnotation = [[PinAnnotation alloc] init];
+        pinAnnotation.coordinate = location;
+        pinAnnotation.title = merchantModel.MerchantID;
+        pinAnnotation.subtitle = merchantModel.TagType;
+        [mapView addAnnotation:pinAnnotation];
+    }
+}
+
 - (void) mapIconImgViewAction: (id) sender
 {
     if(favouritesArray.count>0)
@@ -273,6 +323,7 @@
             mapIconImgView.image = img;
             merchantTable.hidden = NO;
             mapView.hidden = YES;
+            [merchantTable reloadData];
         }
         else
         {
@@ -381,7 +432,7 @@
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
             ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0,0.0,250,70);
-            annotationView.centerOffset      = CGPointMake(-2,-50);
+            annotationView.centerOffset      = CALL_OUT_POS;
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;
         }
@@ -454,6 +505,13 @@
         }
     }
 }
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    if(isMapShown && (favouritesArray.count<totalUserListCount))
+        [NSThread detachNewThreadSelector:@selector(mapviewLoadmore) toTarget:self withObject:nil];
+}
+
 
 #pragma mark - UITableViewDelegate
 
@@ -646,27 +704,82 @@
 
 - (void)favouriteManagerSuccessfull:(TLFavouriteListingManager *) favouriteListManager withFavouriteList:(NSArray*)_favouriteArray
 {
+    
     switch (favouriteListManager.merchantListModel.actionType) {
         case MCSearch:
         case MCNearBy:
         {
             if([searchTxt isFirstResponder])
             {
-            [searchArray removeAllObjects];
-            searchArray = [NSMutableArray arrayWithArray:_favouriteArray];
-            [searchTable reloadData];
-            [searchErrorLabel setHidden:YES];
-            
-            isMerchantWebserviceRunning =NO;
-            [[ProgressHud shared] hide];
-            [refreshControl endRefreshing];
-           
+                [searchArray removeAllObjects];
+                searchArray = [NSMutableArray arrayWithArray:_favouriteArray];
+                [searchTable reloadData];
+                [searchErrorLabel setHidden:YES];
+                
+                isMerchantWebserviceRunning =NO;
+                [[ProgressHud shared] hide];
+                [refreshControl endRefreshing];
+                
             }
             else
             {
+                
+                if(isMapShown)
+                {
+                    NSMutableArray *newannotations = [NSMutableArray new];
+                    
+                    newannotations = [[_favouriteArray bk_reject:^BOOL(id obj) {
+                        
+                        MerchantModel *merchantModel1 = obj;
+                        
+                        return [favouritesArray bk_any:^BOOL(id obj1) {
+                            
+                            MerchantModel *merchantModel2 = obj1;
+                            if([merchantModel1.MerchantID isEqualToString:merchantModel2.MerchantID])
+                                return YES;
+                            else
+                                return NO;
+                        }];
+                        
+                    }]mutableCopy];
+                    if(newannotations.count>0)
+                    {
+                        [favouritesArray addObjectsFromArray:newannotations];
+                        [self loadMoreAnnotation:newannotations];
+                    }
+                    if (favouritesArray.count < totalUserListCount)
+                        [merchantTable setTableFooterView:cellContainer];
+                    else
+                        [merchantTable setTableFooterView:nil];
+                    
+                    isMerchantWebserviceRunning = NO;
+                    [[ProgressHud shared] hide];
+                    return;
+                }
+                
+                
                 if (isLoadMorePressed) {
                     
-                    [favouritesArray addObjectsFromArray:_favouriteArray];
+                    NSMutableArray *newannotations = [NSMutableArray new];
+                    
+                    newannotations = [[_favouriteArray bk_reject:^BOOL(id obj) {
+                        
+                        MerchantModel *merchantModel1 = obj;
+                        
+                        return [favouritesArray bk_any:^BOOL(id obj1) {
+                            
+                            MerchantModel *merchantModel2 = obj1;
+                            if([merchantModel1.MerchantID isEqualToString:merchantModel2.MerchantID])
+                                return YES;
+                            else
+                                return NO;
+                        }];
+                        
+                    }]mutableCopy];
+                    if(newannotations.count>0)
+                    {
+                        [favouritesArray addObjectsFromArray:newannotations];
+                    }
                 }
                 else
                 {
@@ -674,14 +787,14 @@
                     lastFetchCount = 0;
                 }
                 
-                totalUserListCount = favouriteListManager.totalCount;
+                totalUserListCount = (int)favouriteListManager.totalCount;
                 
                 if ((favouriteListManager.listedCount % 10) == 0) {
-                    lastFetchCount = lastFetchCount + favouriteListManager.listedCount;
+                    lastFetchCount = lastFetchCount + (int)favouriteListManager.listedCount;
                 }
                 else
                 {
-                    lastFetchCount = favouritesArray.count;
+                    lastFetchCount = (int)favouritesArray.count;
                 }
                 
                 if (lastFetchCount < totalUserListCount)
@@ -704,11 +817,11 @@
                 if ([favouriteListManager.merchantListModel.Start integerValue] == 0 && !isPullRefreshPressed) {
                     [merchantTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
                 }
-
+                
             }
-             break;
+            break;
         }
-        
+            
         default:
         {
             break;

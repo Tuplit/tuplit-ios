@@ -38,8 +38,6 @@
     
     NSMutableURLRequest *request;
     
-     NSLog(@"%@",queryParams);
-    
     if(self.user.userImage != nil) {
         
         self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(120, 120)];
@@ -72,8 +70,6 @@
         double ellapsedSeconds= [end timeIntervalSinceDate:start];
         NSLog(@"SignUpResponsetime = %f",ellapsedSeconds);
         
-        NSLog(@"%@",operation.responseString);
-        
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
@@ -84,8 +80,6 @@
         {
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
             NSDictionary *responseDictionarytoMap=[responseJSON objectForKey:strPropertyName];
-            
-            NSLog(@"Success: %@", responseJSON);
             
             RKObjectMapping *responseMapping = [RKObjectMapping mappingForClass:[UserModel class]];
             [responseMapping addAttributeMappingsFromDictionary:@{
@@ -121,7 +115,6 @@
         }
         else
         {
-            NSLog(@"error id %@" ,responseJSON);
             if([_delegate respondsToSelector:@selector(signUpManager:returnedWithErrorCode:errorMsg:)])
                 [_delegate signUpManager:self returnedWithErrorCode:[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] errorMsg:[[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"]];
         }
@@ -129,7 +122,6 @@
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
         [[ProgressHud shared] hide];
-		NSLog(@"Failure: %@", error);
         
         [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
         if([_delegate respondsToSelector:@selector(signUpManagerFailed:)])

@@ -11,7 +11,7 @@
 #define PAGECONTROL_SPACE 8
 
 @implementation SlideShowView
-@synthesize slideShowImages;
+@synthesize slideShowImages,placeholderImages;
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -31,61 +31,98 @@
 -(void)loadData
 {
     
-    numberOfSlides = [self.slideShowImages count];
-    
-    width = self.width;
-    height = self.height;
-    
-    for (int i = 0; i < numberOfSlides; i++) {
-        
-         [self addImageWithName:[NSURL URLWithString:self.slideShowImages[i]] atPosition:i];
-    }
-     [self addImageWithName:[NSURL URLWithString:self.slideShowImages[0]] atPosition:numberOfSlides]; 
-    self.translatesAutoresizingMaskIntoConstraints  = NO;
-    self.bounces = NO;
-    self.delegate = self;
-    if(numberOfSlides>1)
+    if(self.placeholderImages.count>0)
     {
-        self.pagingEnabled = YES;
-        self.contentSize = CGSizeMake((width*numberOfSlides)+ width, height);
+        numberOfSlides = (int)[self.placeholderImages count];
     }
     else
     {
-        self.contentSize = CGSizeMake(width, height);
+        numberOfSlides = (int)[self.slideShowImages count];
     }
-    [self scrollRectToVisible:CGRectMake(0,0,width,height) animated:NO];
-    [self setContentOffset:CGPointMake(0, 0)];
     
-    xposition = (self.width - ((numberOfSlides-1)*PAGECONTROL_SPACE) - ((numberOfSlides-1)*PAGECONTROL_SPACE))/2 - PAGECONTROL_SPACE;
-    
-    if(self.isShowPageControl)
+    if(numberOfSlides == 0)
     {
-        codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height-100, self.width,50)];
-        codeSelectorView.backgroundColor = [UIColor clearColor];
-        [self.superview addSubview:codeSelectorView];
-        
-        for (int i = 0; i<numberOfSlides; i++) {
-            UIImage *selectorImg = getImage(@"control", NO);
-            if(i==0)
-            {
-                selectorImg = getImage(@"control_s", NO);
-            }
-            
-            UIImageView *codeSelectorImgView = [[UIImageView alloc]initWithImage:selectorImg];
-            codeSelectorImgView.frame = CGRectMake(xposition + PAGECONTROL_SPACE, (codeSelectorView.height - PAGECONTROL_SPACE)/2, PAGECONTROL_SPACE, PAGECONTROL_SPACE);
-            codeSelectorImgView.tag = i + 1;
-            codeSelectorImgView.backgroundColor=[UIColor clearColor];
-            [codeSelectorView addSubview:codeSelectorImgView];
-            
-            xposition = CGRectGetMaxX(codeSelectorImgView.frame);
+        if(self.isWelcome)
+        {
+           bgimageView = [[UIImageView alloc]initWithImage:getImage(@"welcomePlaceholder", NO)];
+            bgimageView.frame = CGRectMake(0, 0, self.width, self.height);
+            [self addSubview:bgimageView];
         }
     }
-    [self timerAction];
+    else
+    {
+        width = self.width;
+        height = self.height;
+        bgimageView.image = nil;
+        if(self.placeholderImages.count>0)
+        {
+            for (int i = 0; i < numberOfSlides; i++) {
+                
+                [self addImageWithlocalName:self.placeholderImages[i] atPosition:i];
+            }
+            [self addImageWithlocalName:self.placeholderImages[0] atPosition:numberOfSlides];
+        }
+        else
+        {
+            for (int i = 0; i < numberOfSlides; i++) {
+                
+                [self addImageWithName:[NSURL URLWithString:self.slideShowImages[i]] atPosition:i];
+            }
+            [self addImageWithName:[NSURL URLWithString:self.slideShowImages[0]] atPosition:numberOfSlides];
+        }
+        self.translatesAutoresizingMaskIntoConstraints  = NO;
+        self.bounces = NO;
+        self.delegate = self;
+        if(numberOfSlides>1)
+        {
+            self.pagingEnabled = YES;
+            self.contentSize = CGSizeMake((width*numberOfSlides)+ width, height);
+        }
+        else
+        {
+            self.contentSize = CGSizeMake(width, height);
+        }
+        [self scrollRectToVisible:CGRectMake(0,0,width,height) animated:NO];
+        [self setContentOffset:CGPointMake(0, 0)];
+        
+        xposition = (self.width - ((numberOfSlides-1)*PAGECONTROL_SPACE) - ((numberOfSlides-1)*PAGECONTROL_SPACE))/2 - PAGECONTROL_SPACE;
+        
+        if(self.isShowPageControl)
+        {
+            codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height-100, self.width,50)];
+            codeSelectorView.backgroundColor = [UIColor clearColor];
+            [self.superview addSubview:codeSelectorView];
+            
+            for (int i = 0; i<numberOfSlides; i++) {
+                UIImage *selectorImg ;//= getImage(@"control", NO);
+                if(i==0)
+                {
+                    selectorImg = getImage(@"control_s", NO);
+                }
+                else
+                {
+                    selectorImg = getImage(@"control", NO);
+                }
+                
+                UIImageView *codeSelectorImgView = [[UIImageView alloc]initWithImage:selectorImg];
+                codeSelectorImgView.frame = CGRectMake(xposition + PAGECONTROL_SPACE, (codeSelectorView.height - PAGECONTROL_SPACE)/2, PAGECONTROL_SPACE, PAGECONTROL_SPACE);
+                codeSelectorImgView.tag = i + 1;
+                codeSelectorImgView.backgroundColor=[UIColor clearColor];
+                [codeSelectorView addSubview:codeSelectorImgView];
+                
+                xposition = CGRectGetMaxX(codeSelectorImgView.frame);
+            }
+        }
+        [self timerAction];
+    }
+    
+   
 }
 
 - (void)addImageWithName:(NSURL*)imageString atPosition:(int)position
 {
     EGOImageView *imageView;
+    
     if(self.isWelcome)
     {
         imageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"welcomePlaceholder", NO) imageViewFrame:CGRectMake(position*width, 0, width, height)];
@@ -94,10 +131,20 @@
     {
         imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*width, 0, width, height)];
     }
+    
     imageView.imageURL = imageString;
     imageView.contentMode = UIViewContentModeScaleToFill;
     [self  addSubview:imageView];
     
+}
+
+- (void)addImageWithlocalName:(NSString*)imageName atPosition:(int)position
+{
+    EGOImageView *imageView;
+    imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*width, 0, width, height)];
+    imageView.image = getImage(imageName, NO);
+    imageView.contentMode = UIViewContentModeScaleToFill;
+    [self  addSubview:imageView];
 }
 
 -(void) timerAction
@@ -117,7 +164,7 @@
 
 - (void)timerMethod
 {
-    NSInteger page = (self.contentOffset.x) / width;
+    int page = (self.contentOffset.x) / width;
     
     if (page == numberOfSlides)
         page=0;
@@ -162,7 +209,7 @@
         {
             leftPos=1;
         }
-        NSLog(@"%d",numberOfSlides-leftPos);
+
         [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[numberOfSlides-leftPos]] atPosition:numberOfSlides-leftPos];
         [self setContentOffset:CGPointMake(width*(numberOfSlides), 0)];
     }
@@ -230,7 +277,7 @@
 {
     if(numberOfSlides>1)
     {
-         NSInteger page = (self.contentOffset.x) / width;
+         int page = (self.contentOffset.x) / width;
         if (_lastContentOffset < (int)sender.contentOffset.x) {
              [self fillCodeCircles:page+1 andIsRightSwipped:YES];
         }
@@ -255,10 +302,11 @@
     
     if(self.isShowPageControl)
     {
-        for (int i = 0; i<numberOfSlides; i++) {
+        for (int i=0; i<numberOfSlides; i++) {
             UIImageView *selectorImage1 = (UIImageView *)[codeSelectorView viewWithTag:i+1];
             [selectorImage1 setImage:getImage(@"control", NO)];
         }
+       
         
         if(isright)
         {
@@ -276,7 +324,6 @@
         }
         else
         {
-            
             if(tag == numberOfSlides)
             {
                 UIImageView *selectorImage = (UIImageView *)[codeSelectorView viewWithTag:4];

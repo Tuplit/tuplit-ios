@@ -193,8 +193,7 @@
     [notificationView addSubview:dealOfferSwitch];
     
     //    Security Part
-    
-    UIView *securityView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(notificationView.frame), baseViewWidth, 240)];
+    UIView *securityView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(notificationView.frame), baseViewWidth, 186)];
     securityView.backgroundColor = [UIColor clearColor];
     [scrollView addSubview:securityView];
     
@@ -256,15 +255,15 @@
     [changePinBtn addTarget:self action:@selector(changePinCodeAction) forControlEvents:UIControlEventTouchUpInside];
     [securityView addSubview:changePinBtn];
     
-    UIButton *addNumberBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [addNumberBtn setFrame:CGRectMake(15, CGRectGetMaxY(changePinBtn.frame) +10, 290, 45)];
-    [addNumberBtn setTitle:LString(@"ADD_NUMBER") forState:UIControlStateNormal];
-    [addNumberBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    addNumberBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-    addNumberBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [addNumberBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [addNumberBtn addTarget:self action:@selector(addNumberAction) forControlEvents:UIControlEventTouchUpInside];
-    [securityView addSubview:addNumberBtn];
+//    UIButton *addNumberBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+//    [addNumberBtn setFrame:CGRectMake(15, CGRectGetMaxY(changePinBtn.frame) +10, 290, 45)];
+//    [addNumberBtn setTitle:LString(@"ADD_NUMBER") forState:UIControlStateNormal];
+//    [addNumberBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+//    addNumberBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+//    addNumberBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
+//    [addNumberBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+//    [addNumberBtn addTarget:self action:@selector(addNumberAction) forControlEvents:UIControlEventTouchUpInside];
+//    [securityView addSubview:addNumberBtn];
     
     //    Support Part
     
@@ -403,7 +402,6 @@
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenHeight = screenRect.size.height;
     
-    NSLog(@"supportView = %f  , screenHeight =  %f  ",CGRectGetMaxY(supportView.frame),screenHeight);
     if (screenHeight < 568)
     {
         scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(supportView.frame)+100);
@@ -419,7 +417,7 @@
         passcodeSwitch.enabled = NO;
         rememberSwitch.enabled = NO;
         changePinBtn.enabled = NO;
-        addNumberBtn.enabled = NO;
+//        addNumberBtn.enabled = NO;
         soundsSwitch.enabled = NO;
     }
 }
@@ -460,18 +458,18 @@
 
 -(void) logOutAction
 {
-     [UIAlertView alertViewWithTitle:@"Tuplit" message:LString(@"LOG_OUT_ALERT") cancelButtonTitle:LString(@"NO") otherButtonTitles:[NSArray arrayWithObject:LString(@"YES")]
-                                               onDismiss:^(int buttonIndex)
-                          {
-                              if(buttonIndex == 0)
-                              {
-                                  [TuplitConstants userLogout];
-                              }
-                          }
-                                                onCancel:^()
-                          {
-                              NSLog(@"Cancelled");
-                          }];
+    [UIAlertView alertViewWithTitle:@"Tuplit" message:LString(@"LOG_OUT_ALERT") cancelButtonTitle:LString(@"NO") otherButtonTitles:[NSArray arrayWithObject:LString(@"YES")]
+                          onDismiss:^(int buttonIndex)
+     {
+         if(buttonIndex == 0)
+         {
+             [TuplitConstants userLogout];
+         }
+     }
+                           onCancel:^()
+     {
+         NSLog(@"Cancelled");
+     }];
     
 }
 

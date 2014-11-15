@@ -46,8 +46,10 @@
     
     if(orderStatus.integerValue==1)
         informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(55,0,210, 92)];
-    else
+    else if(orderStatus.integerValue==2)
         informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(35,0,250, 92)];
+    else
+        informativeLbl=[[UILabel alloc] initWithFrame:CGRectMake(30,0,baseViewWidth-60, 92)];
     
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         informativeLbl.textAlignment=NSTextAlignmentCenter;
@@ -57,7 +59,7 @@
     informativeLbl.backgroundColor=[UIColor clearColor];
     [scrollView addSubview:informativeLbl];
     
-    UIImageView *detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseView.width-10, 325)];
+    detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(informativeLbl.frame)+10,baseView.width-10, 325)];
     detailImgView.image= getImage(@"receipt", NO);
     detailImgView.backgroundColor=[UIColor clearColor];
     [detailImgView setUserInteractionEnabled:YES];
@@ -113,6 +115,18 @@
         [backButton setTitle:LString(@"BACK_TO_HOME") forState:UIControlStateNormal];
         backLbl.text = LString(@"SHOW_RECEIPT");
     }
+    else if(orderStatus.integerValue==3)
+    {
+        informativeLbl.text = [NSString stringWithFormat:@"%@ has rejected your order.",self.merchatName];
+        int lblheight = [informativeLbl.text heigthWithWidth:informativeLbl.width andFont:informativeLbl.font];
+        
+        if(lblheight>92)
+            informativeLbl.height = lblheight+20;
+        statusImgView.image = getImage(@"Rejected", NO);
+        [backButton setTitle:LString(@"BACK_TO_HOME") forState:UIControlStateNormal];
+        backLbl.text = LString(@"SHOW_RECEIPT");
+        [backLbl positionAtY:CGRectGetMaxY(detailImgView.frame)];
+    }
     else
     {
         informativeLbl.text = LString(@"ORDER_REJECTED_INFO");
@@ -120,6 +134,8 @@
         [backButton setTitle:LString(@"BACK_TO_MERCHANT") forState:UIControlStateNormal];
         backLbl.text = LString(@"BACK_TO_HOME");
     }
+    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, CGRectGetMaxY(backButton.frame) + 50);
+     [backLbl positionAtY:CGRectGetMaxY(detailImgView.frame)];
 }
 
 - (void)didReceiveMemoryWarning
@@ -131,11 +147,11 @@
 
 -(void) btnAction
 {
-    if(orderStatus.integerValue==1)
+    if(orderStatus.integerValue==1 ||orderStatus.integerValue==3)
     {
         TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
         
-        if(NSNonNilString(self.merchatID).length>0 && NSNonNilString(self.merchatName).length>0)
+        if(NSNonNilString(self.merchatID).length>0 && NSNonNilString(self.merchatName).length>0 && orderStatus.integerValue==1)
         {
             OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
             cmtDetail.MerchantId = self.merchatID;
@@ -152,23 +168,25 @@
     }
     else
     {
-        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
+//        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
+//        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
+//        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//        [APP_DELEGATE.slideMenuController hideMenuViewController];
         
-        //        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
-        //        detailsVC.detailsMerchantID = self.merchatID;
-        //        [self.navigationController pushViewController:detailsVC animated:YES];
+        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+        detailsVC.detailsMerchantID = self.merchatID;
+        detailsVC.viewController = self;
+        [self.navigationController pushViewController:detailsVC animated:YES];
     }
     
 }
 -(void) lblAction
 {
-    if(self.orderStatus.integerValue==1)
+    if(self.orderStatus.integerValue==1 || orderStatus.integerValue==3)
     {
         TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
         transactionDetail.orderID = orderID;
+        transactionDetail.viewController = self;
         [self.navigationController pushViewController:transactionDetail animated:YES];
     }
     else

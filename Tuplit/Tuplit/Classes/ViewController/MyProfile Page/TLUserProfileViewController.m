@@ -215,7 +215,20 @@
     allCommentsVC.viewController = self;
     [self.navigationController pushViewController:allCommentsVC animated:YES];
 }
-
+-(void)openMerchantDetails:(UITapGestureRecognizer *)gesture
+{
+    EGOImageView *imgView = (EGOImageView*)gesture.view;
+    
+    CGPoint buttonPosition = [imgView convertPoint:CGPointZero toView:userProfileTable];
+    NSIndexPath *indexPath = [userProfileTable indexPathForRowAtPoint:buttonPosition];
+    
+    UserCommentsModel *comments = [[mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]]objectAtIndex:indexPath.row];
+    
+    TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+    detailsVC.detailsMerchantID = comments.merchantId;
+    detailsVC.viewController = self;
+    [self.navigationController pushViewController:detailsVC animated:YES];
+}
 #pragma mark - Table View Data Source Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -456,6 +469,8 @@
     else if (indexPath.section == 3)
     {
         EGOImageView *merchantIconImgView=(EGOImageView *) [cell.contentView viewWithTag:3000];
+        UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openMerchantDetails:)];
+        [merchantIconImgView addGestureRecognizer:friendsImgGesture1];
         UILabel *merchantNameLbl=(UILabel *) [cell.contentView viewWithTag:3001];
         UILabel *commentLbl=(UILabel *) [cell.contentView viewWithTag:3002];
         UILabel *totalDaysLbl=(UILabel *) [cell.contentView viewWithTag:3003];
@@ -487,10 +502,11 @@
         NSArray *transactionList = [mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]];
         TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
         RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
+        transactionDetail.viewController = self;
         transactionDetail.orderID = transaction.OrderId;
         transactionDetail.transActionList = [transactionList mutableCopy];
         transactionDetail.userID = [TLUserDefaults getCurrentUser].UserId;
-        transactionDetail.index = indexPath.row;
+        transactionDetail.index = (int)indexPath.row;
         [userProfileTable deselectRowAtIndexPath:indexPath animated:YES];
         [self.navigationController pushViewController:transactionDetail animated:YES];
     }

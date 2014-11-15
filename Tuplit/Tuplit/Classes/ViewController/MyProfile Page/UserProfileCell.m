@@ -40,6 +40,7 @@
             profileImageView.backgroundColor = [UIColor whiteColor];
             profileImageView.layer.cornerRadius = 100/2;
             profileImageView.clipsToBounds = YES;
+            profileImageView.contentMode = UIViewContentModeScaleAspectFill;
             [topView addSubview:profileImageView];
             
             UILabel * balanceLabel = [[UILabel alloc ]initWithFrame:CGRectMake(14,CGRectGetMaxY(topColoredView.frame)+25,100,15)];
@@ -139,6 +140,7 @@
             profileImageView.tag = 5000;
             profileImageView.backgroundColor = [UIColor whiteColor];
             profileImageView.layer.cornerRadius = 100/2;
+            profileImageView.contentMode = UIViewContentModeScaleAspectFill;
             //            profileImageView.userInteractionEnabled = YES;
             profileImageView.clipsToBounds = YES;
             [topView addSubview:profileImageView];
@@ -233,6 +235,7 @@
             
             EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
             merchantIconImgView.tag=2000;
+            merchantIconImgView.contentMode = UIViewContentModeScaleAspectFill;
             merchantIconImgView.backgroundColor = [UIColor whiteColor];
             [self.contentView addSubview:merchantIconImgView];
             
@@ -278,6 +281,7 @@
             
             EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
             merchantIconImgView.tag=2000;
+            merchantIconImgView.contentMode = UIViewContentModeScaleAspectFill;
             merchantIconImgView.backgroundColor = [UIColor whiteColor];
             [self.contentView addSubview:merchantIconImgView];
             
@@ -312,12 +316,12 @@
             EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser", NO) imageViewFrame:CGRectMake(15, 10,30,30)];
             merchantIconImgView.tag=3000;
             merchantIconImgView.layer.cornerRadius =15;
-            [merchantIconImgView setContentMode:UIViewContentModeScaleAspectFit];
+            [merchantIconImgView setContentMode:UIViewContentModeScaleAspectFill];
             merchantIconImgView.clipsToBounds = YES;
-            //            merchantIconImgView.userInteractionEnabled = YES;
+            merchantIconImgView.userInteractionEnabled = YES;
             [cellBaseview addSubview:merchantIconImgView];
             
-            UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(merchantIconImgView.frame)+5, 8,200, 17)];
+            UILabel *merchantNameLbl=[[UILabel alloc] initWithFrame:CGRectMake(55, 8,200, 17)];
             merchantNameLbl.textColor=UIColorFromRGB(0x333333);
             merchantNameLbl.tag=3001;
             merchantNameLbl.textAlignment=NSTextAlignmentLeft;

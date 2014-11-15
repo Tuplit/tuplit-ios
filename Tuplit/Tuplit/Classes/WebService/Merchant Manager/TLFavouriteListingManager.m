@@ -34,10 +34,6 @@ AFHTTPRequestOperation *operation;
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     
-    NSLog(@"Request : %@", [request.URL absoluteString]);
-    NSLog(@"Method  : %@", request.HTTPMethod);
-    NSLog(@"QueryParams : %@",queryParams);
-        
 	operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
@@ -54,9 +50,7 @@ AFHTTPRequestOperation *operation;
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        
-        NSLog(@"Response : %@",responseJSON);
-        
+                
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code==200 || code==201)

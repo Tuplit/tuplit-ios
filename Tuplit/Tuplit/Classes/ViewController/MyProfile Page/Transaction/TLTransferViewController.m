@@ -148,14 +148,12 @@
     [activity startAnimating];
     [cellContainer addSubview:activity];
     
-    UINavigationBar *navigationBar =[[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth,40)];
-    UINavigationItem *navigtionItem=[[UINavigationItem alloc] init];
-    navigationBar.backgroundColor=[UIColor lightGrayColor];
+    UIToolbar *navigationBar =[[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth,45)];
     UIBarButtonItem *dismiss = [[UIBarButtonItem alloc] initWithTitle:LString(@"DISMISS") style:UIBarButtonItemStyleBordered target:self action:@selector(dismissButtonClicked:)];
     [dismiss setTintColor:UIColorFromRGB(0X009999)];
-    navigtionItem.rightBarButtonItem=dismiss;
-    NSMutableArray *array = [NSMutableArray arrayWithObjects:navigtionItem, nil];
-    [navigationBar setItems:array];
+    UIBarButtonItem *flexibleSpace1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSArray *items = [[NSArray alloc] initWithObjects:flexibleSpace1,dismiss,nil];
+    [navigationBar setItems:items animated:NO];
     amountTxt.inputAccessoryView=navigationBar;
 }
 
@@ -513,6 +511,7 @@
         profileImgView.backgroundColor = [UIColor whiteColor];
         profileImgView.layer.cornerRadius=50/2;
         profileImgView.userInteractionEnabled=YES;
+        profileImgView.contentMode = UIViewContentModeScaleAspectFill;
         profileImgView.clipsToBounds=YES;
         profileImgView.tag=1000;
         [cell.contentView addSubview:profileImgView];

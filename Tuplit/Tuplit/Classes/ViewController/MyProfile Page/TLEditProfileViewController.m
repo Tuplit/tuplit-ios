@@ -305,7 +305,6 @@
         imagePicker.delegate=self;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        [[UIApplication sharedApplication] setStatusBarHidden:YES];
         
         [self presentViewController:imagePicker animated:YES completion:^{
             if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
@@ -332,7 +331,10 @@
     imagePicker.allowsEditing = NO;
     imagePicker.wantsFullScreenLayout = NO;
     
-    [self presentViewController:imagePicker animated:YES completion:nil];
+    [self presentViewController:imagePicker animated:YES completion:^{
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    }];
 }
 - (void)showAlertWithMessage :(NSString*)message {
     
@@ -352,10 +354,16 @@
     {
         if(previousSelectiondate)
             datePickerBase.datepicker.date = previousSelectiondate;
+        else
+        {
+            NSDateFormatter *dateformat= [[NSDateFormatter alloc]init];
+            [dateformat setDateFormat:@"yyyy-MM-dd"];
+            NSDate *curdate= [dateformat dateFromString:[TLUserDefaults getCurrentUser].DOB];
+            if(curdate)
+                datePickerBase.datepicker.date = curdate;
+        }
     }
 }
-
-
 
 -(void)openPicker
 {
@@ -800,6 +808,11 @@
     }];
 }
 
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+}
+
 
 #pragma mark - Action sheet delegate methods
 
@@ -846,7 +859,7 @@
     APP_DELEGATE.isUserProfileEdited = YES;
     [self backUserProfilePage:nil];
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"PROFILE_UPDATED")];
+//    [UIAlertView alertViewWithMessage:LString(@"PROFILE_UPDATED")];
 }
 - (void)editUpManager:(TLEditUpdateManager *)signUpManager returnedWithErrorCode:(NSString *)errorCode errorMsg:(NSString *) errorMsg
 {

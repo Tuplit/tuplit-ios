@@ -596,7 +596,6 @@
 #pragma mark - CardIOPaymentViewControllerDelegate
 
 - (void)userDidProvideCreditCardInfo:(CardIOCreditCardInfo *)info inPaymentViewController :(CardIOPaymentViewController *)paymentViewController {
-    NSLog(@"Scan succeeded with info: %@", info);
     [self dismissViewControllerAnimated:YES completion:nil];
     NSString *year = [NSString stringWithFormat:@"%lu",(unsigned long)info.expiryYear];
     cardNumberTextField.text=[TuplitConstants filteredPhoneStringFromString:info.cardNumber withFilter:CARDDEFAULT];
@@ -605,7 +604,6 @@
 }
 
 - (void)userDidCancelPaymentViewController:(CardIOPaymentViewController *)paymentViewController {
-    NSLog(@"User cancelled scan");
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

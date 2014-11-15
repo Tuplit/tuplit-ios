@@ -11,6 +11,7 @@
 #import "TLWelcomeViewController.h"
 #import "TLTutorialViewController.h"
 #import "PinAnnotation.h"
+#import "NSArray+BlocksKit.h"
 
 @implementation TLMerchantsViewController
 
@@ -357,8 +358,8 @@
     
     if(![TLUserDefaults isTutorialSkipped])
     {
-        TLTutorialViewController *tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
-        [self.navigationController presentViewController:tutorVC animated:YES completion:nil];
+//        TLTutorialViewController *tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
+//        [self.navigationController presentViewController:tutorVC animated:YES completion:nil];
     }
 }
 
@@ -445,6 +446,35 @@
     [merchantListingManager callService:merchantListingModel];
 }
 
+-(void)mapviewLoadmore
+{
+    if (isMerchantWebserviceRunning) {
+        return;
+    }
+    
+    isMerchantWebserviceRunning = YES;
+    
+    merchantListingModel.actionType = MCNearBy;
+    merchantListingModel.Latitude = [NSString stringWithFormat:@"%lf",mapView.centerCoordinate.latitude];
+    merchantListingModel.Longitude = [NSString stringWithFormat:@"%lf",mapView.centerCoordinate.longitude];
+    
+    merchantListingModel.Category = @"";
+    merchantListingModel.Type = @"1";
+    merchantListingModel.Start = [NSString stringWithFormat:@"%d",0];
+    merchantListingModel.DiscountTier = (discountTierValue==0)?@"":[NSString stringWithFormat:@"%d",discountTierValue];
+    
+    if (merchantListingManager==nil) {
+        merchantListingManager = [[TLMerchantListingManager alloc] init];
+    }
+    else
+    {
+        
+    }
+    
+    merchantListingManager.delegate = self;
+    [merchantListingManager callService:merchantListingModel];
+}
+
 - (void) onDiscountPressed
 {
     isDiscountShown = !isDiscountShown;
@@ -499,6 +529,7 @@
             mapIconImgView.image = img;
             merchantTable.hidden = NO;
             mapView.hidden = YES;
+            [merchantTable reloadData];
         }
         else
         {
@@ -565,6 +596,36 @@
     }
 }
 
+-(void)loadMoreAnnotation:(NSArray*)moreAnnotations
+{
+//    [mapView removeAnnotations:mapView.annotations];
+    
+    for(MerchantModel *merchantModel in moreAnnotations)
+    {
+        if (merchantModel.Latitude.doubleValue == 0.0 || merchantModel.Longitude.doubleValue == 0.0) {
+            continue;
+        }
+        CLLocationCoordinate2D location;
+        location.latitude = merchantModel.Latitude.doubleValue;
+        location.longitude = merchantModel.Longitude.doubleValue;
+        PinAnnotation *pinAnnotation = [[PinAnnotation alloc] init];
+        pinAnnotation.coordinate = location;
+        pinAnnotation.title = merchantModel.MerchantID;
+        pinAnnotation.subtitle = merchantModel.TagType;
+        [mapView addAnnotation:pinAnnotation];
+    }
+}
+-(void) addsingleMapAnnotation:(MerchantModel*)merchantModel
+{
+    CLLocationCoordinate2D location;
+    location.latitude = merchantModel.Latitude.doubleValue;
+    location.longitude = merchantModel.Longitude.doubleValue;
+    PinAnnotation *pinAnnotation = [[PinAnnotation alloc] init];
+    pinAnnotation.coordinate = location;
+    pinAnnotation.title = merchantModel.MerchantID;
+    pinAnnotation.subtitle = merchantModel.TagType;
+    [mapView addAnnotation:pinAnnotation];
+}
 - (void) buttonNearbyPopularAction:(UIButton*) button
 {
     UIButton *buttonnearby = (UIButton*)[contentView viewWithTag:1001];
@@ -690,7 +751,7 @@
     merchantsArray = [NSMutableArray arrayWithArray:tempMerchantsArray];
     totalUserListCount = tempTotalUserListCount;
     [merchantTable reloadData];
-    lastFetchCount = merchantsArray.count;
+    lastFetchCount = (int)merchantsArray.count;
     [merchantTable setTableFooterView:cellContainer];
     
     if (mapView.annotations.count > 0) {
@@ -775,7 +836,7 @@
             annotationView = [[CustomCallOutView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             [((CustomCallOutView *)annotationView) loadView];
             ((CustomCallOutView *)annotationView).frame             = CGRectMake(0.0,0.0,250,70);
-            annotationView.centerOffset      = CGPointMake(-2,-50);
+            annotationView.centerOffset      = CALL_OUT_POS;
             annotationView.canShowCallout    = NO;
             ((CustomCallOutView *)annotationView).delegate = self;
         }
@@ -825,6 +886,7 @@
             MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
             TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
             detailsVC.merchantModel = merchant;
+            detailsVC.viewController = self;
             [self.navigationController pushViewController:detailsVC animated:YES];
         }
     }
@@ -846,6 +908,12 @@
             });
         }
     }
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+  if(isMapShown && (merchantsArray.count<totalUserListCount))
+    [NSThread detachNewThreadSelector:@selector(mapviewLoadmore) toTarget:self withObject:nil];
 }
 
 #pragma mark - UITableViewDelegate
@@ -993,7 +1061,7 @@
         }
         else
         {
-            disLabel.text = [NSString stringWithFormat:@"Only %@%%",[disCountDict valueForKey:[NSString stringWithFormat:@"%d",indexPath.row]]];
+            disLabel.text = [NSString stringWithFormat:@"Only %@%%",[disCountDict valueForKey:[NSString stringWithFormat:@"%ld",indexPath.row]]];
         }
         
         return cell;
@@ -1029,6 +1097,7 @@
                 MerchantModel *merchantModel = [searchArray objectAtIndex:indexPath.row];
                 TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
                 detailsVC.merchantModel = merchantModel;
+                detailsVC.viewController = self;
                 [self.navigationController pushViewController:detailsVC animated:YES];
             }
             else
@@ -1066,6 +1135,7 @@
         
         TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
         detailsVC.merchantModel = merchantModel;
+        detailsVC.viewController = self;
         [self.navigationController pushViewController:detailsVC animated:YES];
         
     }
@@ -1079,7 +1149,7 @@
         searchTxt.text = @"";
         [searchTxt resignFirstResponder];
         
-        discountTierValue = indexPath.row;
+        discountTierValue = (int)indexPath.row;
         [self callMerchantWebserviceWithActionType:(menuSelected==1)?MCNearBy:MCPopular startCount:0 showProgressIndicator:YES];
     }
 }
@@ -1184,6 +1254,7 @@
     //        case MCNearBy:
     //        case MCPopular:
     //        {
+   
     if([searchTxt isFirstResponder])
     {
         [searchArray removeAllObjects];
@@ -1195,9 +1266,61 @@
     }
     else
     {
+        if(isMapShown)
+        {
+            NSMutableArray *newannotations = [NSMutableArray new];
+            
+            newannotations = [[_merchantsArray bk_reject:^BOOL(id obj) {
+                
+                MerchantModel *merchantModel1 = obj;
+                
+                return [merchantsArray bk_any:^BOOL(id obj1) {
+                    
+                    MerchantModel *merchantModel2 = obj1;
+                    if([merchantModel1.MerchantID isEqualToString:merchantModel2.MerchantID])
+                        return YES;
+                    else
+                        return NO;
+                }];
+                
+            }]mutableCopy];
+            if(newannotations.count>0)
+            {
+                [merchantsArray addObjectsFromArray:newannotations];
+                [self loadMoreAnnotation:newannotations];
+            }
+            if (merchantsArray.count < totalUserListCount)
+                [merchantTable setTableFooterView:cellContainer];
+            else
+                [merchantTable setTableFooterView:nil];
+            
+            isMerchantWebserviceRunning = NO;
+            [[ProgressHud shared] hide];
+            return;
+        }
+        
         if (isLoadMorePressed) {
             
-            [merchantsArray addObjectsFromArray:_merchantsArray];
+            NSMutableArray *newannotations = [NSMutableArray new];
+            
+            newannotations = [[_merchantsArray bk_reject:^BOOL(id obj) {
+                
+                MerchantModel *merchantModel1 = obj;
+                
+                return [merchantsArray bk_any:^BOOL(id obj1) {
+                    
+                    MerchantModel *merchantModel2 = obj1;
+                    if([merchantModel1.MerchantID isEqualToString:merchantModel2.MerchantID])
+                        return YES;
+                    else
+                        return NO;
+                }];
+                
+            }]mutableCopy];
+            if(newannotations.count>0)
+            {
+                [merchantsArray addObjectsFromArray:newannotations];
+            }
             
         }
         else
@@ -1206,19 +1329,19 @@
             if([tempMerchantsArray count]==0)
             {
                tempMerchantsArray = [NSMutableArray arrayWithArray:_merchantsArray];
-                tempTotalUserListCount = merchantListingManager.totalCount;
+                tempTotalUserListCount = (int)merchantListingManager.totalCount;
             }
             lastFetchCount = 0;
         }
         
-        totalUserListCount = _merchantListingManager.totalCount;
+        totalUserListCount = (int)_merchantListingManager.totalCount;
         
         if ((_merchantListingManager.listedCount % 10) == 0) {
-            lastFetchCount = lastFetchCount + _merchantListingManager.listedCount;
+            lastFetchCount = lastFetchCount + (int)_merchantListingManager.listedCount;
         }
         else
         {
-            lastFetchCount = merchantsArray.count;
+            lastFetchCount = (int)merchantsArray.count;
         }
         
         if (lastFetchCount < totalUserListCount)
@@ -1371,6 +1494,7 @@ isMerchantWebserviceRunning =NO;
         MerchantModel *merchant = (MerchantModel*)[result objectAtIndex:0];
         TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
         detailsVC.merchantModel = merchant;
+        detailsVC.viewController = self;
         [self.navigationController pushViewController:detailsVC animated:YES];
     }
 }

@@ -82,6 +82,8 @@
     profileImageView.backgroundColor = [UIColor whiteColor];
     profileImageView.layer.cornerRadius = 60/2;
     profileImageView.userInteractionEnabled = YES;
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    
     UITapGestureRecognizer *profileGesture =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openMyProfileVc:)];
     [profileImageView addGestureRecognizer:profileGesture];
     profileImageView.clipsToBounds = YES;
@@ -117,6 +119,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserData) name:kUpdateUserData object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFriendsOrder) name:kUpdateRecentOrders object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFriendsActivity) name:kUpdateFriendsActivity object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -239,6 +242,18 @@
     [APP_DELEGATE.slideMenuController hideMenuViewController];
 }
 
+-(void)updateFriendsActivity
+{
+    [self performSelectorInBackground:@selector(callUserdetailService) withObject:nil];
+}
+
+-(void)callUserdetailService
+{
+    TLUserDetailsManager *userDetailsManager = [TLUserDetailsManager new];
+    userDetailsManager.delegate = self;
+    [userDetailsManager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
+}
+
 #pragma mark - Table view data source methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -314,7 +329,7 @@
             EGOImageView *iconImageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"DefaultUser",NO) imageViewFrame:CGRectMake(15,(FRIENDS_CELL_HEIGHT - 20)/2, 20, 20)];
             iconImageView.tag = 2000;
             iconImageView.layer.cornerRadius = 20/2;
-            iconImageView.contentMode = UIViewContentModeScaleAspectFit;
+            iconImageView.contentMode = UIViewContentModeScaleAspectFill;
             iconImageView.userInteractionEnabled = YES;
             iconImageView.clipsToBounds = YES;
             iconImageView.backgroundColor = [UIColor clearColor];
@@ -328,6 +343,9 @@
             labelName.textColor = [UIColor whiteColor];
             labelName.numberOfLines = 3;
             labelName.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+//            labelName.userInteractionEnabled = YES;
+//            UITapGestureRecognizer *otherUserprofileGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openfriendProfileVC:)];
+//            [labelName addGestureRecognizer:otherUserprofileGesture1];
             [cell.contentView addSubview:labelName];
         }
     }
@@ -460,6 +478,25 @@
         }
     }
 }
+
+#pragma mark - TLUserDetailsManagerDelegate methods
+
+- (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_ {
+    
+    [TLUserDefaults setCurrentUser:user_];
+}
+
+- (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
+    
+    [[ProgressHud shared] hide];
+  
+}
+
+- (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager {
+    
+    [[ProgressHud shared] hide];
+}
+
 
 
 @end

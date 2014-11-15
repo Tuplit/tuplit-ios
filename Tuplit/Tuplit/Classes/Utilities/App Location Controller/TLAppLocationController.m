@@ -60,7 +60,7 @@
 }
 - (void)setCurrentLocationManagerFailed:(TLCurrentLocationManager *)locationManager
 {
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+//    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

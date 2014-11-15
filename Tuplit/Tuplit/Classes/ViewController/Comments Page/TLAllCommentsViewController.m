@@ -179,7 +179,6 @@
         NSIndexPath *indexPath = [allCommentsTable indexPathForRowAtPoint:buttonPosition];
         
         UserCommentsModel *comments = [commentsArray objectAtIndex:indexPath.row];
-        NSLog(@"%@",comments.UserId);
         userID = comments.UserId;
         
         if([userID isEqualToString:[TLUserDefaults getCurrentUser].UserId])
@@ -193,6 +192,23 @@
             otherUserProfile.userID = userID;
             [self.navigationController pushViewController:otherUserProfile animated:YES];
         }
+    }
+    else if([viewController isKindOfClass:[TLUserProfileViewController class]]||[viewController isKindOfClass:[TLOtherUserProfileViewController class]])
+    {
+        EGOImageView *imgView = (EGOImageView*)gesture.view;
+        
+        NSString *userID;
+        
+        CGPoint buttonPosition = [imgView convertPoint:CGPointZero toView:allCommentsTable];
+        NSIndexPath *indexPath = [allCommentsTable indexPathForRowAtPoint:buttonPosition];
+        
+        UserCommentsModel *comments = [commentsArray objectAtIndex:indexPath.row];
+        userID = comments.UserId;
+        
+        TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+        detailsVC.detailsMerchantID = comments.merchantId;
+        detailsVC.viewController = self;
+        [self.navigationController pushViewController:detailsVC animated:YES];
     }
 }
 
@@ -235,12 +251,13 @@
         merchantIconImgView.layer.cornerRadius =15;
         merchantIconImgView.backgroundColor = [UIColor clearColor];
         merchantIconImgView.userInteractionEnabled = YES;
+        merchantIconImgView.contentMode = UIViewContentModeScaleAspectFill;
         merchantIconImgView.clipsToBounds = YES;
         UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
         [merchantIconImgView addGestureRecognizer:friendsImgGesture1];
         [cellBaseview addSubview:merchantIconImgView];
         
-        UILabel *merchantNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(55,4,cellBaseview.frame.size.width-120, 20)];
+        UILabel *merchantNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(55,7,cellBaseview.frame.size.width-120, 20)];
         merchantNameLbl.textColor=UIColorFromRGB(0x333333);
         merchantNameLbl.tag=1001;
         merchantNameLbl.textAlignment=NSTextAlignmentLeft;

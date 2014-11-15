@@ -151,6 +151,20 @@
     allCommentsVC.viewController = self;
     [self.navigationController pushViewController:allCommentsVC animated:YES];
 }
+-(void)openMerchantDetails:(UITapGestureRecognizer *)gesture
+{
+    EGOImageView *imgView = (EGOImageView*)gesture.view;
+    
+    CGPoint buttonPosition = [imgView convertPoint:CGPointZero toView:userProfileTable];
+    NSIndexPath *indexPath = [userProfileTable indexPathForRowAtPoint:buttonPosition];
+    
+    UserCommentsModel *comments = [[mainDict valueForKey:[sectionHeader objectAtIndex:indexPath.section]]objectAtIndex:indexPath.row];
+    
+    TLMerchantsDetailViewController *detailsVC = [[TLMerchantsDetailViewController alloc] init];
+    detailsVC.detailsMerchantID = comments.merchantId;
+    detailsVC.viewController = self;
+    [self.navigationController pushViewController:detailsVC animated:YES];
+}
 
 #pragma mark - Table View Data Source Methods
 
@@ -176,7 +190,10 @@
     
     if (indexPath.section == 0)
     {
-        return 173;  // top view height
+        if(userModel.IsFriend.intValue == 1)
+            return 173;  // top view height
+        else
+            return 173 - 50;
     }
     if(indexPath.section==2)
     {
@@ -266,12 +283,18 @@
         UILabel *userIDLbl=(UILabel *) [cell.contentView viewWithTag:5001];
         UIButton *sendCreditBtn=(UIButton *) [cell.contentView viewWithTag:5002];
         
+        if(userModel.IsFriend.intValue == 1)
+        {
+            [sendCreditBtn setHidden:NO];
+            [sendCreditBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
+        }
+        else
+        {
+            [sendCreditBtn setHidden:YES];
+        }
+        [sendCreditBtn setTitle:[NSString stringWithFormat:@"Send credit to %@",[userModel.FirstName stringWithTitleCase]] forState:UIControlStateNormal];
         profileImgView.imageURL = [NSURL URLWithString:userModel.Photo];
         userIDLbl.text = userModel.UserId;
-        [sendCreditBtn setTitle:[NSString stringWithFormat:@"Send credit to %@",[userModel.FirstName stringWithTitleCase]] forState:UIControlStateNormal];
-        [sendCreditBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        
     }
     else if (indexPath.section == 1)
     {
@@ -293,6 +316,8 @@
     else if (indexPath.section == 2)
     {
         EGOImageView *merchantIconImgView=(EGOImageView *) [cell.contentView viewWithTag:3000];
+        UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openMerchantDetails:)];
+        [merchantIconImgView addGestureRecognizer:friendsImgGesture1];
         UILabel *merchantNameLbl=(UILabel *) [cell.contentView viewWithTag:3001];
         UILabel *commentLbl=(UILabel *) [cell.contentView viewWithTag:3002];
         UILabel *totalDaysLbl=(UILabel *) [cell.contentView viewWithTag:3003];

@@ -10,7 +10,7 @@
 #import "TLUserProfileViewController.h"
 #import "TLOtherUserProfileViewController.h"
 
-@interface TLLeftMenuViewController : UITableViewController<UIScrollViewDelegate> {
+@interface TLLeftMenuViewController : UITableViewController<UIScrollViewDelegate,TLUserDetailsManagerDelegate> {
     
     UILabel *userNameLbl, *creditBalanceLbl;
     EGOImageView *profileImageView;

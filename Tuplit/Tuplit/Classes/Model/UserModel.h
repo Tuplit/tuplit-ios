@@ -43,5 +43,6 @@
 @property (nonatomic, copy) NSData  *userImageData;
 @property (nonatomic, copy) UIImage *userImage;
 @property (nonatomic, copy) NSString *AccessToken;
+@property (nonatomic, copy) NSString *IsFriend;
 
 @end

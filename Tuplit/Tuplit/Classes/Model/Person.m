@@ -14,6 +14,7 @@
 {
     [encoder encodeObject:self.name forKey:@"name"];
     [encoder encodeObject:self.email forKey:@"email"];
+    [encoder encodeObject:self.AlreadyInvited forKey:@"AlreadyInvited"];
     [encoder encodeObject:self.contactImage forKey:@"contactImage"];
 }
 
@@ -23,6 +24,7 @@
     {
         self.name = [decoder decodeObjectForKey:@"name"];
         self.email = [decoder decodeObjectForKey:@"email"];
+        self.AlreadyInvited = [decoder decodeObjectForKey:@"AlreadyInvited"];
         self.contactImage = [decoder decodeObjectForKey:@"contactImage"];
     }
     return self;

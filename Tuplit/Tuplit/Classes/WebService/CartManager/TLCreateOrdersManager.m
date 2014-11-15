@@ -18,9 +18,7 @@
 }
 
 -(void)addOrders:(NSDictionary*) queryParams{
-    
-    NSLog(@"QueryParams : %@",queryParams);
-    
+        
     NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:ORDERS_URL]];
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"" parameters:queryParams];
@@ -42,9 +40,7 @@
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        
-        NSLog(@"Response : %@",responseJSON);
-        
+                
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         NSString *orderID=[[responseJSON objectForKey:@"meta"] objectForKey:@"OrderId"];
         NSString *transID=[[responseJSON objectForKey:@"meta"] objectForKey:@"TransactionId"];

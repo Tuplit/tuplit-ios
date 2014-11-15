@@ -52,7 +52,6 @@
         
         if(code == 200 || code == 201)
         {
-            NSLog(@"Success: %@", responseJSON);
             NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
             NSDictionary *resDict = [responseJSON objectForKey:strPropertyName];
             [UIAlertView alertViewWithMessage:resDict[@"message"]];
@@ -65,7 +64,6 @@
         else
         {
             NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
-            NSLog(@"error id %@" ,responseJSON);
             
             if([_delegate respondsToSelector:@selector(forgotPasswordManager:returnedWithErrorCode:errorMsg:)])
                 [_delegate forgotPasswordManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
@@ -74,7 +72,6 @@
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
         [[ProgressHud shared] hide];
-		NSLog(@"Failure: %@", error);
         [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
         if([_delegate respondsToSelector:@selector(forgotPasswordManagerFailed:)])
             [_delegate forgotPasswordManagerFailed:self];

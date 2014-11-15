@@ -10,7 +10,7 @@
 
 @implementation CartModel
 
-@synthesize merchantID,companyName,address,latitude,longitude,products,total,discountedTotal,productCount,subtotal,vat;
+@synthesize merchantID,companyName,address,latitude,longitude,products,total,discountedTotal,productCount,subtotal,vat,openHrsArray;
 
 -(id) init {
     

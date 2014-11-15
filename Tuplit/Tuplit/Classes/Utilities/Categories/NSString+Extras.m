@@ -81,9 +81,7 @@
 }
 
 NSString *NSNonNilString(NSString *str) {
-    
-    NSLog(@"%@",str);
-	
+    	
     if (!str || [str isKindOfClass:[NSNull class]] || [str isEqualToString:@"(null)"]) {
         return @"";
     } else if ([str isKindOfClass:[NSString class]] == NO) {

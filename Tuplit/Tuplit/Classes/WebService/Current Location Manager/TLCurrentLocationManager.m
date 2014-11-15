@@ -25,9 +25,7 @@
     NSString * strValue = [queryParams JSONRepresentation];
     NSData *postData = [strValue dataUsingEncoding:NSUTF8StringEncoding];
     [request setHTTPBody:postData];
-    
-    NSLog(@"QueryParams : %@",queryParams);
-    
+        
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
     
@@ -43,9 +41,7 @@
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        
-        NSLog(@"Response : %@",responseJSON);
-        
+                
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code==200 || code==201)

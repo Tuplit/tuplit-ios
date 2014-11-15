@@ -21,7 +21,7 @@
         
         productImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:containerView.bounds];
         productImgView.backgroundColor = [UIColor clearColor];
-        [productImgView setContentMode:UIViewContentModeScaleAspectFit];
+        [productImgView setContentMode:UIViewContentModeScaleAspectFill];
         productImgView.delegate = self;
         [containerView addSubview:productImgView];
         

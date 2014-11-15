@@ -281,7 +281,11 @@
     acceptBtn.frame = CGRectMake(20, CGRectGetMaxY(totalAmtTotalLbl.frame)+25, 270, 45);
     
     detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, CGRectGetMaxY(acceptBtn.frame) + 50);
-    
+    if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
+    {
+        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,7,15,15) resizingMode:UIImageResizingModeStretch];
+        detailImgView.image = stretchableBackground;
+    }
     rejectBtn.frame = CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+15, detailImgView.width-28, 45);
     [itemsListTable reloadData];
     

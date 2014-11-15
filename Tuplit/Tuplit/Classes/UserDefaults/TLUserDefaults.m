@@ -53,9 +53,13 @@
 
 + (NSDictionary*)getRememberedDict
 {
-    NSData *objectToDecode = [UserDefaults valueForKey:kUserRemember];
-    NSDictionary *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
-    return decodedObject;
+    if ([[[NSUserDefaults standardUserDefaults] dictionaryRepresentation].allKeys containsObject:kUserRemember]) {
+        NSData *objectToDecode = [UserDefaults valueForKey:kUserRemember];
+        NSDictionary *decodedObject = [NSKeyedUnarchiver unarchiveObjectWithData:objectToDecode];
+        return decodedObject;
+    }
+    else
+        return nil;
 }
 
 + (void)setIsRememberMe:(BOOL)isRememberMe {

@@ -56,14 +56,12 @@ AFHTTPRequestOperation *operation;
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-		
-        NSLog(@"Response: %@", responseJSON);
-        
+		        
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
         {
-            NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
+              NSString * strPropertyName = [[responseJSON objectForKey:@"meta"] objectForKey:@"dataPropertyName"];
             listedCount = [[[responseJSON objectForKey:@"meta"] objectForKey:@"listedCount"] integerValue];
             totalCount = [[[responseJSON objectForKey:@"meta"] objectForKey:@"totalCount"] integerValue];
             

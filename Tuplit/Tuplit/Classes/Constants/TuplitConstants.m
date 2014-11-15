@@ -127,109 +127,113 @@ NSString *LString(NSString* key) {
             return [NSString stringWithFormat:@"%ld hr", (long)components.hour];
         }
     }
-    
-//    // Get conversion to years, months, days, hours, minutes,seconds
-//    unsigned int secFlags   = NSSecondCalendarUnit;
-//    unsigned int minFlags   = NSMinuteCalendarUnit;
-//    unsigned int hourFlags  = NSHourCalendarUnit;
-//    unsigned int dayFlags   = NSDayCalendarUnit;
-//    unsigned int monthFlags = NSMonthCalendarUnit;
-//    unsigned int yearFlags  = NSYearCalendarUnit;
-//   
-//     NSDateComponents *secdownInfo = [sysCalendar components:secFlags fromDate:date1  toDate:date2  options:0];
-//     NSDateComponents *mindownInfo = [sysCalendar components:minFlags fromDate:date1  toDate:date2  options:0];
-//     NSDateComponents *hourdownInfo = [sysCalendar components:hourFlags fromDate:date1  toDate:date2  options:0];
-//     NSDateComponents *daydownInfo = [sysCalendar components:dayFlags fromDate:date1  toDate:date2  options:0];
-//     NSDateComponents *monthdownInfo = [sysCalendar components:monthFlags fromDate:date1  toDate:date2  options:0];
-//     NSDateComponents *yeardownInfo = [sysCalendar components:yearFlags fromDate:date1  toDate:date2  options:0];
-//    
-//    NSString *dateStr;
-//    // Calculating time to display
-//    if([secdownInfo second]<60)
-//    {
-//        if([secdownInfo second]>0)
-//            dateStr = [NSString stringWithFormat:@"%ds",[secdownInfo second]];
-//        else
-//            dateStr = [NSString stringWithFormat:@"Just now"];
-//    }
-//    else if([mindownInfo minute]<60)
-//        dateStr = [NSString stringWithFormat:@"%dm",[mindownInfo minute]];
-//    else if([hourdownInfo hour]<24)
-//        dateStr = [NSString stringWithFormat:@"%dh",[hourdownInfo hour]];
-//    else if([daydownInfo day]<30)
-//        dateStr = [NSString stringWithFormat:@"%dd",[daydownInfo day]];
-//    else if([monthdownInfo month]<12)
-//        dateStr = [NSString stringWithFormat:@"%dm",[monthdownInfo month]];
-//    else if([yeardownInfo year])
-//        dateStr = [NSString stringWithFormat:@"%dy",[yeardownInfo year]];
-//    
-//    return dateStr;
 }
 
-+(NSMutableAttributedString*)getOpeningHrs:(NSString*)datestring isTimeFormat:(BOOL)isTime
++(NSArray*)getOpeningHrs:(NSArray*)openHrsArray
 {
-    //    Mon, Tue : 04:05 - 19:03
-    //string seperated by first time occurence of :
-    NSRange equalRange = [datestring rangeOfString:@":" options:NSLiteralSearch];
-    if (equalRange.location != NSNotFound)
+    NSArray *weekdays = [NSArray arrayWithObjects:@"Mon",@"Tue",@"Wed",@"Thu",@"Fri",@"Sat",@"Sun",@"Mon-Sun" ,nil];
+    NSMutableDictionary *openHrsDict = [NSMutableDictionary new];
+    NSMutableDictionary *opendaysDict = [NSMutableDictionary new];
+    
+    for (NSString *dayTimeStr in openHrsArray)
     {
-        NSString *days = [datestring substringWithRange:NSMakeRange(0, equalRange.location)];
-        NSString *time = [[datestring substringFromIndex:equalRange.location + equalRange.length]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSMutableAttributedString *dayAttrString;
+        NSRange equalRange = [dayTimeStr rangeOfString:@":" options:NSLiteralSearch];
         
-        NSArray* dayComponent;
-        if ([days rangeOfString:@"to"].location == NSNotFound) {
-            dayComponent = [days componentsSeparatedByString: @","];
-        } else {
-            dayComponent = [days componentsSeparatedByString: @"to"];
-        }
+        NSString *days = [dayTimeStr substringWithRange:NSMakeRange(0, equalRange.location)];
+        NSString *time = [[dayTimeStr substringFromIndex:equalRange.location + equalRange.length]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         
+        NSMutableString *timeString = [[NSMutableString alloc]init];
         NSArray* timeComponent = [time componentsSeparatedByString: @"-"];
-        
-        int i=0;
-        if(!isTime)
+       int i = 0;
+        for(NSString *string in timeComponent)
         {
+            if(i==1)
+                [timeString appendString:@"-"];
+            [timeString appendString:[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+            
+            i++;
+        }
+        NSMutableAttributedString *timeAttrString = [[NSMutableAttributedString alloc]initWithString:timeString attributes:
+                                                     @{
+                                                       NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:12],
+                                                       NSForegroundColorAttributeName:UIColorFromRGB(0x333333) ,
+                                                       }];
+        
+        if (equalRange.location != NSNotFound)
+        {
+             i=0;
+            
             NSMutableString *dayString = [[NSMutableString alloc]init];
-            //day conversion
-            for(NSString *string in dayComponent)
-            {
-                if(i==1)
-                    [dayString appendString:@"-"];
-                if(i==0 || i==[dayComponent count]-1)
-                    [dayString appendString:[[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]substringToIndex:3]];
+            NSArray* dayComponent;
+            if ([days rangeOfString:@"to"].location == NSNotFound) {
+                dayComponent = [days componentsSeparatedByString: @","];
                 
-                i++;
+                //day conversion
+                for(NSString *string in dayComponent)
+                {
+                    dayAttrString = [[NSMutableAttributedString alloc]initWithString:[string stringByRemovingExtraSpaces] attributes:
+                                     @{
+                                       NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:12],
+                                       NSForegroundColorAttributeName:UIColorFromRGB(0x999999) ,
+                                       }];
+                    [opendaysDict setObject:dayAttrString forKey:[string stringByRemovingExtraSpaces]];
+                    [openHrsDict setObject:timeAttrString forKey:[string stringByRemovingExtraSpaces]];
+                    i++;
+                }
             }
-            NSMutableAttributedString *dayAttrString = [[NSMutableAttributedString alloc]initWithString:dayString attributes:
-                                                        @{
-                                                          NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:12],
-                                                          NSForegroundColorAttributeName:UIColorFromRGB(0x999999) ,
-                                                          }];
-            return dayAttrString;
+            else {
+                dayComponent = [days componentsSeparatedByString: @"to"];
+                i = 0;
+                for(NSString *string in dayComponent)
+                {
+                    if(i==1)
+                        [dayString appendString:@"-"];
+                    if(i==0 || i==[dayComponent count]-1)
+                        [dayString appendString:[[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]substringToIndex:3]];
+                    
+                    dayAttrString = [[NSMutableAttributedString alloc]initWithString:dayString attributes:
+                                     @{
+                                       NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:12],
+                                       NSForegroundColorAttributeName:UIColorFromRGB(0x999999) ,
+                                       }];
+                    
+                    i++;
+                }
+                [opendaysDict setObject:dayAttrString forKey:@"Mon-Sun"];
+                [openHrsDict setObject:timeAttrString forKey:@"Mon-Sun"];
+            }
+        }
+    }
+    NSMutableAttributedString *opendaysString = [NSMutableAttributedString new];
+    NSMutableAttributedString *openHrsString = [NSMutableAttributedString new];
+    int i=0;
+    for(NSAttributedString *string in weekdays)
+    {
+        NSAttributedString *daystr = [opendaysDict objectForKey:string];
+        NSAttributedString *hrsstr = [openHrsDict objectForKey:string];
+        
+        
+        
+        if(daystr.length >0 && hrsstr.length>0)
+        {
+            if(i!=0)
+            {
+                NSAttributedString *atrStr = [[NSAttributedString alloc]initWithString:@"\n" attributes:nil];
+                [opendaysString appendAttributedString:atrStr];
+                [openHrsString appendAttributedString:atrStr];
+            }
+            [opendaysString  appendAttributedString:daystr];
+            [openHrsString  appendAttributedString:hrsstr];
+             i++;
         }
         else
         {
-            NSMutableString *timeString = [[NSMutableString alloc]init];
-            //day conversion
-            for(NSString *string in timeComponent)
-            {
-                if(i==1)
-                    [timeString appendString:@"-"];
-                [timeString appendString:[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-                
-                i++;
-            }
-            NSMutableAttributedString *timeAttrString = [[NSMutableAttributedString alloc]initWithString:timeString attributes:
-                                                         @{
-                                                           NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:12],
-                                                           NSForegroundColorAttributeName:UIColorFromRGB(0x333333) ,
-                                                           }];
-            return timeAttrString;
+            
         }
-        
-    } else {
-        NSLog(@"Wrong Date Format From Service");
+       
     }
-    return nil;
+    return [NSArray arrayWithObjects:opendaysString,openHrsString, nil];
 }
 
 + (NSMutableAttributedString*)getPriceRange:(NSString *)_priceString
@@ -406,11 +410,11 @@ NSString *LString(NSString* key) {
     if ([mapView.annotations count] == 0) return;
     
     CLLocationCoordinate2D topLeftCoord;
-    topLeftCoord.latitude = -80;
+    topLeftCoord.latitude = -90;
     topLeftCoord.longitude = 180;
     
     CLLocationCoordinate2D bottomRightCoord;
-    bottomRightCoord.latitude = 80;
+    bottomRightCoord.latitude = 90;
     bottomRightCoord.longitude = -180;
     
     for(id<MKAnnotation> annotation in mapView.annotations) {
@@ -430,5 +434,108 @@ NSString *LString(NSString* key) {
     
     region = [mapView regionThatFits:region];
     [mapView setRegion:region animated:YES];
+}
+
++(BOOL) isMerchantClosed:(NSArray*) openHrsArray {
+    NSMutableDictionary *openHoursDict = [[NSMutableDictionary alloc] init];
+//    
+    NSDictionary *weekdayRef = @{
+                                 @"sun"   : @"1",
+                                 @"mon"   : @"2",
+                                 @"tue"   : @"3",
+                                 @"wed"   : @"4",
+                                 @"thu"   : @"5",
+                                 @"fri"   : @"6",
+                                 @"sat"   : @"7",
+                                 };
+
+//    NSDictionary *weekdayRef  = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"sun",@"2",@"mon",@"3",@"tue",@"4",@"wed",@"5",@"thu",@"6",@"fri",@"7",@"sat", nil];
+    for (NSString *openHours in openHrsArray) {
+        
+        NSArray *daysOpenhoursArray = [openHours componentsSeparatedByString:@":"];
+        
+        if (daysOpenhoursArray.count > 1) {
+            
+            NSString *splitUsing = @",";
+            
+            if ([[daysOpenhoursArray objectAtIndex:0] respondsToSelector:@selector(containsString:)]) {
+                
+                if ([[daysOpenhoursArray objectAtIndex:0] containsString:@"to"]) {
+                    splitUsing = @"to";
+                }
+            }
+            else
+            {
+                if ([[daysOpenhoursArray objectAtIndex:0] rangeOfString:@"to"].location == NSNotFound)
+                {
+                    
+                }
+                else
+                {
+                    splitUsing = @"to";
+                }
+            }
+            
+            NSArray *opdays = [[daysOpenhoursArray objectAtIndex:0] componentsSeparatedByString:splitUsing];
+            NSMutableArray *openDays = [[NSMutableArray alloc] init];
+            for(NSString *key in opdays)
+            {
+                NSString *wkKey = [NSString stringWithFormat:@"%@",[[key lowercaseString]stringByRemovingExtraSpaces]];
+                [openDays addObject:[weekdayRef valueForKey:wkKey]];
+            }
+            if ([splitUsing isEqualToString:@"to"]) {
+                
+                [openDays addObject:[weekdayRef valueForKey:@"tue"]];
+                [openDays addObject:[weekdayRef valueForKey:@"wed"]];
+                [openDays addObject:[weekdayRef valueForKey:@"thu"]];
+                [openDays addObject:[weekdayRef valueForKey:@"fri"]];
+                [openDays addObject:[weekdayRef valueForKey:@"sat"]];
+                
+            }
+            
+            for (NSString *day in openDays) {
+                
+                NSArray *minHour = [[daysOpenhoursArray objectAtIndex:2] componentsSeparatedByString:@"-"];
+                
+                NSString *openTime = [[NSString stringWithFormat:@"%@.%@",[daysOpenhoursArray objectAtIndex:1],[minHour objectAtIndex:0]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSString *closeTime = [[NSString stringWithFormat:@"%@.%@",[minHour objectAtIndex:1],[daysOpenhoursArray objectAtIndex:3]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                
+                [openHoursDict setObject:[NSArray arrayWithObjects:openTime,closeTime,nil] forKey:day];
+            }
+        }
+    }
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    //    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en"]];
+    [formatter setDateFormat:@"HH.mm"];
+    NSString *time = [formatter stringFromDate:[NSDate date]];
+    [formatter setDateFormat:@"EEE"];
+    
+    NSCalendar* cal = [NSCalendar currentCalendar];
+    NSDateComponents* comp = [cal components:NSWeekdayCalendarUnit fromDate:[NSDate date]];
+    NSString *day = [NSString stringWithFormat:@"%ld",(long)[comp weekday]];
+    
+    NSArray *openCloseHours = [openHoursDict objectForKey:day];
+    
+    if (openCloseHours) {
+        
+        float openHours = [[openCloseHours objectAtIndex:0] floatValue];
+        float closeHours = [[openCloseHours objectAtIndex:1] floatValue];
+        
+        float currentHour = [time floatValue];
+        
+        if ((openHours <= currentHour) && (currentHour <= closeHours)) {
+            
+            return NO;
+        }
+        else
+        {
+            return YES;
+        }
+    }
+    else
+    {
+        return YES;
+    }
 }
 @end

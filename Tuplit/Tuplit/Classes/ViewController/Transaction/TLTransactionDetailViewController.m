@@ -7,6 +7,7 @@
 //
 
 #import "TLTransactionDetailViewController.h"
+#import "TLOrderConformViewController.h"
 @interface TLTransactionDetailViewController ()
 {
     UILabel *merchantNameLbl;
@@ -43,7 +44,14 @@
 -(void) loadView
 {
     [super loadView];
-    [self.navigationItem setTitle:LString(@"TRANSACTION_DETAIL")];
+    if([self.viewController isKindOfClass:[TLOrderConformViewController class]])
+    {
+        [self.navigationItem setTitle:LString(@"RECEIPT")];
+    }
+    else
+    {
+        [self.navigationItem setTitle:LString(@"TRANSACTION_DETAIL")];
+    }
     self.view.backgroundColor=[UIColor whiteColor];
     
     UIBarButtonItem *back = [[UIBarButtonItem alloc] init];
@@ -285,7 +293,15 @@
     transactionIDLbl.frame = CGRectMake(5,CGRectGetMaxY(transactionTitleLbl.frame)-5, detailImgView.width-10, 20);
     [itemsListTable reloadData];
     
+    if([transactionIDLbl.text length]==0)
+        transactionTitleLbl.hidden = YES;
+    
     detailImgView.frame = CGRectMake(5, 20,baseViewWidth-10, CGRectGetMaxY(transactionIDLbl.frame) + 50);
+    if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
+    {
+        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,7,15,15) resizingMode:UIImageResizingModeStretch];
+        detailImgView.image = stretchableBackground;
+    }
     
     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(detailImgView.frame) + 50);
     lastFetchCount = transActionList.count;

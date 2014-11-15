@@ -159,13 +159,17 @@
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
-        
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification
                                                object:nil];
+    if(APP_DELEGATE.isFriendInvited)
+    {
+        [self callFriendslistWebserviceWithstartCount:0 showProgress:YES];
+        APP_DELEGATE.isFriendInvited = NO;
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -401,6 +405,7 @@
         profileImgView.backgroundColor = [UIColor whiteColor];
         profileImgView.layer.cornerRadius=45/2;
         //        profileImgView.userInteractionEnabled=YES;
+        profileImgView.contentMode = UIViewContentModeScaleAspectFill;
         profileImgView.clipsToBounds=YES;
         profileImgView.tag=1000;
         [cell.contentView addSubview:profileImgView];
@@ -501,14 +506,14 @@
         lastFetchCount = 0;
     }
     
-    totalUserListCount = friendsListingManager.totalCount;
+    totalUserListCount = (int)friendsListingManager.totalCount;
     
     if ((friendsListingManager.listedCount % 20) == 0) {
-        lastFetchCount = lastFetchCount + friendsListingManager.listedCount;
+        lastFetchCount = lastFetchCount + (int)friendsListingManager.listedCount;
     }
     else
     {
-        lastFetchCount = friendsArray.count;
+        lastFetchCount = (int)friendsArray.count;
     }
     
     [friendsTable reloadData];
@@ -516,7 +521,7 @@
     if (lastFetchCount < totalUserListCount)
         [friendsTable setTableFooterView:cellContainer];
     else
-        [friendsTable setTableFooterView:nil];
+        [friendsTable setTableFooterView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, friendsTable.frame.size.width, 50)]];
     
     isPullRefreshPressed = NO;
     isLoadMorePressed = NO;

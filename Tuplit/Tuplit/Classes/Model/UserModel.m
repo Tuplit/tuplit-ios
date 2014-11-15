@@ -41,6 +41,7 @@
     [encoder encodeObject:self.PaymentPreference forKey:@"PaymentPreference"];
     [encoder encodeObject:self.RememberMe forKey:@"RememberMe"];
     [encoder encodeObject:self.Sounds forKey:@"Sounds"];
+    [encoder encodeObject:self.IsFriend forKey:@"IsFriend"];
     
 }
 
@@ -76,6 +77,7 @@
         self.PaymentPreference = [decoder decodeObjectForKey:@"PaymentPreference"];
         self.RememberMe = [decoder decodeObjectForKey:@"RememberMe"];
         self.Sounds = [decoder decodeObjectForKey:@"Sounds"];
+        self.IsFriend = [decoder decodeObjectForKey:@"IsFriend"];
         
     }
     return self;

@@ -183,13 +183,16 @@
         for (NSString *key in priceComponent)
         {
             CategoryModel *catgModel = [APP_DELEGATE.catgDict valueForKey:key];
-//            if(i==0)
-//                [categorynames appendString:NSNonNilString([NSString stringWithFormat:@"%@",catgModel.CategoryName])];
-//            else
-            if(categorynames.length>0)
-                [categorynames appendString:@", "];
-            [categorynames appendString:NSNonNilString([NSString stringWithFormat:@"%@",catgModel.CategoryName])];
-            i++;
+            if(NSNonNilString(catgModel.CategoryName).length>0)
+            {
+                //            if(i==0)
+                //                [categorynames appendString:NSNonNilString([NSString stringWithFormat:@"%@",catgModel.CategoryName])];
+                //            else
+                if(categorynames.length>0)
+                    [categorynames appendString:@", "];
+                [categorynames appendString:NSNonNilString([NSString stringWithFormat:@"%@",catgModel.CategoryName])];
+                i++;
+            }
         }
         
         annMerchantCatgLbl.width = FRAME_WIDTH-annMerchantCatgLbl.xPosition-annDistanceLbl.width- 22 -annDistanceImgView.width;

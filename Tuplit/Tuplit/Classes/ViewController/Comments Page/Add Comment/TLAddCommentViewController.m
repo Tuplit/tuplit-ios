@@ -143,10 +143,9 @@
 {
     NSLog(@"Changed value to: %@", sender.on ? @"ON" : @"OFF");
 }
+
 -(void) addCommentAction:(id) sender
-{
-    NSLog(@"message = %@",messageTxtView.text);
-    
+{    
     if(messageTxtView.text.length == 0)
         [UIAlertView alertViewWithMessage:LString(@"COMMENT_ALERT_MESSAGE")];
     else

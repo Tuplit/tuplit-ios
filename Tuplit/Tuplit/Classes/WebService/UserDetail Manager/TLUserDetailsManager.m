@@ -43,9 +43,7 @@
         NSData *data =[operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-		
-         NSLog(@"Response %@" ,responseJSON);
-        
+		        
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
@@ -76,7 +74,7 @@
                 @"RememberMe" : @"RememberMe",
                 @"PaymentPreference" : @"PaymentPreference",
                 @"Passcode" : @"Passcode",
-                
+                @"IsFriend" : @"IsFriend",
             }];
             
             RKObjectMapping *friendsOrderMapping = [RKObjectMapping mappingForClass:[FriendsModel class]];

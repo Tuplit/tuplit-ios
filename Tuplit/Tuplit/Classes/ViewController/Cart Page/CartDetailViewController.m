@@ -181,6 +181,11 @@
     
     
     detailImgView.frame = CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, CGRectGetMaxY(transactionIDLbl.frame) + 50);
+    if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
+    {
+        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,7,15,15) resizingMode:UIImageResizingModeStretch];
+        detailImgView.image = stretchableBackground;
+    }
     scrollView.contentSize=CGSizeMake(contentView.width,CGRectGetMaxY(detailImgView.frame) + 50);
     
     numberFormatter = [TuplitConstants getCurrencyFormat];

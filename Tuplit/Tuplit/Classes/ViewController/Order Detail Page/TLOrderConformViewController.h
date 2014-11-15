@@ -16,6 +16,7 @@
     UIImageView *statusImgView;
     UIButton *backButton;
     UILabel *backLbl;
+    UIImageView *detailImgView;
 }
 @property(nonatomic,strong)NSString *informativeTxt;
 @property(nonatomic,strong)UIImage *acceptOrRejectImg;

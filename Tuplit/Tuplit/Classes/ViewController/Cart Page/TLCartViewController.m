@@ -265,7 +265,7 @@
     
     TLCheckBalanceManager *checkBalanceManager = [[TLCheckBalanceManager alloc] init];
     checkBalanceManager.delegate = self;
-    [checkBalanceManager getCurrentBalanceWithPaymentAmount:[NSString stringWithFormat:@"%lf",APP_DELEGATE.cartModel.discountedTotal]];
+    [checkBalanceManager getCurrentBalanceWithPaymentAmount:[NSString stringWithFormat:@"%lf",APP_DELEGATE.cartModel.total]];
 }
 
 - (void) callWebserviceForOrderItems {
@@ -428,20 +428,22 @@
 
 -(void) performAction
 {
-    if([TLUserDefaults getCurrentUser].Passcode.boolValue)
-    {
-        TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
-        verifyPINVC.isverifyPin = YES;
-        verifyPINVC.delegate = self;
-        verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
-        [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-        [self presentViewController:nav animated:YES completion:nil];
-    }
-    else
-    {
-        [self callWebserviceForLocationMatch];
-    }
+   
+        if([TLUserDefaults getCurrentUser].Passcode.boolValue)
+        {
+            TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+            verifyPINVC.isverifyPin = YES;
+            verifyPINVC.delegate = self;
+            verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+            [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        else
+        {
+            [self callWebserviceForLocationMatch];
+        }
+   
 }
 
 
@@ -507,8 +509,15 @@
     }
     else
     {
-        [self callWebserviceForOrderItems];
-        
+        if([TuplitConstants isMerchantClosed:APP_DELEGATE.cartModel.openHrsArray])
+        {
+            [UIAlertView alertViewWithMessage:[NSString stringWithFormat:LString(@"MERCHANT_CLOSED"),APP_DELEGATE.cartModel.companyName]];
+            [[ProgressHud shared] hide];
+        }
+        else
+        {
+            [self callWebserviceForOrderItems];
+        }
     }
     
 }

@@ -54,9 +54,9 @@ AFHTTPRequestOperation *operation;
         
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-		
-        NSLog(@"Response: %@", responseJSON);
         
+        NSLog(@"Response = %@",responseJSON);
+		        
         int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)

@@ -10,4 +10,5 @@
 
 @interface TLTutorialViewController : UIViewController
 @property (nonatomic, weak)id delegate;
+-(void)loaddata;
 @end

@@ -174,10 +174,11 @@
     {
         cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
-        cell.backgroundColor=UIColorFromRGB(0xF5F5F5);
+        cell.backgroundColor = UIColorFromRGB(0xF5F5F5);
         
         EGOImageView *merchantIconImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, PROFILE_CELL_HEIGHT-2)];
         merchantIconImgView.tag=1000;
+        merchantIconImgView.contentMode = UIViewContentModeScaleAspectFill;
         merchantIconImgView.backgroundColor = [UIColor whiteColor];
         [cell.contentView addSubview:merchantIconImgView];
         
@@ -248,9 +249,10 @@
 {
     TLTransactionDetailViewController *transactionDetail=[[TLTransactionDetailViewController alloc] init];
     RecentActivityModel* transaction = [transactionList objectAtIndex:indexPath.row];
+    transactionDetail.viewController = self;
     transactionDetail.userID = self.userID;
     transactionDetail.orderID = transaction.OrderId;
-    transactionDetail.index = indexPath.row;
+    transactionDetail.index = (int)indexPath.row;
     transactionDetail.transActionList = transactionList;
     transactionDetail.lastFetchCount = lastFetchCount;
     transactionDetail.totalUserListCount = totalUserListCount;

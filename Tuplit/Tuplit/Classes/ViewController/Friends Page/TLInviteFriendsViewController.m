@@ -162,6 +162,7 @@
 {
     if(contactArray.count>0)
     {
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
         NSDictionary *queryParams = @{
                                       @"ContactFriends"            : checkContactIdArray,
                                       };
@@ -190,136 +191,138 @@
     
     if (button.tag == 201)
     {
-        isFacebook = YES;
-        
-        [facebookBtn setBackgroundImage:Nil forState:UIControlStateNormal];
-        [facebookBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-        
-        [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
-        [contactsBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-        contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
-        if(fbFriendArray.count>0)
+        if(!isFacebook)
         {
-            errorView.hidden = YES;
-        }
-        else
-        {
-            errorView.hidden = NO;
-            errorLbl.text = LString(@"NO_FB_FRIEND_FOUND");
-            return;
+            isFacebook = YES;
+            [facebookBtn setBackgroundImage:Nil forState:UIControlStateNormal];
+            [facebookBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
+            
+            [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
+            [contactsBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+            contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
+            if(fbFriendArray.count>0)
+            {
+                errorView.hidden = YES;
+            }
+            else
+            {
+                errorView.hidden = NO;
+                errorLbl.text = LString(@"NO_FB_FRIEND_FOUND");
+                return;
+            }
         }
         
     }
     else
     {
-        isFacebook = NO;
-        [contactsBtn setBackgroundImage:Nil forState:UIControlStateNormal];
-        [contactsBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-        
-        [facebookBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
-        [facebookBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-        facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
-        
-        __block BOOL userDidGrantAddressBookAccess;
-        CFErrorRef addressBookError = NULL;
-        [contactArray removeAllObjects];
-        
-        if ( ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined ||
-            ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized )
+        if(isFacebook)
         {
+            isFacebook = NO;
+            [contactsBtn setBackgroundImage:Nil forState:UIControlStateNormal];
+            [contactsBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             
-            addressBook = ABAddressBookCreateWithOptions(NULL, &addressBookError);
-            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-            ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error){
-                userDidGrantAddressBookAccess = granted;
-                dispatch_semaphore_signal(sema);
+            [facebookBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
+            [facebookBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+            facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
+            
+            __block BOOL userDidGrantAddressBookAccess;
+            CFErrorRef addressBookError = NULL;
+            [contactArray removeAllObjects];
+            
+            if ( ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined ||
+                ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized )
+            {
                 
-                if(userDidGrantAddressBookAccess)
-                {
-                    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-                    addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
-                    if (addressBook!=nil)
+                addressBook = ABAddressBookCreateWithOptions(NULL, &addressBookError);
+                dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+                ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error){
+                    userDidGrantAddressBookAccess = granted;
+                    dispatch_semaphore_signal(sema);
+                    
+                    if(userDidGrantAddressBookAccess)
                     {
-                        NSArray *allContacts = (__bridge_transfer NSArray*)ABAddressBookCopyArrayOfAllPeople(addressBook);
-                        
-                        NSUInteger i = 0;
-                        for (i = 0; i<[allContacts count]; i++)
+                        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+                        addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+                        if (addressBook!=nil)
                         {
-                            Person *person = [[Person alloc] init];
-                            ABRecordRef contactPerson = (__bridge ABRecordRef)allContacts[i];
-                            NSString *firstName = (__bridge_transfer NSString*)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty);
-                            NSString *lastName = (__bridge_transfer NSString*)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty);
-                            ABMultiValueRef multi = ABRecordCopyValue(contactPerson, kABPersonEmailProperty);
-                            NSString *email = (__bridge NSString *)ABMultiValueCopyValueAtIndex(multi, 0);
+                            NSArray *allContacts = (__bridge_transfer NSArray*)ABAddressBookCopyArrayOfAllPeople(addressBook);
                             
-                            
-                            if (ABPersonHasImageData(contactPerson)) {
-                                NSData *imgData = (__bridge NSData*)ABPersonCopyImageDataWithFormat(contactPerson, kABPersonImageFormatOriginalSize);
-                                UIImage *img = [UIImage imageWithData: imgData];
-                                person.contactImage = img;
-                            }
-                            else
+                            NSUInteger i = 0;
+                            for (i = 0; i<[allContacts count]; i++)
                             {
-                                person.contactImage = nil;
-                            }
-                            if(!lastName)
-                                lastName = @"";
-                            NSLog(@"email = %@",email);
-                            
-                            
-                            if ([firstName stringByTrimmingLeadingWhitespace].length == 0)
-                            {
-                                firstName = @"";
-                            }
-                            if ([lastName stringByTrimmingLeadingWhitespace].length == 0 )
-                            {
-                                lastName = @"";
-                            }
-                            if ([firstName stringByTrimmingLeadingWhitespace].length == 0 && [lastName stringByTrimmingLeadingWhitespace].length == 0 )
-                            {
-                                person.name = @"";
-                            }
-                            else
-                            {
-                                person.name = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
-                            }
-                           
-                            if (email.length == 0)
-                                email= @"";
-                            
-                            person.email = [NSString stringWithFormat:@"%@",email];
-                            
-                            if(email.length >0 && ![email isEqualToString:[TLUserDefaults getCurrentUser].Email])
-                            {
-                                [checkContactIdArray addObject:email];
-                                [contactArray addObject:person];
-                            }
+                                Person *person = [[Person alloc] init];
+                                ABRecordRef contactPerson = (__bridge ABRecordRef)allContacts[i];
+                                NSString *firstName = (__bridge_transfer NSString*)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty);
+                                NSString *lastName = (__bridge_transfer NSString*)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty);
+                                ABMultiValueRef multi = ABRecordCopyValue(contactPerson, kABPersonEmailProperty);
+                                NSString *email = (__bridge NSString *)ABMultiValueCopyValueAtIndex(multi, 0);
                                 
+                                
+                                if (ABPersonHasImageData(contactPerson)) {
+                                    NSData *imgData = (__bridge NSData*)ABPersonCopyImageDataWithFormat(contactPerson, kABPersonImageFormatOriginalSize);
+                                    UIImage *img = [UIImage imageWithData: imgData];
+                                    person.contactImage = img;
+                                }
+                                else
+                                {
+                                    person.contactImage = nil;
+                                }
+                                if(!lastName)
+                                    lastName = @"";
+                                
+                                if ([firstName stringByTrimmingLeadingWhitespace].length == 0)
+                                {
+                                    firstName = @"";
+                                }
+                                if ([lastName stringByTrimmingLeadingWhitespace].length == 0 )
+                                {
+                                    lastName = @"";
+                                }
+                                if ([firstName stringByTrimmingLeadingWhitespace].length == 0 && [lastName stringByTrimmingLeadingWhitespace].length == 0 )
+                                {
+                                    person.name = @"";
+                                }
+                                else
+                                {
+                                    person.name = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
+                                }
+                                
+                                if (email.length == 0)
+                                    email= @"";
+                                
+                                person.email = [NSString stringWithFormat:@"%@",email];
+                                
+                                if(email.length >0 && ![email isEqualToString:[TLUserDefaults getCurrentUser].Email])
+                                {
+                                    [checkContactIdArray addObject:email];
+                                    [contactArray addObject:person];
+                                }
+                                
+                                
+                            }
+                            CFRelease(addressBook);
+                            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                            NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+                            NSArray *sortedArray = [contactArray sortedArrayUsingDescriptors:sortDescriptors];
+                            contactArray =[NSMutableArray arrayWithArray:sortedArray];
+                            
+                            [self performSelectorOnMainThread:@selector(reloadTable) withObject:self waitUntilDone:YES];
+                            //                        [[ProgressHud shared] hide];
                             
                         }
-                        CFRelease(addressBook);
-                        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                        NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-                        NSArray *sortedArray = [contactArray sortedArrayUsingDescriptors:sortDescriptors];
-                        contactArray =[NSMutableArray arrayWithArray:sortedArray];
-                        
-                        [self performSelectorOnMainThread:@selector(reloadTable) withObject:self waitUntilDone:YES];
-//                        [[ProgressHud shared] hide];
-                        
+                        else
+                        {
+                            errorView.hidden = NO;
+                            errorLbl.text = LString(@"NO_CONTACT_FOUND");
+                            [[ProgressHud shared] hide];
+                        }
                     }
-                    else
-                    {
-                        NSLog(@"Error");
-                        errorView.hidden = NO;
-                        errorLbl.text = LString(@"NO_CONTACT_FOUND");
-                        [[ProgressHud shared] hide];
-                    }
-                }
-            });
-            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        
+                });
+                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+            }
+            
         }
         else
         {
@@ -378,7 +381,6 @@
     }
     else
     {
-        NSLog(@"invite friends");
         CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:facebookTable];
         NSIndexPath *indexPath = [facebookTable indexPathForRowAtPoint:buttonPosition];
         selectedIndex = indexPath;
@@ -466,6 +468,7 @@
         profileImgView.backgroundColor = [UIColor whiteColor];
         profileImgView.layer.cornerRadius=40/2;
         profileImgView.clipsToBounds=YES;
+        profileImgView.contentMode = UIViewContentModeScaleAspectFill;
         profileImgView.tag=1000;
         [cell.contentView addSubview:profileImgView];
         
@@ -488,12 +491,12 @@
         UIButton *inviteBtn=[UIButton buttonWithType:UIButtonTypeCustom];
         inviteBtn.frame=CGRectMake(CGRectGetMaxX(profileNameLbl.frame),10,60, 30);
         inviteBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-        [inviteBtn setTitle:@"Invite" forState:UIControlStateNormal];
+//        [inviteBtn setTitle:@"Invite" forState:UIControlStateNormal];
         inviteBtn.tag = 1003;
+//        [inviteBtn setBackgroundImage:getImage(@"invite", NO) forState:UIControlStateNormal];
+//        [inviteBtn addTarget:self action:@selector(callInviteFriendsService:) forControlEvents:UIControlEventTouchUpInside];
         inviteBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
         inviteBtn.titleLabel.textColor=UIColorFromRGB(0xffffff);
-        [inviteBtn setBackgroundImage:getImage(@"invite", NO) forState:UIControlStateNormal];
-        [inviteBtn addTarget:self action:@selector(callInviteFriendsService:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:inviteBtn];
         
         UIView *lineView=[[UIView alloc] initWithFrame:CGRectMake(70, INVITE_CELL_HEIGHT-1, baseViewWidth - 70, 1)];
@@ -524,11 +527,26 @@
             EGOImageView *profileImgView=(EGOImageView *)[cell.contentView viewWithTag:1000];
             UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
             UILabel *mailIDLbl=(UILabel *)[cell.contentView viewWithTag:1002];
+            UIButton *inviteBtn = (UIButton *)[cell.contentView viewWithTag:1003];
             profileNameLbl.height = INVITE_CELL_HEIGHT-16;
             
             profileNameLbl.text = gplusUser.name;
             profileImgView.imageURL = [NSURL URLWithString:gplusUser.picture];
             mailIDLbl.text=@"";
+            if(gplusUser.AlreadyInvited.intValue==0)
+            {
+                [inviteBtn setTitle:@"Invite" forState:UIControlStateNormal];
+                [inviteBtn setBackgroundImage:getImage(@"invite", NO) forState:UIControlStateNormal];
+                [inviteBtn addTarget:self action:@selector(callInviteFriendsService:) forControlEvents:UIControlEventTouchUpInside];
+                inviteBtn.enabled = YES;
+            }
+            else
+            {
+                [inviteBtn setTitle:@"Invited" forState:UIControlStateNormal];
+                [inviteBtn setBackgroundImage:getImage(@"invite_grey", NO) forState:UIControlStateNormal];
+                [inviteBtn addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+                inviteBtn.enabled = NO;
+            }
         }
     }
     else
@@ -538,8 +556,9 @@
         EGOImageView *profileImgView=(EGOImageView *)[cell.contentView viewWithTag:1000];
         UILabel *profileNameLbl=(UILabel *)[cell.contentView viewWithTag:1001];
         UILabel *mailIDLbl=(UILabel *)[cell.contentView viewWithTag:1002];
+        UIButton *inviteBtn = (UIButton *)[cell.contentView viewWithTag:1003];
         profileNameLbl.height = INVITE_CELL_HEIGHT/2 - 5;
-        //        NSLog(@"%@ %@",contactuser.name,contactuser.email);
+
         if(contactuser.contactImage)
             profileImgView.image = contactuser.contactImage;
         else
@@ -557,6 +576,21 @@
         }
         
         mailIDLbl.text=contactuser.email;
+        
+        if(contactuser.AlreadyInvited.intValue==0)
+        {
+            [inviteBtn setTitle:@"Invite" forState:UIControlStateNormal];
+            [inviteBtn setBackgroundImage:getImage(@"invite", NO) forState:UIControlStateNormal];
+            [inviteBtn addTarget:self action:@selector(callInviteFriendsService:) forControlEvents:UIControlEventTouchUpInside];
+            inviteBtn.enabled = YES;
+        }
+        else
+        {
+            [inviteBtn setTitle:@"Invited" forState:UIControlStateNormal];
+            [inviteBtn setBackgroundImage:getImage(@"invite_grey", NO) forState:UIControlStateNormal];
+            [inviteBtn addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+            inviteBtn.enabled = NO;
+        }
     }
     
     return cell;
@@ -564,8 +598,7 @@
 }
 
 #pragma mark - mail compose delegate
--(void)mailComposeController:(MFMailComposeViewController *)controller
-         didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
     if (result) {
         NSLog(@"Result : %d",result);
         NSDictionary *queryParams = @{
@@ -588,7 +621,7 @@
 {
     NETWORK_TEST_PROCEDURE;
     
-    
+    APP_DELEGATE.isSocialhandeled = YES;
     GPPSignIn *signIn = [GPPSignIn sharedInstance];
 
 //        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
@@ -719,37 +752,30 @@
 - (void)fbIDManagerSuccess:(TLFacebookIDManager *)fbIDManager withFriendsListingManager:(NSArray*)_fbfriendsList
 {
     
-    [[ProgressHud shared] hide];
-    
-    NSArray *serverTrackResult = [_fbfriendsList bk_select:^BOOL(id obj) {
-        
-        CheckUserModel *checkfriend = obj;
-        if(checkfriend.AlreadyInvited.intValue==0)
-            return YES;
-        else
-            return NO;
-    }];
+//    NSArray *serverTrackResult = [_fbfriendsList bk_select:^BOOL(id obj) {
+//        
+//        CheckUserModel *checkfriend = obj;
+//        if(checkfriend.AlreadyInvited.intValue==0)
+//            return YES;
+//        else
+//            return NO;
+//    }];
     
     if(fbIDManager.isGoolge)
     {
-        NSMutableArray *invitableFriends = [fbFriendArray mutableCopy];
-        [fbFriendArray removeAllObjects];
-        
-        fbFriendArray = [[invitableFriends bk_select:^BOOL(id obj) {
+        for (CheckUserModel *usermodel in _fbfriendsList) {
             
-            CheckUserModel *checkfriend1 = obj;
-            
-            return [serverTrackResult bk_any:^BOOL(id obj1) {
-                
-                CheckUserModel *checkfriend = obj1;
-                
-                if([checkfriend.Id isEqualToString:checkfriend1.Id])
-                    return YES;
-                else
-                    return NO;
+            [[NSArray arrayWithArray:fbFriendArray] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+                CheckUserModel *persondetail = (CheckUserModel*)object;
+                    if([persondetail.Id isEqualToString:usermodel.Id])
+                    {
+                        persondetail.AlreadyInvited = usermodel.AlreadyInvited;
+                        [fbFriendArray replaceObjectAtIndex:idx withObject:persondetail];
+                    }
             }];
             
-        }]mutableCopy];
+            //        i++;
+        }
         
         if(fbFriendArray.count==0)
         {
@@ -763,24 +789,21 @@
     }
     else
     {
-        NSMutableArray *invitableFriends = [contactArray mutableCopy];
-        [contactArray removeAllObjects];
-        
-        contactArray = [[invitableFriends bk_select:^BOOL(id obj) {
-            
-            Person *checkfriend1 = obj;
-            
-            return [serverTrackResult bk_any:^BOOL(id obj1) {
-                
-                CheckUserModel *checkfriend = obj1;
-                
-                if([checkfriend.Id isEqualToString:checkfriend1.email])
-                    return YES;
-                else
-                    return NO;
+        for (CheckUserModel *usermodel in _fbfriendsList)  {
+            [[NSArray arrayWithArray:contactArray] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+                Person *persondetail = (Person*)object;
+                if(persondetail.email.length>0)
+                {
+                    if([persondetail.email isEqualToString:usermodel.Id])
+                    {
+                        persondetail.AlreadyInvited = usermodel.AlreadyInvited;
+                        [contactArray replaceObjectAtIndex:idx withObject:persondetail];
+                    }
+                }
             }];
             
-        }]mutableCopy];
+            //        i++;
+        }
         
         if(contactArray.count==0)
         {
@@ -792,8 +815,8 @@
             errorView.hidden = YES;
         }
     }
-    
     [facebookTable reloadData];
+     [[ProgressHud shared] hide];
 }
 
 - (void)fbIDManager:(TLFacebookIDManager *)fbIDManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
@@ -818,26 +841,73 @@
 
 - (void)inviteManagerSuccess:(TLFriendsInviteManager *)inviteManager withinviteStatus:(NSString*)invitemessage
 {
-//    [commentsArray removeObjectAtIndex:deletedCmtIndex.row];
-//    [allCommentsTable deleteRowsAtIndexPaths:@[deletedCmtIndex] withRowAnimation:UITableViewRowAnimationFade];
-//    [[ProgressHud shared] hide];
+
     if(isFacebook)
     {
-        [fbFriendArray removeObjectAtIndex:selectedIndex.row];
-        [facebookTable deleteRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationFade];
+        CheckUserModel *usermodel = [fbFriendArray objectAtIndex:selectedIndex.row];
+        usermodel.AlreadyInvited = @"1";
+        [fbFriendArray replaceObjectAtIndex:selectedIndex.row withObject:usermodel];
+        [facebookTable reloadRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationFade];
+        
+        if(fbFriendArray.count == 0)
+        {
+            errorView.hidden = NO;
+            errorLbl.text =LString(@"NO_FB_FRIEND_FOUND");
+            
+        }
     }
     else
     {
-        [contactArray removeObjectAtIndex:selectedIndex.row];
-        [facebookTable deleteRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationFade];
+        Person *usermodel = [contactArray objectAtIndex:selectedIndex.row];
+        usermodel.AlreadyInvited = @"1";
+        [contactArray replaceObjectAtIndex:selectedIndex.row withObject:usermodel];
+        [facebookTable reloadRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationFade];
+        
+        if(contactArray.count == 0)
+        {
+            errorView.hidden = NO;
+            errorLbl.text =LString(@"NO_CONTACT_FOUND");
+        }
     }
-//    [facebookTable reloadData];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateFriendsActivity object:nil];
+    APP_DELEGATE.isFriendInvited = YES;
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"INVITATION_SUCESS")];
+    [UIAlertView alertViewWithMessage:invitemessage];
     
 }
 - (void)inviteManager:(TLFriendsInviteManager *)inviteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
+//    2255 2256
+    if([errorCode isEqualToString:@"2255"] ||[errorCode isEqualToString:@"2256"] )
+    {
+        if(isFacebook)
+        {
+            CheckUserModel *usermodel = [fbFriendArray objectAtIndex:selectedIndex.row];
+            usermodel.AlreadyInvited = @"1";
+            [fbFriendArray replaceObjectAtIndex:selectedIndex.row withObject:usermodel];
+            [facebookTable reloadRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationFade];
+            
+            if(fbFriendArray.count == 0)
+            {
+                errorView.hidden = NO;
+                errorLbl.text =LString(@"NO_FB_FRIEND_FOUND");
+                
+            }
+        }
+        else
+        {
+            Person *usermodel = [contactArray objectAtIndex:selectedIndex.row];
+            usermodel.AlreadyInvited = @"1";
+            [contactArray replaceObjectAtIndex:selectedIndex.row withObject:usermodel];
+            [facebookTable reloadRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationFade];
+            if(contactArray.count == 0)
+            {
+                errorView.hidden = NO;
+                errorLbl.text =LString(@"NO_CONTACT_FOUND");
+            }
+        }
+    }
+    
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:errorMsg];
     

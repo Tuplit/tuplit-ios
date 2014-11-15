@@ -7,6 +7,7 @@
 //
 
 #import "TLMerchantsDetailViewController.h"
+#import "TLOrderConformViewController.h"
 #import "TLCategoryView.h"
 #import "SlideShowView.h"
 
@@ -22,6 +23,7 @@
     TLCategoryView *categoryView;
     SlideShowView *slideshow;
     UIView *friendsListView;
+    NSArray *openHrsArray;
     
     BOOL isMerchantClosed;
 }
@@ -153,6 +155,8 @@
     
     merchantLogoView=[[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake((containerView.frame.size.width-60)/2,(containerView.frame.size.height-60)/3,60,60)];
     merchantLogoView.backgroundColor = [UIColor clearColor];
+    merchantLogoView.alpha = 0.5;
+    merchantLogoView.contentMode = UIViewContentModeScaleAspectFill;
     merchantLogoView.layer.cornerRadius = 30;
     merchantLogoView.clipsToBounds = YES;
     [containerView addSubview:merchantLogoView];
@@ -184,6 +188,7 @@
     friendsImgView1.layer.cornerRadius = 12.5;
     friendsImgView1.clipsToBounds = YES;
     friendsImgView1.userInteractionEnabled = YES;
+    friendsImgView1.contentMode = UIViewContentModeScaleAspectFill;
     friendsImgView1.hidden = YES;
     UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
     [friendsImgView1 addGestureRecognizer:friendsImgGesture1];
@@ -196,6 +201,7 @@
     friendsImgView2.clipsToBounds = YES;
     friendsImgView2.userInteractionEnabled = YES;
     friendsImgView2.hidden=YES;
+    friendsImgView2.contentMode = UIViewContentModeScaleAspectFill;
     UITapGestureRecognizer *friendsImgGesture2 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
     [friendsImgView2 addGestureRecognizer:friendsImgGesture2];
     [friendsListView addSubview:friendsImgView2];
@@ -207,6 +213,7 @@
     friendsImgView3.clipsToBounds = YES;
     friendsImgView3.userInteractionEnabled = YES;
     friendsImgView3.hidden = YES;
+    friendsImgView3.contentMode = UIViewContentModeScaleAspectFill;
     UITapGestureRecognizer *friendsImgGesture3 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
     [friendsImgView3 addGestureRecognizer:friendsImgGesture3];
     [friendsListView addSubview:friendsImgView3];
@@ -303,6 +310,15 @@
     [errorView addSubview:errorLbl];
     
     numberFormatter = [TuplitConstants getCurrencyFormat];
+    
+    merchantErrorLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
+    [merchantErrorLabel setBackgroundColor:[UIColor whiteColor]];
+    [merchantErrorLabel setTextAlignment:NSTextAlignmentCenter];
+    [merchantErrorLabel setTextColor:[UIColor lightGrayColor]];
+    [merchantErrorLabel setText:LString(@"NO_MERCHANTS_FOUND")];
+    [merchantErrorLabel setHidden:YES];
+    merchantErrorLabel.numberOfLines = 3;
+    [baseView addSubview:merchantErrorLabel];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -340,7 +356,17 @@
 
 - (void)backButtonAction
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if([self.viewController isKindOfClass:[TLOrderConformViewController class]])
+    {
+        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
+        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
+        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+    }
+    else
+    {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 -(void) callMerchantDetailsWebservice
@@ -438,49 +464,58 @@
 {
     if (button.tag==101)
     {
-        errorView.hidden=YES;
-        isDetailButton = YES;
-        [orderButton setBackgroundImage:getImage(@"ButtonLightBg",NO) forState:UIControlStateNormal];
-        [orderButton setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-        orderButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-        [detailsButton setBackgroundImage:Nil forState:UIControlStateNormal];
-        [detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        detailsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+        if(!isDetailButton)
+        {
+            errorView.hidden=YES;
+            isDetailButton = YES;
+            [orderButton setBackgroundImage:getImage(@"ButtonLightBg",NO) forState:UIControlStateNormal];
+            [orderButton setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+            orderButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+            [detailsButton setBackgroundImage:Nil forState:UIControlStateNormal];
+            [detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            detailsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+            
+            [merchantDetailTable reloadData];
+            
+            //   Set visible to top in merchantDetailTable
+            [self scrollToTop];
+        }
         
     }
     else
     {
-        isDetailButton = NO;
-        [detailsButton setBackgroundImage:getImage(@"ButtonLightBg",NO) forState:UIControlStateNormal];
-        [detailsButton setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-        detailsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-        [orderButton setBackgroundImage:Nil forState:UIControlStateNormal];
-        [orderButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        orderButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
-        
-        if(orderSectionNamesArray.count==1)
+        if(isDetailButton)
         {
-            NSString *keyString = [orderSectionNamesArray objectAtIndex:0];
-            if( [[orderedMainDict valueForKey:keyString] count]==0)
+            isDetailButton = NO;
+            [detailsButton setBackgroundImage:getImage(@"ButtonLightBg",NO) forState:UIControlStateNormal];
+            [detailsButton setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+            detailsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+            [orderButton setBackgroundImage:Nil forState:UIControlStateNormal];
+            [orderButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            orderButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+            
+            if(orderSectionNamesArray.count==1)
             {
-                errorView.hidden=NO;
+                NSString *keyString = [orderSectionNamesArray objectAtIndex:0];
+                if( [[orderedMainDict valueForKey:keyString] count]==0)
+                {
+                    errorView.hidden=NO;
+                }
             }
+            [merchantDetailTable reloadData];
+            
+            //   Set visible to top in merchantDetailTable
+            [self scrollToTop];
         }
     }
     
-    [merchantDetailTable reloadData];
     
-    //   Set visible to top in merchantDetailTable
-    [self scrollToTop];
 }
 
 -(void)updateMerchantDetails
 {
-    NSLog(@"slideshow = %@",merchantdetailmodel.slideshow);
-    
     OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
-    isMerchantClosed = [self isMerchantClosed:openingHrsModel.Open];
-    
+    isMerchantClosed = [TuplitConstants isMerchantClosed:openingHrsModel.Open];
     APP_DELEGATE.vatPercent = merchantdetailmodel.ProductVAT;
     
     if(merchantdetailmodel.slideshow.count>0)
@@ -633,6 +668,8 @@
         
         cartBarView.hidden = YES;
     }
+    
+    openHrsArray = [TuplitConstants getOpeningHrs:openingHrsModel.Open];
 }
 
 -(void)openFavouriteList
@@ -665,7 +702,6 @@
         
         NSString *keyString = [detailSectionNamesArray objectAtIndex:indexPath.section];
         CommentsModel *cmtdata = [[detailMainDict valueForKey:keyString] objectAtIndex:indexPath.row];
-        NSLog(@"%@",cmtdata.UsersId);
         userID = cmtdata.UsersId;
     }
     
@@ -710,12 +746,12 @@
         return;
     }
     
-    if (!isAllowCartEnabled) {
-        
-        [UIAlertView alertViewWithMessage:LString(@"LOCATION_FAR")];
-        
-        return;
-    }
+//    if (!isAllowCartEnabled) {
+//        
+//        [UIAlertView alertViewWithMessage:LString(@"LOCATION_FAR")];
+//        
+//        return;
+//    }
     
     if ([APP_DELEGATE.cartModel.merchantID isEqualToString:@""]) {
         APP_DELEGATE.cartModel.productCount = 0;
@@ -736,6 +772,8 @@
     APP_DELEGATE.cartModel.address = merchantdetailmodel.Address;
     APP_DELEGATE.cartModel.latitude = merchantdetailmodel.Latitude.doubleValue;
     APP_DELEGATE.cartModel.longitude = merchantdetailmodel.Longitude.doubleValue;
+    OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
+    APP_DELEGATE.cartModel.openHrsArray = openingHrsModel.Open;
     
     CGPoint buttonOrigin = [sender frame].origin;
     CGPoint pointInTableview = [merchantDetailTable convertPoint:buttonOrigin fromView:[sender superview]];
@@ -820,97 +858,108 @@
     [self.navigationController pushViewController:cmtVC animated:YES];
 }
 
--(BOOL) isMerchantClosed:(NSArray*) openHrsArray {
-    
-    NSMutableDictionary *openHoursDict = [[NSMutableDictionary alloc] init];
-    
-    for (NSString *openHours in openHrsArray) {
-        
-        NSArray *daysOpenhoursArray = [openHours componentsSeparatedByString:@":"];
-        
-        if (daysOpenhoursArray.count > 1) {
-            
-            NSString *splitUsing = @",";
-            
-            if ([[daysOpenhoursArray objectAtIndex:0] respondsToSelector:@selector(containsString:)]) {
-               
-                if ([[daysOpenhoursArray objectAtIndex:0] containsString:@"to"]) {
-                    splitUsing = @"to";
-                }
-            }
-            else
-            {
-                if ([[daysOpenhoursArray objectAtIndex:0] rangeOfString:@"to"].location == NSNotFound)
-                {
-                    
-                }
-                else
-                {
-                    splitUsing = @"to";
-                }
-            }
-            
-            NSArray *opdays = [[daysOpenhoursArray objectAtIndex:0] componentsSeparatedByString:splitUsing];
-            NSMutableArray *openDays = [[NSMutableArray alloc] initWithArray:opdays];
-            if ([splitUsing isEqualToString:@"to"]) {
-                
-                [openDays addObject:@"tue"];
-                [openDays addObject:@"wed"];
-                [openDays addObject:@"thu"];
-                [openDays addObject:@"fri"];
-                [openDays addObject:@"sat"];
-                
-            }
-            
-            for (NSString *day in openDays) {
-                
-                NSArray *minHour = [[daysOpenhoursArray objectAtIndex:2] componentsSeparatedByString:@"-"];
-                
-                NSString *openTime = [[NSString stringWithFormat:@"%@.%@",[daysOpenhoursArray objectAtIndex:1],[minHour objectAtIndex:0]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                NSString *closeTime = [[NSString stringWithFormat:@"%@.%@",[minHour objectAtIndex:1],[daysOpenhoursArray objectAtIndex:3]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                
-                [openHoursDict setObject:[NSArray arrayWithObjects:openTime,closeTime,nil] forKey:[[day stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString]];
-            }
-        }
-    }
-    
-    NSLog(@"openHoursDict : %@",openHoursDict);
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"HH.mm"];
-    NSString *time = [formatter stringFromDate:[NSDate date]];
-    [formatter setDateFormat:@"EEE"];
-    NSString *day = [formatter stringFromDate:[NSDate date]];
-    
-    NSArray *openCloseHours = [openHoursDict objectForKey:[day lowercaseString]];
-    
-    NSLog(@"day : %@",day);
-    NSLog(@"openCloseHours : %@",openCloseHours);
-    
-    if (openCloseHours) {
-        
-        float openHours = [[openCloseHours objectAtIndex:0] floatValue];
-        float closeHours = [[openCloseHours objectAtIndex:1] floatValue];
-        
-        float currentHour = [time floatValue];
-        
-        if ((openHours <= currentHour) && (currentHour <= closeHours)) {
-            
-            NSLog(@"Merchant Opened");
-            return NO;
-        }
-        else
-        {
-            NSLog(@"Merchant Closed");
-            return YES;
-        }
-    }
-    else
-    {
-        NSLog(@"Merchant Closed");
-        return YES;
-    }
-}
+//-(BOOL) isMerchantClosed:(NSArray*) openHrsArray {
+//    
+//    NSMutableDictionary *openHoursDict = [[NSMutableDictionary alloc] init];
+//    
+//    for (NSString *openHours in openHrsArray) {
+//        
+//        NSArray *daysOpenhoursArray = [openHours componentsSeparatedByString:@":"];
+//        
+//        if (daysOpenhoursArray.count > 1) {
+//            
+//            NSString *splitUsing = @",";
+//            
+//            if ([[daysOpenhoursArray objectAtIndex:0] respondsToSelector:@selector(containsString:)]) {
+//               
+//                if ([[daysOpenhoursArray objectAtIndex:0] containsString:@"to"]) {
+//                    splitUsing = @"to";
+//                }
+//            }
+//            else
+//            {
+//                if ([[daysOpenhoursArray objectAtIndex:0] rangeOfString:@"to"].location == NSNotFound)
+//                {
+//                    
+//                }
+//                else
+//                {
+//                    splitUsing = @"to";
+//                }
+//            }
+//            
+//            NSArray *opdays = [[daysOpenhoursArray objectAtIndex:0] componentsSeparatedByString:splitUsing];
+//            NSMutableArray *openDays = [[NSMutableArray alloc] initWithArray:opdays];
+//            if ([splitUsing isEqualToString:@"to"]) {
+//                
+//                [openDays addObject:@"tue"];
+//                [openDays addObject:@"wed"];
+//                [openDays addObject:@"thu"];
+//                [openDays addObject:@"fri"];
+//                [openDays addObject:@"sat"];
+//                
+//            }
+//            
+//            for (NSString *day in openDays) {
+//                
+//                NSArray *minHour = [[daysOpenhoursArray objectAtIndex:2] componentsSeparatedByString:@"-"];
+//                
+//                NSString *openTime = [[NSString stringWithFormat:@"%@.%@",[daysOpenhoursArray objectAtIndex:1],[minHour objectAtIndex:0]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//                NSString *closeTime = [[NSString stringWithFormat:@"%@.%@",[minHour objectAtIndex:1],[daysOpenhoursArray objectAtIndex:3]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//                
+//                [openHoursDict setObject:[NSArray arrayWithObjects:openTime,closeTime,nil] forKey:[[day stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString]];
+//            }
+//        }
+//    }
+//    
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"HH.mm"];
+//    NSString *time = [formatter stringFromDate:[NSDate date]];
+//    [formatter setDateFormat:@"EEE"];
+//    NSString *day = [formatter stringFromDate:[NSDate date]];
+//    
+//    NSArray *openCloseHours = [openHoursDict objectForKey:[day lowercaseString]];
+//    
+//    if (openCloseHours) {
+//        
+//        float openHours = [[openCloseHours objectAtIndex:0] floatValue];
+//        float closeHours = [[openCloseHours objectAtIndex:1] floatValue];
+//        
+//        float currentHour = [time floatValue];
+//        
+//        if ((openHours <= currentHour) && (currentHour <= closeHours)) {
+//            
+//            return NO;
+//        }
+//        else
+//        {
+//            return YES;
+//        }
+//    }
+//    else
+//    {
+//        return YES;
+//    }
+//}
+
+//-(double)getopenHrsSectionHeight
+//{
+//    int i;
+//    NSMutableAttributedString *opendaysString = [[NSMutableAttributedString alloc]init];
+//    OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
+//    for(NSString *string in openingHrsModel.Open)
+//    {
+//        if(i!=0)
+//        {
+//            NSAttributedString *atrStr = [[NSAttributedString alloc]initWithString:@"\n" attributes:nil];
+//            [opendaysString appendAttributedString:atrStr];
+//        }
+//        [opendaysString  appendAttributedString:[TuplitConstants getOpeningHrs:string isTimeFormat:NO]];
+//        i++;
+//    }
+//    return [opendaysString.string heigthWithWidth:58 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
+//}
+
 #pragma mark - Table View Data Source Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -973,7 +1022,6 @@
             
             NSString *addressStr = [NSString stringWithFormat:@"%@\n%@\n%@",merchantdetailmodel.Address,merchantdetailmodel.PhoneNumber,merchantdetailmodel.WebsiteUrl];
             float stringHeight = [addressStr heigthWithWidth:150 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
-             NSLog(@"stringHeight = %f",stringHeight);
             if(stringHeight > 70)
                 return stringHeight + 30 + 15;
             else
@@ -988,18 +1036,31 @@
                 return isMerchantClosed ? 90 : 60;
             else {
                 float height;
+                NSMutableAttributedString * stringText;
+               
+                if(openHrsArray.count>0)
+                    stringText =[[NSMutableAttributedString alloc]initWithAttributedString:[openHrsArray objectAtIndex:0]];
+                else
+                {
+                    openHrsArray = [TuplitConstants getOpeningHrs:openingHrsModel.Open];
+                    stringText =[[NSMutableAttributedString alloc]initWithAttributedString:[openHrsArray objectAtIndex:0]];
+                }
+                float opendaysHeight = [stringText.string heigthWithWidth:58 andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
                 if(openingHrsModel.Closed.length>0)
                 {
                     float closedayHeight = [openingHrsModel.Closed heigthWithWidth:baseViewWidth andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]];
-                    height = 30 + (openingHrsModel.Open.count * 15)+closedayHeight+30;
+                    height = 25 + opendaysHeight+closedayHeight+30;
                 }
                 else
-                    height = 30 + (openingHrsModel.Open.count * 15);
+                {
+                   
+                    height = 25 + opendaysHeight;
+                }
                 if (height > 50) {
-                    return isMerchantClosed ? height+15+30: height+15;
+                    return isMerchantClosed ? height+15+25: height+15;
                 }
                 else{
-                    return isMerchantClosed ? 90 : 60 ;
+                    return isMerchantClosed ? 90 : 60;
                 }
             }
         }
@@ -1057,33 +1118,36 @@
     
     if(section == 4)
     {
-        if(totalComments >3)
+        if(isDetailButton)
         {
-            UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];//[[UIButton alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
-            headerBtn.frame = CGRectMake(CGRectGetMaxX(label.frame),3,140,view.height);
-            headerBtn.backgroundColor = [UIColor clearColor];
-            headerBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
-            headerBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-            headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-            UIImage * topUpImage = getImage(@"btn_img", NO);
-            UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
-            
-            [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
-            [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
-            [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
-            
-            [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
-            [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
-            [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
-            
-            [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
-            [headerBtn addTarget:self action:@selector(allcomments) forControlEvents:UIControlEventTouchUpInside];
-            
-            float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+25;
-            headerBtn.width = btnWidth;
-            [headerBtn positionAtX:baseViewWidth-btnWidth-5];
-            [view addSubview:headerBtn];
-            
+            if(totalComments >3)
+            {
+                UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];//[[UIButton alloc]initWithFrame:CGRectMake(CGRectGetMaxX(leftHeaderNameLbl.frame),0,140,HEADER_HEIGHT)];
+                headerBtn.frame = CGRectMake(CGRectGetMaxX(label.frame),3,140,view.height);
+                headerBtn.backgroundColor = [UIColor clearColor];
+                headerBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12.0];
+                headerBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                headerBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+                UIImage * topUpImage = getImage(@"btn_img", NO);
+                UIImage * stretchableTopUpImage = [topUpImage stretchableImageWithLeftCapWidth:9 topCapHeight:0];
+                
+                [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateNormal];
+                [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateHighlighted];
+                [headerBtn setBackgroundImage:stretchableTopUpImage forState:UIControlStateSelected];
+                
+                [headerBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+                [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+                [headerBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+                
+                [headerBtn setTitle: @"See All" forState:UIControlStateNormal];
+                [headerBtn addTarget:self action:@selector(allcomments) forControlEvents:UIControlEventTouchUpInside];
+                
+                float btnWidth = [ @"See All" widthWithFont:headerBtn.titleLabel.font]+25;
+                headerBtn.width = btnWidth;
+                [headerBtn positionAtX:baseViewWidth-btnWidth-5];
+                [view addSubview:headerBtn];
+                
+            }
         }
     }
     
@@ -1159,7 +1223,6 @@
                 [ctgBaseView addSubview:favoriteImageView];
                 
                 UILabel * descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(13,CGRectGetMaxY(ctgBaseView.frame)+10,285,60)];
-                NSLog(@"categoryView.height = %f",categoryView.height);
                 if(categoryView.height == 0)
                     [descriptionLabel positionAtY:CGRectGetMaxY(favoriteLabel.frame)];
                 descriptionLabel.tag = 1004;
@@ -1181,6 +1244,7 @@
                 
                 EGOImageView *iconImageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0,0,cellBaseView.frame.size.height,cellBaseView.frame.size.height)];
                 iconImageView.tag = 2000;
+                iconImageView.contentMode = UIViewContentModeScaleAspectFill;
                 iconImageView.backgroundColor = [UIColor clearColor];
                 [cellBaseView addSubview:iconImageView];
                 
@@ -1350,13 +1414,13 @@
                 iconImageView.layer.cornerRadius=15;
                 iconImageView.clipsToBounds = YES;
                 iconImageView.userInteractionEnabled = YES;
-                [iconImageView setContentMode:UIViewContentModeScaleAspectFit];
+                [iconImageView setContentMode:UIViewContentModeScaleAspectFill];
                 iconImageView.backgroundColor = [UIColor clearColor];
                 [cell.contentView addSubview:iconImageView];
                 UITapGestureRecognizer *friendsImgGesture1 =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openOtherUserDetails:)];
                 [iconImageView addGestureRecognizer:friendsImgGesture1];
                 
-                UILabel * firstNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(iconImageView.frame)+5, 12,200, 17)];
+                UILabel * firstNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(iconImageView.frame)+5, 8,200, 17)];
                 firstNameLabel.tag = 5002;
                 firstNameLabel.backgroundColor = [UIColor clearColor];
                 firstNameLabel.textColor = UIColorFromRGB(0x333333);
@@ -1436,8 +1500,8 @@
             priceLbl.text = [NSString stringWithFormat:@"%@",[numberFormatter stringFromNumber:[NSNumber numberWithDouble:specialProduct.Price.doubleValue]]];
             discountPriceLbl.text = [NSString stringWithFormat:@"%@",[numberFormatter stringFromNumber:[NSNumber numberWithDouble:specialProduct.DiscountPrice.doubleValue]]];
             
-
-            if (!isAllowCartEnabled || isMerchantClosed) {
+// if (!isAllowCartEnabled || isMerchantClosed)
+            if (isMerchantClosed) {
                 [addCartBtn setImage:getImage(@"add_bag_grey",NO) forState:UIControlStateNormal];
                 addCartBtn.enabled = NO;
             }
@@ -1494,44 +1558,32 @@
             int i=0;
             if([merchantdetailmodel.OpeningHours count]>0)
             {
+                
                 openHeaderLbl.hidden = NO;
                 OpeningHoursModel *openingHrsModel = [merchantdetailmodel.OpeningHours objectAtIndex:0];
+//                openHrsArray = [TuplitConstants getOpeningHrs:openingHrsModel.Open];
+                
                 UILabel * daysLbl = (UILabel *)[cell.contentView viewWithTag:4006];
                 daysLbl.numberOfLines = 0;
-                NSMutableAttributedString *opendaysString = [[NSMutableAttributedString alloc]init];
-                for(NSString *string in openingHrsModel.Open)
+
+                if(openHrsArray.count>0)
                 {
-                    if(i!=0)
-                    {
-                        NSAttributedString *atrStr = [[NSAttributedString alloc]initWithString:@"\n" attributes:nil];
-                        [opendaysString appendAttributedString:atrStr];
-                    }
-                    [opendaysString  appendAttributedString:[TuplitConstants getOpeningHrs:string isTimeFormat:NO]];
-                    i++;
+                     NSAttributedString * stringText =[openHrsArray objectAtIndex:0];
+                    [daysLbl setAttributedText:stringText];
                 }
-                
-                [daysLbl setAttributedText:opendaysString];
-                CGRect dayFrame = daysLbl.frame;
-                dayFrame.size.height =(i * 15);
-                [daysLbl setFrame:dayFrame];
+                int daysheight = [daysLbl.text heigthWithWidth:daysLbl.width andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]]+2;
+                daysLbl.height = daysheight;
                 
                 UILabel * openingHrsLbl = (UILabel *)[cell.contentView viewWithTag:4001];
                 openingHrsLbl.numberOfLines = 0;
-                NSMutableAttributedString *openHrsString = [[NSMutableAttributedString alloc]init];
-                i=0;
-                for(NSString *string in openingHrsModel.Open)
+
+                if(openHrsArray.count>1)
                 {
-                    if(i!=0)
-                    {
-                        NSAttributedString *atrStr = [[NSAttributedString alloc]initWithString:@"\n" attributes:nil];
-                        [openHrsString appendAttributedString:atrStr];
-                    }
-                    [openHrsString  appendAttributedString:[TuplitConstants getOpeningHrs:string isTimeFormat:YES]];
-                    i++;
+                     NSAttributedString * stringText =[openHrsArray objectAtIndex:1];
+                    [openingHrsLbl setAttributedText:stringText];
                 }
-                
-                [openingHrsLbl setAttributedText:openHrsString];
-                openingHrsLbl.height = (i * 15);
+               int hrsheight = [openingHrsLbl.text heigthWithWidth:openingHrsLbl.width andFont:[UIFont fontWithName:@"HelveticaNeue" size:12]]+2;
+                openingHrsLbl.height = hrsheight;
                 
                 UIView *openHrsView = (UILabel *)[cell.contentView viewWithTag:4005];
                 openHrsView.height = CGRectGetMaxY(openingHrsLbl.frame);
@@ -1548,6 +1600,7 @@
                     closeDaysLbl.width = cell.width/2-10;
                     float closeLblHeight = [closeDaysLbl.text heigthWithWidth:closeDaysLbl.frame.size.width andFont:closeDaysLbl.font];
                     closeDaysLbl.height = closeLblHeight+1;
+                    closedayView.height = 30+closeLblHeight;
                 }
                 else
                 {
@@ -1558,12 +1611,6 @@
                     float closeLblHeight = [closeDaysLbl.text heigthWithWidth:closeDaysLbl.frame.size.width andFont:closeDaysLbl.font];
                     closeDaysLbl.height = closeLblHeight+1;
                 }
-                
-//                UILabel * closeDaysLbl = (UILabel *)[cell.contentView viewWithTag:4007];
-//                closeDaysLbl.text = openingHrsModel.Closed;
-//                
-//                float closeLblHeight = [closeDaysLbl.text heigthWithWidth:closeDaysLbl.frame.size.width andFont:closeDaysLbl.font];
-//                closeDaysLbl.height = closeLblHeight+1;
                 
                 if(openingHrsModel.Closed.length==0)
                 {
@@ -1638,6 +1685,7 @@
             
             EGOImageView *iconImageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0,0,cellBaseView.frame.size.height,cellBaseView.frame.size.height)];
             iconImageView.tag = 2000;
+            iconImageView.contentMode = UIViewContentModeScaleAspectFill;
             iconImageView.backgroundColor = [UIColor clearColor];
             [cellBaseView addSubview:iconImageView];
             
@@ -1733,7 +1781,8 @@
         discountPriceLbl.text = [NSString stringWithFormat:@"%@",priceValue];
         
         UIButton * addToCartBtn = (UIButton *) [cell.contentView viewWithTag:2004];
-        if (!isAllowCartEnabled || isMerchantClosed) {
+//         if (!isAllowCartEnabled || isMerchantClosed)
+        if (isMerchantClosed) {
             [addToCartBtn setImage:getImage(@"add_bag_grey",NO) forState:UIControlStateNormal];
             addCartBtn.enabled = NO;
         }
@@ -1871,20 +1920,23 @@
     }
     
     [self updateMerchantDetails];
-    
+    merchantErrorLabel.hidden = YES;
     [[ProgressHud shared] hide];
 }
 
 - (void)merchantDetailsManager:(TLMerchantDetailsManager *)merchantDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:errorMsg];
+    merchantErrorLabel.hidden = NO;
+    merchantErrorLabel.text = errorMsg;
+    
 }
 
 - (void)merchantDetailsManagerFailed:(TLMerchantDetailsManager *)merchantDetailsManager
 {
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    merchantErrorLabel.hidden = NO;
+    merchantErrorLabel.text = LString(@"SERVER_CONNECTION_ERROR");
 }
 
 #pragma  mark - TLAddFavouriteManager Delegate Methods

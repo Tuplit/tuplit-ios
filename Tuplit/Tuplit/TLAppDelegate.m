@@ -18,22 +18,21 @@
 
 @implementation TLAppDelegate
 
-@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict,vatPercent;
+@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict,vatPercent,isFriendInvited,isSocialhandeled;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
-    NSDate *now = [NSDate date];
-    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekCalendarUnit | NSWeekdayCalendarUnit fromDate:now];
-    
-    NSUInteger weekdayToday = [components weekday];
-    NSLog(@"weekday = %lu",(unsigned long)weekdayToday);
-    
     [Flurry startSession:@"6TGJF7C6WTFFNBYDSQ4Z"];
-     
+    [Flurry logAllPageViewsForTarget:self.navigationController];
+    [Flurry setCrashReportingEnabled:YES];
+    [Flurry setDebugLogEnabled:NO];
+    [Flurry setBackgroundSessionEnabled:NO];
+
     self.catgDict = [NSMutableDictionary new];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     //Register Push Notification
     
@@ -51,12 +50,9 @@
         NSLog(@"Push notification on Launch : %@",[NSString stringWithFormat:@"%@", launchOptions]);
     }
     
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
     self.defaultColor = UIColorFromRGB(0x00b3a4);
     self.cartModel = [[CartModel alloc] init];
-    
+    [self callStaticContentWebService];
     [CurrentLocation start];
     
     welcomeViewController = [[TLWelcomeViewController alloc] initWithNibName:@"TLWelcomeViewController" bundle:nil];
@@ -84,20 +80,17 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    if(!isSocialhandeled)
+    {
+        [self performSelectorInBackground:@selector(callStaticContentWebService) withObject:nil];
+        isSocialhandeled = NO;
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     application.applicationIconBadgeNumber = 0;
-    
-    [self performSelectorInBackground:@selector(callStaticContentWebService) withObject:nil];
     [FBSession.activeSession handleDidBecomeActive];
-    
-//    if([TLUserDefaults getCurrentUser])
-//    {
-//        [self callUserService];
-//    }
-    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -114,6 +107,7 @@
 
 - (BOOL)application: (UIApplication *)application openURL: (NSURL *)url sourceApplication: (NSString *)sourceApplication annotation: (id)annotation
 {
+    self.isSocialhandeled = NO;
     NSString * urlString  = [NSString stringWithFormat:@"%@",url];
     if ([urlString rangeOfString:@"fb"].location == NSNotFound) {
         return [GPPURLHandler handleURL:url sourceApplication:sourceApplication annotation:annotation];
@@ -164,8 +158,8 @@
     else if ([[dict objectForKey:@"type"] intValue] == 3)  // Approve order
     {
         NSString *processId = [dict objectForKey:@"processId"];
-         NSString *merchantId = [dict objectForKey:@"merchantId"];
-         NSString *merchantName = [dict objectForKey:@"merchantName"];
+        NSString *merchantId = [dict objectForKey:@"merchantId"];
+        NSString *merchantName = [dict objectForKey:@"merchantName"];
         
         TLOrderConformViewController *orderConfromView = [[TLOrderConformViewController alloc]init];
         orderConfromView.orderStatus = @"1";
@@ -180,10 +174,14 @@
     else if ([[dict objectForKey:@"type"] intValue] == 4) // Reject order
     {
         NSString *processId = [dict objectForKey:@"processId"];
+        NSString *merchantId = [dict objectForKey:@"merchantId"];
+        NSString *merchantName = [dict objectForKey:@"merchantName"];
         
         TLOrderConformViewController *orderConfromView = [[TLOrderConformViewController alloc]init];
-        orderConfromView.orderStatus = @"0";
+        orderConfromView.orderStatus = @"3";
         orderConfromView.orderID = processId;
+        orderConfromView.merchatID = merchantId;
+        orderConfromView.merchatName = merchantName;
         
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:orderConfromView];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
