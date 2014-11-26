@@ -71,7 +71,7 @@
     scrollView.backgroundColor=[UIColor clearColor];
     [baseView addSubview:scrollView];
     
-    UIImage *detailImg=[UIImage imageNamed:@"receipt.png"];
+    UIImage *detailImg=[UIImage imageNamed:@"receipt"];
     detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, 20,baseView.width-10, 254 + tableHeight)];
     detailImgView.image=detailImg;
     detailImgView.backgroundColor=[UIColor clearColor];
@@ -100,7 +100,7 @@
     [detailImgView addSubview:dateTimeLbl];
     
     lineImgView1=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(dateTimeLbl.frame)+12,detailImgView.width-24, 3)];
-    lineImgView1.image=[UIImage imageNamed:@"line.png"];
+    lineImgView1.image=[UIImage imageNamed:@"line"];
     lineImgView1.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:lineImgView1];
     
@@ -112,7 +112,7 @@
     [detailImgView addSubview:itemsListTable];
     
     lineImgView2=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(itemsListTable.frame),detailImgView.width-24, 3)];
-    lineImgView2.image=[UIImage imageNamed:@"line.png"];
+    lineImgView2.image=[UIImage imageNamed:@"line"];
     lineImgView2.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:lineImgView2];
     
@@ -164,7 +164,7 @@
     [detailImgView addSubview:totalAmtTotalLbl];
     
     lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalAmtTotalLbl.frame),detailImgView.width-24, 3)];
-    lineImgView3.image=[UIImage imageNamed:@"line.png"];
+    lineImgView3.image=[UIImage imageNamed:@"line"];
     lineImgView3.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:lineImgView3];
     
@@ -201,7 +201,7 @@
 {
     [super viewDidLoad];
     [self callServiceWithorderID:self.orderID];
-    lastFetchCount = self.transActionList.count;
+    lastFetchCount = (int)self.transActionList.count;
     if(transActionList.count>1&&index!=transActionList.count-1)
     {
         UIBarButtonItem *backBtn = [[UIBarButtonItem alloc] init];
@@ -299,12 +299,12 @@
     detailImgView.frame = CGRectMake(5, 20,baseViewWidth-10, CGRectGetMaxY(transactionIDLbl.frame) + 50);
     if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
     {
-        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,7,15,15) resizingMode:UIImageResizingModeStretch];
+        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,15,40,15) resizingMode:UIImageResizingModeStretch];
         detailImgView.image = stretchableBackground;
     }
     
     scrollView.contentSize=CGSizeMake(baseViewWidth,CGRectGetMaxY(detailImgView.frame) + 50);
-    lastFetchCount = transActionList.count;
+    lastFetchCount = (int)transActionList.count;
     
 }
 
@@ -494,9 +494,9 @@
         }
     }
     
-    totalUserListCount = trancactionListingManager.totalCount;
+    totalUserListCount = (int)trancactionListingManager.totalCount;
     
-    lastFetchCount = lastFetchCount + trancactionListingManager.listedCount;
+    lastFetchCount = lastFetchCount + (int)trancactionListingManager.listedCount;
     
     
     isPullRefreshPressed = NO;

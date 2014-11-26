@@ -81,7 +81,7 @@
     self.onColor = [APP_DELEGATE defaultColor];
     self.offColor= [UIColor lightGrayColor];
    // self.borderColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.91f alpha:1.00f];
-    self.knobColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"grayBg.png"]];
+    self.knobColor = [UIColor colorWithPatternImage:getImage(@"grayBg", NO)];
     
     // background
     background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];

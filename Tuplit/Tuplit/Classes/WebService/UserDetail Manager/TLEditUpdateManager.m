@@ -22,7 +22,7 @@
 	AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:REGISTER_URL]];
    
     NSData *profilePicture;
-    if(self.user.userImage != nil) {
+    if(self.user.userImage != nil && ![self.user.userImage isKindOfClass:[NSString class]]) {
         self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(120, 120)];
         profilePicture = UIImageJPEGRepresentation(self.user.userImage, 0.80);
     }
@@ -45,7 +45,7 @@
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     NSString * strValue = [queryParams JSONRepresentation];
     NSData *postData = [strValue dataUsingEncoding:NSUTF8StringEncoding];
-    [request setValue:[NSString stringWithFormat:@"%d", postData.length] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)postData.length] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:postData];
         
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];

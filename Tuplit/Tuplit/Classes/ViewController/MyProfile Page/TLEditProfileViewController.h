@@ -36,6 +36,8 @@
     NSDictionary *mainDict;
     NSMutableDictionary *nameDict;
     NSArray *sectionHeader;
+    
+    BOOL isEdited;
 }
 @property(nonatomic,retain) UserDetailModel *userDetail;
 @property(nonatomic,retain) NSString *pincode;

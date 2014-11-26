@@ -169,7 +169,7 @@
             sendCreditBtn.tag=5002;
             [sendCreditBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
             sendCreditBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
-            [sendCreditBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+            [sendCreditBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg"] forState:UIControlStateNormal];
             [topView addSubview:sendCreditBtn];
             
             if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
@@ -369,14 +369,14 @@
     UIButton *deleteBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
     [deleteBtn setFrame:CGRectMake(220, 0, 50, 50)];
     deleteBtn.backgroundColor=[UIColor clearColor];
-    [deleteBtn setBackgroundImage:[UIImage imageNamed:@"minus.png"] forState:UIControlStateNormal];
+    [deleteBtn setBackgroundImage:[UIImage imageNamed:@"minus"] forState:UIControlStateNormal];
     [deleteBtn addTarget:self action:@selector(removeItem:) forControlEvents:UIControlEventTouchUpInside];
     [editView addSubview:deleteBtn];
     
     UIButton *addBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
     [addBtn setFrame:CGRectMake(CGRectGetMaxX(deleteBtn.frame),0, 50,50)];
     addBtn.backgroundColor=[UIColor clearColor];
-    [addBtn setBackgroundImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
+    [addBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
     [addBtn addTarget:self action:@selector(addItem:) forControlEvents:UIControlEventTouchUpInside];
     [editView addSubview:addBtn];
     

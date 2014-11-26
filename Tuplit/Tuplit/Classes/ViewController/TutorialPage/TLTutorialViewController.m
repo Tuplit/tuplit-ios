@@ -53,7 +53,7 @@
         self.automaticallyAdjustsScrollViewInsets = YES;
     }
 
-    numberOfSlides = [Global instance].tutorialScreenImages.count;
+    numberOfSlides = (int)[Global instance].tutorialScreenImages.count;
     leftPos=0;
     rightPos=0;
     

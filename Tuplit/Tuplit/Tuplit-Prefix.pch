@@ -38,6 +38,7 @@
 #import "Global.h"
 #import "TLUserDefaults.h"
 #import "UILabel+Tuplit.h"
+#import "TLLabel.h"
 
 #import "NSString+Extras.h"
 #import "UIView+Alignment.h"

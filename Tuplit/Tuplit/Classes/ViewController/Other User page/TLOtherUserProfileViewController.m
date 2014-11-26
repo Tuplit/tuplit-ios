@@ -350,7 +350,7 @@
         transactionDetail.orderID = transaction.OrderId;
         transactionDetail.transActionList = [transactionList mutableCopy];
         transactionDetail.userID = [TLUserDefaults getCurrentUser].UserId;
-        transactionDetail.index = indexPath.row;
+        transactionDetail.index = (int)indexPath.row;
         [userProfileTable deselectRowAtIndexPath:indexPath animated:YES];
         [self.navigationController pushViewController:transactionDetail animated:YES];
     }

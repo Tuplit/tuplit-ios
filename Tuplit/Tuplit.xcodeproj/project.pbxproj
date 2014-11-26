@@ -28,7 +28,6 @@
 		2D23EF621934A71300C8FC3B /* TLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D23EF611934A71300C8FC3B /* TLAppDelegate.m */; };
 		2D23EF661934A71D00C8FC3B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D23EF631934A71D00C8FC3B /* main.m */; };
 		2D23EF6A1934A73200C8FC3B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF681934A73200C8FC3B /* Localizable.strings */; };
-		2D23EFBF1934A74300C8FC3B /* Defatult.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF6D1934A74300C8FC3B /* Defatult.png */; };
 		2D23EFC21934A74300C8FC3B /* BackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF711934A74300C8FC3B /* BackArrow.png */; };
 		2D23EFC31934A74300C8FC3B /* BackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF721934A74300C8FC3B /* BackArrow@2x.png */; };
 		2D23EFC41934A74300C8FC3B /* buttonBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF731934A74300C8FC3B /* buttonBg.png */; };
@@ -55,7 +54,6 @@
 		2D23EFD91934A74300C8FC3B /* DiscountEnable@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF8C1934A74300C8FC3B /* DiscountEnable@2x.png */; };
 		2D23EFDA1934A74300C8FC3B /* DiscountMap.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF8D1934A74300C8FC3B /* DiscountMap.png */; };
 		2D23EFDB1934A74300C8FC3B /* DiscountMap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF8E1934A74300C8FC3B /* DiscountMap@2x.png */; };
-		2D23EFDC1934A74300C8FC3B /* specialIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF8F1934A74300C8FC3B /* specialIcon.png */; };
 		2D23EFDD1934A74300C8FC3B /* FavouriteStar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF901934A74300C8FC3B /* FavouriteStar@2x.png */; };
 		2D23EFDE1934A74300C8FC3B /* List.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF911934A74300C8FC3B /* List.png */; };
 		2D23EFDF1934A74300C8FC3B /* List@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EF921934A74300C8FC3B /* List@2x.png */; };
@@ -225,7 +223,6 @@
 		2D735BC1194ED6CA00BD44F7 /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BA9194ED6CA00BD44F7 /* line.png */; };
 		2D735BC2194ED6CA00BD44F7 /* line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BAA194ED6CA00BD44F7 /* line@2x.png */; };
 		2D735BC3194ED6CA00BD44F7 /* receipt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BAB194ED6CA00BD44F7 /* receipt@2x.png */; };
-		2D735BC4194ED6CA00BD44F7 /* ref.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BAC194ED6CA00BD44F7 /* ref.jpg */; };
 		2D735BC5194ED6CA00BD44F7 /* burger.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BAE194ED6CA00BD44F7 /* burger.png */; };
 		2D735BC6194ED6CA00BD44F7 /* green_cart.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BAF194ED6CA00BD44F7 /* green_cart.png */; };
 		2D735BC7194ED6CA00BD44F7 /* green_cart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D735BB0194ED6CA00BD44F7 /* green_cart@2x.png */; };
@@ -441,6 +438,8 @@
 		FED5D33F196AD6FF006BF2A1 /* TLCreditCardListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D33E196AD6FF006BF2A1 /* TLCreditCardListingManager.m */; };
 		FED5D342196AD7CE006BF2A1 /* CreditCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D341196AD7CE006BF2A1 /* CreditCardModel.m */; };
 		FEDAA24F19C1DF86000E3CEB /* TLHelpCenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEDAA24E19C1DF86000E3CEB /* TLHelpCenterViewController.m */; };
+		FEDBFA951A23507E00948CC6 /* TLLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEDBFA941A23507E00948CC6 /* TLLabel.m */; };
+		FEDBFA971A235DCA00948CC6 /* receipt.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDBFA961A235DCA00948CC6 /* receipt.png */; };
 		FEE55AB219A37A05008B8B75 /* TLCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE55AB119A37A05008B8B75 /* TLCategoryView.m */; };
 		FEE7B9F719E8F3FE0034CD12 /* libCardIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEE7B9F619E8F3FE0034CD12 /* libCardIO.a */; };
 		FEE7B9F919E8FE760034CD12 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEE7B9F819E8FE760034CD12 /* AudioToolbox.framework */; };
@@ -532,7 +531,6 @@
 		2D23EF641934A71D00C8FC3B /* Tuplit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tuplit-Info.plist"; path = "Tuplit/Tuplit-Info.plist"; sourceTree = SOURCE_ROOT; };
 		2D23EF651934A71D00C8FC3B /* Tuplit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Tuplit-Prefix.pch"; path = "Tuplit/Tuplit-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		2D23EF691934A73200C8FC3B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
-		2D23EF6D1934A74300C8FC3B /* Defatult.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Defatult.png; sourceTree = "<group>"; };
 		2D23EF711934A74300C8FC3B /* BackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BackArrow.png; sourceTree = "<group>"; };
 		2D23EF721934A74300C8FC3B /* BackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BackArrow@2x.png"; sourceTree = "<group>"; };
 		2D23EF731934A74300C8FC3B /* buttonBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonBg.png; sourceTree = "<group>"; };
@@ -559,7 +557,6 @@
 		2D23EF8C1934A74300C8FC3B /* DiscountEnable@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DiscountEnable@2x.png"; sourceTree = "<group>"; };
 		2D23EF8D1934A74300C8FC3B /* DiscountMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DiscountMap.png; sourceTree = "<group>"; };
 		2D23EF8E1934A74300C8FC3B /* DiscountMap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DiscountMap@2x.png"; sourceTree = "<group>"; };
-		2D23EF8F1934A74300C8FC3B /* specialIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = specialIcon.png; sourceTree = "<group>"; };
 		2D23EF901934A74300C8FC3B /* FavouriteStar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FavouriteStar@2x.png"; sourceTree = "<group>"; };
 		2D23EF911934A74300C8FC3B /* List.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = List.png; sourceTree = "<group>"; };
 		2D23EF921934A74300C8FC3B /* List@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "List@2x.png"; sourceTree = "<group>"; };
@@ -810,7 +807,6 @@
 		2D735BA9194ED6CA00BD44F7 /* line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = line.png; sourceTree = "<group>"; };
 		2D735BAA194ED6CA00BD44F7 /* line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "line@2x.png"; sourceTree = "<group>"; };
 		2D735BAB194ED6CA00BD44F7 /* receipt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "receipt@2x.png"; sourceTree = "<group>"; };
-		2D735BAC194ED6CA00BD44F7 /* ref.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ref.jpg; sourceTree = "<group>"; };
 		2D735BAE194ED6CA00BD44F7 /* burger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = burger.png; sourceTree = "<group>"; };
 		2D735BAF194ED6CA00BD44F7 /* green_cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green_cart.png; sourceTree = "<group>"; };
 		2D735BB0194ED6CA00BD44F7 /* green_cart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green_cart@2x.png"; sourceTree = "<group>"; };
@@ -1098,6 +1094,9 @@
 		FED5D341196AD7CE006BF2A1 /* CreditCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreditCardModel.m; sourceTree = "<group>"; };
 		FEDAA24D19C1DF86000E3CEB /* TLHelpCenterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLHelpCenterViewController.h; sourceTree = "<group>"; };
 		FEDAA24E19C1DF86000E3CEB /* TLHelpCenterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLHelpCenterViewController.m; sourceTree = "<group>"; };
+		FEDBFA931A23507E00948CC6 /* TLLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLLabel.h; path = Label/TLLabel.h; sourceTree = "<group>"; };
+		FEDBFA941A23507E00948CC6 /* TLLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLLabel.m; path = Label/TLLabel.m; sourceTree = "<group>"; };
+		FEDBFA961A235DCA00948CC6 /* receipt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = receipt.png; sourceTree = "<group>"; };
 		FEE55AB019A37A05008B8B75 /* TLCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLCategoryView.h; path = CategoryView/TLCategoryView.h; sourceTree = "<group>"; };
 		FEE55AB119A37A05008B8B75 /* TLCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCategoryView.m; path = CategoryView/TLCategoryView.m; sourceTree = "<group>"; };
 		FEE7B9F619E8F3FE0034CD12 /* libCardIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCardIO.a; path = Tuplit/Classes/Utilities/CardIO/libCardIO.a; sourceTree = "<group>"; };
@@ -1225,7 +1224,6 @@
 				FEC1884319583E10008D69AD /* MyProfile */,
 				2D391250195006F4002CFFC6 /* MerchantDetail */,
 				2D735B9F194ED6CA00BD44F7 /* Cart Image */,
-				2D23EF6D1934A74300C8FC3B /* Defatult.png */,
 				2D23EF701934A74300C8FC3B /* General */,
 				2D23EF791934A74300C8FC3B /* LeftMenu */,
 				2D23EF841934A74300C8FC3B /* Merchant */,
@@ -1310,7 +1308,6 @@
 				2D23EF8C1934A74300C8FC3B /* DiscountEnable@2x.png */,
 				2D23EF8D1934A74300C8FC3B /* DiscountMap.png */,
 				2D23EF8E1934A74300C8FC3B /* DiscountMap@2x.png */,
-				2D23EF8F1934A74300C8FC3B /* specialIcon.png */,
 				2D23EF901934A74300C8FC3B /* FavouriteStar@2x.png */,
 				FE90B8FA19A72372000A4279 /* NewIcon.png */,
 				FE90B8FB19A72372000A4279 /* NewIcon@2x.png */,
@@ -1643,8 +1640,8 @@
 				FEA546FA195826F00083E588 /* CardIO */,
 				FEC5C3961936FD4600D59D05 /* RESideMenu */,
 				2D23F5711934B38900C8FC3B /* Categories */,
-				2D23F58A1934B38900C8FC3B /* Current Location */,
 				2D23F58F1934B38900C8FC3B /* CustomControls */,
+				2D23F58A1934B38900C8FC3B /* Current Location */,
 				2D23F59B1934B38900C8FC3B /* ImageLazyLoader */,
 				2D23F5AA1934B38900C8FC3B /* JSON */,
 				2D23F5B81934B38900C8FC3B /* MKBlock */,
@@ -1708,6 +1705,7 @@
 		2D23F58F1934B38900C8FC3B /* CustomControls */ = {
 			isa = PBXGroup;
 			children = (
+				FEDBFA921A23504D00948CC6 /* Label */,
 				FE5483231A0369BF00A5FE13 /* Action sheet */,
 				FE990D5019AEF3F6001CF13C /* SlideShowView */,
 				FEE55AAB19A379C9008B8B75 /* CategoryView */,
@@ -1973,15 +1971,15 @@
 			isa = PBXGroup;
 			children = (
 				2D735BA1194ED6CA00BD44F7 /* bg.png */,
+				2D735BA4194ED6CA00BD44F7 /* bg@2x.png */,
 				2D735BA2194ED6CA00BD44F7 /* bg960.png */,
 				2D735BA3194ED6CA00BD44F7 /* bg960@2x.png */,
-				2D735BA4194ED6CA00BD44F7 /* bg@2x.png */,
 				2D735BA5194ED6CA00BD44F7 /* bill_bg.png */,
 				2D735BA6194ED6CA00BD44F7 /* bill_bg@2x.png */,
 				2D735BA9194ED6CA00BD44F7 /* line.png */,
 				2D735BAA194ED6CA00BD44F7 /* line@2x.png */,
+				FEDBFA961A235DCA00948CC6 /* receipt.png */,
 				2D735BAB194ED6CA00BD44F7 /* receipt@2x.png */,
-				2D735BAC194ED6CA00BD44F7 /* ref.jpg */,
 			);
 			path = CartAcknowledge;
 			sourceTree = "<group>";
@@ -2570,6 +2568,15 @@
 			name = "CreditCard Manager";
 			sourceTree = "<group>";
 		};
+		FEDBFA921A23504D00948CC6 /* Label */ = {
+			isa = PBXGroup;
+			children = (
+				FEDBFA931A23507E00948CC6 /* TLLabel.h */,
+				FEDBFA941A23507E00948CC6 /* TLLabel.m */,
+			);
+			name = Label;
+			sourceTree = "<group>";
+		};
 		FEE55AAB19A379C9008B8B75 /* CategoryView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2777,7 +2784,6 @@
 				2D391277195006F4002CFFC6 /* back_arrow@2x.png in Resources */,
 				FECC0866196819AB00906FAF /* fav_y.png in Resources */,
 				2DAF54051951D0FA000DC545 /* add_bag_grey@2x.png in Resources */,
-				2D23EFBF1934A74300C8FC3B /* Defatult.png in Resources */,
 				FE90B8FD19A72372000A4279 /* NewIcon@2x.png in Resources */,
 				2D23EFE41934A74300C8FC3B /* search.png in Resources */,
 				FEC6FCD019B0C6420019E95A /* red_tag.png in Resources */,
@@ -2806,7 +2812,6 @@
 				2D23F0071934A74300C8FC3B /* WelcomeSlide@2x.png in Resources */,
 				2D391284195006F4002CFFC6 /* save@2x.png in Resources */,
 				FE7DE9EF1A0A38BB00A86A7C /* welcomePlaceholder@2x.png in Resources */,
-				2D735BC4194ED6CA00BD44F7 /* ref.jpg in Resources */,
 				EE5458881977F7F8000F9F9A /* fsearch@2x.png in Resources */,
 				2D028CA319640E6F00984559 /* button.png in Resources */,
 				2D23EFDA1934A74300C8FC3B /* DiscountMap.png in Resources */,
@@ -2886,6 +2891,7 @@
 				FE2C6D0419CC549E00E7B53B /* orange_icon@2x.png in Resources */,
 				2D23EFDD1934A74300C8FC3B /* FavouriteStar@2x.png in Resources */,
 				FEF8AE3B19756FFD00DE2EAD /* rotateButtonBg@2x.png in Resources */,
+				FEDBFA971A235DCA00948CC6 /* receipt.png in Resources */,
 				2D23EFE91934A74300C8FC3B /* ListGreen@2x.png in Resources */,
 				FE52E4091A0270C5000D8C6B /* g+@2x.png in Resources */,
 				2D23EFC41934A74300C8FC3B /* buttonBg.png in Resources */,
@@ -2922,7 +2928,6 @@
 				2D735BC2194ED6CA00BD44F7 /* line@2x.png in Resources */,
 				2D028CAB19640E6F00984559 /* grayBg.png in Resources */,
 				2D028CAD19640E6F00984559 /* twitterOff.png in Resources */,
-				2D23EFDC1934A74300C8FC3B /* specialIcon.png in Resources */,
 				2D23F6241934B83100C8FC3B /* CallOut@2x.png in Resources */,
 				FEC705AF196135A500BC8F8B /* 6_n.png in Resources */,
 				FEA164B019989AEA00FB9471 /* btn_img.png in Resources */,
@@ -3046,6 +3051,7 @@
 				2D23F5F31934B38900C8FC3B /* SBJsonWriter.m in Sources */,
 				2D23F0CB1934A75900C8FC3B /* Global.m in Sources */,
 				2D23F0CC1934A75900C8FC3B /* FriendsModel.m in Sources */,
+				FEDBFA951A23507E00948CC6 /* TLLabel.m in Sources */,
 				2D23F1051934A75900C8FC3B /* TLForgotPasswordViewController.m in Sources */,
 				2D391246194FF9CD002CFFC6 /* MenuProductsModel.m in Sources */,
 				FEE55AB219A37A05008B8B75 /* TLCategoryView.m in Sources */,

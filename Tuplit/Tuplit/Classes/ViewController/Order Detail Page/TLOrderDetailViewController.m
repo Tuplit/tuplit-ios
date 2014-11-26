@@ -31,7 +31,6 @@
     
     UILabel *informativeLbl;
     
-    
     UIButton *acceptBtn;
     UIButton *rejectBtn;
     
@@ -88,7 +87,7 @@
     informativeLbl.text = LString(@"ORDER_INFO_TXT");
     [scrollView addSubview:informativeLbl];
     
-    UIImage *detailImg=[UIImage imageNamed:@"receipt.png"];
+    UIImage *detailImg=[UIImage imageNamed:@"receipt"];
     detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseView.width-10, 270 + tableHeight)];
     detailImgView.image=detailImg;
     detailImgView.backgroundColor=[UIColor clearColor];
@@ -118,7 +117,7 @@
     [detailImgView addSubview:dateTimeLbl];
     
     lineImgView1=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(dateTimeLbl.frame)+12,detailImgView.width-24, 3)];
-    lineImgView1.image=[UIImage imageNamed:@"line.png"];
+    lineImgView1.image=[UIImage imageNamed:@"line"];
     lineImgView1.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:lineImgView1];
     
@@ -130,7 +129,7 @@
     [detailImgView addSubview:itemsListTable];
     
     lineImgView2=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(itemsListTable.frame),detailImgView.width-24, 3)];
-    lineImgView2.image=[UIImage imageNamed:@"line.png"];
+    lineImgView2.image=[UIImage imageNamed:@"line"];
     lineImgView2.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:lineImgView2];
     
@@ -192,7 +191,7 @@
     acceptBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
     acceptBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     [acceptBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    [acceptBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+    [acceptBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg"] forState:UIControlStateNormal];
     [acceptBtn addTarget:self action:@selector(acceptOrderAction) forControlEvents:UIControlEventTouchUpInside];
     acceptBtn.backgroundColor = [UIColor clearColor];
     [detailImgView addSubview:acceptBtn];
@@ -283,7 +282,7 @@
     detailImgView.frame = CGRectMake(5, CGRectGetMaxY(informativeLbl.frame),baseViewWidth-10, CGRectGetMaxY(acceptBtn.frame) + 50);
     if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
     {
-        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,7,15,15) resizingMode:UIImageResizingModeStretch];
+        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,15,40,15) resizingMode:UIImageResizingModeStretch];
         detailImgView.image = stretchableBackground;
     }
     rejectBtn.frame = CGRectMake(14, CGRectGetMaxY(detailImgView.frame)+15, detailImgView.width-28, 45);

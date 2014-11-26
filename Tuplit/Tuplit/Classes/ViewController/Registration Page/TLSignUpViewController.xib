@@ -177,7 +177,7 @@
                                 <action selector="privacyAction:" destination="-1" eventType="touchUpInside" id="7BZ-Wz-wj3"/>
                             </connections>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Date of Birth" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hYt-bF-VvD">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date of Birth" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hYt-bF-VvD" customClass="TLLabel">
                             <rect key="frame" x="20" y="444" width="280" height="45"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.93600526147959184" green="0.93600526147959184" blue="0.93600526147959184" alpha="1" colorSpace="calibratedRGB"/>

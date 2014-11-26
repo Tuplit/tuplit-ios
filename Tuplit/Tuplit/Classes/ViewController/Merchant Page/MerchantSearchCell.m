@@ -73,12 +73,6 @@
         discountImageView.image = discountImage;
         [containerView addSubview:discountImageView];
         
-//        UIImage *discountImage = [UIImage imageNamed:@"specialIcon"];
-//        discountImageView = [[UIImageView alloc] initWithFrame:CGRectMake((containerView.frame.size.width - discountImage.size.width - 10),8,discountImage.size.width, discountImage.size.height)];
-//        discountImageView.backgroundColor = [UIColor clearColor];
-//        discountImageView.image = discountImage;
-//        [containerView addSubview:discountImageView];
-        
         int yPosition;
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             yPosition = self.size.height + 6.30;
@@ -91,9 +85,6 @@
         lineView.backgroundColor = [UIColor lightGrayColor];
         [self addSubview:lineView];
         
-        //        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(61,self.size.height+6.30,320-60,0.5)];
-        //        lineView.backgroundColor = [UIColor lightGrayColor];
-        //        [self addSubview:lineView];
     }
     return self;
 }
@@ -173,7 +164,7 @@
         }
         else if([merchant.TagType intValue] == 3)
         {
-            [discountImageView setImage:[UIImage imageNamed:@"specialIcon"]];
+            [discountImageView setImage:[UIImage imageNamed:@"FavouriteStar"]];
         }
         else{
             discountImageView.hidden = YES;

@@ -30,7 +30,7 @@
     IBOutlet UIImageView *userImageView;
     IBOutlet UIToolbar *inputAccessoryView;
     IBOutlet UISegmentedControl *segment;
-    IBOutlet UILabel *dobLabel;
+    IBOutlet TLLabel *dobLabel;
     
     CGFloat scrollContentHeight;
     
@@ -39,7 +39,7 @@
     UIImagePickerController *imagePicker;
     TLActionSheet *datePickerBase;
     UIDatePicker *datepicker;
-    BOOL isPictureUpdated, isPush , isActionSheetOpen;
+    BOOL isPictureUpdated,isPush,isActionSheetOpen;
     
     TLSignUpManager *signUpManager;
     TLLoginManager *loginManager;
@@ -244,7 +244,7 @@
     datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, 200.0)];
     datePickerBase.delegate = self;
     
-    if([dobLabel.text isEqualToString:@"  Date of Birth"])
+    if([dobLabel.text isEqualToString:@"Date of Birth"])
     {
         
     }
@@ -286,7 +286,7 @@
     NSDate *pickedDOB = [datePickerBase.datepicker date];
     previousSelectiondate = [datePickerBase.datepicker date];
     
-    NSString *DOB = [NSString stringWithFormat:@"  %@",[dateFormatter stringFromDate:pickedDOB]];
+    NSString *DOB = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:pickedDOB]];
     dobLabel.text = DOB;
     dobLabel.textColor = [UIColor blackColor];
     NSLog (@"This is DOB %@", DOB);
@@ -457,7 +457,7 @@
         [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
     else if(textLastName.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
-    else if([dobLabel.text isEqualToString:@"  Date of Birth"])
+    else if([dobLabel.text isEqualToString:@"Date of Birth"])
         [self showAlertWithMessage:LString(@"PLEASE_SELECT_DOB")];
     //    else if(textCellNumber.text.length == 0)
     //        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];

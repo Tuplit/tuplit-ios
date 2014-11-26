@@ -101,7 +101,7 @@
             isSelected = NO;
         }
         
-        [delegate choiceButton:self selectedButtonIndex:btn.tag-1];
+        [delegate choiceButton:self selectedButtonIndex:(int)btn.tag-1];
         
         tag = (int)btn.tag;
     }

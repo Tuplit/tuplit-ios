@@ -38,7 +38,7 @@
             firstNameTxt.textAlignment=NSTextAlignmentLeft;
             firstNameTxt.autocapitalizationType = UITextAutocapitalizationTypeWords;
             firstNameTxt.autocorrectionType = UITextAutocorrectionTypeNo;
-            firstNameTxt.background=[UIImage imageNamed:@"textFieldBg.png"];
+            firstNameTxt.background=getImage(@"textFieldBg", NO);
             [firstNameTxt setupForTuplitStyle];
             [userNameView addSubview:firstNameTxt];
             
@@ -49,7 +49,7 @@
             lastNameTxt.textAlignment=NSTextAlignmentLeft;
             lastNameTxt.autocapitalizationType = UITextAutocapitalizationTypeWords;
             lastNameTxt.autocorrectionType = UITextAutocorrectionTypeNo;
-            lastNameTxt.background=[UIImage imageNamed:@"textFieldBg.png"];
+            lastNameTxt.background=getImage(@"textFieldBg", NO);
             [lastNameTxt setupForTuplitStyle];
             [userNameView addSubview:lastNameTxt];
             
@@ -67,10 +67,10 @@
             [myControl setTitleTextAttributes:attributes forState:UIControlStateNormal];
             [userNameView addSubview:myControl];
             
-            UILabel *dobLabel = [[UILabel alloc]initWithFrame:CGRectMake(myControl.xPosition, CGRectGetMaxY(myControl.frame)+5, myControl.width, myControl.height)];
+            TLLabel *dobLabel = [[TLLabel alloc]initWithFrame:CGRectMake(myControl.xPosition, CGRectGetMaxY(myControl.frame)+5, myControl.width, myControl.height)];
             dobLabel.tag = 3005;
             dobLabel.font = font;
-            dobLabel.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"textFieldBg"]];
+            dobLabel.backgroundColor = [UIColor colorWithPatternImage:getImage(@"textFieldBg", NO)];
             dobLabel.text = @" Birthday";
             [userNameView addSubview:dobLabel];
             
@@ -107,7 +107,7 @@
             newPincodeBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
             newPincodeBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             [newPincodeBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-            [newPincodeBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+            [newPincodeBtn setBackgroundImage:getImage(@"buttonBg", NO) forState:UIControlStateNormal];
             //            [newPincodeBtn addTarget:self action:@selector(pinCodeAction:) forControlEvents:UIControlEventTouchUpInside];
             newPincodeBtn.backgroundColor = [UIColor clearColor];
             [userDetailView addSubview:newPincodeBtn];
@@ -232,14 +232,14 @@
     UIButton *deleteBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
     [deleteBtn setFrame:CGRectMake(220, 0, 50, 50)];
     deleteBtn.backgroundColor=[UIColor clearColor];
-    [deleteBtn setBackgroundImage:[UIImage imageNamed:@"minus.png"] forState:UIControlStateNormal];
+    [deleteBtn setBackgroundImage:getImage(@"minus", NO) forState:UIControlStateNormal];
     [deleteBtn addTarget:self action:@selector(removeItem:) forControlEvents:UIControlEventTouchUpInside];
     [editView addSubview:deleteBtn];
     
     UIButton *addBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
     [addBtn setFrame:CGRectMake(CGRectGetMaxX(deleteBtn.frame),0, 50,50)];
     addBtn.backgroundColor=[UIColor clearColor];
-    [addBtn setBackgroundImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
+    [addBtn setBackgroundImage:getImage(@"plus", NO) forState:UIControlStateNormal];
     [addBtn addTarget:self action:@selector(addItem:) forControlEvents:UIControlEventTouchUpInside];
     [editView addSubview:addBtn];
     

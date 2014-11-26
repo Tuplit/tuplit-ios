@@ -172,7 +172,7 @@
     }
     else if([merchant.TagType intValue] == 3)                           // 3/3
     {
-        [discountImageView setImage:[UIImage imageNamed:@"specialIcon"]];
+        [discountImageView setImage:[UIImage imageNamed:@"FavouriteStar"]];
     }
     else
     {

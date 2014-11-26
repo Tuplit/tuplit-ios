@@ -70,14 +70,14 @@
         UIButton *deleteBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
         [deleteBtn setFrame:CGRectMake(220, 0, 50, 50)];
         deleteBtn.backgroundColor=[UIColor clearColor];
-        [deleteBtn setBackgroundImage:[UIImage imageNamed:@"minus.png"] forState:UIControlStateNormal];
+        [deleteBtn setBackgroundImage:[UIImage imageNamed:@"minus"] forState:UIControlStateNormal];
         [deleteBtn addTarget:self action:@selector(removeCartItem:) forControlEvents:UIControlEventTouchUpInside];
         [editView addSubview:deleteBtn];
         
         UIButton *addBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
         [addBtn setFrame:CGRectMake(CGRectGetMaxX(deleteBtn.frame),0, 50,50)];
         addBtn.backgroundColor=[UIColor clearColor];
-        [addBtn setBackgroundImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
+        [addBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
         [addBtn addTarget:self action:@selector(addCartItem:) forControlEvents:UIControlEventTouchUpInside];
         [editView addSubview:addBtn];
         

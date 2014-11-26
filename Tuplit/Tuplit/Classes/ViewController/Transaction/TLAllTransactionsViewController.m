@@ -132,7 +132,7 @@
         transactionManager = [[TLTransactionListingManager alloc]init];
     }
     transactionManager.delegate = self;
-    [transactionManager callService:self.userID withStartCount:start];
+    [transactionManager callService:self.userID withStartCount:(int)start];
 }
 
 -(void) refreshTableView:(id) sender {
@@ -286,14 +286,14 @@
         lastFetchCount = 0;
     }
     
-    totalUserListCount = trancactionListingManager.totalCount;
+    totalUserListCount = (int)trancactionListingManager.totalCount;
     
     if ((trancactionListingManager.listedCount % 20) == 0) {
-        lastFetchCount = lastFetchCount + trancactionListingManager.listedCount;
+        lastFetchCount = lastFetchCount + (int)trancactionListingManager.listedCount;
     }
     else
     {
-        lastFetchCount = transactionList.count;
+        lastFetchCount = (int)transactionList.count;
     }
     
     [allTransactionTableView reloadData];

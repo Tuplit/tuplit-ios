@@ -92,7 +92,7 @@
     searchTxt.userInteractionEnabled = YES;
     [searchbarView addSubview:searchTxt];
     
-    UIImage *searchImg = [UIImage imageNamed:@"search.png"];
+    UIImage *searchImg = [UIImage imageNamed:@"search"];
     UIImageView *searchImgView = [[UIImageView alloc]initWithFrame:CGRectMake(0,0, searchImg.size.width + 20, searchImg.size.height)];
     [searchImgView setContentMode:UIViewContentModeScaleAspectFit];
     searchImgView.image = searchImg;
@@ -106,7 +106,7 @@
     [inviteFriendsBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     inviteFriendsBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     [inviteFriendsBtn addTarget:self action:@selector(inviteFriendsAction:) forControlEvents:UIControlEventTouchUpInside];
-    [inviteFriendsBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+    [inviteFriendsBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg"] forState:UIControlStateNormal];
     [baseView addSubview:inviteFriendsBtn];
     
     
@@ -275,7 +275,7 @@
 
 -(void)searchAction
 {
-    
+    [self.view endEditing:YES];
     [UIView animateWithDuration:0.35 animations:^{
         
         if(!isSearchShown)
@@ -305,6 +305,7 @@
                 friendsTable.frame =  CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame) + 18,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 18);
                 errorView.frame = friendsTable.frame;
                 errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
+                [self callFriendslistWebserviceWithstartCount:0 showProgress:NO];
             }
             
              searchTxt.text = @"";
@@ -331,7 +332,7 @@
         }
         
     }];
-    [self searchTxtAction] ;
+    [self searchTxtAction];
 }
 
 

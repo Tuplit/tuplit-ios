@@ -115,6 +115,8 @@
 #define kUpdateRecentOrders     @"kUpdateRecentOrders"
 #define kUpdateFriendsActivity  @"kUpdateFriendsActivity"
 #define kStaticContentRetrived  @"kStaticContentRetrived"
+#define kUpdateUserProfile      @"kUpdateUserProfile"
+#define kUpdateUserProfileInBackground @"kUpdateUserProfileInBackground"
 
 /****** Format Filters **************/
 #define CARDAMEX            @"#### ###### #####"

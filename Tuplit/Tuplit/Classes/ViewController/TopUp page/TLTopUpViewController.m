@@ -109,7 +109,7 @@
     topUpAmountTxt.textAlignment=NSTextAlignmentRight;
     topUpAmountTxt.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     topUpAmountTxt.backgroundColor=[UIColor clearColor];
-    [topUpAmountTxt setBackground:getImage(@"textFieldBg.png", NO)];
+    [topUpAmountTxt setBackground:getImage(@"textFieldBg", NO)];
     [topUpAmountTxt addTarget:self action:@selector(textFieldAmount:) forControlEvents:UIControlEventEditingDidBegin];
     topUpAmountTxt.placeholder = @"£0.00";
     [topUpAmountTxt setupForTuplitStyle];
@@ -151,11 +151,6 @@
     NSArray *items = [[NSArray alloc] initWithObjects:flexibleSpace1,dismiss,nil];
     [navigationBar setItems:items animated:NO];
     topUpAmountTxt.inputAccessoryView=navigationBar;
-    
-//    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-//    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    
-    //    creditCard=[[CreditCardModel alloc] init];
     
     value=@"";
     appendString=@"";
@@ -376,8 +371,6 @@
 }
 
 #pragma mark - UITextField Delegate
-
-
 
 - (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string
 {

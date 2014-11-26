@@ -87,9 +87,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    scrollView = [[SlideShowView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
-    [scrollView loadData];
-    [_scrollView addSubview:scrollView];
     
     [self.navigationItem setTitle:LString(@"TUPLIT")];
     
@@ -148,15 +145,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFBWelcomeScreen object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookWelcomeNotificationCalled:) name:kFBWelcomeScreen object:nil];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kWelcomeScreenSlideShowStarter object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSlider) name:kWelcomeScreenSlideShowStarter object:nil];
-    
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kStaticContentRetrived object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadTutorial) name:kStaticContentRetrived object:nil];
-    
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
-    [self startTimer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -195,17 +185,10 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView_ {
 	
-//	int page = scrollView.contentOffset.x / scrollView.frame.size.width;
-//	pageControl.currentPage = page;
 }
 
 
 #pragma mark - Action Methods
-
-- (void)startTimer {
-//    timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerMethod) userInfo:nil repeats:YES];
-//    [timer performSelector:@selector(fire) withObject:nil afterDelay:3];
-}
 
 - (IBAction)faceBookSignin:(id)sender {
    
@@ -261,18 +244,6 @@
     [TLUserDefaults setIsGuestUser:YES];
     [self presentAMSlider];
 }
-
-- (IBAction)pageControlPageChanged {
-    
-    int offsetX = pageControl.currentPage * scrollView.width;
-    int offsetY = 0;
-    // if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
-    // offsetY = -20;
-	CGPoint offset = CGPointMake(offsetX, offsetY);
-	[scrollView setContentOffset:offset animated:YES];
-}
-
-
 - (void)callLoginWebService {
     
     if(!loginManager) {
@@ -304,35 +275,6 @@
     }
 }
 
--(void)loadTutorial
-{
-    if(tutorVC)
-        [tutorVC loaddata];
-}
-
--(void) loadSlider {
-    welcomeBgPlaceholderView.hidden = YES;
-    scrollView.slideShowInterval = 5;
-    scrollView.slideShowImages = [Global instance].welcomeScreenImages;
-    scrollView.isWelcome =YES;
-    [scrollView loadData];
-}
-
-- (void)timerMethod {
-    
-    int page = 0;
-    
-    if(pageControl.currentPage == pageControl.numberOfPages - 1)
-        page = 0;
-    else
-        page = (int)pageControl.currentPage+1;
-    
-    int offsetX = page * scrollView.width;
-    int offsetY = 0;
-    
-	CGPoint offset = CGPointMake(offsetX, offsetY);
-	[scrollView setContentOffset:offset animated:YES];
-}
 -(void)callUserService
 {
     //    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];

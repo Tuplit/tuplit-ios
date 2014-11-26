@@ -89,14 +89,14 @@
     searchTxt.userInteractionEnabled = YES;
     [searchbarView addSubview:searchTxt];
     
-    UIImage *searchImg = [UIImage imageNamed:@"search.png"];
+    UIImage *searchImg = [UIImage imageNamed:@"search"];
     UIImageView *searchImgView = [[UIImageView alloc]initWithFrame:CGRectMake(0,0, searchImg.size.width + 20, searchImg.size.height)];
     [searchImgView setContentMode:UIViewContentModeScaleAspectFit];
     searchImgView.image = searchImg;
     [searchTxt setLeftView:searchImgView];
     [searchTxt setLeftViewMode:UITextFieldViewModeAlways];
     
-    UIImage *mapIconImg = [UIImage imageNamed:@"MapIcon.png"];
+    UIImage *mapIconImg = [UIImage imageNamed:@"MapIcon"];
     mapIconImgView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(searchTxt.frame),0, mapIconImg.size.width + 20, 40)];
     [mapIconImgView setContentMode:UIViewContentModeCenter];
     [mapIconImgView setUserInteractionEnabled:YES];
@@ -319,7 +319,7 @@
         
         if (!isMapShown)
         {
-            UIImage *img = [UIImage imageNamed:@"MapIcon.png"];
+            UIImage *img = [UIImage imageNamed:@"MapIcon"];
             mapIconImgView.image = img;
             merchantTable.hidden = NO;
             mapView.hidden = YES;
@@ -327,7 +327,7 @@
         }
         else
         {
-            UIImage *img = [UIImage imageNamed:@"ListGreen.png"];
+            UIImage *img = [UIImage imageNamed:@"ListGreen"];
             mapIconImgView.image = img;
             merchantTable.hidden = YES;
             mapView.hidden = NO;
@@ -704,6 +704,11 @@
 
 - (void)favouriteManagerSuccessfull:(TLFavouriteListingManager *) favouriteListManager withFavouriteList:(NSArray*)_favouriteArray
 {
+    for(MerchantModel *merchantModel in _favouriteArray)
+    {
+        EGOImageView *imageview = [[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0, 0, 10, 10)];
+        imageview.imageURL = [NSURL URLWithString:merchantModel.Image];
+    }
     
     switch (favouriteListManager.merchantListModel.actionType) {
         case MCSearch:

@@ -38,7 +38,7 @@
     baseViewHeight= self.view.frame.size.height;
     
     UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
-    baseView.backgroundColor=[UIColor colorWithPatternImage:getImage(@"bg.png", NO)];
+    baseView.backgroundColor=[UIColor colorWithPatternImage:getImage(@"bg", NO)];
     [self.view addSubview:baseView];
     
     scrollView=[[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
@@ -193,11 +193,11 @@
     
     if (button.tag == 120)
     {
-        value = button.tag - button.tag;
+        value = (int)button.tag -(int) button.tag;
     }
     else
     {
-        value = button.tag - 110;
+        value =(int) button.tag - 110;
     }
     
     pinCode = [pinCode stringByAppendingString:[NSString stringWithFormat:@"%d", value]];

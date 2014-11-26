@@ -37,7 +37,7 @@
     tableHeight=numberOfCell * CELL_HEIGHT;
     
     UIView *contentView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,baseViewWidth,baseViewHeight)];
-    contentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg.png"]];
+    contentView.backgroundColor=[UIColor colorWithPatternImage:getImage(@"bg", NO)];
     [self.view addSubview:contentView];
     
     scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight)];
@@ -55,7 +55,7 @@
     redeemLbl.backgroundColor=[UIColor clearColor];
     [scrollView addSubview:redeemLbl];
     
-    UIImage *detailImg=[UIImage imageNamed:@"receipt.png"];
+    UIImage *detailImg=getImage(@"receipt", NO);
     detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, 254 + tableHeight)];
     detailImgView.image=detailImg;
     detailImgView.backgroundColor=[UIColor clearColor];
@@ -95,7 +95,7 @@
     
     UIImageView *lineImgView1=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(dateTimeLbl.frame)+12,detailImgView.frame.size.width-24, 3)];
     lineImgView1.backgroundColor=[UIColor clearColor];
-    lineImgView1.image=[UIImage imageNamed:@"line.png"];
+    lineImgView1.image=getImage(@"line", NO);
     [detailImgView addSubview:lineImgView1];
     
     itemsListTable=[[UITableView alloc] initWithFrame:CGRectMake(14,CGRectGetMaxY(lineImgView1.frame), detailImgView.width-28, tableHeight)];
@@ -108,7 +108,7 @@
     
     lineImgView2=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(itemsListTable.frame),detailImgView.frame.size.width-24, 3)];
     lineImgView2.backgroundColor=[UIColor clearColor];
-    lineImgView2.image=[UIImage imageNamed:@"line.png"];
+    lineImgView2.image=getImage(@"line", NO);
     [detailImgView addSubview:lineImgView2];
     
     UILabel *subtotalTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(58,CGRectGetMaxY(lineImgView2.frame),detailImgView.width-150, 28)];
@@ -160,7 +160,7 @@
     
     UIImageView *lineImgView3=[[UIImageView alloc] initWithFrame:CGRectMake(12, CGRectGetMaxY(totalTitleLbl.frame),detailImgView.width-24, 3)];
     lineImgView3.backgroundColor=[UIColor clearColor];
-    lineImgView3.image=[UIImage imageNamed:@"line.png"];
+    lineImgView3.image=getImage(@"line", NO);
     [detailImgView addSubview:lineImgView3];
     
     UILabel *transactionTitleLbl=[[UILabel alloc] initWithFrame:CGRectMake(14, CGRectGetMaxY(lineImgView3.frame)+14, detailImgView.width-28, 20)];
@@ -183,7 +183,7 @@
     detailImgView.frame = CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, CGRectGetMaxY(transactionIDLbl.frame) + 50);
     if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
     {
-        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,7,15,15) resizingMode:UIImageResizingModeStretch];
+        UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,15,40,15) resizingMode:UIImageResizingModeStretch];
         detailImgView.image = stretchableBackground;
     }
     scrollView.contentSize=CGSizeMake(contentView.width,CGRectGetMaxY(detailImgView.frame) + 50);

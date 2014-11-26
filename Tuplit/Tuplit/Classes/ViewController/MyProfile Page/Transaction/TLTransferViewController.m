@@ -59,7 +59,7 @@
     toTxt.placeholder=@"To";
     toTxt.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     toTxt.textColor=UIColorFromRGB(0x000000);
-    [toTxt setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"graybg.png"]]];
+    [toTxt setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"graybg"]]];
     [toTxt addTarget:self action:@selector(searchSendTo:) forControlEvents:UIControlEventEditingChanged];
     toTxt.textAlignment=NSTextAlignmentLeft;
     toTxt.clearButtonMode=UITextFieldViewModeWhileEditing;
@@ -78,7 +78,7 @@
     amountTxt.textAlignment=NSTextAlignmentLeft;
     amountTxt.keyboardType=UIKeyboardTypeNumberPad;
     amountTxt.autocorrectionType = UITextAutocorrectionTypeNo;
-    [amountTxt setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"graybg.png"]]];
+    [amountTxt setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"graybg"]]];
     amountTxt.delegate=self;
     amountTxt.tag = 101;
     [amountTxt setupForTuplitStyle];
@@ -88,7 +88,7 @@
     messageTxtView.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     messageTxtView.textAlignment=NSTextAlignmentLeft;
     messageTxtView.autocorrectionType = UITextAutocorrectionTypeNo;
-    messageTxtView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"commentsBg.png"]];
+    messageTxtView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"commentsBg"]];
     messageTxtView.delegate=self;
     [baseView addSubview:messageTxtView];
     
@@ -103,7 +103,7 @@
     [sendBtn setFrame:CGRectMake(CGRectGetMinX(toTxt.frame), CGRectGetMaxY(messageTxtView.frame) + 15, CGRectGetWidth(toTxt.frame), 45)];
     [sendBtn setTitle:LString(@"SEND") forState:UIControlStateNormal];
     [sendBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    [sendBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+    [sendBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg"] forState:UIControlStateNormal];
     [sendBtn setBackgroundColor:[UIColor clearColor]];
     sendBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     [sendBtn addTarget:self action:@selector(sendDetailAction) forControlEvents:UIControlEventTouchUpInside];
@@ -570,14 +570,14 @@
         lastFetchCount = 0;
     }
     [self checkTableData];
-    totalUserListCount = friendsListingManager.totalCount;
+    totalUserListCount = (int)friendsListingManager.totalCount;
     
     if ((friendsListingManager.listedCount % 20) == 0) {
-        lastFetchCount = lastFetchCount + friendsListingManager.listedCount;
+        lastFetchCount = lastFetchCount + (int)friendsListingManager.listedCount;
     }
     else
     {
-        lastFetchCount = friendsArray.count;
+        lastFetchCount = (int)friendsArray.count;
     }
     
     [toProfileNameTable reloadData];

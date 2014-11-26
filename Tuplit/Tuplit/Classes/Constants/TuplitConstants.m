@@ -134,7 +134,7 @@ NSString *LString(NSString* key) {
     NSArray *weekdays = [NSArray arrayWithObjects:@"Mon",@"Tue",@"Wed",@"Thu",@"Fri",@"Sat",@"Sun",@"Mon-Sun" ,nil];
     NSMutableDictionary *openHrsDict = [NSMutableDictionary new];
     NSMutableDictionary *opendaysDict = [NSMutableDictionary new];
-    
+
     for (NSString *dayTimeStr in openHrsArray)
     {
         NSMutableAttributedString *dayAttrString;
@@ -212,8 +212,6 @@ NSString *LString(NSString* key) {
     {
         NSAttributedString *daystr = [opendaysDict objectForKey:string];
         NSAttributedString *hrsstr = [openHrsDict objectForKey:string];
-        
-        
         
         if(daystr.length >0 && hrsstr.length>0)
         {
@@ -314,7 +312,7 @@ NSString *LString(NSString* key) {
 }
 
 +(void) userLogout {
-    
+
     [TLUserDefaults setCurrentUser:nil];
     [TLUserDefaults setIsGuestUser:NO];
     [TLUserDefaults setIsCommentPromptOpen:NO];

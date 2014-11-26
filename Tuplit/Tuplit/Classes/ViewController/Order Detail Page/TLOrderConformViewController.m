@@ -75,7 +75,7 @@
     [backButton setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     backButton.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     backButton.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [backButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [backButton setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(btnAction) forControlEvents:UIControlEventTouchUpInside];
     [detailImgView addSubview:backButton];
     

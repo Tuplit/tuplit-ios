@@ -41,12 +41,16 @@
     baseView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:baseView];
     
-    messageTxtView=[[UITextView alloc] initWithFrame:CGRectMake(15,20,290,140)];
+    UIImageView *textViewBackground = [[UIImageView alloc] initWithFrame:CGRectMake(15,20,290,140)];
+    textViewBackground.image =getImage(@"commentsBg", NO);
+    [baseView addSubview:textViewBackground];
+    
+    messageTxtView=[[UITextView alloc] initWithFrame:textViewBackground.frame];
     //    messageTxtView.text=LString(@"MESSAGE_OPTIONAL");
     messageTxtView.font=[UIFont fontWithName:@"HelveticaNeue" size:16.0];
     messageTxtView.textColor=UIColorFromRGB(0x000000);
     messageTxtView.textAlignment=NSTextAlignmentLeft;
-    messageTxtView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"commentsBg.png"]];
+    messageTxtView.backgroundColor=[UIColor clearColor];
     messageTxtView.delegate=self;
     [baseView addSubview:messageTxtView];
     
@@ -82,7 +86,7 @@
     addCommentBtn.frame=CGRectMake(15, CGRectGetMaxY(facebookSwitch.frame) + 20,290,45);
     [addCommentBtn setTitle:LString(@"ADD_COMMENT") forState:UIControlStateNormal];
     [addCommentBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-    [addCommentBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg.png"] forState:UIControlStateNormal];
+    [addCommentBtn setBackgroundImage:[UIImage imageNamed:@"buttonBg"] forState:UIControlStateNormal];
     [addCommentBtn setBackgroundColor:[UIColor clearColor]];
     addCommentBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     [addCommentBtn addTarget:self action:@selector(addCommentAction:) forControlEvents:UIControlEventTouchUpInside];

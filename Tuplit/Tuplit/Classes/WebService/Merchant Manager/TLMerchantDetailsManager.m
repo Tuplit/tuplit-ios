@@ -48,16 +48,13 @@ AFHTTPRequestOperation *operation;
         NSLog(@"MerchantDetailResponsetime = %f",ellapsedSeconds);
         
         NSData *data = [operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
-        
-        //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"merchant-details" ofType:@"json"];
-        //NSData *data = [NSData dataWithContentsOfFile:filePath];
-        
+                
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
         
         NSLog(@"Response = %@",responseJSON);
 		        
-        int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
+        int code=(int)[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
         {

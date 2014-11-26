@@ -74,7 +74,7 @@
         birthdate = [TuplitConstants  dobFormattedDate:[TLUserDefaults getCurrentUser].DOB];
         
     else
-        birthdate = @"  Date of Birth";
+        birthdate = @"Date of Birth";
     genderStr = [TLUserDefaults getCurrentUser].Gender;
 }
 
@@ -176,15 +176,6 @@
 
 -(void) backUserProfilePage: (id) sender
 {
-    if(isUserInfoEdited)
-    {
-        NSMutableDictionary* userInfo = [NSMutableDictionary dictionary];
-        [userInfo setObject:userDetail forKey:@"UserEditedInfo"];
-        
-        NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
-        [nc postNotificationName:@"UPDATE_EDITED_DETAILS" object:self userInfo:userInfo];
-    }
-//    [self.navigationController popViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -200,62 +191,63 @@
 
 -(void) updateProfile : (id) sender
 {
-    UITableViewCell *cell = [editProfileTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    UITextField *firstNameTxt=(UITextField *) [cell.contentView viewWithTag:3000];
-    UITextField *lastNameTxt=(UITextField *) [cell.contentView viewWithTag:3001];
-    EGOImageView *profileImgView=(EGOImageView *) [cell.contentView viewWithTag:3002];
-    UISegmentedControl *segment=(UISegmentedControl *) [cell.contentView viewWithTag:3004];
-    UILabel *dobLabel=(UILabel *) [cell.contentView viewWithTag:3005];
-    
-    if([[[nameDict valueForKey:kFirstName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]==0)
-        [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
-    if([[[nameDict valueForKey:kLastName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]== 0)
-        [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
+    if(isEdited)
+    {
+        isEdited = NO;
+        UITableViewCell *cell = [editProfileTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        UITextField *firstNameTxt=(UITextField *) [cell.contentView viewWithTag:3000];
+        UITextField *lastNameTxt=(UITextField *) [cell.contentView viewWithTag:3001];
+        EGOImageView *profileImgView=(EGOImageView *) [cell.contentView viewWithTag:3002];
+        UISegmentedControl *segment=(UISegmentedControl *) [cell.contentView viewWithTag:3004];
+        UILabel *dobLabel=(UILabel *) [cell.contentView viewWithTag:3005];
+        
+        if([[[nameDict valueForKey:kFirstName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]==0)
+            [self showAlertWithMessage:LString(@"ENTER_FITST_NAME")];
+        if([[[nameDict valueForKey:kLastName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]== 0)
+            [self showAlertWithMessage:LString(@"ENTER_LAST_NAME")];
+        else
+        {
+            self.user = [TLUserDefaults getCurrentUser];
+            self.user.FirstName = firstNameTxt.text;
+            self.user.LastName =  lastNameTxt.text;
+            self.user.Email = [TLUserDefaults getCurrentUser].Email;
+            
+            if(![dobLabel.text isEqualToString:@"Date of Birth"])
+            {
+                if(previousSelectiondate)
+                {
+                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                    [formatter setDateFormat:@"YYYY-MM-dd"];
+                    NSString *resultString = [formatter stringFromDate:previousSelectiondate];
+                    self.user.DOB = resultString;
+                }
+                else
+                {
+                    self.user.DOB = [TLUserDefaults getCurrentUser].DOB;
+                }
+            }
+            if([segment selectedSegmentIndex]==0)
+                self.user.Gender = @"1";
+            else if([segment selectedSegmentIndex]==1)
+                self.user.Gender = @"2";
+            else
+                self.user.Gender = @"0";
+            
+            if(isPictureUpdated)
+                self.user.userImage = profileImgView.image;
+            
+            NETWORK_TEST_PROCEDURE
+            [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+            
+            TLEditUpdateManager *editManager = [[TLEditUpdateManager alloc]init];
+            editManager.delegate = self;
+            editManager.user = self.user;
+            [editManager updateUser];
+        }
+    }
     else
     {
-        self.user.FirstName = firstNameTxt.text;
-        self.user.LastName =  lastNameTxt.text;
-        self.user.Email = [TLUserDefaults getCurrentUser].Email;
-        
-        if(![dobLabel.text isEqualToString:@"  Date of Birth"])
-        {
-//            NSString *dateString = dobLabel.text;
-//            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//            // this is imporant - we set our input date format to match our input string
-//            // if format doesn't match you'll get nil from your string, so be careful
-//            [dateFormatter setDateFormat:@"MM/dd/YYYY"];
-//            NSDate *dateFromString = [[NSDate alloc] init];
-//            // voila!
-//            dateFromString = [dateFormatter dateFromString:dateString];
-            if(previousSelectiondate)
-            {
-                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                [formatter setDateFormat:@"YYYY-MM-dd"];
-                NSString *resultString = [formatter stringFromDate:previousSelectiondate];
-                self.user.DOB = resultString;
-            }
-            else
-            {
-                self.user.DOB = [TLUserDefaults getCurrentUser].DOB;
-            }
-        }
-        if([segment selectedSegmentIndex]==0)
-            self.user.Gender = @"1";
-        else if([segment selectedSegmentIndex]==1)
-            self.user.Gender = @"2";
-        else
-            self.user.Gender = @"0";
-        
-        if(isPictureUpdated)
-            self.user.userImage = profileImgView.image;
-        
-        NETWORK_TEST_PROCEDURE
-        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
-        
-        TLEditUpdateManager *editManager = [[TLEditUpdateManager alloc]init];
-        editManager.delegate = self;
-        editManager.user = self.user;
-        [editManager updateUser];
+        [self backUserProfilePage:nil];
     }
 }
 
@@ -346,7 +338,7 @@
     datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, 200.0)];
     datePickerBase.delegate = self;
     
-    if([birthdate isEqualToString:@"  Date of Birth"])
+    if([birthdate isEqualToString:@"Date of Birth"])
     {
         
     }
@@ -390,6 +382,7 @@
  
 -(void)doneAction
 {
+    isEdited = YES;
     isActionSheetOpen = NO;
     [UIView animateWithDuration:0.1
                           delay:0
@@ -408,11 +401,11 @@
     [dateFormatter setDateFormat:@"MM/dd/yyyy"];
     
     NSDate *pickedDOB = [datePickerBase.datepicker date];
-    NSString *DOB = [NSString stringWithFormat:@"  %@",[dateFormatter stringFromDate:pickedDOB]];
+    NSString *DOB = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:pickedDOB]];
     
     UITableViewCell *cell = [editProfileTable cellForRowAtIndexPath:
                              [NSIndexPath indexPathForRow:0 inSection:0]];
-    UILabel *dobLabel = (UILabel *)[cell.contentView viewWithTag:3005];
+    TLLabel *dobLabel = (TLLabel *)[cell.contentView viewWithTag:3005];
     dobLabel.text = DOB;
     birthdate = DOB;
     NSLog (@"This is DOB %@", DOB);
@@ -433,6 +426,11 @@
                          [datePickerBase removeFromSuperview];
                                     datePickerBase = nil;
                      }];
+}
+
+-(void)segmentAction:(id)sender
+{
+    isEdited = YES;
 }
 
 
@@ -579,11 +577,13 @@
         EGOImageView *profileImgView=(EGOImageView *) [cell.contentView viewWithTag:3002];
         UIButton *newPincodeBtn=(UIButton *) [cell.contentView viewWithTag:3003];
         UISegmentedControl *gendersegment=(UISegmentedControl *) [cell.contentView viewWithTag:3004];
-        UILabel *dobLabel=(UILabel *) [cell.contentView viewWithTag:3005];
+        TLLabel *dobLabel=(TLLabel *) [cell.contentView viewWithTag:3005];
         
         UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openPicker)];
         [dobLabel setUserInteractionEnabled:YES];
         [dobLabel addGestureRecognizer:tap];
+
+        [gendersegment addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         
         UITapGestureRecognizer *takePhotoGesture =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePhoto)];
         [profileImgView addGestureRecognizer:takePhotoGesture];
@@ -614,7 +614,7 @@
         {
             [gendersegment setSelectedSegmentIndex:2];
         }
-        dobLabel.text = [NSString stringWithFormat:@"  %@",birthdate];
+        dobLabel.text = [NSString stringWithFormat:@"%@",birthdate];
         
     }
     else if (indexPath.section == 1)
@@ -760,6 +760,11 @@
     else if(textField.tag==3001)
         [nameDict setValue:textField.text forKey:kLastName];
 }
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    isEdited = YES;
+    return YES;
+}
 #pragma mark - Scroll View delegate methods
 // Change Default Scrolling Behavior of TableView Section
 - (void)scrollViewDidScroll:(UIScrollView *)_scrollView {
@@ -794,7 +799,7 @@
     [nameDict setValue:_thumbnailImage forKey:kTPhoto];
     profileImgView.image=_thumbnailImage;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    
+    isEdited = YES;
     isPictureUpdated = YES;
 }
 
@@ -836,7 +841,12 @@
 
 - (void)userDetailManagerSuccess:(TLUserDetailsManager *)userDetailsManager withUser:(UserModel*)user_ withUserDetail:(UserDetailModel*)userDetail_
 {
-    isUserInfoEdited = YES;
+    NSDictionary *queryParams = @{
+                                  @"user"      : user_,
+                                  @"userDetail"       : userDetail_,
+                                  @"userDetailsManager" :userDetailsManager,
+                                  };
+    [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateUserProfile object:nil userInfo:queryParams];
     self.userDetail = userDetail_;
     [self updateTabledata];
     [[ProgressHud shared] hide];
@@ -854,9 +864,13 @@
 
 #pragma mark - TLEditUpdateManagerDelegate methods
 
-- (void)editUpManager:(TLEditUpdateManager *)signUpManager updateSuccessfullWithUser:(UserModel *)user
+- (void)editUpManager:(TLEditUpdateManager *)signUpManager updateSuccessfullWithUser:(UserModel *)_user
 {
-    APP_DELEGATE.isUserProfileEdited = YES;
+    if(isPictureUpdated)
+        APP_DELEGATE.isUserProfileEdited = YES;
+    else
+        [TLUserDefaults setCurrentUser:_user];
+    
     [self backUserProfilePage:nil];
     [[ProgressHud shared] hide];
 //    [UIAlertView alertViewWithMessage:LString(@"PROFILE_UPDATED")];
@@ -876,7 +890,6 @@
 
 - (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
 {
-    APP_DELEGATE.isUserProfileEdited = YES;
     [self callService];
 }
 - (void)commentDeleteManager:(TLCommentDeleteManager *)loginManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
@@ -895,7 +908,6 @@
 
 - (void)creditCardDeleteManagerSuccess:(TLCreditCardDeleteManager *)creditCardDeleteManager
 {
-    APP_DELEGATE.isUserProfileEdited = YES;
     [self callService];
 }
 - (void)creditCardDeleteManager:(TLCreditCardDeleteManager *)creditCardDeleteManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg

@@ -365,14 +365,14 @@
         lastFetchCount = 0;
     }
     
-    totalUserListCount = commentsListingManager.totalCount;
+    totalUserListCount = (int)commentsListingManager.totalCount;
     
     if ((commentsListingManager.listedCount % 20) == 0) {
-        lastFetchCount = lastFetchCount + commentsListingManager.listedCount;
+        lastFetchCount = lastFetchCount + (int)commentsListingManager.listedCount;
     }
     else
     {
-        lastFetchCount = commentsArray.count;
+        lastFetchCount = (int)commentsArray.count;
     }
     
     [allCommentsTable reloadData];
@@ -411,8 +411,9 @@
 - (void)commentDeleteManagerSuccess:(TLCommentDeleteManager *)loginManager
 {
     if(deletedCmtIndex.row<3)
-        APP_DELEGATE.isUserProfileEdited = YES;
-    
+        [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateUserProfileInBackground object:nil];
+
+//        APP_DELEGATE.isUserProfileEdited = YES;
     [commentsArray removeObjectAtIndex:deletedCmtIndex.row];
     [allCommentsTable deleteRowsAtIndexPaths:@[deletedCmtIndex] withRowAnimation:UITableViewRowAnimationFade];
     [[ProgressHud shared] hide];

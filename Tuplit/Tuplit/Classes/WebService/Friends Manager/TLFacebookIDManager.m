@@ -25,7 +25,7 @@
     [request addValue:[TLUserDefaults getAccessToken] forHTTPHeaderField:@"Authorization"];
     NSString * strValue = [queryParams JSONRepresentation];
     NSData *postData = [strValue dataUsingEncoding:NSUTF8StringEncoding];
-    [request setValue:[NSString stringWithFormat:@"%d", postData.length] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)postData.length] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:postData];
     
     NSLog(@"Request : %@", [request.URL absoluteString]);
@@ -48,7 +48,7 @@
         NSError * error=nil;
 		NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
 		
-        int code=[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
+        int code=(int)[[[responseJSON objectForKey:@"meta"] objectForKey:@"code"] integerValue];
         
         if(code == 200 || code == 201)
         {

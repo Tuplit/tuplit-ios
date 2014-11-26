@@ -64,6 +64,10 @@
         userProfileTable.delaysContentTouches = NO;
     userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 50)];
     [baseView addSubview:userProfileTable];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callServiceInBackground) name:kUpdateUserProfileInBackground object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserDetailsFromEdit:) name:kUpdateUserProfile object:nil];
 }
 - (void)viewDidLoad
 {
@@ -107,10 +111,31 @@
     
 }
 
+-(void)callServiceInBackground
+{
+    TLUserDetailsManager *usermanager = [[TLUserDetailsManager alloc]init];
+    usermanager.delegate = self;
+    [usermanager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
+}
+
 //   Credit card delete service
 -(void)callCardDeleteService
 {
     
+}
+
+- (void)updateUserDetailsFromEdit:(NSNotification *)notification
+{
+    NSDictionary *dict = [notification userInfo];
+    
+    TLUserDetailsManager *userDetailsManager =(TLUserDetailsManager*)[dict valueForKey:@"userDetailsManager"];
+    [TLUserDefaults setCurrentUser:[dict valueForKey:@"user"]];
+    userdeatilmodel = [dict valueForKey:@"userDetail"];
+    totalOrders = userDetailsManager.totalOrders.intValue;
+    totalComments = userDetailsManager.totalComments.intValue;
+    [self updateUserDetails];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
 }
 
 -(void)updateUserDetails

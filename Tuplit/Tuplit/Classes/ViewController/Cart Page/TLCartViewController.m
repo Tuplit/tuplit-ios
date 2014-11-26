@@ -199,11 +199,11 @@
     
     if (numberOfCell != 0 )
     {
-        cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"green_cart.png"]];
+        cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"green_cart"]];
     }
     else
     {
-        cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"grey_cart.png"]];
+        cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"grey_cart"]];
         cartSwipe.swipeSlider.userInteractionEnabled=NO;
         [alertView addSubview:alertLbl];
     }
@@ -357,13 +357,13 @@
     
     if (itemArray.count > 0)
     {
-        UIImage *thumbImage = [UIImage imageNamed:@"green_cart.png"];
+        UIImage *thumbImage = [UIImage imageNamed:@"green_cart"];
         [swipeSlider setThumbImage:thumbImage forState:UIControlStateNormal];
         
     }
     else
     {
-        UIImage *thumbImage = [UIImage imageNamed:@"grey_cart.png"];
+        UIImage *thumbImage = [UIImage imageNamed:@"grey_cart"];
         [swipeSlider setThumbImage:thumbImage forState:UIControlStateNormal];
         swipeSlider.userInteractionEnabled=NO;
         [alertView addSubview:alertLbl];

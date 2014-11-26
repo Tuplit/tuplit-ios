@@ -25,8 +25,8 @@
         CGRect sliderFrame = swipeSlider.frame;
         swipeSlider.frame = sliderFrame;
         swipeSlider.backgroundColor = [UIColor clearColor];
-        [swipeSlider setMinimumTrackImage:[UIImage imageNamed:@"Nothing.png"] forState:UIControlStateNormal];
-        [swipeSlider setMaximumTrackImage:[UIImage imageNamed:@"Nothing.png"] forState:UIControlStateNormal];
+        [swipeSlider setMinimumTrackImage:[UIImage imageNamed:@"Nothing"] forState:UIControlStateNormal];
+        [swipeSlider setMaximumTrackImage:[UIImage imageNamed:@"Nothing"] forState:UIControlStateNormal];
         [swipeSlider setThumbImage:image forState:UIControlStateNormal];
         swipeSlider.minimumValue = 0.0;
         swipeSlider.maximumValue = 1.0;

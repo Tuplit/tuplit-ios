@@ -109,7 +109,7 @@
     [questionBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     questionBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     questionBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [questionBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [questionBtn setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [questionBtn addTarget:self action:@selector(frequentQuestionAction) forControlEvents:UIControlEventTouchUpInside];
     [supportView addSubview:questionBtn];
     
@@ -119,7 +119,7 @@
     [tutorialBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     tutorialBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     tutorialBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [tutorialBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [tutorialBtn setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [tutorialBtn addTarget:self action:@selector(tutorialAction) forControlEvents:UIControlEventTouchUpInside];
     [supportView addSubview:tutorialBtn];
 

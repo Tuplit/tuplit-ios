@@ -74,7 +74,7 @@
     contactsBtn.frame = CGRectMake(CGRectGetMaxX(facebookBtn.frame), 0, menuView.frame.size.width/2, 34);
     contactsBtn.backgroundColor = UIColorFromRGB(0X01b3a5);
     [contactsBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-    [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
+    [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg"] forState:UIControlStateNormal];
     
     [menuView addSubview:contactsBtn];
     
@@ -198,7 +198,7 @@
             [facebookBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             
-            [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
+            [contactsBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg"] forState:UIControlStateNormal];
             [contactsBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
             contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
             if(fbFriendArray.count>0)
@@ -223,7 +223,7 @@
             [contactsBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             contactsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
             
-            [facebookBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg.png"] forState:UIControlStateNormal];
+            [facebookBtn setBackgroundImage:[UIImage imageNamed:@"ButtonLightBg"] forState:UIControlStateNormal];
             [facebookBtn setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
             facebookBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0];
             
@@ -916,6 +916,5 @@
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
-    
 }
 @end

@@ -251,7 +251,7 @@
     [changePinBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     changePinBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     changePinBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [changePinBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [changePinBtn setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [changePinBtn addTarget:self action:@selector(changePinCodeAction) forControlEvents:UIControlEventTouchUpInside];
     [securityView addSubview:changePinBtn];
     
@@ -277,7 +277,7 @@
     [helpCenterBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     helpCenterBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     helpCenterBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [helpCenterBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [helpCenterBtn setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [helpCenterBtn addTarget:self action:@selector(openHelpCenter) forControlEvents:UIControlEventTouchUpInside];
     [supportView addSubview:helpCenterBtn];
     
@@ -287,7 +287,7 @@
     [legalBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     legalBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     legalBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [legalBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [legalBtn setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [legalBtn addTarget:self action:@selector(termsAndLegalInfoAction) forControlEvents:UIControlEventTouchUpInside];
     [supportView addSubview:legalBtn];
     
@@ -297,7 +297,7 @@
     [logOutBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     logOutBtn.titleLabel.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
     logOutBtn.titleLabel.textAlignment=NSTextAlignmentCenter;
-    [logOutBtn setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    [logOutBtn setBackgroundImage:[UIImage imageNamed:@"button"] forState:UIControlStateNormal];
     [logOutBtn addTarget:self action:@selector(logOutAction) forControlEvents:UIControlEventTouchUpInside];
     [supportView addSubview:logOutBtn];
 

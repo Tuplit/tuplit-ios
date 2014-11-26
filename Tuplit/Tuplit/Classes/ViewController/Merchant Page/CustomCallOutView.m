@@ -71,7 +71,7 @@
     annDiscountLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     [self addSubview:annDiscountLbl];
     
-    UIImage * annDiscountImg = [UIImage imageNamed:@"DiscountMap.png"];
+    UIImage * annDiscountImg = [UIImage imageNamed:@"DiscountMap"];
     anndiscountImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(annDiscountLbl.frame)-18,annDiscountLbl.yPosition+2.7,annDiscountImg.size.width, annDiscountImg.size.height)];
     anndiscountImg.backgroundColor = [UIColor clearColor];
     anndiscountImg.image           = annDiscountImg;
@@ -101,14 +101,14 @@
     customershoppedLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0];
     [self addSubview:customershoppedLbl];
     
-    UIImage * annDistanceImg = [UIImage imageNamed:@"MapDistance.png"];
+    UIImage * annDistanceImg = [UIImage imageNamed:@"MapDistance"];
     annDistanceImgView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(annDistanceLbl.frame)-13,CGRectGetMaxY(annDiscountLbl.frame)+5,annDistanceImg.size.width, annDistanceImg.size.height)];
     annDistanceImgView.backgroundColor = [UIColor clearColor];
     annDistanceImgView.image = annDistanceImg;
     [self addSubview:annDistanceImgView];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setImage:[UIImage imageNamed:@"TutorNextLight.png"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"TutorNextLight"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(calloutButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Show View" forState:UIControlStateNormal];
     button.frame = CGRectMake(FRAME_WIDTH-20,(FRAME_HEIGHT-20-15)/2, 20, 20);
@@ -131,7 +131,7 @@
     }
     else if([merchant.TagType intValue] == 3)
     {
-        [anndiscountImg setImage:[UIImage imageNamed:@"specialIcon"]];
+        [anndiscountImg setImage:[UIImage imageNamed:@"FavouriteStar"]];
     }
     else
     {
