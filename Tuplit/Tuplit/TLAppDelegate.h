@@ -40,6 +40,8 @@
 @property (assign, nonatomic) BOOL isUserProfileEdited,isFavoriteChanged,isFriendInvited,isSocialhandeled;
 @property (strong, nonatomic) NSMutableDictionary *catgDict;
 @property (strong, nonatomic) NSDictionary *loginDetails;
+@property (strong, nonatomic)TLUserProfileViewController *myProfileVC;
+@property (strong, nonatomic)TLMerchantsViewController *merchantVC;
 
 - (void)showNoConnectivityAlertAndQuit:(BOOL)shouldQuit;
 

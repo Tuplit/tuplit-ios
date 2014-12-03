@@ -17,7 +17,7 @@
 
 @end
 
-#define SCROLL_ENABLE 6
+#define SCROLL_ENABLE 4
 @implementation TLTopUpViewController
 
 @synthesize userdeatilmodel;
@@ -461,6 +461,7 @@
 
 - (void)topupManagerSuccessfull:(TLTopupManager *)topupManager withStatus:(NSString*)topupStatus
 {
+//    [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateUserProfileInBackground object:nil];
 //    APP_DELEGATE.isUserProfileEdited = YES;
     [[ProgressHud shared] hide];
     
@@ -507,6 +508,8 @@
 
 - (void)creditCardListManagerSuccessfull:(TLCreditCardListingManager *)creditCardListManager withCreditCardList:(NSArray*)creditCardList
 {
+//    [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateUserProfileInBackground object:nil];
+    
     if(creditCardList.count>0)
         addCreditCardBtn.hidden = YES;
     else

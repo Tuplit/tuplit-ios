@@ -59,6 +59,8 @@
     
 }
 @property (nonatomic,strong)NSString *categoryId;
+@property (nonatomic,strong)NSString *CategoryType;
+@property (nonatomic,strong)NSString *type;
 @property (nonatomic,strong)NSString *navTitle;
 @end
 

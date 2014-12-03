@@ -41,5 +41,5 @@
     NSArray *sectionHeader;
     int totalOrders,totalComments;
 }
-
+-(void)reloadUserprofile;
 @end

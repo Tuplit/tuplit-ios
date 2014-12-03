@@ -214,6 +214,14 @@
     [self.navigationController pushViewController:inviteFriendsViewController animated:YES];
 }
 
+-(void)reloadFriends
+{
+    [friendsArray removeAllObjects];
+    [friendsTable reloadData];
+    [friendsTable setTableFooterView:cellContainer];
+    [self callFriendslistWebserviceWithstartCount:0 showProgress:NO];
+}
+
 -(void) callFriendslistWebserviceWithstartCount:(long) start showProgress:(BOOL)showProgressIndicator
 {
     
@@ -539,6 +547,7 @@
     
     [friendsArray removeAllObjects];
     [friendsTable reloadData];
+    [friendsTable setTableFooterView:nil];
     isFriendsWebserviceRunning =NO;
     
     [[ProgressHud shared] hide];
@@ -554,8 +563,6 @@
     isFriendsWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
-    
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 @end

@@ -29,6 +29,7 @@
     [encoder encodeObject:self.Category forKey:@"Category"];
     [encoder encodeObject:self.TotalUsersShopped forKey:@"TotalUsersShopped"];
     [encoder encodeObject:self.TagType forKey:@"TagType"];
+    [encoder encodeObject:self.CategoryType forKey:@"CategoryType"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -52,7 +53,7 @@
         self.Category = [decoder decodeObjectForKey:@"Category"];
         self.TotalUsersShopped = [decoder decodeObjectForKey:@"TotalUsersShopped"];
         self.TagType = [decoder decodeObjectForKey:@"TagType"];
-        
+        self.CategoryType = [decoder decodeObjectForKey:@"CategoryType"];
     }
     return self;
 }

@@ -78,7 +78,7 @@
 
 @property (nonatomic,retain) NSString * detailsMerchantID;
 @property (nonatomic,retain)  MerchantModel * merchantModel;
-@property (nonatomic,strong) UIViewController *viewController;
+@property (nonatomic,weak) UIViewController *viewController;
 
 
 @end

@@ -55,7 +55,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     TLMerchantListingModel *merchantListingModel;
     TLMerchantListingManager *merchantListingManager;
     
-    BOOL isDiscountShown, isMapShown;
+    BOOL isDiscountShown, isMapShown ,isLoadFirst;
     BOOL isSearchTableShown;
     CGFloat baseViewWidth, baseViewHeight;
     int adjustHeight;
@@ -69,6 +69,8 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     MerchantModel *callOutmerchant;
     
     NSMutableDictionary *catgDict;
-
 }
+
+-(void)reloadMerchant;
+
 @end

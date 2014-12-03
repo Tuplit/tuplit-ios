@@ -24,6 +24,17 @@ AFHTTPRequestOperation *operation;
     merchantListModel = merchantListingModel;
     
 	AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:MERCHANT_LISTING_URL]];
+    
+    NSString *userId;
+    if([TLUserDefaults isGuestUser])
+    {
+        userId = @"";
+    }
+    else
+    {
+        userId = [TLUserDefaults getCurrentUser].UserId;
+    }
+    
 
     NSDictionary *queryParams = @{
                                   @"Latitude": NSNonNilString(merchantListingModel.Latitude),
@@ -33,6 +44,8 @@ AFHTTPRequestOperation *operation;
                                   @"SearchKey": NSNonNilString(merchantListingModel.SearchKey),
                                   @"DiscountTier": NSNonNilString(merchantListingModel.DiscountTier),
                                   @"Category": NSNonNilString(merchantListingModel.Category),
+                                  @"CategoryType": NSNonNilString(merchantListingModel.CategoryType),
+                                  @"UserId"       : NSNonNilString(userId),
                                   };
     
     NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
@@ -84,6 +97,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"IsGoldenTag" : @"IsGoldenTag",
                                                                   @"NewTag" : @"NewTag",
                                                                   @"Category" : @"Category",
+                                                                  @"CategoryType" : @"CategoryType",
                                                                   @"TotalUsersShopped" : @"TotalUsersShopped",
                                                                   @"TagType" : @"TagType",
                                                                   }];

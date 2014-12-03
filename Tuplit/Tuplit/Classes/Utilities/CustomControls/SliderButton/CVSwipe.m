@@ -48,7 +48,10 @@
     }
     return self;
 }
-
+-(void)setSliderImage:(UIImage*)image
+{
+    [swipeSlider setThumbImage:image forState:UIControlStateNormal];
+}
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch * touch = [event.allTouches anyObject];

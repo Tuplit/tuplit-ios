@@ -23,7 +23,7 @@
    
     NSData *profilePicture;
     if(self.user.userImage != nil && ![self.user.userImage isKindOfClass:[NSString class]]) {
-        self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(120, 120)];
+        self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(200,200)];
         profilePicture = UIImageJPEGRepresentation(self.user.userImage, 0.80);
     }
     else

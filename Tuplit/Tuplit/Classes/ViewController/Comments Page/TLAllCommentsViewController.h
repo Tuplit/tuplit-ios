@@ -30,5 +30,5 @@
 
 }
 @property (nonatomic,strong)NSString *userID;
-@property (nonatomic,strong)UIViewController *viewController;
+@property (nonatomic,weak)UIViewController *viewController;
 @end

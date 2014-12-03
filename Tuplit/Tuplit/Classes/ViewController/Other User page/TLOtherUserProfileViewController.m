@@ -96,6 +96,11 @@
     [usermanager getUserDetailsWithUserID:self.userID];
     
 }
+-(void)reloadOtherUserprofile
+{
+    [userProfileTable setContentOffset:CGPointZero animated:YES];
+    [self callService];
+}
 
 -(void)updateUserDetails
 {

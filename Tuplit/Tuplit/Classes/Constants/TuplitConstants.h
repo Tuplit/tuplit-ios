@@ -70,7 +70,9 @@
 
 #else
 
-    #define RESOURCE_URL                @"http://tuplit.elasticbeanstalk.com"
+//    #define RESOURCE_URL                @"http://tuplit.elasticbeanstalk.com"
+   #define RESOURCE_URL                @"https://api.tuplit.com"
+
 
 #endif
 
@@ -117,6 +119,7 @@
 #define kStaticContentRetrived  @"kStaticContentRetrived"
 #define kUpdateUserProfile      @"kUpdateUserProfile"
 #define kUpdateUserProfileInBackground @"kUpdateUserProfileInBackground"
+#define kIsFavouriteChanged      @"kIsFavouriteChanged"
 
 /****** Format Filters **************/
 #define CARDAMEX            @"#### ###### #####"
@@ -154,5 +157,7 @@ NSString *LString(NSString* key);
 +(NSString*)facebookFormattedDate:(NSString*)datefromServer;
 + (void)zoomToFitMapAnnotations:(MKMapView *)mapView;
 +(BOOL) isMerchantClosed:(NSArray*) openHrsArray;
++(void)openMyProfile;
++(void)openMerchantVC;
 
 @end

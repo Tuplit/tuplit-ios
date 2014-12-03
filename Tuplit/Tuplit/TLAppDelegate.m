@@ -12,13 +12,14 @@
 #import "Flurry.h"
 #import <GooglePlus/GooglePlus.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
+#import "TestVersionManager.h"
 
 #define kAlertQuit      100
 #define kAlertDontQuit  101
 
 @implementation TLAppDelegate
 
-@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict,vatPercent,isFriendInvited,isSocialhandeled;
+@synthesize slideMenuController,cartModel,isUserProfileEdited,fbSession,isFavoriteChanged,catgDict,vatPercent,isFriendInvited,isSocialhandeled,myProfileVC,merchantVC;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -91,6 +92,8 @@
 {
     application.applicationIconBadgeNumber = 0;
     [FBSession.activeSession handleDidBecomeActive];
+    
+    [[TestVersionManager sharedManager] validateCurrentAppVersion];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -121,7 +124,6 @@
     
 	NSLog(@"deviceToken: %@", deviceToken);
     [TLUserDefaults setDeviceToken:[NSString stringWithFormat:@"%@",deviceToken]];
-    
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
@@ -145,10 +147,7 @@
     else if ([[dict objectForKey:@"type"] intValue] == 1)  // transfer or topup
     {
         
-        TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        [TuplitConstants openMyProfile];
         
         NSString *msgStr = [dict objectForKey:@"notes"];
         NSString *msgTitle = [dict objectForKey:@"alert"];

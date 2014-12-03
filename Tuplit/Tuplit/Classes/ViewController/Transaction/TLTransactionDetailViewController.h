@@ -28,6 +28,6 @@
 @property(nonatomic,strong)NSMutableArray *transActionList;
 @property (nonatomic,strong)NSString *userID;
 @property int index,lastFetchCount,totalUserListCount;
-@property (nonatomic,strong)UIViewController *viewController;
+@property (nonatomic,weak)UIViewController *viewController;
 
 @end

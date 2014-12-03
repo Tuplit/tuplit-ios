@@ -219,11 +219,19 @@
 
 -(void)openMyProfileVc:(id)sender
 {
-    TLUserProfileViewController *myProfileVC = [[TLUserProfileViewController alloc] init];
-    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
-    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+//    [APP_DELEGATE.slideMenuController hideMenuViewController];
+//    if(!myProfileVC)
+//    {
+//        myProfileVC = [[TLUserProfileViewController alloc] init];
+//    }
+//    else
+//    {
+//        [myProfileVC reloadUserprofile];
+//    }
+//    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:myProfileVC];
+//    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+    [TuplitConstants openMyProfile];
     
-    [APP_DELEGATE.slideMenuController hideMenuViewController];
 }
 
 -(void) openfriendProfileVC:(UITapGestureRecognizer *)gesture
@@ -233,13 +241,19 @@
     
     FriendsModel *order = [menuArray objectAtIndex:indexPath.row];
     
-    TLOtherUserProfileViewController *friendProfileVC = [[TLOtherUserProfileViewController alloc] init];
+    [APP_DELEGATE.slideMenuController hideMenuViewController];
+//    if(!friendProfileVC)
+//    {
+        friendProfileVC = [[TLOtherUserProfileViewController alloc] init];
+//    }
+//    else
+//    {
+//        [friendProfileVC reloadOtherUserprofile];
+//    }
     friendProfileVC.userID = order.FriendId;
     friendProfileVC.isLeftMenu = YES;
     UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendProfileVC];
     [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-    
-    [APP_DELEGATE.slideMenuController hideMenuViewController];
 }
 
 -(void)updateFriendsActivity
@@ -402,10 +416,18 @@
     
     if (indexPath.row == 0) {
         
-        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
+//        [APP_DELEGATE.slideMenuController hideMenuViewController];
+//        if(!merchantVC)
+//        {
+//            merchantVC = [[TLMerchantsViewController alloc] init];
+//        }
+//        else
+//        {
+//            [merchantVC reloadMerchant];
+//        }
+//        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
+//        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+        [TuplitConstants openMerchantVC];
         
     }
     else if(indexPath.row == 1) {
@@ -418,11 +440,18 @@
         }
         else
         {
-            TLCartViewController *cartVC = [[TLCartViewController alloc] init];
+            [APP_DELEGATE.slideMenuController hideMenuViewController];
+            if(!cartVC)
+            {
+                cartVC = [[TLCartViewController alloc] init];
+            }
+            else
+            {
+//                [cartVC updateCart];
+            }
             cartVC.isMerchant = NO;
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:cartVC];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-            [APP_DELEGATE.slideMenuController hideMenuViewController];
         }
     }
     else if(indexPath.row == 2) {
@@ -435,34 +464,51 @@
         }
         else
         {
-            TLFavouriteListViewController *favoriteVC = [[TLFavouriteListViewController alloc] init];
+            [APP_DELEGATE.slideMenuController hideMenuViewController];
+            if(!favoriteVC)
+            {
+                favoriteVC = [[TLFavouriteListViewController alloc] init];
+            }
+            else
+            {
+                [favoriteVC reloadfavourites];
+            }
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteVC];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-            [APP_DELEGATE.slideMenuController hideMenuViewController];
         }
     }
     else if(indexPath.row == 3) {
         
         if ([TLUserDefaults getCurrentUser] == nil) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to login in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to register in the app to view your friends activities. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
             alertView.tag = 9000;
             [alertView show];
         }
         else
         {
-            TLFriendsViewController *friendsVC = [[TLFriendsViewController alloc] init];
+            [APP_DELEGATE.slideMenuController hideMenuViewController];
+            if(!friendsVC)
+            {
+                friendsVC = [[TLFriendsViewController alloc] init];
+            }
+            else
+            {
+                [friendsVC reloadFriends];
+            }
             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:friendsVC];
             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-            [APP_DELEGATE.slideMenuController hideMenuViewController];
         }
     }
     else if(indexPath.row == menuArray.count - 1) {
         
-        TLSettingsViewController *settingsVC = [[TLSettingsViewController alloc] initWithNibName:@"TLSettingsViewController" bundle:nil];
+        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        if(!settingsVC)
+        {
+            settingsVC = [[TLSettingsViewController alloc] initWithNibName:@"TLSettingsViewController" bundle:nil];
+        }
         UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
         [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
     }
 }
 
@@ -496,8 +542,6 @@
     
     [[ProgressHud shared] hide];
 }
-
-
 
 @end
 

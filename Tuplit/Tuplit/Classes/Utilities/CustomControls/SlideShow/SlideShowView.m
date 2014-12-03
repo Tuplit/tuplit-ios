@@ -134,6 +134,7 @@
     
     imageView.imageURL = imageString;
     imageView.contentMode = UIViewContentModeScaleToFill;
+    imageView.clipsToBounds = YES;
     [self  addSubview:imageView];
     
 }
@@ -144,6 +145,7 @@
     imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*width, 0, width, height)];
     imageView.image = getImage(imageName, NO);
     imageView.contentMode = UIViewContentModeScaleToFill;
+    imageView.clipsToBounds = YES;
     [self  addSubview:imageView];
 }
 

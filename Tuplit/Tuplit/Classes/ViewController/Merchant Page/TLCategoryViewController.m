@@ -10,12 +10,13 @@
 #import "PinAnnotation.h"
 
 @implementation TLCategoryViewController
-@synthesize categoryId,navTitle;
+@synthesize categoryId,navTitle,type,CategoryType;
 
 - (void)dealloc
 {
     merchantListingManager.delegate = nil;
     merchantListingManager = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView {
@@ -90,6 +91,9 @@
     merchantsArray = [[NSMutableArray alloc] init];
     categoryArray = [[NSMutableArray alloc] init];
     merchantListingModel = [[TLMerchantListingModel alloc] init];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFavouriteInBackground) name:kIsFavouriteChanged object:nil];
 }
 
 - (void)viewDidLoad
@@ -117,6 +121,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -125,6 +130,11 @@
 }
 
 #pragma mark - UserDefined methods
+
+-(void)updateFavouriteInBackground
+{
+    [self callMerchantWebserviceWithActionType:0 showProgressIndicator:YES];
+}
 
 -(void) callMerchantWebserviceWithActionType:(long) start showProgressIndicator:(BOOL) showProgressIndicator
 {
@@ -146,7 +156,8 @@
     merchantListingModel.Longitude = [NSString stringWithFormat:@"%lf",[CurrentLocation longitude]];
     
     merchantListingModel.Category = categoryId;
-    merchantListingModel.Type = [NSString stringWithFormat:@"%d",0];
+    merchantListingModel.CategoryType = CategoryType;
+    merchantListingModel.Type = [NSString stringWithFormat:@"%ld",(long)self.type.integerValue];
     merchantListingModel.Start = [NSString stringWithFormat:@"%ld",start];
     merchantListingModel.SearchKey = @"";
     
@@ -171,7 +182,7 @@
         }
         else
         {
-            [rightExpandButton buttonWithIcon:getImage(@"List", NO) target:self action:@selector(mapIconImgViewAction:) isLeft:NO];
+            [rightExpandButton buttonWithIcon:getImage(@"ListWhite", NO) target:self action:@selector(mapIconImgViewAction:) isLeft:NO];
             merchantTable.hidden = YES;
             mapView.hidden = NO;
             
@@ -230,7 +241,6 @@
         }
     }
 }
-
 
 -(void) refreshTableView:(id) sender {
     
@@ -491,18 +501,16 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
+    [merchantErrorLabel setText:errorMsg];
+    [merchantErrorLabel setHidden:NO];
     
-        [merchantErrorLabel setText:errorMsg];
-        [merchantErrorLabel setHidden:NO];
-        
-        CGRect frame = merchantErrorLabel.frame;
-        frame.origin.y = CGRectGetMaxY(menuView.frame);
-        [merchantErrorLabel setFrame:frame];
-        
-        [merchantsArray removeAllObjects];
-        [merchantTable reloadData];
-        
-
+    CGRect frame = merchantErrorLabel.frame;
+    frame.origin.y = CGRectGetMaxY(menuView.frame);
+    [merchantErrorLabel setFrame:frame];
+    
+    [merchantsArray removeAllObjects];
+    [merchantTable reloadData];
+    
     isMerchantWebserviceRunning =NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];

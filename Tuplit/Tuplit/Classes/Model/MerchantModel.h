@@ -27,6 +27,7 @@
 @property (nonatomic, copy) NSString * Category;
 @property (nonatomic, copy) NSString * TotalUsersShopped;
 @property (nonatomic, copy) NSString * TagType;
+@property (nonatomic, copy) NSString * CategoryType;
 
 
 @end

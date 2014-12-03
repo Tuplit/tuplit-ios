@@ -1,3 +1,4 @@
+
 //
 //  TLUserProfileViewController.m
 //  Tuplit
@@ -9,7 +10,6 @@
 #import "TLUserProfileViewController.h"
 
 @interface TLUserProfileViewController ()
-
 {
      NSIndexPath *deletedCmtIndex;
 }
@@ -21,8 +21,8 @@
 
 -(void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     userProfileTable.editing = NO;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void) loadView
@@ -64,14 +64,15 @@
         userProfileTable.delaysContentTouches = NO;
     userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 50)];
     [baseView addSubview:userProfileTable];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callServiceInBackground) name:kUpdateUserProfileInBackground object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserDetailsFromEdit:) name:kUpdateUserProfile object:nil];
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callServiceInBackground) name:kUpdateUserProfileInBackground object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserDetailsFromEdit:) name:kUpdateUserProfile object:nil];
+    
     [self callService];
 }
 
@@ -110,7 +111,11 @@
     [usermanager getUserDetailsWithUserID:[TLUserDefaults getCurrentUser].UserId];
     
 }
-
+-(void)reloadUserprofile
+{
+    [userProfileTable setContentOffset:CGPointZero animated:YES];
+    [self callService];
+}
 -(void)callServiceInBackground
 {
     TLUserDetailsManager *usermanager = [[TLUserDetailsManager alloc]init];

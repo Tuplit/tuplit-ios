@@ -192,6 +192,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self hideSearch];
 }
 
@@ -212,6 +213,22 @@
     searchErrorLabel.height =searchTable.frame.size.height;
 }
 
+-(void)reloadfavourites
+{
+    [favouritesArray removeAllObjects];
+    [merchantTable reloadData];
+    [merchantTable setTableFooterView:cellContainer];
+    
+    searchTxt.text = @"";
+    
+    UIImage *img = [UIImage imageNamed:@"MapIcon"];
+    mapIconImgView.image = img;
+    merchantTable.hidden = NO;
+    mapView.hidden = YES;
+    isMapShown = NO;
+    
+    [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:NO];
+}
 
 -(void) callMerchantWebserviceWithActionType:(int) actionType startCount:(long) start showProgressIndicator:(BOOL) showProgressIndicator {
     
@@ -343,6 +360,9 @@
 }
 -(void) addMapAnnotations {
     PinAnnotation *pinAnnotation;
+    
+    [mapView removeAnnotations:mapView.annotations];
+
     for(MerchantModel *merchantModel in favouritesArray)
     {
         if (merchantModel.Latitude.doubleValue == 0.0 || merchantModel.Longitude.doubleValue == 0.0) {
@@ -695,7 +715,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
-    [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
+    [self callMerchantWebserviceWithActionType:MCSearch startCount:0 showProgressIndicator:YES];
     
     return YES;
 }
@@ -728,9 +748,29 @@
             }
             else
             {
-                
                 if(isMapShown)
                 {
+                    if(favouriteListManager.merchantListModel.actionType == MCSearch)
+                    {
+                        [favouritesArray removeAllObjects];
+                        [favouritesArray addObjectsFromArray:_favouriteArray];
+                        
+                        totalUserListCount = (int)favouriteListManager.totalCount;
+                        
+                        if (favouritesArray.count < totalUserListCount)
+                            [merchantTable setTableFooterView:cellContainer];
+                        else
+                            [merchantTable setTableFooterView:nil];
+                        
+                        [self addMapAnnotations];
+                        
+                        isMerchantWebserviceRunning = NO;
+                        [[ProgressHud shared] hide];
+                        return;
+                        
+                    }
+                    else
+                    {
                     NSMutableArray *newannotations = [NSMutableArray new];
                     
                     newannotations = [[_favouriteArray bk_reject:^BOOL(id obj) {
@@ -760,6 +800,7 @@
                     isMerchantWebserviceRunning = NO;
                     [[ProgressHud shared] hide];
                     return;
+                    }
                 }
                 
                 
@@ -863,17 +904,15 @@
             isMerchantWebserviceRunning =NO;
             [[ProgressHud shared] hide];
             [refreshControl endRefreshing];
+            [merchantTable setTableFooterView:nil];
             
             break;
         }
         case MCNearBy:
         {
-            [merchantErrorLabel setHidden:NO];
-            
             CGRect frame = merchantErrorLabel.frame;
             frame.origin.y = CGRectGetMaxY(searchbarView.frame);
             [merchantErrorLabel setFrame:frame];
-            [merchantErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
             
             [favouritesArray removeAllObjects];
             [merchantTable reloadData];
@@ -883,6 +922,7 @@
             [merchantErrorLabel setText:LString(@"NO_FAVORITES_FOUND")];
             [merchantErrorLabel setHidden:NO];
             
+            
             break;
         }
         default:
@@ -890,18 +930,23 @@
             break;
         }
     }
-    
+    [merchantTable setTableFooterView:nil];
     [[ProgressHud shared] hide];
 }
 - (void)favouriteManagerFailed:(TLFavouriteListingManager *) favouriteListManager
 {
-    [merchantErrorLabel setHidden:YES];
     isMerchantWebserviceRunning = NO;
     //    searchTxt.enabled = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
     
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    CGRect frame = merchantErrorLabel.frame;
+    frame.origin.y = CGRectGetMaxY(searchbarView.frame);
+    [merchantErrorLabel setFrame:frame];
+    [merchantErrorLabel setText:LString(@"SERVER_CONNECTION_ERROR")];
+    [merchantErrorLabel setHidden:NO];
+    [merchantTable setTableFooterView:nil];
+    
 }
 
 #pragma mark - CalloutAnnotationViewDelegate

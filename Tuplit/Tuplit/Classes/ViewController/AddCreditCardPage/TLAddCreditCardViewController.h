@@ -16,6 +16,6 @@
 
 @interface TLAddCreditCardViewController : UIViewController<TLAddCreditCardManagerDelegate>
 
-@property(nonatomic,retain)UIViewController*viewController;
+@property(nonatomic,weak)UIViewController*viewController;
 @property(nonatomic,strong) NSString *topupAmout;
 @end

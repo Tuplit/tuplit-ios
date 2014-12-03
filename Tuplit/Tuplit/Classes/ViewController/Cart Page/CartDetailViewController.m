@@ -341,7 +341,6 @@
         itemQuantityLbl.hidden = YES;
         itemQuantityLbl.text = @"";
         itemQuantityLbl.frame = CGRectMake(10,0, 0, CELL_HEIGHT);
-        
         adjust = 0;
     }
     

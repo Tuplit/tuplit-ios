@@ -140,7 +140,7 @@
     [detailImgView addSubview:vattotalTitleLbl];
     
     vatAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(subtotalTitleLbl.frame)+100,CGRectGetMinY(vattotalTitleLbl.frame), 30, 28)];
-    vatAmtTotalLbl.text=@"£10";
+    vatAmtTotalLbl.text=@"";
     vatAmtTotalLbl.textColor=UIColorFromRGB(0x333333);
     vatAmtTotalLbl.textAlignment=NSTextAlignmentRight;
     vatAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];
@@ -156,7 +156,7 @@
     [detailImgView addSubview:totalTitleLbl];
     
     totalAmtTotalLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(vattotalTitleLbl.frame)+100,CGRectGetMinY(totalTitleLbl.frame), 30, 28)];
-    totalAmtTotalLbl.text=@"£10";
+    totalAmtTotalLbl.text=@"";
     totalAmtTotalLbl.textColor=UIColorFromRGB(0x333333);
     totalAmtTotalLbl.textAlignment=NSTextAlignmentRight;
     totalAmtTotalLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];

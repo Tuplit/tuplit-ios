@@ -346,10 +346,8 @@
 {
     if([self.viewController isKindOfClass:[TLOrderConformViewController class]])
     {
-        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        [self.navigationController popViewControllerAnimated:YES];
+        [TuplitConstants openMerchantVC];
     }
     else
     {
@@ -574,6 +572,8 @@
         else
             friendsLabel.text =[NSString stringWithFormat:@"%@ %@ shopped here!",friendModel3.FirstName,friendModel3.LastName];
         
+        friendsImgView3.tag = 202;
+        
         friendsImgView3.imageURL = [NSURL URLWithString:friendModel3.Photo];
         friendsImgView1.hidden = YES;
         friendsImgView2.hidden = YES;
@@ -586,14 +586,35 @@
         FriendsListModel *friendModel2 =[merchantdetailmodel.OrderedFriendsList objectAtIndex:1];
         
         if([friendModel3.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
+        {
             friendsLabel.text =[NSString stringWithFormat:@"You & %@ %@ shopped here!",[friendModel2.FirstName stringWithTitleCase],[friendModel2.LastName stringWithTitleCase]];
+            
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            
+            friendsImgView2.tag = 202;
+            friendsImgView3.tag = 201;
+        }
         else if([friendModel2.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
+        {
             friendsLabel.text =[NSString stringWithFormat:@"You & %@ %@ shopped here!",[friendModel3.FirstName stringWithTitleCase],[friendModel3.LastName stringWithTitleCase]];
+            
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            
+            friendsImgView2.tag = 201;
+            friendsImgView3.tag = 202;
+        }
         else
+        {
             friendsLabel.text =[NSString stringWithFormat:@"%@ %@ & %@ %@ shopped here!",[friendModel3.FirstName stringWithTitleCase],[friendModel3.LastName stringWithTitleCase],[friendModel2.FirstName stringWithTitleCase],[friendModel2.LastName stringWithTitleCase]];
-        
-        friendsImgView3.imageURL = [NSURL URLWithString:friendModel3.Photo];
-        friendsImgView2.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            
+            friendsImgView2.tag = 202;
+            friendsImgView3.tag = 201;
+        }
         
         friendsImgView1.hidden = YES;
         friendsImgView2.hidden = NO;
@@ -613,17 +634,53 @@
             checkplural = @"friends shopped here!";
         
         if([friendModel3.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
+        {
             friendsLabel.text =[NSString stringWithFormat:@"You, %@ %@ & another %d %@",[friendModel2.FirstName stringWithTitleCase],[friendModel2.LastName stringWithTitleCase],orderedFriendsCount-2,checkplural];
+            
+            friendsImgView1.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel1.Photo];
+            
+            friendsImgView1.tag = 202;
+            friendsImgView2.tag = 201;
+            friendsImgView3.tag = 200;
+        }
         else if([friendModel2.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
+        {
             friendsLabel.text =[NSString stringWithFormat:@"You, %@ %@ & another %d %@",[friendModel3.FirstName stringWithTitleCase],[friendModel3.LastName stringWithTitleCase],orderedFriendsCount-2,checkplural];
+            
+            friendsImgView1.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel1.Photo];
+            
+            friendsImgView1.tag = 201;
+            friendsImgView2.tag = 202;
+            friendsImgView3.tag = 200;
+        }
         else if([friendModel1.Id isEqualToString:[TLUserDefaults getCurrentUser].UserId])
+        {
             friendsLabel.text =[NSString stringWithFormat:@"You, %@ %@ & another %d %@",[friendModel3.FirstName stringWithTitleCase],[friendModel3.LastName stringWithTitleCase],orderedFriendsCount-2,checkplural];
+            
+            friendsImgView1.imageURL = [NSURL URLWithString:friendModel1.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            
+            friendsImgView1.tag = 200;
+            friendsImgView2.tag = 202;
+            friendsImgView3.tag = 201;
+        }
         else
+        {
             friendsLabel.text =[NSString stringWithFormat:@"%@ %@, %@ %@ & another %d %@",[friendModel3.FirstName stringWithTitleCase],[friendModel3.LastName stringWithTitleCase],[friendModel2.FirstName stringWithTitleCase],[friendModel2.LastName stringWithTitleCase],orderedFriendsCount-2,checkplural];
-        
-        friendsImgView1.imageURL = [NSURL URLWithString:friendModel1.Photo];
-        friendsImgView2.imageURL = [NSURL URLWithString:friendModel2.Photo];
-        friendsImgView3.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            
+            friendsImgView1.imageURL = [NSURL URLWithString:friendModel3.Photo];
+            friendsImgView2.imageURL = [NSURL URLWithString:friendModel2.Photo];
+            friendsImgView3.imageURL = [NSURL URLWithString:friendModel1.Photo];
+            
+            friendsImgView1.tag = 202;
+            friendsImgView2.tag = 201;
+            friendsImgView3.tag = 200;
+        }
         
         friendsImgView1.hidden = NO;
         friendsImgView2.hidden = NO;
@@ -701,8 +758,8 @@
     
     if([userID isEqualToString:[TLUserDefaults getCurrentUser].UserId])
     {
-        TLUserProfileViewController *userProfile = [[TLUserProfileViewController alloc]init];
-        [self.navigationController pushViewController:userProfile animated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        [TuplitConstants openMyProfile];
     }
     else
     {
@@ -1818,7 +1875,7 @@
         favouriteType=0;
     else
         favouriteType=1;
-    
+    [[NSNotificationCenter defaultCenter]postNotificationName:kIsFavouriteChanged object:nil];
     [merchantDetailTable reloadData];
     [[ProgressHud shared] hide];
 }

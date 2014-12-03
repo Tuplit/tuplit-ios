@@ -177,7 +177,6 @@
     [contentView addSubview:alertView];
     
     alertLbl=[[UILabel alloc] initWithFrame:CGRectMake(0, 0,alertView.frame.size.width,37)];
-    alertLbl.text=@"It seems like you are not in the store or you are too far.";
     alertLbl.textColor=UIColorFromRGB(0x999999);
     alertLbl.textAlignment=NSTextAlignmentCenter;
     alertLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
@@ -204,7 +203,6 @@
     else
     {
         cartSwipe=[[CVSwipe alloc] initWithFrame:CGRectMake(0, 0, 221, 40) withImage:[UIImage imageNamed:@"grey_cart"]];
-        cartSwipe.swipeSlider.userInteractionEnabled=NO;
         [alertView addSubview:alertLbl];
     }
     
@@ -259,13 +257,31 @@
 
 
 - (void) callWebserviceForCurrentBalance {
-    NETWORK_TEST_PROCEDURE
     
-    [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
+    if(APP_DELEGATE.cartModel.total > [TLUserDefaults getCurrentUser].AvailableBalance.doubleValue)
+    {
+        [UIAlertView alertViewWithTitle:LString(@"TUPLIT") message:@"Insufficient balance" cancelButtonTitle:LString(@"CANCEL") otherButtonTitles:[NSArray arrayWithObject:@"Topup"] onDismiss:^(int buttonIndex)
+         {
+             
+             TLTopUpViewController *topupVC = [[TLTopUpViewController alloc] init];
+             topupVC.viewController = self;
+             [self.navigationController pushViewController:topupVC animated:YES];
+             
+         }
+                               onCancel:^()
+         {
+             
+         }];
+        [[ProgressHud shared] hide];
+    }
+    else
+    {
+       [self callWebserviceForLocationMatch];
+    }
     
-    TLCheckBalanceManager *checkBalanceManager = [[TLCheckBalanceManager alloc] init];
-    checkBalanceManager.delegate = self;
-    [checkBalanceManager getCurrentBalanceWithPaymentAmount:[NSString stringWithFormat:@"%lf",APP_DELEGATE.cartModel.total]];
+//    TLCheckBalanceManager *checkBalanceManager = [[TLCheckBalanceManager alloc] init];
+//    checkBalanceManager.delegate = self;
+//    [checkBalanceManager getCurrentBalanceWithPaymentAmount:[NSString stringWithFormat:@"%lf",APP_DELEGATE.cartModel.total]];
 }
 
 - (void) callWebserviceForOrderItems {
@@ -358,15 +374,18 @@
     if (itemArray.count > 0)
     {
         UIImage *thumbImage = [UIImage imageNamed:@"green_cart"];
-        [swipeSlider setThumbImage:thumbImage forState:UIControlStateNormal];
+        cartSwipe.swipeSlider.userInteractionEnabled=YES;
+        alertLbl.text=@"";
+        [cartSwipe setSliderImage:thumbImage];
         
     }
     else
     {
         UIImage *thumbImage = [UIImage imageNamed:@"grey_cart"];
-        [swipeSlider setThumbImage:thumbImage forState:UIControlStateNormal];
-        swipeSlider.userInteractionEnabled=NO;
+        [cartSwipe setSliderImage:thumbImage];
+        cartSwipe.swipeSlider.userInteractionEnabled=NO;
         [alertView addSubview:alertLbl];
+        alertLbl.text=@"It seems like you are not in the store or you are too far.";
     }
     
 }
@@ -441,7 +460,8 @@
         }
         else
         {
-            [self callWebserviceForLocationMatch];
+//            [self callWebserviceForLocationMatch];
+            [self callWebserviceForCurrentBalance];
         }
    
 }
@@ -451,7 +471,9 @@
 
 -(void)pincodeVerified
 {
-    [self callWebserviceForLocationMatch];
+//    [self callWebserviceForLocationMatch];
+    [self callWebserviceForCurrentBalance];
+
 }
 
 #pragma mark - TLCheckLocationManager Delegates
@@ -460,7 +482,16 @@
     
     if (allowCart == 1) {
         
-        [self callWebserviceForCurrentBalance];
+        if([TuplitConstants isMerchantClosed:APP_DELEGATE.cartModel.openHrsArray])
+        {
+            [UIAlertView alertViewWithMessage:[NSString stringWithFormat:LString(@"MERCHANT_CLOSED"),APP_DELEGATE.cartModel.companyName]];
+            [[ProgressHud shared] hide];
+        }
+        else
+        {
+            [self callWebserviceForOrderItems];
+        }
+
     }
     else
     {
@@ -473,7 +504,7 @@
 
 - (void)checkLocationManager:(TLCheckLocationManager *)checkLocationManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
-    [UIAlertView alertViewWithMessage:errorMsg];
+//    [UIAlertView alertViewWithMessage:errorMsg];
     [[ProgressHud shared] hide];
 }
 
@@ -495,16 +526,12 @@
              topupVC.viewController = self;
              [self.navigationController pushViewController:topupVC animated:YES];
              
-//             UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:topupVC];
-//             [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-//             [APP_DELEGATE.slideMenuController hideMenuViewController];
          }
                                onCancel:^()
          {
              
          }];
         
-        //        [UIAlertView alertViewWithMessage:paymentModel.Message];
         [[ProgressHud shared] hide];
     }
     else

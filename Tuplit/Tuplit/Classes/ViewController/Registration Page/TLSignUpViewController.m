@@ -303,6 +303,8 @@
                          datePickerBase = nil;
                      }];
     isActionSheetOpen = NO;
+    DISMISS_KEYBOARD;
+    [scrollView setContentSize:CGSizeMake(320, scrollContentHeight)];
 }
 
 -(void)cancelAction
@@ -320,6 +322,8 @@
                          datePickerBase = nil;
                      }];
     isActionSheetOpen = NO;
+    DISMISS_KEYBOARD;
+    [scrollView setContentSize:CGSizeMake(320, scrollContentHeight)];
 }
 
 #pragma mark - TextField delegate methods
@@ -560,7 +564,7 @@
     
     DISMISS_KEYBOARD;
     [scrollView setContentSize:CGSizeMake(320, scrollContentHeight)];
-    [scrollView setContentOffset:CGPointZero animated:YES];
+//    [scrollView setContentOffset:CGPointZero animated:YES];
 }
 
 - (IBAction)termsAction:(id)sender {

@@ -14,5 +14,6 @@
 @property (nonatomic, copy) NSString * CategoryIcon;
 @property (nonatomic, copy) NSString * CategoryName;
 @property (nonatomic, copy) NSString * MerchantCount;
+@property (nonatomic, copy) NSString * CategoryType;
 
 @end

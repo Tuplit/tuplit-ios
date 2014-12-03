@@ -9,6 +9,7 @@
 #import "TuplitConstants.h"
 #import "TLLeftMenuViewController.h"
 #import "TLMerchantsViewController.h"
+#import "TLUserProfileViewController.h"
 #import <GooglePlus/GooglePlus.h>
 #import <GoogleOpenSource/GoogleOpenSource.h>
 
@@ -48,6 +49,35 @@ NSString *LString(NSString* key) {
     }];
 }
 
++(void)openMyProfile
+{
+    [APP_DELEGATE.slideMenuController hideMenuViewController];
+    if(!APP_DELEGATE.myProfileVC)
+    {
+        APP_DELEGATE.myProfileVC = [[TLUserProfileViewController alloc] init];
+    }
+    else
+    {
+        [APP_DELEGATE.myProfileVC reloadUserprofile];
+    }
+    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:APP_DELEGATE.myProfileVC];
+    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+}
+
++(void)openMerchantVC
+{
+    [APP_DELEGATE.slideMenuController hideMenuViewController];
+    if(!APP_DELEGATE.merchantVC)
+    {
+        APP_DELEGATE.merchantVC = [[TLMerchantsViewController alloc] init];
+    }
+    else
+    {
+        [APP_DELEGATE.merchantVC reloadMerchant];
+    }
+    UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:APP_DELEGATE.merchantVC];
+    [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
+}
 +(NSString*) getDistance:(double) locationDistance {
     
     NSString *distance = @"";
@@ -65,7 +95,6 @@ NSString *LString(NSString* key) {
     {
         distance = [NSString stringWithFormat:@"%@ km",[distanceformatter stringFromNumber:[NSNumber numberWithDouble:locationDistance]]];
     }
-    
     return distance;
 }
 
@@ -502,7 +531,7 @@ NSString *LString(NSString* key) {
             }
         }
     }
-    
+
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     //    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en"]];
     [formatter setDateFormat:@"HH.mm"];

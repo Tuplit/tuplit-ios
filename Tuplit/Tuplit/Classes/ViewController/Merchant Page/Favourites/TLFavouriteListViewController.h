@@ -49,4 +49,5 @@
     NSString *categoryId;
 }
 
+-(void)reloadfavourites;
 @end

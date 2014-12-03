@@ -18,6 +18,15 @@
     IBOutlet UITableView *mTableView;
     
     NSNumberFormatter *numberFormatter;
+    
+    
+//    TLUserProfileViewController *myProfileVC;
+    TLOtherUserProfileViewController *friendProfileVC;
+    TLMerchantsViewController *merchantVC;
+    TLCartViewController *cartVC;
+    TLFavouriteListViewController *favoriteVC;
+    TLFriendsViewController *friendsVC;
+    TLSettingsViewController *settingsVC;
 }
 
 @end

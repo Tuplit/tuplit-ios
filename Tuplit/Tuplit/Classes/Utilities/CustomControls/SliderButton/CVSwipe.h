@@ -26,5 +26,6 @@
 @property(nonatomic,strong) UISlider *swipeSlider;
 
 - (id)initWithFrame:(CGRect)frame withImage:(UIImage*)image;
+-(void)setSliderImage:(UIImage*)image;
 
 @end

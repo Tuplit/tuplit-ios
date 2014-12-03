@@ -16,6 +16,7 @@
     [encoder encodeObject:self.CategoryIcon forKey:@"CategoryIcon"];
     [encoder encodeObject:self.CategoryName forKey:@"CategoryName"];
     [encoder encodeObject:self.MerchantCount forKey:@"MerchantCount"];
+    [encoder encodeObject:self.CategoryType forKey:@"CategoryType"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -26,6 +27,7 @@
         self.CategoryIcon = [decoder decodeObjectForKey:@"CategoryIcon"];
         self.CategoryName = [decoder decodeObjectForKey:@"CategoryName"];
         self.MerchantCount = [decoder decodeObjectForKey:@"MerchantCount"];
+        self.CategoryType = [decoder decodeObjectForKey:@"CategoryType"];
 		      
     }
     return self;

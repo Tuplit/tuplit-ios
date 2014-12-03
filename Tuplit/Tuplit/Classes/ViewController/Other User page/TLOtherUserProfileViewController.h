@@ -38,6 +38,7 @@
     NSArray *sectionHeader;
     int totalOrders,totalComments;
 }
+-(void)reloadOtherUserprofile;
 @property (nonatomic,strong)NSString *userID;
 @property BOOL isLeftMenu;
 @end

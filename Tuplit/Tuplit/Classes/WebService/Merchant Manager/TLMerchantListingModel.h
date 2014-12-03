@@ -21,5 +21,6 @@
 
 @property (nonatomic, copy) NSString *MerchantID;
 @property (nonatomic, copy) NSString *UserID;
+@property (nonatomic, copy) NSString *CategoryType;
 
 @end

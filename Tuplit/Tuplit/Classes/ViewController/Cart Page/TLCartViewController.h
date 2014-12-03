@@ -39,5 +39,7 @@
     
     CVSwipe *cartSwipe;
 }
+
+-(void) updateCart;
 @property BOOL isMerchant;
 @end

@@ -278,7 +278,6 @@
     creditcard.number = [TuplitConstants filteredPhoneStringFromString:cardNumberTextField.text withFilter:CARDNORMAL];
     creditcard.expirationMonthYear = dateExpirationTextField.text;
     creditcard.ccv = cvvTextField.text;
-    [currentTextField resignFirstResponder];
     
     if (cardNumberTextField.text.length == 0) {
         
@@ -612,6 +611,7 @@
 {
     APP_DELEGATE.isUserProfileEdited = YES;
     [[ProgressHud shared] hide];
+    [self.view endEditing:YES];
     
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
     NSString *string = dollarAmtTextField.text;

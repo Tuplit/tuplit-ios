@@ -23,8 +23,23 @@ AFHTTPRequestOperation *operation;
 -(void) callService {
         
 	AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:CATEGORY_LISTING_URL]];
+    
+    NSString *userId;
+    
+    if([TLUserDefaults isGuestUser])
+    {
+        userId = @"";
+    }
+    else
+    {
+        userId = [TLUserDefaults getCurrentUser].UserId;
+    }
+    
+    NSDictionary *queryParams = @{
+                                  @"UserId"       : NSNonNilString(userId),
+                                  };
 
-    NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:nil];
+    NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:@"" parameters:queryParams];
     
 	operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[AFHTTPRequestOperation addAcceptableStatusCodes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(100, 500)]];
@@ -61,6 +76,7 @@ AFHTTPRequestOperation *operation;
                                                                   @"CategoryIcon": @"CategoryIcon",
                                                                   @"CategoryName": @"CategoryName",
                                                                   @"MerchantCount": @"MerchantCount",
+                                                                  @"CategoryType" : @"CategoryType",
                                                                   }];
             
             NSDictionary *mappingsDictionary = @{ @"": responseMapping };

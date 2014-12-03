@@ -285,6 +285,7 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChange:) name:@"UITextFieldTextDidChangeNotification" object:searchTxt];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCategoryInBackground) name:kIsFavouriteChanged object:nil];
 }
 
 - (void)viewDidLoad
@@ -296,6 +297,8 @@
     
     [self buttonNearbyPopularAction:buttonNearby];
     [self callCategoryWebservice];
+    
+    isLoadFirst = YES;
     
 }
 
@@ -369,6 +372,48 @@
     TLCategoryListingManager *categoryListingManager = [[TLCategoryListingManager alloc] init];
     categoryListingManager.delegate = self;
     [categoryListingManager callService];
+}
+
+-(void)updateCategoryInBackground
+{
+    TLCategoryListingManager *categoryListingManager = [[TLCategoryListingManager alloc] init];
+    categoryListingManager.delegate = self;
+    [categoryListingManager callService];
+}
+
+-(void)reloadMerchant
+{
+//    [self buttonNearbyPopularAction:buttonNearby];
+    [merchantsArray removeAllObjects];
+    [merchantTable reloadData];
+    [merchantTable setTableFooterView:cellContainer];
+    
+    searchTxt.text = @"";
+    
+    UIButton *buttonPopular = (UIButton*)[contentView viewWithTag:1002];
+    [buttonPopular setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
+    [buttonPopular setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+    buttonPopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+    
+    [buttonNearby setBackgroundImage:Nil forState:UIControlStateNormal];
+    [buttonNearby setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    buttonNearby.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+    
+    UIImage *img = [UIImage imageNamed:@"MapIcon"];
+    mapIconImgView.image = img;
+    merchantTable.hidden = NO;
+    mapView.hidden = YES;
+    isMapShown = NO;
+    
+    menuSelected = 1;
+    isMerchantWebserviceRunning = NO;
+    [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:NO];
+    
+    isnearBy = YES;
+    
+    isLoadFirst = YES;
+    
+    [self updateCategoryInBackground];
 }
 
 -(void) callMerchantWebserviceWithActionType:(int) actionType startCount:(long) start showProgressIndicator:(BOOL) showProgressIndicator {
@@ -567,14 +612,22 @@
         
         if(isnearBy)
         {
-            if([CurrentLocation latitude]!=999&&[CurrentLocation longitude]!=999)
+            if(isLoadFirst)
             {
-                MKCoordinateRegion region = { {0.0, 0.0 }, {0.0, 0.0 } };
-                CLLocationCoordinate2D coord = {.latitude = [CurrentLocation latitude], .longitude =  [CurrentLocation longitude]};
-                MKCoordinateSpan span = {.latitudeDelta =  0.1, .longitudeDelta =  0.1};
-                region.center = coord;
-                region.span = span;
-                [mapView setRegion:region];
+                if([CurrentLocation latitude]!=999&&[CurrentLocation longitude]!=999)
+                {
+                    MKCoordinateRegion region = { {0.0, 0.0 }, {0.0, 0.0 } };
+                    CLLocationCoordinate2D coord = {.latitude = [CurrentLocation latitude], .longitude =  [CurrentLocation longitude]};
+                    MKCoordinateSpan span = {.latitudeDelta =  0.1, .longitudeDelta =  0.1};
+                    region.center = coord;
+                    region.span = span;
+                    [mapView setRegion:region];
+                }
+                isLoadFirst = NO;
+            }
+            else
+            {
+                [TuplitConstants zoomToFitMapAnnotations:mapView];
             }
         }
         else
@@ -637,6 +690,7 @@
             isMerchantWebserviceRunning = NO;
             [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
             
+            isLoadFirst = YES;
             isnearBy = YES;
         }
     }
@@ -665,6 +719,8 @@
     
     isPullRefreshPressed = YES;
     searchTxt.text = @"";
+
+    isLoadFirst = YES;
     
     if (menuSelected == 1) {
         [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:NO];
@@ -737,7 +793,11 @@
     totalUserListCount = tempTotalUserListCount;
     [merchantTable reloadData];
     lastFetchCount = (int)merchantsArray.count;
-    [merchantTable setTableFooterView:cellContainer];
+    
+    if (merchantsArray.count < totalUserListCount)
+        [merchantTable setTableFooterView:cellContainer];
+    else
+        [merchantTable setTableFooterView:nil];
     
     if (mapView.annotations.count > 0) {
         [mapView removeAnnotations:mapView.annotations];
@@ -1081,6 +1141,8 @@
                 [self.view endEditing:YES];
                 CategoryModel *categoryModel = [searchArray objectAtIndex:indexPath.row];
                 TLCategoryViewController *categoryVC = [[TLCategoryViewController alloc]init];
+                categoryVC.type = @"0";
+                categoryVC.CategoryType = categoryModel.CategoryType;
                 categoryVC.categoryId = categoryModel.CategoryId;
                 categoryVC.navTitle = categoryModel.CategoryName;
                 [self.navigationController pushViewController:categoryVC animated:YES];
@@ -1093,13 +1155,16 @@
             CategoryModel *categoryModel = [categoryArray objectAtIndex:indexPath.row];
             categoryId = categoryModel.CategoryId;
             TLCategoryViewController *categoryVC = [[TLCategoryViewController alloc]init];
+            categoryVC.type = @"0";
+            categoryVC.CategoryType = categoryModel.CategoryType;
             categoryVC.categoryId = categoryModel.CategoryId;
             categoryVC.navTitle = categoryModel.CategoryName;
             [self.navigationController pushViewController:categoryVC animated:YES];
         }
-        
+        if(searchTxt.text.length > 2)
+            [self loadMainContent];
         searchTxt.text = @"";
-        [self loadMainContent];
+        
         
     }
     else if (tableView.tag == 1004) {
@@ -1221,6 +1286,11 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager withMerchantList:(NSArray*) _merchantsArray {
     
+    if(_merchantListingManager.merchantListModel.actionType == MCSearch)
+    {
+        isLoadFirst = NO;
+    }
+    
     for(MerchantModel *merchantModel in _merchantsArray)
     {
         EGOImageView *imageview = [[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0, 0, 10, 10)];
@@ -1238,35 +1308,58 @@
     {
         if(isMapShown)
         {
-            NSMutableArray *newannotations = [NSMutableArray new];
-            
-            newannotations = [[_merchantsArray bk_reject:^BOOL(id obj) {
-                
-                MerchantModel *merchantModel1 = obj;
-                
-                return [merchantsArray bk_any:^BOOL(id obj1) {
-                    
-                    MerchantModel *merchantModel2 = obj1;
-                    if([merchantModel1.MerchantID isEqualToString:merchantModel2.MerchantID])
-                        return YES;
-                    else
-                        return NO;
-                }];
-                
-            }]mutableCopy];
-            if(newannotations.count>0)
+            if(_merchantListingManager.merchantListModel.actionType == MCSearch)
             {
-                [merchantsArray addObjectsFromArray:newannotations];
-                [self loadMoreAnnotation:newannotations];
+                [merchantsArray removeAllObjects];
+                [merchantsArray addObjectsFromArray:_merchantsArray];
+                
+                totalUserListCount = (int)_merchantListingManager.totalCount;
+                
+                if (merchantsArray.count < totalUserListCount)
+                    [merchantTable setTableFooterView:cellContainer];
+                else
+                    [merchantTable setTableFooterView:nil];
+                
+                [self addMapAnnotations];
+                
+                isMerchantWebserviceRunning = NO;
+                [[ProgressHud shared] hide];
+                return;
+                
             }
-            if (merchantsArray.count < totalUserListCount)
-                [merchantTable setTableFooterView:cellContainer];
             else
-                [merchantTable setTableFooterView:nil];
-            
-            isMerchantWebserviceRunning = NO;
-            [[ProgressHud shared] hide];
-            return;
+            {
+                
+                NSMutableArray *newannotations = [NSMutableArray new];
+                
+                newannotations = [[_merchantsArray bk_reject:^BOOL(id obj) {
+                    
+                    MerchantModel *merchantModel1 = obj;
+                    
+                    return [merchantsArray bk_any:^BOOL(id obj1) {
+                        
+                        MerchantModel *merchantModel2 = obj1;
+                        if([merchantModel1.MerchantID isEqualToString:merchantModel2.MerchantID])
+                            return YES;
+                        else
+                            return NO;
+                    }];
+                    
+                }]mutableCopy];
+                if(newannotations.count>0)
+                {
+                    [merchantsArray addObjectsFromArray:newannotations];
+                    [self loadMoreAnnotation:newannotations];
+                }
+                if (merchantsArray.count < totalUserListCount)
+                    [merchantTable setTableFooterView:cellContainer];
+                else
+                    [merchantTable setTableFooterView:nil];
+                
+                isMerchantWebserviceRunning = NO;
+                [[ProgressHud shared] hide];
+                return;
+            }
         }
         
         if (isLoadMorePressed) {
@@ -1314,6 +1407,7 @@
             lastFetchCount = (int)merchantsArray.count;
         }
         
+        NSLog(@"lastFetchCount = %d totalUserListCount = %d",lastFetchCount,totalUserListCount);
         if (lastFetchCount < totalUserListCount)
             [merchantTable setTableFooterView:cellContainer];
         else
@@ -1345,7 +1439,6 @@
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];
 }
-
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
     
@@ -1385,6 +1478,7 @@
         
         [merchantsArray removeAllObjects];
         [merchantTable reloadData];
+        [merchantTable setTableFooterView:nil];
         
     }
     
@@ -1395,10 +1489,17 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager {
     
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+//    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
     
-    [merchantErrorLabel setHidden:YES];
-    [searchErrorLabel setHidden:YES];
+    [searchErrorLabel setText:LString(@"SERVER_CONNECTION_ERROR")];
+    [searchErrorLabel setHidden:NO];
+    
+    [merchantErrorLabel setText:LString(@"SERVER_CONNECTION_ERROR")];
+    [merchantErrorLabel setHidden:NO];
+    
+//    [merchantErrorLabel setHidden:YES];
+//    [searchErrorLabel setHidden:YES];
+    [merchantTable setTableFooterView:nil];
     isMerchantWebserviceRunning = NO;
     [[ProgressHud shared] hide];
     [refreshControl endRefreshing];

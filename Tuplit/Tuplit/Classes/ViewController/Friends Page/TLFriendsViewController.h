@@ -29,4 +29,5 @@
     BOOL isLoadMorePressed,isPullRefreshPressed,isFriendsWebserviceRunning;
 }
 
+-(void)reloadFriends;
 @end

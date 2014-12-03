@@ -183,8 +183,8 @@
         
         if([userID isEqualToString:[TLUserDefaults getCurrentUser].UserId])
         {
-            TLUserProfileViewController *userProfile = [[TLUserProfileViewController alloc]init];
-            [self.navigationController pushViewController:userProfile animated:YES];
+            [self.navigationController popToRootViewControllerAnimated:YES];
+            [TuplitConstants openMyProfile];
         }
         else
         {

@@ -149,8 +149,6 @@
 {
     if(orderStatus.integerValue==1 ||orderStatus.integerValue==3)
     {
-        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-        
         if(NSNonNilString(self.merchatID).length>0 && NSNonNilString(self.merchatName).length>0 && orderStatus.integerValue==1)
         {
             OrderDetailModel *cmtDetail = [[OrderDetailModel alloc]init];
@@ -161,9 +159,8 @@
             [TLUserDefaults setCommentDetails:cmtDetail];
             [TLUserDefaults setIsCommentPromptOpen:YES];
         }
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        [self.navigationController popViewControllerAnimated:YES];
+        [TuplitConstants openMerchantVC];
         
     }
     else
@@ -191,10 +188,8 @@
     }
     else
     {
-        TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
-        UINavigationController *slideNavigationController = [[UINavigationController alloc] initWithRootViewController:merchantVC];
-        [APP_DELEGATE.slideMenuController setContentViewController:slideNavigationController animated:YES];
-        [APP_DELEGATE.slideMenuController hideMenuViewController];
+        [self.navigationController popViewControllerAnimated:YES];
+        [TuplitConstants openMerchantVC];
     }
 }
 

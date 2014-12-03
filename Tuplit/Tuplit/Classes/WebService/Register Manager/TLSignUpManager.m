@@ -40,7 +40,7 @@
     
     if(self.user.userImage != nil) {
         
-        self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(120, 120)];
+        self.user.userImage = [self.user.userImage imageByScalingAndCroppingForSize:CGSizeMake(200, 200)];
         NSData *profilePicture = UIImageJPEGRepresentation(self.user.userImage, 0.80);
         
         request = [client multipartFormRequestWithMethod:methodType path:@"" parameters:queryParams constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
