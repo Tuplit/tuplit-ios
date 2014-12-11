@@ -453,7 +453,6 @@
     [Global instance].user = user;
     [TLUserDefaults setAccessToken:user.AccessToken];
 //    [[ProgressHud shared] hide];
-    
 //    TLAddCreditCardViewController *addCrCardViewController=[[TLAddCreditCardViewController alloc]init];
 //    addCrCardViewController.viewController = self;
 //    [self.navigationController pushViewController:addCrCardViewController animated:YES];

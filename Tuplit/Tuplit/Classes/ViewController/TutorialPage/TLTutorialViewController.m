@@ -39,7 +39,10 @@
     }
     return self;
 }
-
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -52,7 +55,7 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = YES;
     }
-
+    
     numberOfSlides = (int)[Global instance].tutorialScreenImages.count;
     leftPos=0;
     rightPos=0;
@@ -67,16 +70,21 @@
     scrollView.slideShowInterval = 5;
     scrollView.isWelcome = YES;
     scrollView.slideShowImages = [Global instance].tutorialScreenImages;
-    scrollView.placeholderImages = placeholderimages;
+//    if(self.isWelcome)
+//    {
+//        scrollView.placeholderImages = placeholderimages;
+//    }
     scrollView.isShowPageControl = YES;
     [scrollView loadData];
 
     scrollView.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor clearColor];
     imageView.backgroundColor = [UIColor clearColor];
-    
-     xposition = 72;
 
+    xposition = 72;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kStaticContentRetrived object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loaddata) name:kStaticContentRetrived object:nil];
 //    [buttonSkip setTitleColor:APP_DELEGATE.defaultColor forState:UIControlStateNormal];
 }
 
@@ -102,13 +110,26 @@
 
 -(void)loaddata
 {
-    scrollView.slideShowImages = [Global instance].tutorialScreenImages;
-    [scrollView loadData];
+    NSData * data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[Global instance].tutorialScreenImages[0]]];
+    if(data)
+    {
+        [[ProgressHud shared] hide];
+        scrollView.slideShowImages = [Global instance].tutorialScreenImages;
+        [scrollView loadData];
+    }
 }
 - (IBAction)skipAction:(id)sender {
     
     [TLUserDefaults setIsTutorialSkipped:YES];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //    [self dismissViewControllerAnimated:YES completion:nil];
+    if(self.isWelcome)
+    {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else
+    {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 - (IBAction)previousAction:(id)sender
 {

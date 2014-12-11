@@ -95,6 +95,8 @@
         }
         else
         {
+            [[ProgressHud shared]hide];
+            [[NSNotificationCenter defaultCenter]postNotificationName:kStaticContentRetrived object:nil];
             NSString *errorMsg = [[responseJSON objectForKey:@"meta"] objectForKey:@"errorMessage"];
             if([_delegate respondsToSelector:@selector(staticContentManager:returnedWithErrorCode:errorMsg:)])
                 [_delegate staticContentManager:self returnedWithErrorCode:StringFromInt(code) errorMsg:errorMsg];
@@ -103,6 +105,7 @@
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		
         [[ProgressHud shared] hide];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kStaticContentRetrived object:nil];
         [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
         if([_delegate respondsToSelector:@selector(staticContentManagerFailed:)])
             [_delegate staticContentManagerFailed:self];
@@ -111,5 +114,6 @@
     
 	[operation start];
 }
+
 
 @end

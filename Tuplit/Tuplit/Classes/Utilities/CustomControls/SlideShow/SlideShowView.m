@@ -44,7 +44,7 @@
     {
         if(self.isWelcome)
         {
-           bgimageView = [[UIImageView alloc]initWithImage:getImage(@"welcomePlaceholder", NO)];
+            bgimageView = [[UIImageView alloc]initWithImage:getImage(@"welcomePlaceholder", NO)];
             bgimageView.frame = CGRectMake(0, 0, self.width, self.height);
             [self addSubview:bgimageView];
         }
@@ -72,6 +72,8 @@
         }
         self.translatesAutoresizingMaskIntoConstraints  = NO;
         self.bounces = NO;
+        [self setShowsHorizontalScrollIndicator:NO];
+        [self setShowsVerticalScrollIndicator:NO];
         self.delegate = self;
         if(numberOfSlides>1)
         {

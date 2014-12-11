@@ -19,11 +19,12 @@
 #import "UserCommentsModel.h"
 #import "RecentActivityModel.h"
 #import "TLAllCommentsViewController.h"
+#import "TLAddFriendManager.h"
 
 #define PROFILE_CELL_HEIGHT 52
 #define HEADER_HEIGHT 40
 
-@interface TLOtherUserProfileViewController :  UIViewController <UITableViewDataSource,UITableViewDelegate,UserProfileCellProtocol,TLUserDetailsManagerDelegate,TLCreditCardListingManagerDelegate>
+@interface TLOtherUserProfileViewController :  UIViewController <UITableViewDataSource,UITableViewDelegate,UserProfileCellProtocol,TLUserDetailsManagerDelegate,TLCreditCardListingManagerDelegate,TLAddFriendManagerDelegate>
 {
     UIImage * creditCardImage;
     UITableView *userProfileTable;

@@ -73,7 +73,6 @@
 //    #define RESOURCE_URL                @"http://tuplit.elasticbeanstalk.com"
    #define RESOURCE_URL                @"https://api.tuplit.com"
 
-
 #endif
 
 #define REGISTER_URL                RESOURCE_URL @"/v1/users/"
@@ -105,6 +104,8 @@
 #define INVITE_FRIENDS_URL          RESOURCE_URL @"/v1/invites/"
 #define SETTINGS_URL                RESOURCE_URL @"/v1/users/settings"
 #define CURRENT_LOCATION_URL        RESOURCE_URL @"/v1/users/currentLocation"
+#define ADD_FRIEND_URL              RESOURCE_URL @"/v1/users/%@/friend"
+#define REFRESH_BADGE_COUNT_URL     RESOURCE_URL @"/v1/notifications/badgecount"
 
 /****** Notifications **************/
 

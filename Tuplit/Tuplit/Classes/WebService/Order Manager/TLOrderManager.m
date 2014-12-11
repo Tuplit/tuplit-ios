@@ -18,8 +18,6 @@
 
 -(void)processOrders:(NSDictionary*) queryParams{
     
-   
-    
     NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:ORDERS_URL]];
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:URL];
     NSMutableURLRequest *request = [client requestWithMethod:@"PUT" path:@"" parameters:queryParams];

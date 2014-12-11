@@ -48,9 +48,9 @@
     
     UILabel *redeemLbl=[[UILabel alloc] initWithFrame:CGRectMake(60,0,197, 92)];
     redeemLbl.text=@"Please, tell the shop staff your name in order to redeem the deal";
-    redeemLbl.textAlignment=NSTextAlignmentCenter;
-    redeemLbl.numberOfLines=0;
-    redeemLbl.textColor=UIColorFromRGB(0X333333);
+    redeemLbl.textAlignment = NSTextAlignmentCenter;
+    redeemLbl.numberOfLines = 0;
+    redeemLbl.textColor = UIColorFromRGB(0X333333);
     redeemLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
     redeemLbl.backgroundColor=[UIColor clearColor];
     [scrollView addSubview:redeemLbl];
@@ -74,8 +74,8 @@
     merchantAddressLbl.numberOfLines = 0;
     merchantAddressLbl.textAlignment=NSTextAlignmentCenter;
     merchantAddressLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
-    merchantAddressLbl.textColor=UIColorFromRGB(0x666666);
-    merchantAddressLbl.backgroundColor=[UIColor clearColor];
+    merchantAddressLbl.textColor = UIColorFromRGB(0x666666);
+    merchantAddressLbl.backgroundColor = [UIColor clearColor];
     [detailImgView addSubview:merchantAddressLbl];
     
     float height = [APP_DELEGATE.cartModel.address heigthWithWidth:merchantAddressLbl.frame.size.width andFont:merchantAddressLbl.font];
@@ -192,7 +192,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
+
     [super viewWillAppear:animated];
     
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -204,7 +204,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [self updateCart];
 }
 
@@ -371,7 +370,5 @@
     
     return cell;
 }
-
-
 
 @end

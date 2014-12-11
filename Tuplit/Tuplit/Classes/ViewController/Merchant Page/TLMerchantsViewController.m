@@ -304,7 +304,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-//    [[EGOCache currentCache] clearCache];
     [super viewWillAppear:animated];
     
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -357,10 +356,14 @@
 
 - (void)presentTutorial {
     
-    if(![TLUserDefaults isTutorialSkipped])
+    if(![TLUserDefaults isTutorialSkipped] && [Global instance].tutorialScreenImages.count>0)
     {
         TLTutorialViewController *tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
         [self.navigationController presentViewController:tutorVC animated:YES completion:nil];
+    }
+    else
+    {
+        self.view.hidden = NO;
     }
 }
 
@@ -387,7 +390,7 @@
     [merchantsArray removeAllObjects];
     [merchantTable reloadData];
     [merchantTable setTableFooterView:cellContainer];
-    
+    [merchantTable setUserInteractionEnabled:NO];
     searchTxt.text = @"";
     
     UIButton *buttonPopular = (UIButton*)[contentView viewWithTag:1002];
@@ -1286,6 +1289,7 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager withMerchantList:(NSArray*) _merchantsArray {
     
+    [merchantTable setUserInteractionEnabled:YES];
     if(_merchantListingManager.merchantListModel.actionType == MCSearch)
     {
         isLoadFirst = NO;

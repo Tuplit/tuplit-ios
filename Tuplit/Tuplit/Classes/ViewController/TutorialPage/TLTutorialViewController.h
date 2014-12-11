@@ -11,4 +11,5 @@
 @interface TLTutorialViewController : UIViewController
 @property (nonatomic, weak)id delegate;
 -(void)loaddata;
+@property BOOL isWelcome;
 @end

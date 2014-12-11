@@ -65,7 +65,7 @@
     toTxt.clearButtonMode=UITextFieldViewModeWhileEditing;
     toTxt.autocorrectionType = UITextAutocorrectionTypeNo;
     toTxt.delegate=self;
-    toTxt.tag=100;
+    toTxt.tag = 100;
     if(self.UserName.length!=0)
         toTxt.text = self.UserName;
     [toTxt setupForTuplitStyle];
@@ -252,7 +252,7 @@
 -(void) sendDetailAction
 {
     DISMISS_KEYBOARD;
-
+    
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
     NSString *string = amountTxt.text;
     NSString *transferAmount;
@@ -273,20 +273,72 @@
     {
         if([TLUserDefaults getCurrentUser].Passcode.boolValue)
         {
-            TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
-            verifyPINVC.isverifyPin = YES;
-            verifyPINVC.delegate = self;
-            verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
-            [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
-            [self presentViewController:nav animated:YES completion:nil];
+            LAContext *context = [[LAContext alloc] init];
+            NSError *error;
+            BOOL isFingerSupported;
+            
+            
+            isFingerSupported = [context canEvaluatePolicy: LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error];
+            if (isFingerSupported) {
+                APP_DELEGATE.isSocialhandeled = YES;
+                
+                //                            [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
+                //             show the authentication UI with our reason string
+                [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:NSLocalizedString(@"UNLOCK_ACCESS_TO_LOCKED_FATURE", nil) reply:
+                 ^(BOOL success, NSError *authenticationError) {
+                     
+                     //                                  dispatch_async(dispatch_get_main_queue(), ^{
+                     //                                      [[ProgressHud shared]hide];
+                     //                                  });
+                     
+                     if (success) {
+                         dispatch_async(dispatch_get_main_queue(),^{
+                             [self callTransferService];
+                         });
+                     }
+                     else {
+                         
+                         if(authenticationError.code == -3)
+                         {
+                             TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+                             verifyPINVC.isverifyPin = YES;
+                             verifyPINVC.delegate = self;
+                             verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+                             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+                             [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+                             [self presentViewController:nav animated:YES completion:nil];
+                             return;
+                         }
+                         else if(authenticationError.code == -2)
+                         {
+                             return;
+                         }
+                         else
+                         {
+                             NSLog(@"authenticationError = %ld",authenticationError.code);
+                             
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [UIAlertView alertViewWithMessage:@"There was a problem verifying your identity."];
+                             });
+                         }
+                     }
+                     
+                 }];
+            } else {
+                TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+                verifyPINVC.isverifyPin = YES;
+                verifyPINVC.delegate = self;
+                verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+                [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+                [self presentViewController:nav animated:YES completion:nil];
+            }
         }
         else
         {
             [self callTransferService];
         }
     }
-    
 }
 
 -(void)checkTableData

@@ -13,6 +13,7 @@
 #import "TLCreateOrdersManager.h"
 #import "TLCheckLocationManager.h"
 #import "CVSwipe.h"
+#import <LocalAuthentication/LocalAuthentication.h>
 
 #define CART_CELL_HEIGHT 52
 

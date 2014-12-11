@@ -31,7 +31,6 @@
         profilePicture = nil;
     }
     
-    
     NSDictionary *queryParams = @{
                                   @"FirstName"      : NSNonNilString(self.user.FirstName),
                                   @"LastName"       : NSNonNilString(self.user.LastName),

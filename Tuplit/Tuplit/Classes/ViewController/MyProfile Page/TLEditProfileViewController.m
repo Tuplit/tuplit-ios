@@ -72,9 +72,9 @@
     
     if([TLUserDefaults getCurrentUser].DOB.length>0&&![[TLUserDefaults getCurrentUser].DOB isEqualToString:@"0000-00-00"])
         birthdate = [TuplitConstants  dobFormattedDate:[TLUserDefaults getCurrentUser].DOB];
-        
     else
         birthdate = @"Date of Birth";
+    
     genderStr = [TLUserDefaults getCurrentUser].Gender;
 }
 

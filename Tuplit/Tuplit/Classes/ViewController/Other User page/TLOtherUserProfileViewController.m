@@ -27,8 +27,8 @@
     {
         [navleftButton buttonWithIcon:getImage(@"BackArrow", NO) target:self action:@selector(backToFriends) isLeft:NO];
     }
-    [self.navigationItem setLeftBarButtonItem:navleftButton];
     
+    [self.navigationItem setLeftBarButtonItem:navleftButton];
     baseViewWidth= self.view.frame.size.width;
     baseViewHeight= self.view.frame.size.height;
     
@@ -108,17 +108,17 @@
     
     NSArray *recentActivityArray = [[NSArray alloc] init];
     NSArray *commentsArray = [[NSArray alloc] init];
-    
+
     if(userdeatilmodel.Orders.count>0)
     {
         recentActivityArray = userdeatilmodel.Orders;
     }
-    
+
     if(userdeatilmodel.comments.count>0)
     {
         commentsArray = userdeatilmodel.comments;
     }
-    
+
     mainDict = @{
                  @"Recently Shopped...": recentActivityArray,
                  @"Comments":commentsArray,
@@ -156,6 +156,22 @@
     allCommentsVC.viewController = self;
     [self.navigationController pushViewController:allCommentsVC animated:YES];
 }
+
+-(void)addFriend
+{
+    NSLog(@"AddFriend Action");
+    
+    NETWORK_TEST_PROCEDURE
+//    NSDictionary *queryParams = @{
+//                 @"userID": NSNonNilString(self.userID),
+//                 };
+    
+    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    TLAddFriendManager *addFriendManager = [[TLAddFriendManager alloc]init];
+    addFriendManager.delegate = self;
+    [addFriendManager callService:self.userID];
+    
+}
 -(void)openMerchantDetails:(UITapGestureRecognizer *)gesture
 {
     EGOImageView *imgView = (EGOImageView*)gesture.view;
@@ -192,13 +208,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     if (indexPath.section == 0)
     {
-        if(userModel.IsFriend.intValue == 1)
+//        if(userModel.IsFriend.intValue == 1)
             return 173;  // top view height
-        else
-            return 173 - 50;
+//        else
+//            return 173 - 50;
     }
     if(indexPath.section==2)
     {
@@ -290,14 +305,17 @@
         
         if(userModel.IsFriend.intValue == 1)
         {
-            [sendCreditBtn setHidden:NO];
+//            [sendCreditBtn setHidden:NO];
             [sendCreditBtn addTarget:self action:@selector(transferAction:) forControlEvents:UIControlEventTouchUpInside];
+            [sendCreditBtn setTitle:[NSString stringWithFormat:@"Send credit to %@",[userModel.FirstName stringWithTitleCase]] forState:UIControlStateNormal];
         }
         else
         {
-            [sendCreditBtn setHidden:YES];
+//            [sendCreditBtn setHidden:YES];
+            [sendCreditBtn addTarget:self action:@selector(addFriend) forControlEvents:UIControlEventTouchUpInside];
+            [sendCreditBtn setTitle:@"Add Friend" forState:UIControlStateNormal];
         }
-        [sendCreditBtn setTitle:[NSString stringWithFormat:@"Send credit to %@",[userModel.FirstName stringWithTitleCase]] forState:UIControlStateNormal];
+        
         profileImgView.imageURL = [NSURL URLWithString:userModel.Photo];
         userIDLbl.text = userModel.UserId;
     }
@@ -391,6 +409,28 @@
     [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
+{
+    [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+}
+
+#pragma  mark - TLAddFriendManager Delegate Methods
+- (void)addFriendManagerSuccessfull:(TLAddFriendManager *) addFriendManager
+{
+    UserModel *tempUsermodal = [UserModel new];
+    tempUsermodal = userModel;
+    tempUsermodal.IsFriend = @"1";
+    userModel = tempUsermodal;
+    [userProfileTable reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]  withRowAnimation:UITableViewRowAnimationNone];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kUpdateFriendsActivity object:nil];
+    [[ProgressHud shared] hide];
+}
+- (void)addFriendManager:(TLAddFriendManager *) addFriendManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
+{
+    [[ProgressHud shared] hide];
+    [UIAlertView alertViewWithMessage:errorMsg];
+}
+- (void)addFriendManagerFailed:(TLAddFriendManager *) addFriendManager
 {
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];

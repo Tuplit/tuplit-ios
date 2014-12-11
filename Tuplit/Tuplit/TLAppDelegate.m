@@ -13,6 +13,8 @@
 #import <GooglePlus/GooglePlus.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import "TestVersionManager.h"
+#import "RefreshBatchCount.h"
+#import "TLTutorialViewController.h"
 
 #define kAlertQuit      100
 #define kAlertDontQuit  101
@@ -56,7 +58,7 @@
     [self callStaticContentWebService];
     [CurrentLocation start];
     
-    welcomeViewController = [[TLWelcomeViewController alloc] initWithNibName:@"TLWelcomeViewController" bundle:nil];
+   welcomeViewController = [[TLWelcomeViewController alloc] initWithNibName:@"TLWelcomeViewController" bundle:nil];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:welcomeViewController];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     self.window.rootViewController = self.navigationController;
@@ -90,10 +92,16 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    if(application.applicationIconBadgeNumber>0)
+    {
+        RefreshBatchCount * _updateBathCount = [[RefreshBatchCount alloc] init];
+        [_updateBathCount updateBadgeCount];
+    }
+    
     application.applicationIconBadgeNumber = 0;
     [FBSession.activeSession handleDidBecomeActive];
     
-    [[TestVersionManager sharedManager] validateCurrentAppVersion];
+//    [[TestVersionManager sharedManager] validateCurrentAppVersion];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -198,6 +206,7 @@
 
 -(void) callStaticContentWebService {
     
+    NETWORK_TEST_PROCEDURE
     if(!staticContentManager) {
         staticContentManager = [TLStaticContentManager new];
         staticContentManager.delegate = self;
@@ -317,6 +326,14 @@
 
 - (void)staticContentManagerSuccess:(TLStaticContentManager *)staticContentManager {
     
+    for(NSString *urls in [Global instance].tutorialScreenImages)
+    {
+//        EGOImageView *imageview = [[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0, 0, 10, 10)];
+        EGOImageView *imageview = [[EGOImageView alloc]initWithPlaceholderImage:nil delegate:self];
+//        imageview.delegate = self;
+        imageview.imageURL = [NSURL URLWithString:urls];
+    }
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:kWelcomeScreenSlideShowStarter object:nil];
 }
 
@@ -346,6 +363,17 @@
     
     [[ProgressHud shared] hide];
     [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+}
+
+#pragma mark - EGOImageViewDelegate
+
+- (void)imageViewLoadedImage:(EGOImageView*)imageView {
+
+    
+}
+
+- (void)imageViewFailedToLoadImage:(EGOImageView*)imageView error:(NSError*)error {
+    
 }
 
 

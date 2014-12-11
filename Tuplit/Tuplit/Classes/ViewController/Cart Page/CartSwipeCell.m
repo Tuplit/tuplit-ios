@@ -22,14 +22,14 @@
     if (self)
     {
         swipeView=[[UIView alloc] initWithFrame:CGRectMake(0, 0,self.contentView.frame.size.width,CART_CELL_HEIGHT)];
-        swipeView.backgroundColor=UIColorFromRGB(0xF4F4F4);
+        swipeView.backgroundColor= UIColorFromRGB(0xF4F4F4);
         
         itemImgView = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@""] imageViewFrame:CGRectMake(0, 0, 50, CART_CELL_HEIGHT-2)];
         itemImgView.backgroundColor = [UIColor clearColor];
         [swipeView addSubview:itemImgView];
         
         itemQuantityLbl=[[UILabel alloc]initWithFrame:CGRectMake(50 + 5,0, 35, CART_CELL_HEIGHT-2)];
-        itemQuantityLbl.textColor=UIColorFromRGB(0x666666);
+        itemQuantityLbl.textColor= UIColorFromRGB(0x666666);
         itemQuantityLbl.numberOfLines=0;
         itemQuantityLbl.textAlignment=NSTextAlignmentCenter;
         itemQuantityLbl.adjustsFontSizeToFitWidth=YES;
@@ -38,7 +38,7 @@
         [swipeView addSubview:itemQuantityLbl];
         
         itemNameLbl=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(itemQuantityLbl.frame),0, 160, CART_CELL_HEIGHT-2)];
-        itemNameLbl.textColor=UIColorFromRGB(0x333333);
+        itemNameLbl.textColor= UIColorFromRGB(0x333333);
         itemNameLbl.numberOfLines=0;
         itemNameLbl.textAlignment=NSTextAlignmentLeft;
         itemNameLbl.adjustsFontSizeToFitWidth=YES;
@@ -47,14 +47,14 @@
         [swipeView addSubview:itemNameLbl];
         
         fixedAmountLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(itemNameLbl.frame), 0, 30, CART_CELL_HEIGHT-2)];
-        fixedAmountLbl.textColor=UIColorFromRGB(0x808080);
+        fixedAmountLbl.textColor= UIColorFromRGB(0x808080);
         fixedAmountLbl.textAlignment=NSTextAlignmentRight;
         fixedAmountLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:10.0];
         fixedAmountLbl.backgroundColor=[UIColor clearColor];
         [swipeView addSubview:fixedAmountLbl];
         
         discountAmountLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(fixedAmountLbl.frame), 0, 40, CART_CELL_HEIGHT-2)];
-        discountAmountLbl.textColor=UIColorFromRGB(0x00b3a4);
+        discountAmountLbl.textColor= UIColorFromRGB(0x00b3a4);
         discountAmountLbl.textAlignment=NSTextAlignmentRight;
         discountAmountLbl.backgroundColor=[UIColor clearColor];
         discountAmountLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:16.0];

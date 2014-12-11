@@ -219,6 +219,7 @@
     [merchantTable reloadData];
     [merchantTable setTableFooterView:cellContainer];
     
+    [merchantTable setUserInteractionEnabled:NO];
     searchTxt.text = @"";
     
     UIImage *img = [UIImage imageNamed:@"MapIcon"];
@@ -724,6 +725,8 @@
 
 - (void)favouriteManagerSuccessfull:(TLFavouriteListingManager *) favouriteListManager withFavouriteList:(NSArray*)_favouriteArray
 {
+    [merchantTable setUserInteractionEnabled:YES];
+    
     for(MerchantModel *merchantModel in _favouriteArray)
     {
         EGOImageView *imageview = [[EGOImageView alloc]initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0, 0, 10, 10)];

@@ -186,7 +186,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" id="h4c-aj-PXh">
-                            <rect key="frame" x="20" y="393" width="280" height="45"/>
+                            <rect key="frame" x="20" y="401" width="280" height="29"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.9504743303571429" green="0.9504743303571429" blue="0.9504743303571429" alpha="1" colorSpace="calibratedRGB"/>
                             <segments>

@@ -28,6 +28,7 @@
 #import "EGOImageLoader.h"
 
 @protocol EGOImageViewDelegate;
+
 @interface EGOImageView : UIImageView<EGOImageLoaderObserver> {
 @private
 	NSURL* imageURL;

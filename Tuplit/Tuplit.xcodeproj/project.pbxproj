@@ -335,6 +335,7 @@
 		FE920B4619739BB5006C4D9D /* FbGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FE920B4019739BB5006C4D9D /* FbGraph.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FE920B4719739BB5006C4D9D /* FbGraphFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FE920B4219739BB5006C4D9D /* FbGraphFile.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FE920B4819739BB5006C4D9D /* FbGraphResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FE920B4419739BB5006C4D9D /* FbGraphResponse.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		FE94ABA01A32E78B0014FFFA /* TLAddFriendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FE94AB9F1A32E78B0014FFFA /* TLAddFriendManager.m */; };
 		FE990D4B19AEF3F0001CF13C /* SlideShowView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE990D4A19AEF3F0001CF13C /* SlideShowView.m */; };
 		FEA0B7081955AFCB00CD20F9 /* EditProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA0B6F81955AFCA00CD20F9 /* EditProfileCell.m */; };
 		FEA0B7091955AFCB00CD20F9 /* TLEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA0B6FA1955AFCA00CD20F9 /* TLEditProfileViewController.m */; };
@@ -455,6 +456,7 @@
 		FEEA4866195C5E6F0013C749 /* TLTransactionListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA4865195C5E6F0013C749 /* TLTransactionListingManager.m */; };
 		FEEF511D1A14D020003566FB /* invite_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF511B1A14D020003566FB /* invite_grey.png */; };
 		FEEF511E1A14D020003566FB /* invite_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF511C1A14D020003566FB /* invite_grey@2x.png */; };
+		FEF077AF1A36DAF500766F14 /* RefreshBatchCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF077AE1A36DAF500766F14 /* RefreshBatchCount.m */; };
 		FEF6086E19C2AEEE00E679A9 /* TLCurrentLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF6086D19C2AEEE00E679A9 /* TLCurrentLocationManager.m */; };
 		FEF6087219C2BAFA00E679A9 /* TLAppLocationController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF6087119C2BAFA00E679A9 /* TLAppLocationController.m */; };
 		FEF8AE321974FFD200DE2EAD /* TLTransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF8AE311974FFD200DE2EAD /* TLTransferManager.m */; };
@@ -960,6 +962,8 @@
 		FE920B4219739BB5006C4D9D /* FbGraphFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FbGraphFile.m; sourceTree = "<group>"; };
 		FE920B4319739BB5006C4D9D /* FbGraphResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FbGraphResponse.h; sourceTree = "<group>"; };
 		FE920B4419739BB5006C4D9D /* FbGraphResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FbGraphResponse.m; sourceTree = "<group>"; };
+		FE94AB9E1A32E78B0014FFFA /* TLAddFriendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLAddFriendManager.h; path = "Tuplit/Classes/WebService/AddFriend Manager/TLAddFriendManager.h"; sourceTree = SOURCE_ROOT; };
+		FE94AB9F1A32E78B0014FFFA /* TLAddFriendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLAddFriendManager.m; path = "Tuplit/Classes/WebService/AddFriend Manager/TLAddFriendManager.m"; sourceTree = SOURCE_ROOT; };
 		FE990D4919AEF3F0001CF13C /* SlideShowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlideShowView.h; path = SlideShow/SlideShowView.h; sourceTree = "<group>"; };
 		FE990D4A19AEF3F0001CF13C /* SlideShowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlideShowView.m; path = SlideShow/SlideShowView.m; sourceTree = "<group>"; };
 		FEA0B6F71955AFCA00CD20F9 /* EditProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileCell.h; sourceTree = "<group>"; };
@@ -1120,6 +1124,8 @@
 		FEEA4865195C5E6F0013C749 /* TLTransactionListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TLTransactionListingManager.m; path = "TransactionListing Manager/TLTransactionListingManager.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		FEEF511B1A14D020003566FB /* invite_grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = invite_grey.png; sourceTree = "<group>"; };
 		FEEF511C1A14D020003566FB /* invite_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "invite_grey@2x.png"; sourceTree = "<group>"; };
+		FEF077AD1A36DAF500766F14 /* RefreshBatchCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshBatchCount.h; sourceTree = "<group>"; };
+		FEF077AE1A36DAF500766F14 /* RefreshBatchCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefreshBatchCount.m; sourceTree = "<group>"; };
 		FEF6086C19C2AEEE00E679A9 /* TLCurrentLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLCurrentLocationManager.h; path = "Current Location Manager/TLCurrentLocationManager.h"; sourceTree = "<group>"; };
 		FEF6086D19C2AEEE00E679A9 /* TLCurrentLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCurrentLocationManager.m; path = "Current Location Manager/TLCurrentLocationManager.m"; sourceTree = "<group>"; };
 		FEF6087019C2BAFA00E679A9 /* TLAppLocationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLAppLocationController.h; path = "App Location Controller/TLAppLocationController.h"; sourceTree = "<group>"; };
@@ -1444,8 +1450,8 @@
 				2D391238194FF9CD002CFFC6 /* CommentsModel.m */,
 				2D391239194FF9CD002CFFC6 /* MenuProductsModel.h */,
 				2D39123A194FF9CD002CFFC6 /* MenuProductsModel.m */,
-				2D39123B194FF9CD002CFFC6 /* MerchantsDetailsModel.h */,
 				2D39123C194FF9CD002CFFC6 /* MerchantsDetailsModel.m */,
+				2D39123B194FF9CD002CFFC6 /* MerchantsDetailsModel.h */,
 				2D39123D194FF9CD002CFFC6 /* OpeningHoursModel.h */,
 				2D39123E194FF9CD002CFFC6 /* OpeningHoursModel.m */,
 				2D39123F194FF9CD002CFFC6 /* FriendsListModel.h */,
@@ -1624,6 +1630,7 @@
 		2D23F0BB1934A75900C8FC3B /* WebService */ = {
 			isa = PBXGroup;
 			children = (
+				FEF077AC1A36DAF500766F14 /* Refresh Batch Count */,
 				2D23F6031934B55900C8FC3B /* Register Manager */,
 				2D23F5FE1934B55900C8FC3B /* Login Manager */,
 				2D8E11881935B63F0057ED88 /* Merchant Manager */,
@@ -1883,6 +1890,7 @@
 		2D23F6091934B55900C8FC3B /* UserDetail Manager */ = {
 			isa = PBXGroup;
 			children = (
+				FE94AB9A1A32E65A0014FFFA /* AddFriend Manager */,
 				FEF8AE33197501C300DE2EAD /* TopUp Manager */,
 				FEEA4860195C5CCA0013C749 /* Transaction Manager */,
 				FEF8AE2B1974FF6700DE2EAD /* Transfer Manager */,
@@ -2368,6 +2376,15 @@
 			path = Tuplit/ThirdPartyFrameworks/FBGraphAPI;
 			sourceTree = SOURCE_ROOT;
 		};
+		FE94AB9A1A32E65A0014FFFA /* AddFriend Manager */ = {
+			isa = PBXGroup;
+			children = (
+				FE94AB9E1A32E78B0014FFFA /* TLAddFriendManager.h */,
+				FE94AB9F1A32E78B0014FFFA /* TLAddFriendManager.m */,
+			);
+			name = "AddFriend Manager";
+			sourceTree = "<group>";
+		};
 		FE990D5019AEF3F6001CF13C /* SlideShowView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2615,6 +2632,15 @@
 			);
 			name = "Transaction Manager";
 			path = ..;
+			sourceTree = "<group>";
+		};
+		FEF077AC1A36DAF500766F14 /* Refresh Batch Count */ = {
+			isa = PBXGroup;
+			children = (
+				FEF077AD1A36DAF500766F14 /* RefreshBatchCount.h */,
+				FEF077AE1A36DAF500766F14 /* RefreshBatchCount.m */,
+			);
+			path = "Refresh Batch Count";
 			sourceTree = "<group>";
 		};
 		FEF6086719C2AEA600E679A9 /* Location Manager */ = {
@@ -3131,6 +3157,7 @@
 				2D23F1121934A75900C8FC3B /* TLSettingsViewController.m in Sources */,
 				FE83D0481962CAC200FC65B2 /* TLOrderConformViewController.m in Sources */,
 				FED5D338196AAEF4006BF2A1 /* CreditCard.m in Sources */,
+				FE94ABA01A32E78B0014FFFA /* TLAddFriendManager.m in Sources */,
 				2D00E442193882C7008321F5 /* ChoiceButton.m in Sources */,
 				2D23F5FD1934B38900C8FC3B /* UI.m in Sources */,
 				EE5458981978053B000F9F9A /* TLFriendsInviteManager.m in Sources */,
@@ -3149,6 +3176,7 @@
 				FEA0B7091955AFCB00CD20F9 /* TLEditProfileViewController.m in Sources */,
 				FECC08631968071D00906FAF /* TLVerifyPinManager.m in Sources */,
 				2DAF54171951D2CA000DC545 /* TLCheckBalanceManager.m in Sources */,
+				FEF077AF1A36DAF500766F14 /* RefreshBatchCount.m in Sources */,
 				EE171F541979424500A62516 /* CheckUserModel.m in Sources */,
 				FEB850E6198B5A9A005F1389 /* TLSettingsManager.m in Sources */,
 				FEEA485F195C5ADF0013C749 /* OrderProductModel.m in Sources */,
@@ -3316,7 +3344,7 @@
 					"$(PROJECT_DIR)/Tuplit/ThirdPartyFrameworks/Flurry/Flurry",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "65411874-670a-4082-b0bb-da503d5c7ca6";
+				PROVISIONING_PROFILE = "7888e857-92d9-4064-b041-60c651ebf8d4";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 arm64 i386";
 			};
@@ -3363,7 +3391,7 @@
 					"$(PROJECT_DIR)/Tuplit/ThirdPartyFrameworks/Flurry/Flurry",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "f12046b0-07ff-42c7-ae68-2a273c02bcbc";
+				PROVISIONING_PROFILE = "9dd09da9-b488-41ad-a257-27078142dd07";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 arm64 i386";
@@ -3403,7 +3431,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "65411874-670a-4082-b0bb-da503d5c7ca6";
+				PROVISIONING_PROFILE = "7888e857-92d9-4064-b041-60c651ebf8d4";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 arm64 i386";
 				WRAPPER_EXTENSION = app;
@@ -3443,7 +3471,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f12046b0-07ff-42c7-ae68-2a273c02bcbc";
+				PROVISIONING_PROFILE = "9dd09da9-b488-41ad-a257-27078142dd07";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 arm64 i386";
 				WRAPPER_EXTENSION = app;

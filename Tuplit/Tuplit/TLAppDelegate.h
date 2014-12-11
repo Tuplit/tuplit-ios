@@ -18,7 +18,7 @@
 #import "TLStaticContentManager.h"
 #import "TLWelcomeViewController.h"
 
-@interface TLAppDelegate : UIResponder <UIApplicationDelegate,TLStaticContentManagerDelegate,TLUserDetailsManagerDelegate>
+@interface TLAppDelegate : UIResponder <UIApplicationDelegate,TLStaticContentManagerDelegate,TLUserDetailsManagerDelegate,EGOImageViewDelegate>
 {
      FBSession *fbSession;
      TLStaticContentManager *staticContentManager;

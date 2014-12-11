@@ -209,8 +209,6 @@
     cartSwipe.backgroundColor=[UIColor clearColor];
     [cartSwipe setDelegate:self];
     [checksOutSubView addSubview:cartSwipe];
-    
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -447,9 +445,61 @@
 
 -(void) performAction
 {
-   
-        if([TLUserDefaults getCurrentUser].Passcode.boolValue)
-        {
+    if([TLUserDefaults getCurrentUser].Passcode.boolValue)
+    {
+        
+        LAContext *context = [[LAContext alloc] init];
+        NSError *error;
+        BOOL isFingerSupported;
+        
+        
+        isFingerSupported = [context canEvaluatePolicy: LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error];
+        if (isFingerSupported) {
+            
+            APP_DELEGATE.isSocialhandeled = YES;
+//                            [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
+//             show the authentication UI with our reason string
+            [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:NSLocalizedString(@"UNLOCK_ACCESS_TO_LOCKED_FATURE", nil) reply:
+             ^(BOOL success, NSError *authenticationError) {
+                 
+//                                  dispatch_async(dispatch_get_main_queue(), ^{
+//                                      [[ProgressHud shared]hide];
+//                                  });
+                 
+                 if (success) {
+                     dispatch_async(dispatch_get_main_queue(),^{
+                         [self callWebserviceForCurrentBalance];
+                     });
+                 }
+                 else {
+                     
+                     if(authenticationError.code == -3)
+                     {
+                         TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
+                         verifyPINVC.isverifyPin = YES;
+                         verifyPINVC.delegate = self;
+                         verifyPINVC.navigationTitle = LString(@"ENTER_PIN_CODE");
+                         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:verifyPINVC];
+                         [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
+                         [self presentViewController:nav animated:YES completion:nil];
+                         [[ProgressHud shared]hide];
+                         return;
+                     }
+                     else if(authenticationError.code == -2)
+                     {
+                         return;
+                     }
+                     else
+                     {                         
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             [UIAlertView alertViewWithMessage:@"There was a problem verifying your identity."];
+                         });
+                     }
+                 }
+                 
+             }];
+        } else {
+            
             TLPinCodeViewController *verifyPINVC = [[TLPinCodeViewController alloc]init];
             verifyPINVC.isverifyPin = YES;
             verifyPINVC.delegate = self;
@@ -458,14 +508,19 @@
             [nav.navigationBar setBackgroundImage:[UIImage imageWithColor:APP_DELEGATE.defaultColor] forBarMetrics:UIBarMetricsDefault];
             [self presentViewController:nav animated:YES completion:nil];
         }
-        else
-        {
-//            [self callWebserviceForLocationMatch];
-            [self callWebserviceForCurrentBalance];
-        }
-   
+    }
+    else
+    {
+        //            [self callWebserviceForLocationMatch];
+        [self callWebserviceForCurrentBalance];
+    }
+    
 }
 
+-(void)checkpass
+{
+   
+}
 
 #pragma mark - TLPinCodeVerifiedDelegate
 
@@ -498,8 +553,6 @@
         [UIAlertView alertViewWithMessage:message];
         [[ProgressHud shared] hide];
     }
-    
-    
 }
 
 - (void)checkLocationManager:(TLCheckLocationManager *)checkLocationManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {
@@ -518,7 +571,7 @@
 
 - (void)checkBalanceManagerSuccessfull:(TLCheckBalanceManager *)checkBalanceManager paymentModel:(PaymentModel *)paymentModel {
     
-    if ([paymentModel.AllowPayment intValue] == 0) {
+    if([paymentModel.AllowPayment intValue] == 0) {
         [UIAlertView alertViewWithTitle:LString(@"TUPLIT") message:paymentModel.Message cancelButtonTitle:LString(@"CANCEL") otherButtonTitles:[NSArray arrayWithObject:@"Topup"] onDismiss:^(int buttonIndex)
          {
              

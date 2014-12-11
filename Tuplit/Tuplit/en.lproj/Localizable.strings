@@ -198,6 +198,7 @@
 
 "SWIPE_TO_CHECKOUT"            = "   Swipe to checkout";
 "MERCHANT_CLOSED"              = "%@ is closed";
+"UNLOCK_ACCESS_TO_LOCKED_FATURE" = "Are you the device owner?";
 
 /*Add Credit Card*/
 "ADD_CREDIT_CARD"               = "Add Credit Card";

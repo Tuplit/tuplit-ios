@@ -32,20 +32,30 @@
     
     UIBarButtonItem *barDone=[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneBtnClicked)];
     barDone.enabled=YES;
-    [barDone setTintColor:[UIColor colorWithRed:34.0/255.0 green:97.0/255.0 blue:221.0/255.0 alpha:1]];
+    
+    if([barDone respondsToSelector:@selector(setTintColor:)])
+    {
+        [barDone setTintColor:[UIColor colorWithRed:34.0/255.0 green:97.0/255.0 blue:221.0/255.0 alpha:1]];
+    }
     
     UIBarButtonItem *flexSpace=[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     flexSpace.enabled=YES;
     
     UIBarButtonItem *barCancel=[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelBtnClicked)];
     barCancel.enabled=YES;
-    [barCancel setTintColor:[UIColor whiteColor]];
+    if([barCancel respondsToSelector:@selector(setTintColor:)])
+    {
+        [barCancel setTintColor:[UIColor whiteColor]];
+    }
     
     NSMutableArray *toolbarArray=[[NSMutableArray alloc]initWithObjects:barCancel,flexSpace,barDone, nil];
     
     UIToolbar *loanToolbar=[[UIToolbar alloc]initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44.0)];
     [loanToolbar setBarStyle:UIBarStyleBlack];
-    loanToolbar.barTintColor = APP_DELEGATE.defaultColor;
+    if([loanToolbar respondsToSelector:@selector(setTintColor:)])
+    {
+        loanToolbar.barTintColor = APP_DELEGATE.defaultColor;
+    }
     loanToolbar.items = toolbarArray;
     
     UILabel *loanTitleLbl=[[UILabel alloc]init];

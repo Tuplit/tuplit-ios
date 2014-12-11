@@ -95,6 +95,8 @@
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     buttonFB.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
     buttonGoogle.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
     buttonEmail.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
@@ -136,6 +138,10 @@
              NSLog(@"%@", placemarks);
          }
      }];
+    
+   
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kStaticContentRetrived object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentTutorial) name:kStaticContentRetrived object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -147,6 +153,16 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
+    
+    if(![TLUserDefaults isTutorialSkipped])
+    {
+        self.view.hidden = YES;
+        [self performSelector:@selector(presentTutorial) withObject:self afterDelay:0.0];
+    }
+    else
+    {
+        self.view.hidden = NO;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -174,7 +190,7 @@
             [self performSelectorOnMainThread:@selector(callUserService) withObject:nil waitUntilDone:NO];
         }
     }
-    [self performSelector:@selector(presentTutorial) withObject:self afterDelay:0.1];
+    
 }
 - (void)viewDidDisappear:(BOOL)animated
 {
@@ -267,12 +283,29 @@
     [TuplitConstants loadSliderHomePageWithAnimation:YES];
 }
 - (void)presentTutorial {
+//    [self performSelector:@selector(delayTut) withObject:nil afterDelay:.8];
+//    [[ProgressHud shared]hide];
     
+    if (![NetworkConnectivity hasConnectivity])
+    {
+        self.view.hidden = NO;
+        return;
+    }
+  
     if(![TLUserDefaults isTutorialSkipped])
     {
-         tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
-        [self.navigationController presentViewController:tutorVC animated:YES completion:nil];
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+        tutorVC = [[TLTutorialViewController alloc] initWithNibName:@"TLTutorialViewController" bundle:nil];
+        tutorVC.isWelcome = YES;
+//        [self.navigationController presentViewController:tutorVC animated:NO completion:nil];
+        [self.navigationController pushViewController:tutorVC animated:NO];
     }
+    
+}
+
+-(void)delayTut
+{
+    
 }
 
 -(void)callUserService
@@ -332,11 +365,10 @@
                 }
                 
                 @try {
+                    
                     NSString *urlString = [person.image.url stringByReplacingCharactersInRange:NSMakeRange(person.image.url.length-2, 2) withString:@""];
                     urlString = [urlString stringByAppendingString:@"120"];
-                    
                     user.Photo = urlString;
-                    
                 }
                 @catch (NSException *exception) {
                     user.Photo = person.image.url;

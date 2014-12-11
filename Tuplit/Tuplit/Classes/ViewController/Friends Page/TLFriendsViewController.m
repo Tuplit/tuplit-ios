@@ -219,6 +219,7 @@
     [friendsArray removeAllObjects];
     [friendsTable reloadData];
     [friendsTable setTableFooterView:cellContainer];
+    [friendsTable setUserInteractionEnabled:NO];
     [self callFriendslistWebserviceWithstartCount:0 showProgress:NO];
 }
 
@@ -294,7 +295,7 @@
             searchbarView.hidden = NO;
             [inviteFriendsBtn positionAtY:CGRectGetMaxY(searchbarView.frame)+10];
             
-            friendsTable.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame)+1,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight - 11);
+            friendsTable.frame = CGRectMake(0,CGRectGetMaxY(inviteFriendsBtn.frame)+5,baseViewWidth, baseViewHeight-CGRectGetMaxY(inviteFriendsBtn.frame) - adjustHeight-5);
             errorView.frame = friendsTable.frame;
             errorLbl.frame = CGRectMake(10, (errorView.frame.size.height - 100)/2, errorView.frame.size.width - 20, 100);
         }
@@ -504,6 +505,7 @@
 
 - (void)friendsListingManagerSuccess:(TLFriendsListingManager *)friendsListingManager withFriendsListingManager:(NSArray*) _friendsList
 {
+    [friendsTable setUserInteractionEnabled:YES];
     errorView.hidden = YES;
     if (isLoadMorePressed) {
         
