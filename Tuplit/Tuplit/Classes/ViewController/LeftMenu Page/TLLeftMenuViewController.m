@@ -148,7 +148,13 @@
 
 - (void)dealloc
 {
-    
+    friendProfileVC = nil;
+    merchantVC = nil;
+    cartVC = nil;
+    favoriteVC = nil;
+    friendsVC = nil;
+    settingsVC = nil;
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 #pragma mark - UserDefined methods
 
@@ -219,6 +225,8 @@
 
 -(void)openMyProfileVc:(id)sender
 {
+    
+     NETWORK_TEST_PROCEDURE
 //    [APP_DELEGATE.slideMenuController hideMenuViewController];
 //    if(!myProfileVC)
 //    {
@@ -236,6 +244,8 @@
 
 -(void) openfriendProfileVC:(UITapGestureRecognizer *)gesture
 {
+     NETWORK_TEST_PROCEDURE
+    
     CGPoint buttonPosition = [(EGOImageView*)gesture.view convertPoint:CGPointZero toView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonPosition];
     
@@ -413,9 +423,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+   
     
     if (indexPath.row == 0) {
         
+         NETWORK_TEST_PROCEDURE
 //        [APP_DELEGATE.slideMenuController hideMenuViewController];
 //        if(!merchantVC)
 //        {
@@ -431,6 +443,8 @@
         
     }
     else if(indexPath.row == 1) {
+        
+         NETWORK_TEST_PROCEDURE
         
         if ([TLUserDefaults getCurrentUser] == nil) {
             
@@ -456,6 +470,8 @@
     }
     else if(indexPath.row == 2) {
         
+         NETWORK_TEST_PROCEDURE
+        
         if ([TLUserDefaults getCurrentUser] == nil) {
             
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:@"You need to register in the app to view your favorites. Would you like to register?" delegate:self cancelButtonTitle:LString(@"NO") otherButtonTitles:@"YES", nil];
@@ -478,6 +494,8 @@
         }
     }
     else if(indexPath.row == 3) {
+        
+         NETWORK_TEST_PROCEDURE
         
         if ([TLUserDefaults getCurrentUser] == nil) {
             

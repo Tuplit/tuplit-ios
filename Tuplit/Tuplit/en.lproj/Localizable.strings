@@ -176,6 +176,10 @@
 
 "ALL_COMMENTS"                  = "All Comments";
 
+/* Receipt */
+
+"THANKS_TEXT"                   = "Thanks for buying with Tuplit";
+"LINK_TEXT"                     = "Visit www.tuplit.com online for news and promotions around you!";
 /* Add Comments */
 
 "ADD_COMMENT"                   = "Add Comment";

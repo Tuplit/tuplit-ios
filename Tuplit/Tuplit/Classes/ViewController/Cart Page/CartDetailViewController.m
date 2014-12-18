@@ -58,6 +58,7 @@
     UIImage *detailImg=getImage(@"receipt", NO);
     detailImgView=[[UIImageView alloc] initWithFrame:CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, 254 + tableHeight)];
     detailImgView.image=detailImg;
+    detailImgView.userInteractionEnabled = YES;
     detailImgView.backgroundColor=[UIColor clearColor];
     [scrollView addSubview:detailImgView];
     
@@ -179,8 +180,40 @@
     transactionIDLbl.backgroundColor=[UIColor clearColor];
     [detailImgView addSubview:transactionIDLbl];
     
+    thanksLbl=[[UILabel alloc] initWithFrame:CGRectMake(14,CGRectGetMaxY(transactionIDLbl.frame)+15, detailImgView.width-28, 20)];
+    thanksLbl.textColor=UIColorFromRGB(0x666666);
+    thanksLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    thanksLbl.textAlignment=NSTextAlignmentCenter;
+    thanksLbl.backgroundColor=[UIColor clearColor];
+    thanksLbl.text = LString(@"THANKS_TEXT");
+    [detailImgView addSubview:thanksLbl];
     
-    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, CGRectGetMaxY(transactionIDLbl.frame) + 50);
+    linkLbl=[[TTTAttributedLabel alloc] initWithFrame:CGRectMake(14,CGRectGetMaxY(thanksLbl.frame)-5, detailImgView.width-28, 20)];
+    linkLbl.textColor=UIColorFromRGB(0x666666);
+    linkLbl.highlightedTextColor = [UIColor whiteColor];
+    linkLbl.delegate = self;
+    linkLbl.numberOfLines = 0;
+    linkLbl.font=[UIFont fontWithName:@"HelveticaNeue" size:12.0];
+    linkLbl.textAlignment=NSTextAlignmentCenter;
+    linkLbl.backgroundColor=[UIColor clearColor];
+    linkLbl.text = LString(@"LINK_TEXT");
+    linkLbl.linkAttributes =[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],(NSString *)kCTUnderlineStyleAttributeName,APP_DELEGATE.defaultColor,(NSString *)kCTForegroundColorAttributeName, nil];
+    
+    NSRange r = [linkLbl.text rangeOfString:@"www.tuplit.com"];
+    NSURL *url = [NSURL URLWithString:@"http://www.tuplit.com/"];
+    NSLog(@"%@",url);
+    [linkLbl addLinkToURL:url withRange:r];
+    linkLbl.userInteractionEnabled = YES;
+    [detailImgView addSubview:linkLbl];
+    
+    thanksLbl.frame = CGRectMake(5,CGRectGetMaxY(transactionIDLbl.frame)+15, detailImgView.width-10, 20);
+    
+    float linkTxtHeight = [linkLbl.text heigthWithWidth:linkLbl.width andFont:linkLbl.font];
+    linkLbl.frame = CGRectMake(20,CGRectGetMaxY(thanksLbl.frame)-5, detailImgView.width-40, linkTxtHeight+1);
+    [itemsListTable reloadData];
+    
+    
+    detailImgView.frame = CGRectMake(5, CGRectGetMaxY(redeemLbl.frame),contentView.width-10, CGRectGetMaxY(linkLbl.frame) + 50);
     if([detailImgView.image respondsToSelector:@selector(resizableImageWithCapInsets:resizingMode:)])
     {
         UIImage *stretchableBackground = [detailImgView.image resizableImageWithCapInsets:UIEdgeInsetsMake(20,15,40,15) resizingMode:UIImageResizingModeStretch];
@@ -281,6 +314,7 @@
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.backgroundColor=[UIColor clearColor];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         UILabel *itemQuantityLbl=[[UILabel alloc]initWithFrame:CGRectMake(10 ,0, 30, CELL_HEIGHT)];
         itemQuantityLbl.textColor=UIColorFromRGB(0x666666);
@@ -369,6 +403,11 @@
     itemNameLbl.frame = CGRectMake(CGRectGetMaxX(itemQuantityLbl.frame) + adjust,0, fixedAmountLbl.frame.origin.x - CGRectGetMaxX(itemQuantityLbl.frame) - 4, CELL_HEIGHT);
     
     return cell;
+}
+
+#pragma  mark - TTTAttributedLabelDelegate
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 @end

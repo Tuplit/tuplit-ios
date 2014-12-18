@@ -157,12 +157,12 @@
     if(![TLUserDefaults isTutorialSkipped])
     {
         self.view.hidden = YES;
-        [self performSelector:@selector(presentTutorial) withObject:self afterDelay:0.0];
     }
     else
     {
         self.view.hidden = NO;
     }
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -189,6 +189,16 @@
             isSocialLogin = NO;
             [self performSelectorOnMainThread:@selector(callUserService) withObject:nil waitUntilDone:NO];
         }
+    }
+    
+    if(![TLUserDefaults isTutorialSkipped])
+    {
+        self.view.hidden = YES;
+        [self performSelector:@selector(presentTutorial) withObject:self afterDelay:0.0];
+    }
+    else
+    {
+        self.view.hidden = NO;
     }
     
 }

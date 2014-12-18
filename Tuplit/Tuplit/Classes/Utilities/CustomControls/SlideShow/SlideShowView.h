@@ -30,4 +30,5 @@
 -(void)loadData;
 - (IBAction)previousAction:(id)sender;
 - (IBAction)nextAction:(id)sender;
+
 @end

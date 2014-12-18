@@ -601,6 +601,10 @@
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
     if (result) {
         NSLog(@"Result : %d",result);
+        
+        NETWORK_TEST_PROCEDURE
+        [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+        
         NSDictionary *queryParams = @{
                                       @"Email"            :  NSNonNilString(fbUserId),
                                       };

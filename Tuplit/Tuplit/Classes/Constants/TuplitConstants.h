@@ -12,6 +12,12 @@
 #import "NetworkConnectivity.h"
 
 
+
+/******** General ********/
+
+#define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
+
+
 /******** APPDELEGATE ********/
 #define APP_DELEGATE							((TLAppDelegate *)[[UIApplication sharedApplication] delegate])
 

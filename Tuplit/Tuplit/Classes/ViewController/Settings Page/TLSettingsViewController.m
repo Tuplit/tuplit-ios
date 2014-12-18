@@ -28,6 +28,8 @@
     CustomSwitch *receiveSwitch;
     CustomSwitch *sendMoneySwitch;
     CustomSwitch *dealOfferSwitch;
+    CustomSwitch *passcodeSwitch;
+    CustomSwitch *rememberSwitch;
 }
 @end
 
@@ -66,8 +68,6 @@
     {
         adjustHeight = 44;
     }
-    
-    
     
     UIView *baseView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, baseViewWidth, baseViewHeight-adjustHeight)];
     baseView.backgroundColor=[UIColor whiteColor];
@@ -213,7 +213,7 @@
     passcodeLbl.backgroundColor=[UIColor clearColor];
     [securityView addSubview:passcodeLbl];
     
-    CustomSwitch *passcodeSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passcodeLbl.frame), CGRectGetMaxY(securityLbl.frame), 102, 35)];
+    passcodeSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passcodeLbl.frame), CGRectGetMaxY(securityLbl.frame), 102, 35)];
     passcodeSwitch.onText=LString(@"ON");
     passcodeSwitch.offText=LString(@"OFF");
     [passcodeSwitch setOn:[userdetails.Passcode boolValue]animated:YES];
@@ -237,7 +237,7 @@
     rememberSubLbl.backgroundColor=[UIColor clearColor];
     [securityView addSubview:rememberSubLbl];
     
-    CustomSwitch *rememberSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(rememberMeLbl.frame), CGRectGetMaxY(passcodeLbl.frame)+10, 102, 35)];
+    rememberSwitch=[[CustomSwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(rememberMeLbl.frame), CGRectGetMaxY(passcodeLbl.frame)+10, 102, 35)];
     rememberSwitch.onText=LString(@"ON");
     rememberSwitch.offText=LString(@"OFF");
     [rememberSwitch setOn:[userdetails.RememberMe boolValue]animated:YES];
@@ -430,6 +430,15 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
     }
+    
+    UserModel *userdetails = [TLUserDefaults getCurrentUser];
+    
+    [buySwitch setOn:[userdetails.BuySomething boolValue]animated:YES];
+    [receiveSwitch setOn:[userdetails.RecieveCredit boolValue]animated:YES];
+    [sendMoneySwitch setOn:[userdetails.SendCredit boolValue]animated:YES];
+    [dealOfferSwitch setOn:[userdetails.DealsOffers boolValue]animated:YES];
+    [passcodeSwitch setOn:[userdetails.Passcode boolValue]animated:YES];
+    [rememberSwitch setOn:[userdetails.RememberMe boolValue]animated:YES];
 }
 
 - (void)viewDidLoad
@@ -447,7 +456,6 @@
 
 -(void)callService:(NSDictionary*)queryParams
 {
-    NETWORK_TEST_PROCEDURE
     
     [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
     
@@ -534,6 +542,7 @@
 
 -(void) soundSwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
     
     _user_model = [self getcurrentUserDetails];
     
@@ -552,6 +561,8 @@
 
 -(void) notificationSwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     if(sender.isOn)
     {
@@ -601,6 +612,8 @@
 
 -(void) buySwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.BuySomething = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -618,6 +631,8 @@
 
 -(void) receiveSwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.RecieveCredit = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -633,6 +648,8 @@
 
 -(void) senMoneySwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.SendCredit = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -649,7 +666,8 @@
 
 -(void) dealOfferSwitchAction : (CustomSwitch *) sender
 {
-
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.DealsOffers = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -666,6 +684,8 @@
 
 -(void) passcodeSwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.Passcode = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -679,6 +699,8 @@
 
 -(void) paymentSwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.PaymentPreference = [NSString stringWithFormat:@"%d",sender.isOn];
     
@@ -691,6 +713,8 @@
 
 -(void) rememberSwitchAction : (CustomSwitch *) sender
 {
+    NETWORK_TEST_PROCEDURE
+    
     _user_model = [self getcurrentUserDetails];
     _user_model.RememberMe = [NSString stringWithFormat:@"%d",sender.isOn];
     

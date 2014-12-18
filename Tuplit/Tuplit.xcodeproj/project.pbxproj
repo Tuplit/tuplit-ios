@@ -293,14 +293,6 @@
 		FE32F1F81961AC12001F0FE0 /* TLAddCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE32F1F71961AC12001F0FE0 /* TLAddCommentViewController.m */; };
 		FE3FDA871977A2BF0035DB43 /* TLFriendsListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3FDA861977A2BF0035DB43 /* TLFriendsListingManager.m */; };
 		FE3FDA8B1977DE280035DB43 /* TLInviteFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3FDA8A1977DE280035DB43 /* TLInviteFriendsViewController.m */; };
-		FE4A0DBC1A1629CB00E83ED5 /* Tut1.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DB41A1629CB00E83ED5 /* Tut1.png */; };
-		FE4A0DBD1A1629CB00E83ED5 /* Tut1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DB51A1629CB00E83ED5 /* Tut1@2x.png */; };
-		FE4A0DBE1A1629CB00E83ED5 /* Tut2.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DB61A1629CB00E83ED5 /* Tut2.png */; };
-		FE4A0DBF1A1629CB00E83ED5 /* Tut2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DB71A1629CB00E83ED5 /* Tut2@2x.png */; };
-		FE4A0DC01A1629CB00E83ED5 /* Tut3.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DB81A1629CB00E83ED5 /* Tut3.png */; };
-		FE4A0DC11A1629CB00E83ED5 /* Tut3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DB91A1629CB00E83ED5 /* Tut3@2x.png */; };
-		FE4A0DC21A1629CB00E83ED5 /* Tut4.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DBA1A1629CB00E83ED5 /* Tut4.png */; };
-		FE4A0DC31A1629CB00E83ED5 /* Tut4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4A0DBB1A1629CB00E83ED5 /* Tut4@2x.png */; };
 		FE52E4081A0270C5000D8C6B /* g+.png in Resources */ = {isa = PBXBuildFile; fileRef = FE52E4061A0270C5000D8C6B /* g+.png */; };
 		FE52E4091A0270C5000D8C6B /* g+@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE52E4071A0270C5000D8C6B /* g+@2x.png */; };
 		FE52E40F1A027AC3000D8C6B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE52E40E1A027AC3000D8C6B /* Images.xcassets */; };
@@ -422,6 +414,7 @@
 		FEC705C0196135A500BC8F8B /* dot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC70591196135A400BC8F8B /* dot@2x.png */; };
 		FEC705C1196135A500BC8F8B /* dot_s.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC70592196135A400BC8F8B /* dot_s.png */; };
 		FEC705C2196135A500BC8F8B /* dot_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC70593196135A400BC8F8B /* dot_s@2x.png */; };
+		FEC9403B1A3EE36E00EDDAF7 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC9403A1A3EE36E00EDDAF7 /* TTTAttributedLabel.m */; };
 		FECA9D0C1A0C89CE005F5627 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FECA9D0B1A0C89CE005F5627 /* Images.xcassets */; };
 		FECA9D2C1A0CC590005F5627 /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = FECA9D271A0CC590005F5627 /* Default-568h@2x~iphone.png */; };
 		FECA9D2D1A0CC590005F5627 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FECA9D281A0CC590005F5627 /* Default.png */; };
@@ -902,14 +895,6 @@
 		FE3FDA861977A2BF0035DB43 /* TLFriendsListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLFriendsListingManager.m; path = "Friends Manager/TLFriendsListingManager.m"; sourceTree = "<group>"; };
 		FE3FDA891977DE280035DB43 /* TLInviteFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLInviteFriendsViewController.h; sourceTree = "<group>"; };
 		FE3FDA8A1977DE280035DB43 /* TLInviteFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLInviteFriendsViewController.m; sourceTree = "<group>"; };
-		FE4A0DB41A1629CB00E83ED5 /* Tut1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tut1.png; sourceTree = "<group>"; };
-		FE4A0DB51A1629CB00E83ED5 /* Tut1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tut1@2x.png"; sourceTree = "<group>"; };
-		FE4A0DB61A1629CB00E83ED5 /* Tut2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tut2.png; sourceTree = "<group>"; };
-		FE4A0DB71A1629CB00E83ED5 /* Tut2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tut2@2x.png"; sourceTree = "<group>"; };
-		FE4A0DB81A1629CB00E83ED5 /* Tut3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tut3.png; sourceTree = "<group>"; };
-		FE4A0DB91A1629CB00E83ED5 /* Tut3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tut3@2x.png"; sourceTree = "<group>"; };
-		FE4A0DBA1A1629CB00E83ED5 /* Tut4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tut4.png; sourceTree = "<group>"; };
-		FE4A0DBB1A1629CB00E83ED5 /* Tut4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tut4@2x.png"; sourceTree = "<group>"; };
 		FE52E4061A0270C5000D8C6B /* g+.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "g+.png"; sourceTree = "<group>"; };
 		FE52E4071A0270C5000D8C6B /* g+@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "g+@2x.png"; sourceTree = "<group>"; };
 		FE52E40E1A027AC3000D8C6B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Tuplit/Images.xcassets; sourceTree = SOURCE_ROOT; };
@@ -1077,6 +1062,8 @@
 		FEC70591196135A400BC8F8B /* dot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dot@2x.png"; sourceTree = "<group>"; };
 		FEC70592196135A400BC8F8B /* dot_s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot_s.png; sourceTree = "<group>"; };
 		FEC70593196135A400BC8F8B /* dot_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dot_s@2x.png"; sourceTree = "<group>"; };
+		FEC940391A3EE36E00EDDAF7 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
+		FEC9403A1A3EE36E00EDDAF7 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		FECA9D0B1A0C89CE005F5627 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		FECA9D271A0CC590005F5627 /* Default-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x~iphone.png"; sourceTree = "<group>"; };
 		FECA9D281A0CC590005F5627 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -1371,7 +1358,6 @@
 		2D23EFAB1934A74300C8FC3B /* Tutorial */ = {
 			isa = PBXGroup;
 			children = (
-				FE4A0DB31A1629CB00E83ED5 /* Screens */,
 				FE55C4B41A07938B004C13D9 /* control_s.png */,
 				FE55C4B51A07938B004C13D9 /* control_s@2x.png */,
 				FE55C4B61A07938B004C13D9 /* control.png */,
@@ -2237,21 +2223,6 @@
 			name = "Friends Manager";
 			sourceTree = "<group>";
 		};
-		FE4A0DB31A1629CB00E83ED5 /* Screens */ = {
-			isa = PBXGroup;
-			children = (
-				FE4A0DB41A1629CB00E83ED5 /* Tut1.png */,
-				FE4A0DB51A1629CB00E83ED5 /* Tut1@2x.png */,
-				FE4A0DB61A1629CB00E83ED5 /* Tut2.png */,
-				FE4A0DB71A1629CB00E83ED5 /* Tut2@2x.png */,
-				FE4A0DB81A1629CB00E83ED5 /* Tut3.png */,
-				FE4A0DB91A1629CB00E83ED5 /* Tut3@2x.png */,
-				FE4A0DBA1A1629CB00E83ED5 /* Tut4.png */,
-				FE4A0DBB1A1629CB00E83ED5 /* Tut4@2x.png */,
-			);
-			path = Screens;
-			sourceTree = "<group>";
-		};
 		FE5483231A0369BF00A5FE13 /* Action sheet */ = {
 			isa = PBXGroup;
 			children = (
@@ -2436,6 +2407,7 @@
 		FEA0B7101955B03600CD20F9 /* Transaction */ = {
 			isa = PBXGroup;
 			children = (
+				FEC940381A3EE36E00EDDAF7 /* TTTAttributedLabel */,
 				FEA0B7111955B03600CD20F9 /* TLAllTransactionsViewController.h */,
 				FEA0B7121955B03600CD20F9 /* TLAllTransactionsViewController.m */,
 				FEA0B7131955B03600CD20F9 /* TLTransactionDetailViewController.h */,
@@ -2557,6 +2529,15 @@
 				FEC70593196135A400BC8F8B /* dot_s@2x.png */,
 			);
 			path = Numbers;
+			sourceTree = "<group>";
+		};
+		FEC940381A3EE36E00EDDAF7 /* TTTAttributedLabel */ = {
+			isa = PBXGroup;
+			children = (
+				FEC940391A3EE36E00EDDAF7 /* TTTAttributedLabel.h */,
+				FEC9403A1A3EE36E00EDDAF7 /* TTTAttributedLabel.m */,
+			);
+			path = TTTAttributedLabel;
 			sourceTree = "<group>";
 		};
 		FECA9D261A0CC590005F5627 /* Launch Screen */ = {
@@ -2864,7 +2845,6 @@
 				FEAB915B19A4B058008CAB59 /* delete@2x.png in Resources */,
 				FEC705AC196135A500BC8F8B /* 5_n@2x.png in Resources */,
 				2D23EFFE1934A74300C8FC3B /* TutorPreviousLight.png in Resources */,
-				FE4A0DBC1A1629CB00E83ED5 /* Tut1.png in Resources */,
 				FEC705A5196135A500BC8F8B /* 4.png in Resources */,
 				FEC705BA196135A500BC8F8B /* 9@2x.png in Resources */,
 				FE52E4081A0270C5000D8C6B /* g+.png in Resources */,
@@ -2894,7 +2874,6 @@
 				2D23EFE21934A74300C8FC3B /* MapPin.png in Resources */,
 				2D23EFF31934A74300C8FC3B /* ShowPassword@2x.png in Resources */,
 				FEC1885319583E10008D69AD /* visa@2x.png in Resources */,
-				FE4A0DBF1A1629CB00E83ED5 /* Tut2@2x.png in Resources */,
 				2D028CA919640E6F00984559 /* facebookOn.png in Resources */,
 				FEC70597196135A500BC8F8B /* 0_n.png in Resources */,
 				2DD620A7196465ED00400A6F /* Rejected@2x.png in Resources */,
@@ -2930,9 +2909,6 @@
 				2D028CAC19640E6F00984559 /* grayBg@2x.png in Resources */,
 				2D23EFDF1934A74300C8FC3B /* List@2x.png in Resources */,
 				FEC705B8196135A500BC8F8B /* 8_n@2x.png in Resources */,
-				FE4A0DC01A1629CB00E83ED5 /* Tut3.png in Resources */,
-				FE4A0DC31A1629CB00E83ED5 /* Tut4@2x.png in Resources */,
-				FE4A0DC21A1629CB00E83ED5 /* Tut4.png in Resources */,
 				FE2C6D0419CC549E00E7B53B /* orange_icon@2x.png in Resources */,
 				2D23EFDD1934A74300C8FC3B /* FavouriteStar@2x.png in Resources */,
 				FEF8AE3B19756FFD00DE2EAD /* rotateButtonBg@2x.png in Resources */,
@@ -2944,7 +2920,6 @@
 				2D23EFD91934A74300C8FC3B /* DiscountEnable@2x.png in Resources */,
 				FE2C6D0319CC549E00E7B53B /* orange_icon.png in Resources */,
 				FEC1885019583E10008D69AD /* edit_icon.png in Resources */,
-				FE4A0DBD1A1629CB00E83ED5 /* Tut1@2x.png in Resources */,
 				2D23F0041934A74300C8FC3B /* WelcomeFooter.png in Resources */,
 				2D23EFC31934A74300C8FC3B /* BackArrow@2x.png in Resources */,
 				FEC705A9196135A500BC8F8B /* 5.png in Resources */,
@@ -2993,10 +2968,8 @@
 				2D735BC9194ED6CA00BD44F7 /* grey_cart@2x.png in Resources */,
 				2D23F0031934A74300C8FC3B /* PageOther@2x.png in Resources */,
 				FEC7059C196135A500BC8F8B /* 1_n@2x.png in Resources */,
-				FE4A0DBE1A1629CB00E83ED5 /* Tut2.png in Resources */,
 				2D39127F195006F4002CFFC6 /* map_border.png in Resources */,
 				2D23EFF71934A74300C8FC3B /* Tutor1@2x.png in Resources */,
-				FE4A0DC11A1629CB00E83ED5 /* Tut3@2x.png in Resources */,
 				2D735BB9194ED6CA00BD44F7 /* bg.png in Resources */,
 				EE5458871977F7F8000F9F9A /* fsearch.png in Resources */,
 				2D23F0061934A74300C8FC3B /* WelcomeSlide.png in Resources */,
@@ -3251,6 +3224,7 @@
 				FE6F9A55196BB7EE002F8784 /* TLTopupManager.m in Sources */,
 				2D23EF621934A71300C8FC3B /* TLAppDelegate.m in Sources */,
 				2D23F60E1934B55900C8FC3B /* TLSignUpManager.m in Sources */,
+				FEC9403B1A3EE36E00EDDAF7 /* TTTAttributedLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3344,7 +3318,7 @@
 					"$(PROJECT_DIR)/Tuplit/ThirdPartyFrameworks/Flurry/Flurry",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "7888e857-92d9-4064-b041-60c651ebf8d4";
+				PROVISIONING_PROFILE = "82c07f21-c033-4e5a-b6cf-f183746adf99";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 arm64 i386";
 			};
@@ -3391,7 +3365,7 @@
 					"$(PROJECT_DIR)/Tuplit/ThirdPartyFrameworks/Flurry/Flurry",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "9dd09da9-b488-41ad-a257-27078142dd07";
+				PROVISIONING_PROFILE = "12c99f33-32de-43f1-9c5e-a1e6824208e6";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 arm64 i386";
@@ -3431,7 +3405,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7888e857-92d9-4064-b041-60c651ebf8d4";
+				PROVISIONING_PROFILE = "82c07f21-c033-4e5a-b6cf-f183746adf99";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 arm64 i386";
 				WRAPPER_EXTENSION = app;
@@ -3471,7 +3445,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9dd09da9-b488-41ad-a257-27078142dd07";
+				PROVISIONING_PROFILE = "12c99f33-32de-43f1-9c5e-a1e6824208e6";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 arm64 i386";
 				WRAPPER_EXTENSION = app;

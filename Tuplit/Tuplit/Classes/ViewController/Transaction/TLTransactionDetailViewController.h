@@ -11,9 +11,11 @@
 #import "OrderDetailModel.h"
 #import "OrderProductModel.h"
 #import "TLTransactionListingManager.h"
+#import "TTTAttributedLabel.h"
+
 #define CELL_HEIGHT 30
 
-@interface TLTransactionDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TLOrderListingManagerDelegate,TLTransactionListingManagerDelegate>
+@interface TLTransactionDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TLOrderListingManagerDelegate,TLTransactionListingManagerDelegate,TTTAttributedLabelDelegate>
 {
     UITableView *itemsListTable;
     UIImageView *detailImgView;

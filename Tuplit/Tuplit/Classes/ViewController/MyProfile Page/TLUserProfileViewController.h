@@ -40,6 +40,9 @@
     NSDictionary *mainDict;
     NSArray *sectionHeader;
     int totalOrders,totalComments;
+    
+    UILabel *userErrorLabel;
+    
 }
 -(void)reloadUserprofile;
 @end

@@ -57,12 +57,12 @@
                   symbolName = "-[TLFavouriteListViewController favouriteManagerSuccessfull:withFavouriteList:]"
                   moduleName = "Tuplit"
                   urlString = "file:///Volumes/Work/Navin/CurrentWork/Tuplit/Tuplit/Classes/ViewController/Merchant%20Page/Favourites/TLFavouriteListViewController.m"
-                  timestampString = "439998927.910049"
+                  timestampString = "440572262.524019"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "779"
                   endingLineNumber = "779"
-                  offsetFromSymbolStart = "1353">
+                  offsetFromSymbolStart = "964">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -71,46 +71,14 @@
                   symbolName = "__79-[TLFavouriteListViewController favouriteManagerSuccessfull:withFavouriteList:]_block_invoke"
                   moduleName = "Tuplit"
                   urlString = "file:///Volumes/Work/Navin/CurrentWork/Tuplit/Tuplit/Classes/ViewController/Merchant%20Page/Favourites/TLFavouriteListViewController.m"
-                  timestampString = "439998927.910239"
+                  timestampString = "440572262.52422"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "783"
                   endingLineNumber = "783"
-                  offsetFromSymbolStart = "29">
+                  offsetFromSymbolStart = "31">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tuplit/Classes/WebService/StaticContent Manager/TLStaticContentManager.m"
-            timestampString = "439900336.132588"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "-getStaticContents"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tuplit/Classes/WebService/StaticContent Manager/TLStaticContentManager.m"
-            timestampString = "439900337.319628"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "-getStaticContents"
-            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

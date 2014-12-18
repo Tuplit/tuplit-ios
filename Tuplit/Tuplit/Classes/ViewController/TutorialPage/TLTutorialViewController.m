@@ -70,6 +70,11 @@
     scrollView.slideShowInterval = 5;
     scrollView.isWelcome = YES;
     scrollView.slideShowImages = [Global instance].tutorialScreenImages;
+    
+    if([Global instance].tutorialScreenImages.count>0)
+    {
+       [[ProgressHud shared] hide]; 
+    }
 //    if(self.isWelcome)
 //    {
 //        scrollView.placeholderImages = placeholderimages;

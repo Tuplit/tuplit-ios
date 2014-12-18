@@ -63,7 +63,16 @@
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
         userProfileTable.delaysContentTouches = NO;
     userProfileTable.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, userProfileTable.frame.size.width, 50)];
+    [userProfileTable setHidden:YES];
     [baseView addSubview:userProfileTable];
+    
+    userErrorLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, (baseViewHeight-100)/2, baseViewWidth, 100)];
+    userErrorLabel.textAlignment = NSTextAlignmentCenter;
+    userErrorLabel.backgroundColor = [UIColor clearColor];
+    userErrorLabel.textColor = [UIColor lightGrayColor];
+    userErrorLabel.numberOfLines = 0;
+    [userErrorLabel setHidden:YES];
+    [baseView addSubview:userErrorLabel];
 }
 - (void)viewDidLoad
 {
@@ -104,7 +113,7 @@
 {
     NETWORK_TEST_PROCEDURE
     
-    [[ProgressHud shared] showWithMessage:@"" inTarget:self.navigationController.view];
+    [[ProgressHud shared] showWithMessage:@"" inTarget:APP_DELEGATE.window];
 
     TLUserDetailsManager *usermanager = [[TLUserDetailsManager alloc]init];
     usermanager.delegate = self;
@@ -113,6 +122,9 @@
 }
 -(void)reloadUserprofile
 {
+    [userProfileTable setHidden:YES];
+    [userErrorLabel setHidden:YES];
+    
     [userProfileTable setContentOffset:CGPointZero animated:YES];
     [self callService];
 }
@@ -601,18 +613,31 @@
     [self updateUserDetails];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
-    
     [[ProgressHud shared] hide];
+    
+    [userProfileTable setHidden:NO];
+    [userErrorLabel setHidden:YES];
 }
 - (void)userDetailsManager:(TLUserDetailsManager *)userDetailsManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg
 {
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:errorMsg];
+    [userProfileTable setHidden:YES];
+    [userErrorLabel setHidden:NO];
+    
+    [userErrorLabel setText:errorMsg];
+  
+//    [UIAlertView alertViewWithMessage:errorMsg];
 }
 - (void)userDetailsManagerFailed:(TLUserDetailsManager *)userDetailsManager
 {
     [[ProgressHud shared] hide];
-    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
+    
+    [userProfileTable setHidden:YES];
+    [userErrorLabel setHidden:NO];
+    
+    [userErrorLabel setText:LString(@"SERVER_CONNECTION_ERROR")];
+
+//    [UIAlertView alertViewWithMessage:LString(@"SERVER_CONNECTION_ERROR")];
 }
 
 #pragma  mark - TLCreditCardDeleteManager Delegate Methods

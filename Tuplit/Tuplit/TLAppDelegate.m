@@ -64,6 +64,7 @@
     self.window.rootViewController = self.navigationController;
     self.window.backgroundColor = UIColorFromRGB(0x00998c);
     [self.window makeKeyAndVisible];
+
         
     return YES;
 }
@@ -101,7 +102,12 @@
     application.applicationIconBadgeNumber = 0;
     [FBSession.activeSession handleDidBecomeActive];
     
-//    [[TestVersionManager sharedManager] validateCurrentAppVersion];
+#if DEBUG
+    
+#else
+    [[TestVersionManager sharedManager] validateCurrentAppVersion];
+#endif
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -183,6 +189,17 @@
         NSString *processId = [dict objectForKey:@"processId"];
         NSString *merchantId = [dict objectForKey:@"merchantId"];
         NSString *merchantName = [dict objectForKey:@"merchantName"];
+        NSString *refundAmt = [dict objectForKey:@"OrderAmount"];
+        
+//        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^0-9]" options:0 error:NULL];
+//        NSString *string = topUpAmountTxt.text;
+//        NSString *topUpAmount = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+        
+        UserModel *userModel = [TLUserDefaults getCurrentUser];
+        double balance = userModel.AvailableBalance.doubleValue;
+        userModel.AvailableBalance = [NSString stringWithFormat:@"%lf",(balance + refundAmt.doubleValue)];
+        [TLUserDefaults setCurrentUser:userModel];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserData object:nil];
         
         TLOrderConformViewController *orderConfromView = [[TLOrderConformViewController alloc]init];
         orderConfromView.orderStatus = @"3";

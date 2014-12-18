@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 
 #define CELL_HEIGHT 30
 
-@interface CartDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
+@interface CartDetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,TTTAttributedLabelDelegate>
 {
     UITableView *itemsListTable;
     UIImageView *detailImgView;
@@ -24,6 +25,9 @@
     UILabel *totalAmtLbl;
     UILabel *vatAmtTotalLbl;
     UILabel * totalAmtTotalLbl;
+    
+    UILabel *thanksLbl;
+    TTTAttributedLabel *linkLbl;
 }
 
 @property(nonatomic,strong) NSString *TransactionId;

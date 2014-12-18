@@ -362,6 +362,7 @@
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.backgroundColor=[UIColor clearColor];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         UILabel *itemQuantityLbl=[[UILabel alloc]initWithFrame:CGRectMake(10 ,0, 30, CELL_HEIGHT)];
         itemQuantityLbl.textColor=UIColorFromRGB(0x666666);

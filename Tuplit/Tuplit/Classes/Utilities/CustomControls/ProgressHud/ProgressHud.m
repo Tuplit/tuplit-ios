@@ -21,6 +21,7 @@ static ProgressHud *_shared = nil;
     
     self = [super initWithFrame:frame];
     if (self) {
+        
         UIView *_transparentView = [[UIView alloc] initWithFrame:frame];
         _transparentView.backgroundColor = [UIColor clearColor];
         _transparentView.alpha = 0.2;

@@ -91,7 +91,14 @@
         
         if(self.isShowPageControl)
         {
-            codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height-100, self.width,50)];
+            if(!IS_IPHONE_5)
+            {
+                codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height-50, self.width,50)];
+            }
+            else
+            {
+                codeSelectorView = [[UIView alloc]initWithFrame:CGRectMake(0, self.height-100, self.width,50)];
+            }
             codeSelectorView.backgroundColor = [UIColor clearColor];
             [self.superview addSubview:codeSelectorView];
             
@@ -117,8 +124,6 @@
         }
         [self timerAction];
     }
-    
-   
 }
 
 - (void)addImageWithName:(NSURL*)imageString atPosition:(int)position
@@ -135,10 +140,14 @@
     }
     
     imageView.imageURL = imageString;
-    imageView.contentMode = UIViewContentModeScaleToFill;
+    
+    if(!IS_IPHONE_5)
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+    else
+        imageView.contentMode = UIViewContentModeScaleToFill;
+    
     imageView.clipsToBounds = YES;
     [self  addSubview:imageView];
-    
 }
 
 - (void)addImageWithlocalName:(NSString*)imageName atPosition:(int)position
