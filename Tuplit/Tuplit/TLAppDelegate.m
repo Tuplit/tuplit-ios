@@ -102,11 +102,11 @@
     application.applicationIconBadgeNumber = 0;
     [FBSession.activeSession handleDidBecomeActive];
     
-#if DEBUG
-    
-#else
-    [[TestVersionManager sharedManager] validateCurrentAppVersion];
-#endif
+//#if DEBUG
+//    
+//#else
+//    [[TestVersionManager sharedManager] validateCurrentAppVersion];
+//#endif
     
 }
 

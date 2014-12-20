@@ -434,6 +434,9 @@
 		FED5D33C196AD471006BF2A1 /* TLAddCreditCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D33B196AD471006BF2A1 /* TLAddCreditCardManager.m */; };
 		FED5D33F196AD6FF006BF2A1 /* TLCreditCardListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D33E196AD6FF006BF2A1 /* TLCreditCardListingManager.m */; };
 		FED5D342196AD7CE006BF2A1 /* CreditCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FED5D341196AD7CE006BF2A1 /* CreditCardModel.m */; };
+		FED899911A44276200755095 /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8998E1A44276200755095 /* Icon-60@2x.png */; };
+		FED899921A44276200755095 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8998F1A44276200755095 /* Icon.png */; };
+		FED899931A44276200755095 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED899901A44276200755095 /* Icon@2x.png */; };
 		FEDAA24F19C1DF86000E3CEB /* TLHelpCenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEDAA24E19C1DF86000E3CEB /* TLHelpCenterViewController.m */; };
 		FEDBFA951A23507E00948CC6 /* TLLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEDBFA941A23507E00948CC6 /* TLLabel.m */; };
 		FEDBFA971A235DCA00948CC6 /* receipt.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDBFA961A235DCA00948CC6 /* receipt.png */; };
@@ -447,6 +450,8 @@
 		FEEA485F195C5ADF0013C749 /* OrderProductModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA485E195C5ADF0013C749 /* OrderProductModel.m */; };
 		FEEA4863195C5E4E0013C749 /* TLOrderListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA4862195C5E4E0013C749 /* TLOrderListingManager.m */; };
 		FEEA4866195C5E6F0013C749 /* TLTransactionListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA4865195C5E6F0013C749 /* TLTransactionListingManager.m */; };
+		FEEACFD01A43EFF2001A627E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEACFCF1A43EFF2001A627E /* StoreKit.framework */; };
+		FEEACFD21A43F050001A627E /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEACFD11A43F050001A627E /* GameKit.framework */; };
 		FEEF511D1A14D020003566FB /* invite_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF511B1A14D020003566FB /* invite_grey.png */; };
 		FEEF511E1A14D020003566FB /* invite_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF511C1A14D020003566FB /* invite_grey@2x.png */; };
 		FEF077AF1A36DAF500766F14 /* RefreshBatchCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF077AE1A36DAF500766F14 /* RefreshBatchCount.m */; };
@@ -914,6 +919,7 @@
 		FE6F9A4A196BB6E5002F8784 /* TLOrderPaymentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLOrderPaymentManager.m; path = "Order Manager/TLOrderPaymentManager.m"; sourceTree = "<group>"; };
 		FE6F9A53196BB7EE002F8784 /* TLTopupManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLTopupManager.h; path = "CreditCard Manager/TLTopupManager.h"; sourceTree = "<group>"; };
 		FE6F9A54196BB7EE002F8784 /* TLTopupManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TLTopupManager.m; path = "CreditCard Manager/TLTopupManager.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		FE7096B01A43FDE20066870C /* Tuplit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Tuplit.entitlements; path = Tuplit/Tuplit.entitlements; sourceTree = SOURCE_ROOT; };
 		FE717E151973EE860016A6DE /* TLFavouriteListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLFavouriteListViewController.h; path = Favourites/TLFavouriteListViewController.h; sourceTree = "<group>"; };
 		FE717E161973EE860016A6DE /* TLFavouriteListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLFavouriteListViewController.m; path = Favourites/TLFavouriteListViewController.m; sourceTree = "<group>"; };
 		FE74648D196D1CFC00D93D19 /* TLOtherUserProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLOtherUserProfileViewController.h; path = "Other User page/TLOtherUserProfileViewController.h"; sourceTree = "<group>"; };
@@ -1090,6 +1096,9 @@
 		FED5D33E196AD6FF006BF2A1 /* TLCreditCardListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLCreditCardListingManager.m; path = "CreditCard Manager/TLCreditCardListingManager.m"; sourceTree = "<group>"; };
 		FED5D340196AD7CE006BF2A1 /* CreditCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreditCardModel.h; sourceTree = "<group>"; };
 		FED5D341196AD7CE006BF2A1 /* CreditCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreditCardModel.m; sourceTree = "<group>"; };
+		FED8998E1A44276200755095 /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
+		FED8998F1A44276200755095 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		FED899901A44276200755095 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		FEDAA24D19C1DF86000E3CEB /* TLHelpCenterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLHelpCenterViewController.h; sourceTree = "<group>"; };
 		FEDAA24E19C1DF86000E3CEB /* TLHelpCenterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLHelpCenterViewController.m; sourceTree = "<group>"; };
 		FEDBFA931A23507E00948CC6 /* TLLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLLabel.h; path = Label/TLLabel.h; sourceTree = "<group>"; };
@@ -1109,6 +1118,8 @@
 		FEEA4862195C5E4E0013C749 /* TLOrderListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLOrderListingManager.m; path = "TransactionListing Manager/TLOrderListingManager.m"; sourceTree = "<group>"; };
 		FEEA4864195C5E6F0013C749 /* TLTransactionListingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLTransactionListingManager.h; path = "TransactionListing Manager/TLTransactionListingManager.h"; sourceTree = "<group>"; };
 		FEEA4865195C5E6F0013C749 /* TLTransactionListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TLTransactionListingManager.m; path = "TransactionListing Manager/TLTransactionListingManager.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		FEEACFCF1A43EFF2001A627E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		FEEACFD11A43F050001A627E /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FEEF511B1A14D020003566FB /* invite_grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = invite_grey.png; sourceTree = "<group>"; };
 		FEEF511C1A14D020003566FB /* invite_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "invite_grey@2x.png"; sourceTree = "<group>"; };
 		FEF077AD1A36DAF500766F14 /* RefreshBatchCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshBatchCount.h; sourceTree = "<group>"; };
@@ -1136,6 +1147,7 @@
 				FEE7B9FB19E8FFB20034CD12 /* AVFoundation.framework in Frameworks */,
 				FEE7B9F919E8FE760034CD12 /* AudioToolbox.framework in Frameworks */,
 				FEE7B9F719E8F3FE0034CD12 /* libCardIO.a in Frameworks */,
+				FEEACFD21A43F050001A627E /* GameKit.framework in Frameworks */,
 				FE90B90C19A735C2000A4279 /* libFlurry_5.3.0.a in Frameworks */,
 				FE920B3B19739B81006C4D9D /* FacebookSDK.framework in Frameworks */,
 				2D06803B19418B1F00D436E5 /* MapKit.framework in Frameworks */,
@@ -1144,6 +1156,7 @@
 				3221CB1C190551B80059674B /* SystemConfiguration.framework in Frameworks */,
 				3221CB1A190551B10059674B /* Security.framework in Frameworks */,
 				322A71611907A302007B7F4D /* MobileCoreServices.framework in Frameworks */,
+				FEEACFD01A43EFF2001A627E /* StoreKit.framework in Frameworks */,
 				322A715F1907A2FB007B7F4D /* CoreData.framework in Frameworks */,
 				322A715D1907A2EE007B7F4D /* CFNetwork.framework in Frameworks */,
 				322A7116190777C4007B7F4D /* Accounts.framework in Frameworks */,
@@ -2074,6 +2087,9 @@
 		322D7A6F19050CE4001B330B = {
 			isa = PBXGroup;
 			children = (
+				FED8998E1A44276200755095 /* Icon-60@2x.png */,
+				FED8998F1A44276200755095 /* Icon.png */,
+				FED899901A44276200755095 /* Icon@2x.png */,
 				FECA9D0B1A0C89CE005F5627 /* Images.xcassets */,
 				2D2EECE819700DA600D78CFF /* Baku.gpx */,
 				2D7C6441196540910004D7DD /* Romania.gpx */,
@@ -2098,6 +2114,8 @@
 		322D7A7A19050CE4001B330B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FEEACFD11A43F050001A627E /* GameKit.framework */,
+				FEEACFCF1A43EFF2001A627E /* StoreKit.framework */,
 				FEE7B9FC19E8FFBB0034CD12 /* CoreVideo.framework */,
 				FEE7B9FA19E8FFB20034CD12 /* AVFoundation.framework */,
 				FEE7B9F819E8FE760034CD12 /* AudioToolbox.framework */,
@@ -2132,6 +2150,7 @@
 		322D7A8119050CE4001B330B /* Tuplit */ = {
 			isa = PBXGroup;
 			children = (
+				FE7096B01A43FDE20066870C /* Tuplit.entitlements */,
 				2D23EF601934A71300C8FC3B /* TLAppDelegate.h */,
 				2D23EF611934A71300C8FC3B /* TLAppDelegate.m */,
 				2D23F0081934A75900C8FC3B /* Classes */,
@@ -2723,6 +2742,20 @@
 				TargetAttributes = {
 					322D7A7719050CE4001B330B = {
 						DevelopmentTeam = RBZ388N83J;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+							com.apple.OMC = {
+								enabled = 0;
+							};
+						};
 					};
 					322D7A9819050CE4001B330B = {
 						TestTargetID = 322D7A7719050CE4001B330B;
@@ -2817,6 +2850,7 @@
 				2D23EFC21934A74300C8FC3B /* BackArrow.png in Resources */,
 				2D23EFE01934A74300C8FC3B /* MapIcon.png in Resources */,
 				2D23EFF01934A74300C8FC3B /* Question.png in Resources */,
+				FED899921A44276200755095 /* Icon.png in Resources */,
 				2DD620A5196465ED00400A6F /* Completed@2x.png in Resources */,
 				2D23EFF81934A74300C8FC3B /* TutorNext.png in Resources */,
 				2D9D4104193763C0005D7C81 /* shadow@2x.png in Resources */,
@@ -2874,6 +2908,7 @@
 				2D23EFE21934A74300C8FC3B /* MapPin.png in Resources */,
 				2D23EFF31934A74300C8FC3B /* ShowPassword@2x.png in Resources */,
 				FEC1885319583E10008D69AD /* visa@2x.png in Resources */,
+				FED899931A44276200755095 /* Icon@2x.png in Resources */,
 				2D028CA919640E6F00984559 /* facebookOn.png in Resources */,
 				FEC70597196135A500BC8F8B /* 0_n.png in Resources */,
 				2DD620A7196465ED00400A6F /* Rejected@2x.png in Resources */,
@@ -2961,6 +2996,7 @@
 				2D23EFCE1934A74300C8FC3B /* MenuFavourites.png in Resources */,
 				2D7C6442196540910004D7DD /* Romania.gpx in Resources */,
 				2D39127E195006F4002CFFC6 /* fav@2x.png in Resources */,
+				FED899911A44276200755095 /* Icon-60@2x.png in Resources */,
 				2DAF540C1951D1B8000DC545 /* Pondicherry-eventurers.gpx in Resources */,
 				2D23EFEA1934A74300C8FC3B /* MapDistance.png in Resources */,
 				FEEF511E1A14D020003566FB /* invite_grey@2x.png in Resources */,
@@ -3365,7 +3401,7 @@
 					"$(PROJECT_DIR)/Tuplit/ThirdPartyFrameworks/Flurry/Flurry",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "12c99f33-32de-43f1-9c5e-a1e6824208e6";
+				PROVISIONING_PROFILE = "9c2b60dc-efc1-424a-88aa-bb9749b795c1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 arm64 i386";
@@ -3379,7 +3415,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Victor Martinez (FW2HG8H98K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Victor Martinez (FW2HG8H98K)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3445,7 +3481,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "12c99f33-32de-43f1-9c5e-a1e6824208e6";
+				PROVISIONING_PROFILE = "9c2b60dc-efc1-424a-88aa-bb9749b795c1";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 arm64 i386";
 				WRAPPER_EXTENSION = app;

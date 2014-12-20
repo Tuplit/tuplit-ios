@@ -62,17 +62,19 @@
 }
 -(void) addItems:(SpecialProductsModel*) specialProductsModel {
     
+    NSLog(@"%@",APP_DELEGATE.cartModel.products);
     NSArray *tempArray = APP_DELEGATE.cartModel.products;
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"ProductId Matches[cd] %@",specialProductsModel.ProductId];
     NSArray *result = [tempArray filteredArrayUsingPredicate:pred];
     
     if(result.count > 0){
-        specialProductsModel.quantity = [NSString stringWithFormat:@"%d",([specialProductsModel.quantity intValue] + 1)];
+        NSLog(@"%d",[specialProductsModel.quantity intValue]);
+//        specialProductsModel.quantity = [NSString stringWithFormat:@"%d",([specialProductsModel.quantity intValue] + 1)];
         
         for (SpecialProductsModel *specModel in APP_DELEGATE.cartModel.products) {
             
             if ([specModel.ProductId isEqualToString:specialProductsModel.ProductId]) {
-                specModel.quantity = specialProductsModel.quantity;
+                specModel.quantity = [NSString stringWithFormat:@"%d",specModel.quantity.intValue+1];
             }
         }
     }

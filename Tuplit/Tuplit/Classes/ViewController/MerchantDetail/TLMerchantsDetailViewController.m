@@ -810,6 +810,7 @@
     
     SpecialProductsModel *specialProduct;
     
+    
     if(isDetailButton)
     {
         specialProduct = [[detailMainDict valueForKey:[detailSectionNamesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];

@@ -189,9 +189,11 @@
 - (void)postToFacebook:(id)sender {
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
+        NSString *message = [NSString stringWithFormat:@"%@: %@",[TLUserDefaults getCommentDetails].CompanyName,NSNonNilString(messageTxtView.text)];
         SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        [fbSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+        [fbSheet setInitialText:message];
         fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+            [TLUserDefaults setCommentDetails:nil];
             [self backToUserProfile];
             [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
         };
@@ -207,9 +209,11 @@
 - (void)postToTwitter:(id)sender {
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
+        NSString *message = [NSString stringWithFormat:@"%@: %@",[TLUserDefaults getCommentDetails].CompanyName,NSNonNilString(messageTxtView.text)];
         SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [tweetSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+        [tweetSheet setInitialText:message];
         tweetSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+            [TLUserDefaults setCommentDetails:nil];
             [self backToUserProfile];
             [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
         };
@@ -269,33 +273,35 @@
 - (void)commentAddManagerSuccess:(TLAddCommentManager *)loginManager
 {
     [TLUserDefaults setIsCommentPromptOpen:NO];
-    [TLUserDefaults setCommentDetails:nil];
     [[ProgressHud shared] hide];
     
     if (facebookSwitch.on && twitterSwitch.on)
     {
-        
+      NSString *message = [NSString stringWithFormat:@"%@: %@",[TLUserDefaults getCommentDetails].CompanyName,NSNonNilString(messageTxtView.text)];
         if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
         {
+            
             SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-            [fbSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+            [fbSheet setInitialText:message];
             
             fbSheet.completionHandler = ^(SLComposeViewControllerResult result) {
                 
                 if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
                 {
                     SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-                    [tweetSheet setInitialText:[TLUserDefaults getCommentDetails].CompanyName];
+                    [tweetSheet setInitialText:message];
                     tweetSheet.completionHandler = ^(SLComposeViewControllerResult result) {
                         [self backToUserProfile];
                         [UIAlertView alertViewWithMessage:LString(@"FEED_BACK")];
                     };
                     [self dismissViewControllerAnimated:YES completion:nil];
                     [self presentViewController:tweetSheet animated:YES completion:nil];
+                    [TLUserDefaults setCommentDetails:nil];
                 }
                 else
                 {
                     [self backToUserProfile];
+                    [TLUserDefaults setCommentDetails:nil];
                     [UIAlertView alertViewWithMessage:LString(@"TWITTER_ALERT")];
                 }
             };

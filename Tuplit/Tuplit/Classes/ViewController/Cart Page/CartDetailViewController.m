@@ -256,6 +256,10 @@
     cmtDetail.OrderId = self.OrderId;
     
     [TLUserDefaults setCommentDetails:cmtDetail];
+    
+    NSLog(@"companyName = %@",cmtDetail.CompanyName);
+    NSLog(@"companyName = %@",[TLUserDefaults getCommentDetails].CompanyName);
+    
     [TLUserDefaults setIsCommentPromptOpen:YES];
     
     TLMerchantsViewController *merchantVC = [[TLMerchantsViewController alloc] init];
