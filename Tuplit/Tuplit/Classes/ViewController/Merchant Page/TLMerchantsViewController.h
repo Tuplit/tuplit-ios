@@ -41,6 +41,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     UITextField *searchTxt;
     UIRefreshControl *refreshControl;
     UIButton *buttonNearby;
+    UIButton *buttonPopular;
     UIView *cellContainer;
     UIView *cmtPromptView;
     UILabel *merchantNameLabel;
@@ -55,7 +56,7 @@ typedef NS_ENUM(NSInteger, ActionRequestType) {
     TLMerchantListingModel *merchantListingModel;
     TLMerchantListingManager *merchantListingManager;
     
-    BOOL isDiscountShown, isMapShown ,isLoadFirst;
+    BOOL isDiscountShown, isMapShown ,isLoadFirst, isMenuButtonPressed;
     BOOL isSearchTableShown;
     CGFloat baseViewWidth, baseViewHeight;
     int adjustHeight;

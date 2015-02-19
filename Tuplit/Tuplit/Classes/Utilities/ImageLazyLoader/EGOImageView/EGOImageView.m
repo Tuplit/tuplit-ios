@@ -28,9 +28,10 @@
 #import "EGOImageLoader.h"
 
 #define ACTIVITY_W_H 14
+#define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
 
 @implementation EGOImageView
-@synthesize imageURL, placeholderImage, delegate;
+@synthesize imageURL, placeholderImage, delegate, require4SSupport;
 @synthesize loadedFromCache = _loadedFromCache;
 
 - (id)initWithPlaceholderImage:(UIImage*)anImage imageViewFrame:(CGRect)frame showActivityIndicator:(BOOL)showActivityIndicator {
@@ -40,44 +41,47 @@
 }
 
 - (id)initWithPlaceholderImage:(UIImage*)anImage delegate:(id<EGOImageViewDelegate>)aDelegate showActivityIndicator:(BOOL)showActivityIndicator {
-	if((self = [super initWithImage:anImage])) {
-		activity = [[UIActivityIndicatorView alloc] init];
-		[activity setFrame:CGRectMake((self.frame.size.width - ACTIVITY_W_H)/2, (self.frame.size.height - ACTIVITY_W_H)/2, ACTIVITY_W_H, ACTIVITY_W_H)];
-		[activity setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-		[self addSubview:activity];
-		activity.alpha = showActivityIndicator?1:0;
-		
-		self.placeholderImage = anImage;
-		self.delegate = aDelegate;
-	}
-	
-	return self;
+    if((self = [super initWithImage:anImage])) {
+        activity = [[UIActivityIndicatorView alloc] init];
+        [activity setFrame:CGRectMake((self.frame.size.width - ACTIVITY_W_H)/2, (self.frame.size.height - ACTIVITY_W_H)/2, ACTIVITY_W_H, ACTIVITY_W_H)];
+        [activity setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:activity];
+        activity.alpha = showActivityIndicator?1:0;
+        
+        self.placeholderImage = anImage;
+        self.delegate = aDelegate;
+        self.require4SSupport = NO;
+    }
+    
+    return self;
 }
 
 - (id)initWithPlaceholderImage:(UIImage*)anImage imageViewFrame:(CGRect)frame {
     
     imageFrame = frame;
+    self.require4SSupport = NO;
     
     activity = [[UIActivityIndicatorView alloc] init];
     [activity setFrame:CGRectMake((self.frame.size.width - ACTIVITY_W_H)/2, (self.frame.size.height - ACTIVITY_W_H)/2, ACTIVITY_W_H, ACTIVITY_W_H)];
     [activity setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
     [self addSubview:activity];
-        
-	return [self initWithPlaceholderImage:anImage delegate:nil];	
+    
+    return [self initWithPlaceholderImage:anImage delegate:nil];
 }
 
 - (id)initWithPlaceholderImage:(UIImage*)anImage delegate:(id<EGOImageViewDelegate>)aDelegate {
-	if((self = [super initWithImage:anImage])) {
+    if((self = [super initWithImage:anImage])) {
         activity = [[UIActivityIndicatorView alloc] init];
         [activity setFrame:CGRectMake((self.frame.size.width - ACTIVITY_W_H)/2, (self.frame.size.height - ACTIVITY_W_H)/2, ACTIVITY_W_H, ACTIVITY_W_H)];
         [activity setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
         [self addSubview:activity];
         
-		self.placeholderImage = anImage;
-		self.delegate = aDelegate;
-	}
-	
-	return self;
+        self.placeholderImage = anImage;
+        self.delegate = aDelegate;
+        self.require4SSupport = NO;
+    }
+    
+    return self;
 }
 
 - (void) setImageFrame:(CGRect)frame
@@ -88,39 +92,46 @@
 }
 
 - (void)setImageURL:(NSURL *)aURL {
-        
-	if(imageURL) {
-		[[EGOImageLoader sharedImageLoader] removeObserver:self forURL:imageURL];
-		[imageURL release];
-		imageURL = nil;
-	}
-	
-	NSString *myString = [aURL absoluteString];
+    
+    if(imageURL) {
+        [[EGOImageLoader sharedImageLoader] removeObserver:self forURL:imageURL];
+        [imageURL release];
+        imageURL = nil;
+    }
+    
+    NSString *myString = [aURL absoluteString];
     
     if(aURL && [myString isEqualToString:@""]) {
-		self.image = self.placeholderImage;
-		imageURL = nil;
-		return;
-	} else {
-		imageURL = [aURL retain];
-	}
-
-	[[EGOImageLoader sharedImageLoader] removeObserver:self];
-	UIImage* anImage = [[EGOImageLoader sharedImageLoader] imageForURL:aURL shouldLoadWithObserver:self indicator:activity];
-	
-	if(anImage) {
-		self.image = anImage;
+        self.image = self.placeholderImage;
+        imageURL = nil;
+        return;
+    } else {
+        imageURL = [aURL retain];
+    }
+    
+    [[EGOImageLoader sharedImageLoader] removeObserver:self];
+    UIImage* anImage = [[EGOImageLoader sharedImageLoader] imageForURL:aURL shouldLoadWithObserver:self indicator:activity];
+    
+    if(anImage) {
+        if(require4SSupport) {
+            
+            CGImageRef newImageRef = CGImageCreateWithImageInRect(anImage.CGImage, CGRectMake(0,0,640,960) );
+            anImage = [UIImage imageWithCGImage:newImageRef];
+            CGImageRelease(newImageRef);
+        }
+        
+        self.image = anImage;
         
         _loadedFromCache = YES;
-
-		// trigger the delegate callback if the image was found in the cache
-		if([self.delegate respondsToSelector:@selector(imageViewLoadedImage:)]) {
-			[self.delegate imageViewLoadedImage:self];
-		}
-	} else {
-		self.image = self.placeholderImage;
+        
+        // trigger the delegate callback if the image was found in the cache
+        if([self.delegate respondsToSelector:@selector(imageViewLoadedImage:)]) {
+            [self.delegate imageViewLoadedImage:self];
+        }
+    } else {
+        self.image = self.placeholderImage;
         _loadedFromCache = NO;
-	}
+    }
 }
 
 - (void)activityIndicatorHide {
@@ -137,36 +148,46 @@
     
     [activity stopAnimating];
     
-	[[EGOImageLoader sharedImageLoader] cancelLoadForURL:self.imageURL];
-	[[EGOImageLoader sharedImageLoader] removeObserver:self forURL:self.imageURL];
+    [[EGOImageLoader sharedImageLoader] cancelLoadForURL:self.imageURL];
+    [[EGOImageLoader sharedImageLoader] removeObserver:self forURL:self.imageURL];
 }
 
 - (void)imageLoaderDidLoad:(NSNotification*)notification {
     
     [activity stopAnimating];
     
-	if(![[[notification userInfo] objectForKey:@"imageURL"] isEqual:self.imageURL]) return;
-
-	UIImage* anImage = [[notification userInfo] objectForKey:@"image"];
-	self.image = anImage;
-	[self setNeedsDisplay];
+    if(![[[notification userInfo] objectForKey:@"imageURL"] isEqual:self.imageURL]) return;
     
-    _loadedFromCache = NO;
-	
-	if([self.delegate respondsToSelector:@selector(imageViewLoadedImage:)]) {
-		[self.delegate imageViewLoadedImage:self];
-	}
+    UIImage* anImage = [[notification userInfo] objectForKey:@"image"];
+    
+    if(anImage) {
+        if(require4SSupport) {
+            
+            CGImageRef newImageRef = CGImageCreateWithImageInRect(anImage.CGImage, CGRectMake(0,0,640,960) );
+            anImage = [UIImage imageWithCGImage:newImageRef];
+            CGImageRelease(newImageRef);
+        }
+        
+        self.image = anImage;
+        [self setNeedsDisplay];
+        
+        _loadedFromCache = NO;
+        
+        if([self.delegate respondsToSelector:@selector(imageViewLoadedImage:)]) {
+            [self.delegate imageViewLoadedImage:self];
+        }
+    }
 }
 
 - (void)imageLoaderDidFailToLoad:(NSNotification*)notification {
     
     [activity stopAnimating];
     
-	if(![[[notification userInfo] objectForKey:@"imageURL"] isEqual:self.imageURL]) return;
-	
-	if([self.delegate respondsToSelector:@selector(imageViewFailedToLoadImage:error:)]) {
-		[self.delegate imageViewFailedToLoadImage:self error:[[notification userInfo] objectForKey:@"error"]];
-	}
+    if(![[[notification userInfo] objectForKey:@"imageURL"] isEqual:self.imageURL]) return;
+    
+    if([self.delegate respondsToSelector:@selector(imageViewFailedToLoadImage:error:)]) {
+        [self.delegate imageViewFailedToLoadImage:self error:[[notification userInfo] objectForKey:@"error"]];
+    }
 }
 
 - (void)layoutSubviews {
@@ -181,10 +202,10 @@
 - (void)dealloc {
     
     [activity release];
-	[[EGOImageLoader sharedImageLoader] removeObserver:self];
-	self.delegate = nil;
-	self.imageURL = nil;
-	self.placeholderImage = nil;
+    [[EGOImageLoader sharedImageLoader] removeObserver:self];
+    self.delegate = nil;
+    self.imageURL = nil;
+    self.placeholderImage = nil;
     [super dealloc];
 }
 

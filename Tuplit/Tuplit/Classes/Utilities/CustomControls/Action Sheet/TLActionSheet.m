@@ -52,7 +52,7 @@
     
     UIToolbar *loanToolbar=[[UIToolbar alloc]initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44.0)];
     [loanToolbar setBarStyle:UIBarStyleBlack];
-    if([loanToolbar respondsToSelector:@selector(setTintColor:)])
+    if([loanToolbar respondsToSelector:@selector(setBarTintColor:)])
     {
         loanToolbar.barTintColor = APP_DELEGATE.defaultColor;
     }

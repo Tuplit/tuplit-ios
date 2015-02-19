@@ -13,12 +13,12 @@
 @implementation SlideShowView
 @synthesize slideShowImages,placeholderImages;
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -44,7 +44,7 @@
     {
         if(self.isWelcome)
         {
-            bgimageView = [[UIImageView alloc]initWithImage:getImage(@"welcomePlaceholder", NO)];
+            bgimageView = [[UIImageView alloc]initWithImage:getImage(@"tut_placeholder", NO)];
             bgimageView.frame = CGRectMake(0, 0, self.width, self.height);
             [self addSubview:bgimageView];
         }
@@ -132,20 +132,27 @@
     
     if(self.isWelcome)
     {
-        imageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"welcomePlaceholder", NO) imageViewFrame:CGRectMake(position*width, 0, width, height)];
+        imageView = [[EGOImageView alloc] initWithPlaceholderImage:getImage(@"tut_placeholder", NO) imageViewFrame:CGRectMake(position*width, 0, width, height)];
     }
     else
     {
         imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*width, 0, width, height)];
     }
     
-    imageView.imageURL = imageString;
+    
+   
     
     if(!IS_IPHONE_5)
+    {
+        [imageView setRequire4SSupport:YES];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
+    }
     else
+    {
         imageView.contentMode = UIViewContentModeScaleToFill;
+    }
     
+     imageView.imageURL = imageString;
     imageView.clipsToBounds = YES;
     [self  addSubview:imageView];
 }
@@ -154,6 +161,7 @@
 {
     EGOImageView *imageView;
     imageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(position*width, 0, width, height)];
+     [imageView setRequire4SSupport:YES];
     imageView.image = getImage(imageName, NO);
     imageView.contentMode = UIViewContentModeScaleToFill;
     imageView.clipsToBounds = YES;
@@ -184,7 +192,7 @@
     else
         page++;
     
-//      NSLog(@"page = %d",page);
+    //      NSLog(@"page = %d",page);
     [self fillCodeCircles:page+1 andIsRightSwipped:YES];
     
     //    if (page == 5)
@@ -222,7 +230,7 @@
         {
             leftPos=1;
         }
-
+        
         [self addImageWithName:[NSURL URLWithString:[Global instance].tutorialScreenImages[numberOfSlides-leftPos]] atPosition:numberOfSlides-leftPos];
         [self setContentOffset:CGPointMake(width*(numberOfSlides), 0)];
     }
@@ -236,7 +244,7 @@
     [self timerAction];
     NSInteger page = (self.contentOffset.x) / width;
     page++;
-
+    
     [self timerAction];
     if(page==numberOfSlides)
     {
@@ -290,14 +298,14 @@
 {
     if(numberOfSlides>1)
     {
-         int page = (self.contentOffset.x) / width;
+        int page = (self.contentOffset.x) / width;
         if (_lastContentOffset < (int)sender.contentOffset.x) {
-             [self fillCodeCircles:page+1 andIsRightSwipped:YES];
+            [self fillCodeCircles:page+1 andIsRightSwipped:YES];
         }
         else if (_lastContentOffset > (int)sender.contentOffset.x) {
-             [self fillCodeCircles:page+1 andIsRightSwipped:NO];
+            [self fillCodeCircles:page+1 andIsRightSwipped:NO];
         }
-       
+        
         if (self.contentOffset.x == 0)
         {
             [self scrollRectToVisible:CGRectMake(width*(numberOfSlides),0,width,height) animated:NO];
@@ -319,7 +327,7 @@
             UIImageView *selectorImage1 = (UIImageView *)[codeSelectorView viewWithTag:i+1];
             [selectorImage1 setImage:getImage(@"control", NO)];
         }
-       
+        
         
         if(isright)
         {

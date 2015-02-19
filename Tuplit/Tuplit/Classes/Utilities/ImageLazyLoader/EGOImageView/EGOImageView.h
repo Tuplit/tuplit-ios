@@ -31,9 +31,9 @@
 
 @interface EGOImageView : UIImageView<EGOImageLoaderObserver> {
 @private
-	NSURL* imageURL;
-	UIImage* placeholderImage;
-	id<EGOImageViewDelegate> delegate;
+    NSURL* imageURL;
+    UIImage* placeholderImage;
+    id<EGOImageViewDelegate> delegate;
     UIActivityIndicatorView *activity;
     CGRect imageFrame;
 }
@@ -50,6 +50,8 @@
 @property(nonatomic,retain) UIImage* placeholderImage;
 @property(nonatomic,assign) IBOutlet id<EGOImageViewDelegate> delegate;
 @property(nonatomic, readonly) BOOL loadedFromCache;
+@property(nonatomic, assign) BOOL require4SSupport;
+
 @end
 
 @protocol EGOImageViewDelegate<NSObject>

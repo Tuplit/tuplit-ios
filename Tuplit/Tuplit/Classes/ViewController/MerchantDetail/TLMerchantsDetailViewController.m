@@ -1174,6 +1174,7 @@
                 EGOImageView *iconImageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0,0,cellBaseView.frame.size.height,cellBaseView.frame.size.height)];
                 iconImageView.tag = 2000;
                 iconImageView.contentMode = UIViewContentModeScaleAspectFill;
+                iconImageView.clipsToBounds = YES;
                 iconImageView.backgroundColor = [UIColor clearColor];
                 [cellBaseView addSubview:iconImageView];
                 
@@ -1614,6 +1615,7 @@
             EGOImageView *iconImageView = [[EGOImageView alloc] initWithPlaceholderImage:nil imageViewFrame:CGRectMake(0,0,cellBaseView.frame.size.height,cellBaseView.frame.size.height)];
             iconImageView.tag = 2000;
             iconImageView.contentMode = UIViewContentModeScaleAspectFill;
+            iconImageView.clipsToBounds = YES;
             iconImageView.backgroundColor = [UIColor clearColor];
             [cellBaseView addSubview:iconImageView];
             

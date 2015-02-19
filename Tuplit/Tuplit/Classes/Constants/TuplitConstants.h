@@ -16,6 +16,7 @@
 /******** General ********/
 
 #define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
+#define DATE_PICKER_HEIGHT 250
 
 
 /******** APPDELEGATE ********/
@@ -58,15 +59,15 @@
 
 ///********* LOG HANDLING ***************/
 
-//#ifdef DEBUG
-//#   define NSLog(...) NSLog(__VA_ARGS__)
-//#else
-//#if TARGET_IPHONE_SIMULATOR
-//#   define NSLog(...) NSLog(__VA_ARGS__)
-//#else
-//#   define NSLog(...)
-//#endif   
-//#endif
+#ifdef DEBUG
+#   define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#if TARGET_IPHONE_SIMULATOR
+#   define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#   define NSLog(...)
+#endif   
+#endif
 
 /******** WEB SERVICE END-POINTS ********/
 
@@ -126,7 +127,7 @@
 #define kStaticContentRetrived  @"kStaticContentRetrived"
 #define kUpdateUserProfile      @"kUpdateUserProfile"
 #define kUpdateUserProfileInBackground @"kUpdateUserProfileInBackground"
-#define kIsFavouriteChanged      @"kIsFavouriteChanged"
+#define kIsFavouriteChanged     @"kIsFavouriteChanged"
 
 /****** Format Filters **************/
 #define CARDAMEX            @"#### ###### #####"

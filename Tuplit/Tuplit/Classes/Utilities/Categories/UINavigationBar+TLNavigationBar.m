@@ -13,6 +13,8 @@
     
     [super initialize];
     
+    APP_DELEGATE.defaultColor = UIColorFromRGB(0x00b3a4);
+    
     /* iOS5-only to customize the nav bar appearance */
     
     if ([[UINavigationBar class] respondsToSelector:@selector(appearance)]) {

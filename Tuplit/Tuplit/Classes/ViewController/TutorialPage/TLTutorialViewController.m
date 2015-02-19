@@ -83,7 +83,7 @@
     [scrollView loadData];
 
     scrollView.backgroundColor = [UIColor clearColor];
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     imageView.backgroundColor = [UIColor clearColor];
 
     xposition = 72;

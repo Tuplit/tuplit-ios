@@ -124,7 +124,7 @@
     [buttonNearby setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
     [menuView addSubview:buttonNearby];
     
-    UIButton *buttonPopular = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonPopular = [UIButton buttonWithType:UIButtonTypeCustom];
     buttonPopular.tag = 1002;
     [buttonPopular addTarget:self action:@selector(buttonNearbyPopularAction:) forControlEvents:UIControlEventTouchDown];
     [buttonPopular setTitle:@"Popular" forState:UIControlStateNormal];
@@ -286,6 +286,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChange:) name:@"UITextFieldTextDidChangeNotification" object:searchTxt];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCategoryInBackground) name:kIsFavouriteChanged object:nil];
+    
+    isMenuButtonPressed = NO;
 }
 
 - (void)viewDidLoad
@@ -306,6 +308,9 @@
     
     [super viewWillAppear:animated];
     
+    NSIndexPath* selectedCellIndexPath= [NSIndexPath indexPathForRow:0 inSection:0];
+    [discountTable selectRowAtIndexPath:selectedCellIndexPath animated:false scrollPosition:UITableViewScrollPositionNone];
+    
     if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = FALSE;
@@ -318,6 +323,11 @@
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification
                                                object:nil];
+    if(discountTierValue!=0)
+    {
+        discountTierValue = 0;
+        [self callMerchantWebserviceWithActionType:(menuSelected==1)?MCNearBy:MCPopular startCount:0 showProgressIndicator:YES];
+    }
     
 }
 
@@ -331,9 +341,6 @@
     
     [super viewDidAppear:animated];
 //    [self presentTutorial];
-    
-    NSIndexPath* selectedCellIndexPath= [NSIndexPath indexPathForRow:0 inSection:0];
-    [discountTable selectRowAtIndexPath:selectedCellIndexPath animated:false scrollPosition:UITableViewScrollPositionNone];
 }
 
 - (void)didReceiveMemoryWarning
@@ -386,6 +393,9 @@
 
 -(void)reloadMerchant
 {
+
+    discountTierValue = 0;
+    
 //    [self buttonNearbyPopularAction:buttonNearby];
     [merchantsArray removeAllObjects];
     [merchantTable reloadData];
@@ -393,10 +403,10 @@
     [merchantTable setUserInteractionEnabled:NO];
     searchTxt.text = @"";
     
-    UIButton *buttonPopular = (UIButton*)[contentView viewWithTag:1002];
-    [buttonPopular setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
-    [buttonPopular setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-    buttonPopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+    UIButton *buttonpopular = (UIButton*)[contentView viewWithTag:1002];
+    [buttonpopular setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
+    [buttonpopular setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+    buttonpopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
     
     [buttonNearby setBackgroundImage:Nil forState:UIControlStateNormal];
     [buttonNearby setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -672,18 +682,19 @@
 }
 - (void) buttonNearbyPopularAction:(UIButton*) button
 {
-    UIButton *buttonnearby = (UIButton*)[contentView viewWithTag:1001];
-    UIButton *buttonPopular = (UIButton*)[contentView viewWithTag:1002];
+    isMenuButtonPressed = YES;
     
+    UIButton *buttonnearby = (UIButton*)[contentView viewWithTag:1001];
+    UIButton *buttonpopular = (UIButton*)[contentView viewWithTag:1002];
     [self.navigationItem setTitle:LString(@"MERCHANTS")];
     
     if (button.tag == 1001)
     {
         if(!isnearBy)
         {
-            [buttonPopular setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
-            [buttonPopular setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
-            buttonPopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+            [buttonpopular setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
+            [buttonpopular setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+            buttonpopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
             
             [buttonnearby setBackgroundImage:Nil forState:UIControlStateNormal];
             [buttonnearby setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -701,9 +712,9 @@
     {
         if(isnearBy)
         {
-            [buttonPopular setBackgroundImage:Nil forState:UIControlStateNormal];
-            [buttonPopular setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            buttonPopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+            [buttonpopular setBackgroundImage:Nil forState:UIControlStateNormal];
+            [buttonpopular setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            buttonpopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
             
             [buttonnearby setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
             [buttonnearby setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
@@ -716,6 +727,24 @@
             isnearBy = NO;
         }
     }
+}
+
+-(void)loadmerchantsfromCategory
+{
+    [buttonPopular setBackgroundImage:getImage(@"ButtonLightBg", NO) forState:UIControlStateNormal];
+    [buttonPopular setTitleColor:UIColorFromRGB(0x00998c) forState:UIControlStateNormal];
+    buttonPopular.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+    
+    [buttonNearby setBackgroundImage:Nil forState:UIControlStateNormal];
+    [buttonNearby setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    buttonNearby.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+    
+    menuSelected = 1;
+    isMerchantWebserviceRunning = NO;
+    [self callMerchantWebserviceWithActionType:MCNearBy startCount:0 showProgressIndicator:YES];
+    
+    isLoadFirst = YES;
+    isnearBy = YES;
 }
 
 -(void) refreshTableView:(id) sender {
@@ -951,7 +980,7 @@
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    if(isMapShown && (merchantsArray.count<totalUserListCount))
+    if(isMapShown && (merchantsArray.count<totalUserListCount) && discountTierValue == 0)
         [NSThread detachNewThreadSelector:@selector(mapviewLoadmore) toTarget:self withObject:nil];
 }
 
@@ -1182,6 +1211,10 @@
     }
     else if (tableView.tag == 1005)
     {
+        if(isMapShown)
+        {
+            [merchantsArray removeAllObjects];
+        }
         [discountView setHidden:YES];
         discountTable.frame = CGRectMake(baseViewWidth-120, 0, 120, 0);
         [rightExpandButton buttonWithIcon:getImage(@"DiscountEnable", NO) target:self action:@selector(onDiscountPressed) isLeft:NO];
@@ -1289,6 +1322,11 @@
 
 - (void)merchantListingManager:(TLMerchantListingManager *)_merchantListingManager withMerchantList:(NSArray*) _merchantsArray {
     
+    if(isMenuButtonPressed)
+    {
+        isMenuButtonPressed = NO;
+         [merchantsArray removeAllObjects];
+    }
     [merchantTable setUserInteractionEnabled:YES];
     if(_merchantListingManager.merchantListModel.actionType == MCSearch)
     {
@@ -1312,6 +1350,14 @@
     {
         if(isMapShown)
         {
+            [searchErrorLabel setHidden:YES];
+            [merchantErrorLabel setHidden:YES];
+            isPullRefreshPressed = NO;
+            isLoadMorePressed = NO;
+            isMerchantWebserviceRunning = NO;
+            [[ProgressHud shared] hide];
+            [refreshControl endRefreshing];
+            
             if(_merchantListingManager.merchantListModel.actionType == MCSearch)
             {
                 [merchantsArray removeAllObjects];
@@ -1326,8 +1372,6 @@
                 
                 [self addMapAnnotations];
                 
-                isMerchantWebserviceRunning = NO;
-                [[ProgressHud shared] hide];
                 return;
                 
             }
@@ -1352,16 +1396,22 @@
                 }]mutableCopy];
                 if(newannotations.count>0)
                 {
-                    [merchantsArray addObjectsFromArray:newannotations];
-                    [self loadMoreAnnotation:newannotations];
+                   
+                    if(discountTierValue==0 && merchantsArray.count>0)
+                    {
+                        [merchantsArray addObjectsFromArray:newannotations];
+                        [self loadMoreAnnotation:newannotations];
+                    }
+                    else
+                    {
+                        [merchantsArray addObjectsFromArray:newannotations];
+                        [self addMapAnnotations];
+                    }
                 }
                 if (merchantsArray.count < totalUserListCount)
                     [merchantTable setTableFooterView:cellContainer];
                 else
                     [merchantTable setTableFooterView:nil];
-                
-                isMerchantWebserviceRunning = NO;
-                [[ProgressHud shared] hide];
                 return;
             }
         }
@@ -1525,7 +1575,7 @@
     }
     APP_DELEGATE.catgDict = catgDict;
     [searchTable reloadData];
-    [self buttonNearbyPopularAction:buttonNearby];
+    [self loadmerchantsfromCategory];
 }
 
 - (void)categoryListingManager:(TLCategoryListingManager *)categoryListingManager returnedWithErrorCode:(NSString *)errorCode  errorMsg:(NSString *)errorMsg {

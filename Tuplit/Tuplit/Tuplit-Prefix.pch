@@ -27,7 +27,6 @@
 #import "NSString+URLEncoding.h"
 #import "EGOImageView.h"
 #import "UIImage+Color.h"
-#import "ProgressHud.h"
 #import "UITextField+Tuplit.h"
 #import "TLAppDelegate.h"
 #import "TLUserDefaults.h"

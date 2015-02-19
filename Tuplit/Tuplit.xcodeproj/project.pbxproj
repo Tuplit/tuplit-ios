@@ -93,8 +93,6 @@
 		2D23F0031934A74300C8FC3B /* PageOther@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EFBA1934A74300C8FC3B /* PageOther@2x.png */; };
 		2D23F0041934A74300C8FC3B /* WelcomeFooter.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EFBB1934A74300C8FC3B /* WelcomeFooter.png */; };
 		2D23F0051934A74300C8FC3B /* WelcomeFooter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EFBC1934A74300C8FC3B /* WelcomeFooter@2x.png */; };
-		2D23F0061934A74300C8FC3B /* WelcomeSlide.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EFBD1934A74300C8FC3B /* WelcomeSlide.png */; };
-		2D23F0071934A74300C8FC3B /* WelcomeSlide@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D23EFBE1934A74300C8FC3B /* WelcomeSlide@2x.png */; };
 		2D23F0CA1934A75900C8FC3B /* TuplitConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D23F00B1934A75900C8FC3B /* TuplitConstants.m */; };
 		2D23F0CB1934A75900C8FC3B /* Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D23F00E1934A75900C8FC3B /* Global.m */; };
 		2D23F0CC1934A75900C8FC3B /* FriendsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D23F0111934A75900C8FC3B /* FriendsModel.m */; };
@@ -308,6 +306,8 @@
 		FE67CAE619B8784A0081A75F /* NSArray+BlocksKit.m in Sources */ = {isa = PBXBuildFile; fileRef = FE67CAE519B8784A0081A75F /* NSArray+BlocksKit.m */; };
 		FE6F9A4B196BB6E5002F8784 /* TLOrderPaymentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6F9A4A196BB6E5002F8784 /* TLOrderPaymentManager.m */; };
 		FE6F9A55196BB7EE002F8784 /* TLTopupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6F9A54196BB7EE002F8784 /* TLTopupManager.m */; };
+		FE6F9DC21A8E35FE003D83CE /* tut_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = FE6F9DC01A8E35FE003D83CE /* tut_placeholder.png */; };
+		FE6F9DC31A8E35FE003D83CE /* tut_placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE6F9DC11A8E35FE003D83CE /* tut_placeholder@2x.png */; };
 		FE717E171973EE860016A6DE /* TLFavouriteListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE717E161973EE860016A6DE /* TLFavouriteListViewController.m */; };
 		FE74648F196D1CFC00D93D19 /* TLOtherUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE74648E196D1CFC00D93D19 /* TLOtherUserProfileViewController.m */; };
 		FE74649C196D602000D93D19 /* TLCreditCardDeleteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FE74649B196D602000D93D19 /* TLCreditCardDeleteManager.m */; };
@@ -450,8 +450,6 @@
 		FEEA485F195C5ADF0013C749 /* OrderProductModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA485E195C5ADF0013C749 /* OrderProductModel.m */; };
 		FEEA4863195C5E4E0013C749 /* TLOrderListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA4862195C5E4E0013C749 /* TLOrderListingManager.m */; };
 		FEEA4866195C5E6F0013C749 /* TLTransactionListingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEA4865195C5E6F0013C749 /* TLTransactionListingManager.m */; };
-		FEEACFD01A43EFF2001A627E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEACFCF1A43EFF2001A627E /* StoreKit.framework */; };
-		FEEACFD21A43F050001A627E /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEACFD11A43F050001A627E /* GameKit.framework */; };
 		FEEF511D1A14D020003566FB /* invite_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF511B1A14D020003566FB /* invite_grey.png */; };
 		FEEF511E1A14D020003566FB /* invite_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF511C1A14D020003566FB /* invite_grey@2x.png */; };
 		FEF077AF1A36DAF500766F14 /* RefreshBatchCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF077AE1A36DAF500766F14 /* RefreshBatchCount.m */; };
@@ -599,8 +597,6 @@
 		2D23EFBA1934A74300C8FC3B /* PageOther@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PageOther@2x.png"; sourceTree = "<group>"; };
 		2D23EFBB1934A74300C8FC3B /* WelcomeFooter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WelcomeFooter.png; sourceTree = "<group>"; };
 		2D23EFBC1934A74300C8FC3B /* WelcomeFooter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WelcomeFooter@2x.png"; sourceTree = "<group>"; };
-		2D23EFBD1934A74300C8FC3B /* WelcomeSlide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WelcomeSlide.png; sourceTree = "<group>"; };
-		2D23EFBE1934A74300C8FC3B /* WelcomeSlide@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WelcomeSlide@2x.png"; sourceTree = "<group>"; };
 		2D23F00A1934A75900C8FC3B /* TuplitConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TuplitConstants.h; sourceTree = "<group>"; };
 		2D23F00B1934A75900C8FC3B /* TuplitConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TuplitConstants.m; sourceTree = "<group>"; };
 		2D23F00D1934A75900C8FC3B /* Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Global.h; sourceTree = "<group>"; };
@@ -919,6 +915,8 @@
 		FE6F9A4A196BB6E5002F8784 /* TLOrderPaymentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLOrderPaymentManager.m; path = "Order Manager/TLOrderPaymentManager.m"; sourceTree = "<group>"; };
 		FE6F9A53196BB7EE002F8784 /* TLTopupManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLTopupManager.h; path = "CreditCard Manager/TLTopupManager.h"; sourceTree = "<group>"; };
 		FE6F9A54196BB7EE002F8784 /* TLTopupManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TLTopupManager.m; path = "CreditCard Manager/TLTopupManager.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		FE6F9DC01A8E35FE003D83CE /* tut_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tut_placeholder.png; sourceTree = "<group>"; };
+		FE6F9DC11A8E35FE003D83CE /* tut_placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tut_placeholder@2x.png"; sourceTree = "<group>"; };
 		FE7096B01A43FDE20066870C /* Tuplit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Tuplit.entitlements; path = Tuplit/Tuplit.entitlements; sourceTree = SOURCE_ROOT; };
 		FE717E151973EE860016A6DE /* TLFavouriteListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLFavouriteListViewController.h; path = Favourites/TLFavouriteListViewController.h; sourceTree = "<group>"; };
 		FE717E161973EE860016A6DE /* TLFavouriteListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLFavouriteListViewController.m; path = Favourites/TLFavouriteListViewController.m; sourceTree = "<group>"; };
@@ -1118,8 +1116,6 @@
 		FEEA4862195C5E4E0013C749 /* TLOrderListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLOrderListingManager.m; path = "TransactionListing Manager/TLOrderListingManager.m"; sourceTree = "<group>"; };
 		FEEA4864195C5E6F0013C749 /* TLTransactionListingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLTransactionListingManager.h; path = "TransactionListing Manager/TLTransactionListingManager.h"; sourceTree = "<group>"; };
 		FEEA4865195C5E6F0013C749 /* TLTransactionListingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TLTransactionListingManager.m; path = "TransactionListing Manager/TLTransactionListingManager.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		FEEACFCF1A43EFF2001A627E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		FEEACFD11A43F050001A627E /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FEEF511B1A14D020003566FB /* invite_grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = invite_grey.png; sourceTree = "<group>"; };
 		FEEF511C1A14D020003566FB /* invite_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "invite_grey@2x.png"; sourceTree = "<group>"; };
 		FEF077AD1A36DAF500766F14 /* RefreshBatchCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshBatchCount.h; sourceTree = "<group>"; };
@@ -1147,7 +1143,6 @@
 				FEE7B9FB19E8FFB20034CD12 /* AVFoundation.framework in Frameworks */,
 				FEE7B9F919E8FE760034CD12 /* AudioToolbox.framework in Frameworks */,
 				FEE7B9F719E8F3FE0034CD12 /* libCardIO.a in Frameworks */,
-				FEEACFD21A43F050001A627E /* GameKit.framework in Frameworks */,
 				FE90B90C19A735C2000A4279 /* libFlurry_5.3.0.a in Frameworks */,
 				FE920B3B19739B81006C4D9D /* FacebookSDK.framework in Frameworks */,
 				2D06803B19418B1F00D436E5 /* MapKit.framework in Frameworks */,
@@ -1156,7 +1151,6 @@
 				3221CB1C190551B80059674B /* SystemConfiguration.framework in Frameworks */,
 				3221CB1A190551B10059674B /* Security.framework in Frameworks */,
 				322A71611907A302007B7F4D /* MobileCoreServices.framework in Frameworks */,
-				FEEACFD01A43EFF2001A627E /* StoreKit.framework in Frameworks */,
 				322A715F1907A2FB007B7F4D /* CoreData.framework in Frameworks */,
 				322A715D1907A2EE007B7F4D /* CFNetwork.framework in Frameworks */,
 				322A7116190777C4007B7F4D /* Accounts.framework in Frameworks */,
@@ -1250,6 +1244,8 @@
 		2D23EF701934A74300C8FC3B /* General */ = {
 			isa = PBXGroup;
 			children = (
+				FE6F9DC01A8E35FE003D83CE /* tut_placeholder.png */,
+				FE6F9DC11A8E35FE003D83CE /* tut_placeholder@2x.png */,
 				FEA164AE19989AEA00FB9471 /* btn_img.png */,
 				FEA164AF19989AEA00FB9471 /* btn_img@2x.png */,
 				FEF8AE3819756FFD00DE2EAD /* rotateButtonBg.png */,
@@ -1398,8 +1394,6 @@
 				2D23EFBA1934A74300C8FC3B /* PageOther@2x.png */,
 				2D23EFBB1934A74300C8FC3B /* WelcomeFooter.png */,
 				2D23EFBC1934A74300C8FC3B /* WelcomeFooter@2x.png */,
-				2D23EFBD1934A74300C8FC3B /* WelcomeSlide.png */,
-				2D23EFBE1934A74300C8FC3B /* WelcomeSlide@2x.png */,
 				FE7DE9EC1A0A38BB00A86A7C /* welcomePlaceholder.png */,
 				FE7DE9ED1A0A38BB00A86A7C /* welcomePlaceholder@2x.png */,
 			);
@@ -2114,8 +2108,6 @@
 		322D7A7A19050CE4001B330B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FEEACFD11A43F050001A627E /* GameKit.framework */,
-				FEEACFCF1A43EFF2001A627E /* StoreKit.framework */,
 				FEE7B9FC19E8FFBB0034CD12 /* CoreVideo.framework */,
 				FEE7B9FA19E8FFB20034CD12 /* AVFoundation.framework */,
 				FEE7B9F819E8FE760034CD12 /* AudioToolbox.framework */,
@@ -2744,10 +2736,10 @@
 						DevelopmentTeam = RBZ388N83J;
 						SystemCapabilities = {
 							com.apple.GameCenter = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.InAppPurchase = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -2869,7 +2861,6 @@
 				2D23EFF61934A74300C8FC3B /* Tutor1.png in Resources */,
 				FEC705AA196135A500BC8F8B /* 5@2x.png in Resources */,
 				EE171F5B1979449B00A62516 /* invite.png in Resources */,
-				2D23F0071934A74300C8FC3B /* WelcomeSlide@2x.png in Resources */,
 				2D391284195006F4002CFFC6 /* save@2x.png in Resources */,
 				FE7DE9EF1A0A38BB00A86A7C /* welcomePlaceholder@2x.png in Resources */,
 				EE5458881977F7F8000F9F9A /* fsearch@2x.png in Resources */,
@@ -2928,6 +2919,7 @@
 				2D23EFD41934A74300C8FC3B /* ButtonLightBg.png in Resources */,
 				2D23EFF91934A74300C8FC3B /* TutorNext@2x.png in Resources */,
 				FEC705A3196135A500BC8F8B /* 3_n.png in Resources */,
+				FE6F9DC31A8E35FE003D83CE /* tut_placeholder@2x.png in Resources */,
 				FED5D333196A7D6E006BF2A1 /* on@2x.png in Resources */,
 				2DAF54061951D0FA000DC545 /* add_bag_grey.png in Resources */,
 				2D23EFEC1934A74300C8FC3B /* MapPinBlack.png in Resources */,
@@ -2996,6 +2988,7 @@
 				2D23EFCE1934A74300C8FC3B /* MenuFavourites.png in Resources */,
 				2D7C6442196540910004D7DD /* Romania.gpx in Resources */,
 				2D39127E195006F4002CFFC6 /* fav@2x.png in Resources */,
+				FE6F9DC21A8E35FE003D83CE /* tut_placeholder.png in Resources */,
 				FED899911A44276200755095 /* Icon-60@2x.png in Resources */,
 				2DAF540C1951D1B8000DC545 /* Pondicherry-eventurers.gpx in Resources */,
 				2D23EFEA1934A74300C8FC3B /* MapDistance.png in Resources */,
@@ -3008,7 +3001,6 @@
 				2D23EFF71934A74300C8FC3B /* Tutor1@2x.png in Resources */,
 				2D735BB9194ED6CA00BD44F7 /* bg.png in Resources */,
 				EE5458871977F7F8000F9F9A /* fsearch.png in Resources */,
-				2D23F0061934A74300C8FC3B /* WelcomeSlide.png in Resources */,
 				2D23F1151934A75900C8FC3B /* TLWebViewController.xib in Resources */,
 				2D23EFD81934A74300C8FC3B /* DiscountEnable.png in Resources */,
 				FEA0B70F1955AFCB00CD20F9 /* TLTutorialViewController.xib in Resources */,

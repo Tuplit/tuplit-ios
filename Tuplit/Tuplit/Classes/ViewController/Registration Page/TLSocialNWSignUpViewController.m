@@ -261,6 +261,8 @@
     //        [self showAlertWithMessage:LString(@"ENTER_CELL_NUMBER")];
     else if(textPinCode.text.length == 0)
         [self showAlertWithMessage:LString(@"ENTER_PIN")];
+    else if(textPinCode.text.length<4)
+        [self showAlertWithMessage:LString(@"PIN_ALERT")];
     else {
         [self dismiss:nil];
         // Todo implement webservice here

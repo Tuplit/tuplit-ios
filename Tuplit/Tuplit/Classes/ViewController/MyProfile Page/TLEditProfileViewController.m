@@ -335,7 +335,7 @@
 
 -(void)setupdatePicker
 {
-    datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, 200.0)];
+    datePickerBase = [[TLActionSheet alloc]initWithFrame:CGRectMake(0.0, self.view.frame.size.height, self.view.frame.size.width, DATE_PICKER_HEIGHT)];
     datePickerBase.delegate = self;
     
     if([birthdate isEqualToString:@"Date of Birth"])
@@ -372,7 +372,7 @@
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
                              CGRect frm = datePickerBase.frame;
-                             frm.origin.y = frm.origin.y - 200.0;
+                             frm.origin.y = frm.origin.y - DATE_PICKER_HEIGHT;
                              datePickerBase.frame = frm;
                          }
                          completion:nil];
