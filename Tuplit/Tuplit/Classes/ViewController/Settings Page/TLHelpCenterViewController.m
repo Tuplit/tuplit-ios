@@ -74,7 +74,7 @@
     [supportView addSubview:emailLbl];
     
     UILabel *emailIDLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(emailLbl.frame)+ 4, CGRectGetMaxY(customerSupportLbl.frame)+5, 200, 20)];
-    emailIDLbl.text=CUSTOMER_SUPPORT_EMAIL;
+    emailIDLbl.text=[TLUserDefaults contactEmail];
     emailIDLbl.textColor=UIColorFromRGB(0x00b3a4);
     emailIDLbl.textAlignment=NSTextAlignmentLeft;
     emailIDLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
@@ -93,7 +93,7 @@
     [supportView addSubview:phoneLbl];
     
     UILabel *phoneNumberLbl=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(phoneLbl.frame), CGRectGetMaxY(emailLbl.frame)+5, 200, 20)];
-    phoneNumberLbl.text=CUSTOMER_SUPPORT_PNUMBER;
+    phoneNumberLbl.text=[TLUserDefaults contactphone];
     phoneNumberLbl.textColor=UIColorFromRGB(0x00b3a4);
     phoneNumberLbl.textAlignment=NSTextAlignmentLeft;
     phoneNumberLbl.font=[UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
@@ -152,7 +152,7 @@
         controller.navigationBar.barStyle = UIBarStyleDefault;
         [[controller navigationBar] setTintColor:UIColorFromRGB(0XFFFFFF)];
         controller.mailComposeDelegate = self;
-        [controller setToRecipients:[NSArray arrayWithObject:CUSTOMER_SUPPORT_EMAIL]];
+        [controller setToRecipients:[NSArray arrayWithObject:[TLUserDefaults contactEmail]]];
         [controller setSubject:@"Tuplit"];
         
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
@@ -173,7 +173,7 @@
 }
 -(void)phoneNumCallAction
 {
-    NSString *phoneString =  [TuplitConstants formatPhoneNumber:CUSTOMER_SUPPORT_PNUMBER];
+    NSString *phoneString =  [TuplitConstants formatPhoneNumber:[TLUserDefaults contactphone]];
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:phoneString delegate:self cancelButtonTitle:LString(@"CANCEL") otherButtonTitles:LString(@"Call"), nil];
     alertView.tag = 9010;
     [alertView show];

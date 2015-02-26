@@ -754,7 +754,7 @@
 }
 -(void)phoneNumCallAction
 {
-    NSString *phoneString =  [TuplitConstants formatPhoneNumber:CUSTOMER_SUPPORT_PNUMBER];
+    NSString *phoneString =  [TuplitConstants formatPhoneNumber:[TLUserDefaults contactphone]];
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:LString(@"TUPLIT") message:phoneString delegate:self cancelButtonTitle:LString(@"CANCEL") otherButtonTitles:LString(@"Call"), nil];
     alertView.tag = 9010;
     [alertView show];
@@ -800,7 +800,7 @@
             
             UIDevice *device = [UIDevice currentDevice];
             
-            NSString *unfilteredString = CUSTOMER_SUPPORT_PNUMBER;
+            NSString *unfilteredString = [TLUserDefaults contactphone];
             NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"] invertedSet];
             NSString *resultString = [[unfilteredString componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
             

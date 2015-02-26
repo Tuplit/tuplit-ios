@@ -192,6 +192,7 @@
     [merchantErrorLabel setTextColor:[UIColor lightGrayColor]];
     [merchantErrorLabel setText:LString(@"NO_MERCHANTS_FOUND")];
     [merchantErrorLabel setHidden:YES];
+    merchantErrorLabel.numberOfLines = 3;
     [contentView addSubview:merchantErrorLabel];
     
     searchTable = [[UITableView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(searchbarView.frame),contentView.frame.size.width,contentView.frame.size.height - CGRectGetMaxY(searchbarView.frame))];
@@ -1325,8 +1326,10 @@
     if(isMenuButtonPressed)
     {
         isMenuButtonPressed = NO;
-         [merchantsArray removeAllObjects];
+        [merchantsArray removeAllObjects];
+        [merchantTable reloadData];
     }
+    
     [merchantTable setUserInteractionEnabled:YES];
     if(_merchantListingManager.merchantListModel.actionType == MCSearch)
     {

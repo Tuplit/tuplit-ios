@@ -465,7 +465,8 @@ NSString *LString(NSString* key) {
 
 +(BOOL) isMerchantClosed:(NSArray*) openHrsArray {
     NSMutableDictionary *openHoursDict = [[NSMutableDictionary alloc] init];
-//    
+    NSMutableDictionary *openHoursDict1 = [[NSMutableDictionary alloc] init];
+    //
     NSDictionary *weekdayRef = @{
                                  @"sun"   : @"1",
                                  @"mon"   : @"2",
@@ -475,8 +476,8 @@ NSString *LString(NSString* key) {
                                  @"fri"   : @"6",
                                  @"sat"   : @"7",
                                  };
-
-//    NSDictionary *weekdayRef  = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"sun",@"2",@"mon",@"3",@"tue",@"4",@"wed",@"5",@"thu",@"6",@"fri",@"7",@"sat", nil];
+    
+    //    NSDictionary *weekdayRef  = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"sun",@"2",@"mon",@"3",@"tue",@"4",@"wed",@"5",@"thu",@"6",@"fri",@"7",@"sat", nil];
     for (NSString *openHours in openHrsArray) {
         
         NSArray *daysOpenhoursArray = [openHours componentsSeparatedByString:@":"];
@@ -507,7 +508,7 @@ NSString *LString(NSString* key) {
             NSMutableArray *openDays = [[NSMutableArray alloc] init];
             for(NSString *key in opdays)
             {
-                NSString *wkKey = [NSString stringWithFormat:@"%@",[[key lowercaseString]stringByRemovingExtraSpaces]];
+                NSString *wkKey = [NSString stringWithFormat:@"%@",[[key lowercaseString]stringByReplacingOccurrencesOfString:@" " withString:@""]];
                 [openDays addObject:[weekdayRef valueForKey:wkKey]];
             }
             if ([splitUsing isEqualToString:@"to"]) {
@@ -526,12 +527,28 @@ NSString *LString(NSString* key) {
                 
                 NSString *openTime = [[NSString stringWithFormat:@"%@.%@",[daysOpenhoursArray objectAtIndex:1],[minHour objectAtIndex:0]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *closeTime = [[NSString stringWithFormat:@"%@.%@",[minHour objectAtIndex:1],[daysOpenhoursArray objectAtIndex:3]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                
-                [openHoursDict setObject:[NSArray arrayWithObjects:openTime,closeTime,nil] forKey:day];
+                if(openTime.doubleValue>=closeTime.doubleValue)
+                {
+                    [openHoursDict setObject:[NSArray arrayWithObjects:openTime,@"23.59",nil] forKey:day];
+                    NSString *nextday;
+                    if(day.integerValue==7)
+                    {
+                        nextday = @"1";
+                    }
+                    else
+                    {
+                        nextday = [NSString stringWithFormat:@"%d",(int)day.integerValue+1];
+                    }
+                    [openHoursDict1 setObject:[NSArray arrayWithObjects:@"00.00",closeTime,nil] forKey:nextday];
+                }
+                else
+                {
+                    [openHoursDict setObject:[NSArray arrayWithObjects:openTime,closeTime,nil] forKey:day];
+                }
             }
         }
     }
-
+    
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     //    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en"]];
     [formatter setDateFormat:@"HH.mm"];
@@ -539,7 +556,7 @@ NSString *LString(NSString* key) {
     [formatter setDateFormat:@"EEE"];
     
     NSCalendar* cal = [NSCalendar currentCalendar];
-    NSDateComponents* comp = [cal components:NSWeekdayCalendarUnit fromDate:[NSDate date]];
+    NSDateComponents* comp = [cal components:NSCalendarUnitWeekday fromDate:[NSDate date]];
     NSString *day = [NSString stringWithFormat:@"%ld",(long)[comp weekday]];
     
     NSArray *openCloseHours = [openHoursDict objectForKey:day];
@@ -552,7 +569,19 @@ NSString *LString(NSString* key) {
         float currentHour = [time floatValue];
         
         if ((openHours <= currentHour) && (currentHour <= closeHours)) {
-            
+            return NO;
+        }
+    }
+    
+    NSArray *openCloseHours1 = [openHoursDict1 objectForKey:day];
+    if(openCloseHours1)
+    {
+        float openHours = [[openCloseHours objectAtIndex:0] floatValue];
+        float closeHours = [[openCloseHours objectAtIndex:1] floatValue];
+        
+        float currentHour = [time floatValue];
+        
+        if ((openHours <= currentHour) && (currentHour <= closeHours)) {
             return NO;
         }
         else
@@ -565,4 +594,5 @@ NSString *LString(NSString* key) {
         return YES;
     }
 }
+
 @end

@@ -52,4 +52,10 @@
 + (void)setInviteMsg:(NSString*)inviteMsg;
 + (NSString *)inviteMsg;
 
++ (void)setContactEmail:(NSString*)contactEmail;
++ (NSString*)contactEmail;
+
++ (void)setContactPhone:(NSString*)contactphone;
++ (NSString*)contactphone;
+
 @end

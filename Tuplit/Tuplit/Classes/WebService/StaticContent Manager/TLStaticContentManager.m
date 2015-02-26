@@ -90,6 +90,12 @@
             NSString *iTunesurl = [[responseJSON objectForKey:strPropertyName] valueForKey:@"ItunesURL"];
             [TLUserDefaults setItunesURL:iTunesurl];
             
+            NSString *contactEmail = [[responseJSON objectForKey:strPropertyName] valueForKey:@"ContactEmail"];
+            [TLUserDefaults setContactEmail:contactEmail];
+            
+            NSString *phone = [[responseJSON objectForKey:strPropertyName] valueForKey:@"Phone"];
+            [TLUserDefaults setContactPhone:phone];
+            
             [[NSNotificationCenter defaultCenter]postNotificationName:kStaticContentRetrived object:nil];
             
         }

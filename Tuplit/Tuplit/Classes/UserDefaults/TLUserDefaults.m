@@ -22,6 +22,8 @@
 #define kItunesURL @"kItunesURL"
 #define kISPINCodeDisabled @"kISPINCodeDisabled"
 #define kInviteMsg @"kInviteMsg"
+#define kContactEmail @"kContactEmail"
+#define kContactPhone @"kContactPhone"
 
 
 @implementation TLUserDefaults
@@ -183,6 +185,28 @@
 {
     NSString * msg = [UserDefaults valueForKey:kInviteMsg];
     return msg;
+}
+
++ (void)setContactEmail:(NSString*)contactEmail
+{
+    [UserDefaults setValue:contactEmail forKey:kContactEmail];
+    [UserDefaults synchronize];
+}
++ (NSString*)contactEmail
+{
+    NSString * contactEmail = [UserDefaults valueForKey:kContactEmail];
+    return contactEmail;
+}
+
++ (void)setContactPhone:(NSString*)contactphone
+{
+    [UserDefaults setValue:contactphone forKey:kContactPhone];
+    [UserDefaults synchronize];
+}
++ (NSString*)contactphone
+{
+    NSString * contactphone = [UserDefaults valueForKey:kContactPhone];
+    return contactphone;
 }
 
 @end
